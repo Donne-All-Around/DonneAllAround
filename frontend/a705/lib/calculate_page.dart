@@ -11,9 +11,65 @@ class _CalculatePageState extends State<CalculatePage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Container(
-        color: Colors.red,
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            height: 80,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30),
+              ),
+              color: Color(0xFFFFD954),
+            ),
+            child:  Center(
+              child: RichText(
+                text: const TextSpan(
+                  children:  [
+                    TextSpan(
+                      text: "이익/손실",
+                      style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white
+                      ),
+                    ),
+                    TextSpan(
+                      text: "계산",
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    WidgetSpan(
+                      child: IconButton.outlined(
+                          icon: Icon(Icons.info_outline_rounded),
+                          color: Colors.white,
+                          onPressed:() {
+                            print('information');
+                          } ,
+                      ),
+                    ),
+                  ],
+                  // textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10,),
+          Container(
+            margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+            width: double.infinity,
+            height: 100,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.black38),
+            ),),
+        ],
       ),
     );
   }
 }
+
