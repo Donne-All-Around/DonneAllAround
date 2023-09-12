@@ -59,10 +59,11 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                     Row(
                       children: [
                         Container(
+                          height: 70,
+                          width: 70,
                           margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            border: Border.all(color: Colors.black87),
                           ),
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(15),
@@ -70,71 +71,58 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                   height: 60,
                                   image: AssetImage(
                                     'assets/images/ausdollar.jpg',
-                                  ))),
+                                  ),
+                              fit: BoxFit.cover,
+                              )),
                         ),
-                        Flexible(
+                        const Flexible(
                           flex: 1,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text(
-                                    '호주 달러 50달러 팔아요',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                          child: SizedBox(
+                            height: 70,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '호주 달러 50달러 팔아요',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    height: 1.3,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage: AssetImage(
+                                              'assets/images/australia.png'),
+                                          radius: 12,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          '50 AUD',
+                                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(
-                                            Icons.more_horiz_rounded),
-                                        padding: EdgeInsets.zero,
-                                        constraints: const BoxConstraints(),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      const SizedBox(width: 10),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              const Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundImage: AssetImage(
-                                            'assets/images/australia.png'),
-                                        radius: 12,
-                                      ),
-                                      SizedBox(width: 5),
-                                      Text(
-                                        '50 AUD',
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        '42,000원',
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                      SizedBox(width: 10),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
+                                    Row(
+                                      children: [
+                                        Text(
+                                          '42,000원',
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        SizedBox(width: 10),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                // SizedBox(height: 15),
+                              ],
+                            ),
                           ),
                         )
                       ],
