@@ -87,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 20,
                   ),
                   Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    margin: const EdgeInsets.symmetric(horizontal: 30),
                     child: TextField(
                       controller: _phoneNumberController,// 전화번호 입력칸
                       keyboardType: TextInputType.number, // 키보드 숫자로 나타남
@@ -98,14 +98,15 @@ class _LoginPageState extends State<LoginPage> {
                         //13자리만 입력받도록 하이픈 2개+숫자 11개
                       ],
                       style: const TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                       ),
-                      decoration:const InputDecoration(
+                      decoration: InputDecoration(
                         border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
                           // borderSide: BorderSide(color: Colors.black),
                         ),
                         hintText: '휴대폰 번호 ( - 없이 숫자만 입력)',
-                        labelStyle: TextStyle(
+                        labelStyle: const TextStyle(
                           fontSize: 20,
                           // textAlign: TextAlign.center,
                         ),
@@ -128,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                     child: Container(
-                      margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                       height: 50,
                       width: double.infinity,
                       decoration:  BoxDecoration(
@@ -150,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                     Column(
                       children: [
                         Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 20),
+                          margin: const EdgeInsets.symmetric(horizontal: 30),
                           child: TextField(
                             controller: _verificationController, // 인증번호 입력칸
                             keyboardType: TextInputType.number, // 키보드 숫자로 나타남
@@ -160,14 +161,15 @@ class _LoginPageState extends State<LoginPage> {
                               // 6자리 숫자만 입력받도록
                             ],
                             style: const TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                             ),
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
                                 // borderSide: BorderSide(color: Colors.black),
                               ),
                               hintText: '인증번호 입력',
-                              labelStyle: TextStyle(
+                              labelStyle: const TextStyle(
                                 fontSize: 20,
                               ),
                               // contentPadding: EdgeInsets.all(20.0),
