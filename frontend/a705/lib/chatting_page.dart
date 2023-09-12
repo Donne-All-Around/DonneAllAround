@@ -134,7 +134,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                         )
                       ],
                     ),
-                  )
+                  ),
                 ],
               )),
         );
