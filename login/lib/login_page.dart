@@ -11,12 +11,12 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context){
     return SafeArea(
-        child: Column(
-          children: [
-            Container(
+        child: GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child:
+          Scaffold(
 
             )
-          ],
         ),
     );
   }
