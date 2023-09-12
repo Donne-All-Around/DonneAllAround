@@ -32,58 +32,75 @@ class _LoginPageState extends State<LoginPage> {
           body: Center(
             child: Column(
               children: [
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(40, 0, 0, 20),
-                      child: const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 10,),
-                          Text(
-                            '휴대폰 번호로',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 30,),
-                          ),
-                          Text(
-                            '로그인 해주세요!',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 30,),
-                          ),
-                          SizedBox(height: 20,),
-                        ],
+                const SizedBox(
+                  height: 20,
+                ),
+                const Text(
+                  '휴대폰 번호로',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                  ),
+                ),
+                const Text(
+                  '로그인 해주세요!',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextField(  // 전화번호 입력칸
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly, //숫자만!
+                    NumberFormatter(), // 자동하이픈
+                    LengthLimitingTextInputFormatter(13),
+                      //13자리만 입력받도록 하이픈 2개+숫자 11개
+                  ],
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: '휴대폰 번호 ( - 없이 입력)',
+                      // contentPadding: EdgeInsets.all(20.0),
+                  ),
+
+                ),
+                const SizedBox(height: 20,),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    height: 50,
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ),
+                      color: Color(0xFFFFD954),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        '인증문자 받기',
+                        style: TextStyle(fontSize:25,fontWeight: FontWeight.bold),
                       ),
                     ),
-
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(30, 20, 30, 0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 10),
-                                 TextField(
-                                  keyboardType: TextInputType.number,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly, //숫자만!
-                                    NumberFormatter(), // 자동하이픈
-                                    LengthLimitingTextInputFormatter(13),
-                                  ],
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: '나와라'
-                                  ),//13자리만 입력받도록 하이픈 2개+숫자 11개
-
-                                ),
-                            ],
-                          ),
-                        ),
+                  ),
+                ),
               ],
             ),
-
+          ),
         ),
       ),
-    ),
-        );
+    );
   }
 }
 
