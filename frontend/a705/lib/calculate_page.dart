@@ -25,9 +25,9 @@ class _CalculatePageState extends State<CalculatePage> {
             ),
             child:  Center(
               child: RichText(
-                text: const TextSpan(
+                text:  TextSpan(
                   children:  [
-                    TextSpan(
+                    const TextSpan(
                       text: "이익/손실",
                       style: TextStyle(
                           fontSize: 25,
@@ -35,7 +35,7 @@ class _CalculatePageState extends State<CalculatePage> {
                           color: Colors.white
                       ),
                     ),
-                    TextSpan(
+                    const TextSpan(
                       text: "계산",
                       style: TextStyle(
                         fontSize: 25,
@@ -44,12 +44,13 @@ class _CalculatePageState extends State<CalculatePage> {
                       ),
                     ),
                     WidgetSpan(
-                      child: IconButton.outlined(
-                          icon: Icon(Icons.info_outline_rounded),
-                          color: Colors.white,
-                          onPressed:() {
-                            print('information');
-                          } ,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: IconButton.outlined(
+                            icon: const Icon(Icons.info_outline_rounded),
+                            color: Colors.white,
+                            onPressed:() {} ,
+                        ),
                       ),
                     ),
                   ],
@@ -66,7 +67,8 @@ class _CalculatePageState extends State<CalculatePage> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: Colors.black38),
-            ),),
+            ),
+          ),
         ],
       ),
     );
