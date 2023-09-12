@@ -9,11 +9,18 @@ class ChattingDetailPage extends StatefulWidget {
 }
 
 class _ChattingDetailPageState extends State<ChattingDetailPage> {
+  bool isVisible = false;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+        setState(() {
+          isVisible = false;
+        });
+      },
       child: Scaffold(
           resizeToAvoidBottomInset: true,
           backgroundColor: Colors.white,
@@ -42,7 +49,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
               Container(
                 margin: const EdgeInsets.fromLTRB(20, 2, 20, 10),
                 width: double.infinity,
-                // height: 100,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     color: Colors.white,
@@ -61,18 +67,18 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         Container(
                           height: 70,
                           width: 70,
-                          margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                          margin: const EdgeInsets.fromLTRB(20, 15, 10, 10),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(15),
                               child: const Image(
-                                  height: 60,
-                                  image: AssetImage(
-                                    'assets/images/ausdollar.jpg',
-                                  ),
-                              fit: BoxFit.cover,
+                                height: 60,
+                                image: AssetImage(
+                                  'assets/images/ausdollar.jpg',
+                                ),
+                                fit: BoxFit.cover,
                               )),
                         ),
                         const Flexible(
@@ -86,41 +92,38 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                   '호주 달러 50달러 팔아요',
                                   style: TextStyle(
                                     fontSize: 18,
-                                    height: 1.3,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(height: 10),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      children: [
-                                        CircleAvatar(
-                                          backgroundImage: AssetImage(
-                                              'assets/images/australia.png'),
-                                          radius: 12,
-                                        ),
-                                        SizedBox(width: 5),
-                                        Text(
-                                          '50 AUD',
-                                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blueAccent),
-                                        ),
-                                      ],
+                                    CircleAvatar(
+                                      backgroundImage: AssetImage(
+                                          'assets/images/australia.png'),
+                                      radius: 8,
                                     ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          '42,000원',
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                        SizedBox(width: 10),
-                                      ],
+                                    SizedBox(width: 5),
+                                    Text(
+                                      '50 AUD',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueAccent),
                                     ),
                                   ],
                                 ),
-                                // SizedBox(height: 15),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '42,000원',
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(width: 20),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
@@ -128,8 +131,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       ],
                     ),
                     Container(
-                      margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                      height: 30,
+                      margin: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+                      height: 35,
                       width: double.infinity,
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(
@@ -154,19 +157,29 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                 child: Row(
                   children: [
                     const SizedBox(width: 10),
-                    const IconButton(
-                      icon: Icon(Icons.add),
-                      onPressed: null,
+                    IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
+                        setState(() {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          isVisible = !isVisible;
+                        });
+                      },
                       padding: EdgeInsets.zero,
-                      constraints: BoxConstraints(),
+                      constraints: const BoxConstraints(),
                     ),
                     Flexible(
                       flex: 2,
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                        child: const TextField(
+                        child: TextField(
+                          onTap: () {
+                            setState(() {
+                              isVisible = false;
+                            });
+                          },
                           textAlignVertical: TextAlignVertical.center,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               contentPadding:
                                   EdgeInsets.fromLTRB(10, 10, 10, 0),
                               fillColor: Colors.white,
@@ -200,6 +213,119 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                     const SizedBox(width: 10),
                   ],
                 ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isVisible = true;
+                  });
+                },
+                child: Visibility(
+                  visible: isVisible,
+                  // visible: true,
+                  child: Container(
+                    color: const Color(0xFFFFFDF8),
+                    width: double.infinity,
+                    height: 160,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFD954),
+                                borderRadius: BorderRadius.circular(100),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    spreadRadius: 2,
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 0),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(Icons.photo_outlined),
+                            ),
+                            const Text('사진'),
+                          ],
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFD954),
+                                borderRadius: BorderRadius.circular(100),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    spreadRadius: 2,
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 0),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(Icons.edit_calendar_outlined),
+                            ),
+                            const Text('약속'),
+                          ],
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFD954),
+                                borderRadius: BorderRadius.circular(100),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    spreadRadius: 2,
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 0),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(Icons.account_balance_wallet_outlined),
+                            ),
+                            const Text('송금'),
+                          ],
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFD954),
+                                borderRadius: BorderRadius.circular(100),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    spreadRadius: 2,
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 0),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(Icons.email_outlined),
+                            ),
+                            const Text('배송정보'),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               )
             ],
           )),
@@ -224,35 +350,51 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
         return Row(
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 00),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        BubbleSpecialOne(
-                          text: chatList[index],
-                          isSender: false,
-                          color: Colors.grey.shade200,
-                          textStyle: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 15
-                          ),
-                        ),
-                        const Text('오후 10: 10',
-                          style: TextStyle(
-                            fontSize: 10,
-                          )
-                        )
-                      ],
-                    )
-                  )
-                ],
-              )
-            )
+                padding: const EdgeInsets.only(bottom: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.only(left: 00),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            const SizedBox(width: 10),
+                            const Column(
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage: AssetImage('assets/images/profile.jpg'),
+                                  radius: 25,
+                                ),
+                                SizedBox(height: 10),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Row(
+                                  children: [
+                                    SizedBox(width: 10),
+                                    Text('옹골찬', style: TextStyle(fontWeight: FontWeight.bold),),
+                                  ],
+                                ),
+                                BubbleSpecialOne(
+                                  text: chatList[index],
+                                  isSender: false,
+                                  color: Colors.grey.shade200,
+                                  textStyle: const TextStyle(
+                                      color: Colors.black, fontSize: 15),
+                                ),
+                              ],
+                            ),
+                            const Text('오후 2: 10',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                ))
+                          ],
+                        ))
+                  ],
+                ))
           ],
         );
       },
@@ -260,4 +402,9 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
   }
 }
 
-List<String> chatList = ["흰 티에 청바지 입고있어요", "역삼역 1번출구 앞에서 직거래 희망합니다", "3시에 거래 가능할까요"];
+List<String> chatList = [
+  "도착하시면 연락 부탁드려요.",
+  "흰 티에 청바지 입고있어요",
+  "역삼역 1번출구 앞에서 직거래 희망합니다",
+  "3시에 거래 가능할까요"
+];
