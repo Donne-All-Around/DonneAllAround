@@ -24,6 +24,10 @@ class StartPage extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.grey),
             ),
+            // 로고 이미지
+            Container(
+              child: Image.asset('assets/images/good_don.png'),
+            ),
             //로그인 버튼
             GestureDetector(
               onTap: (){
