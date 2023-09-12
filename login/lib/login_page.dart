@@ -9,6 +9,23 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  final _phoneNumberController = TextEditingController();
+
+  bool _isVaild(){
+    return (_phoneNumberController.text.length == 13);
+  }
+  
+  void _text() {
+    // 인증문자 받기
+  }
+  
+  @override
+  void dispose(){
+    _phoneNumberController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -54,7 +71,8 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                TextField(  // 전화번호 입력칸
+                TextField(
+                  controller: _phoneNumberController,// 전화번호 입력칸
                   keyboardType: TextInputType.number,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly, //숫자만!
@@ -67,15 +85,21 @@ class _LoginPageState extends State<LoginPage> {
                       hintText: '휴대폰 번호 ( - 없이 입력)',
                       // contentPadding: EdgeInsets.all(20.0),
                   ),
+                  // 입력값 변할 때마다 setState 호출해서 위젯 업데이트 (disable 설정 반영위해)
+                  onChanged: (text){
+                    setState(() {
 
+                    });
+                  },
                 ),
                 const SizedBox(height: 20,),
                 GestureDetector(
                   onTap: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()),
-                    );
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(builder: (context) => const LoginPage()),
+                  //   );
+                  _isVaild()? _text : null;
                   },
                   child: Container(
                     margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -83,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                     width: double.infinity,
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(
-                        Radius.circular(20),
+                        Radius.circular(10),
                       ),
                       color: Color(0xFFFFD954),
                     ),
