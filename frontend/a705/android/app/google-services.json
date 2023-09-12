@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "864082552121",
+    "project_id": "donnearound",
+    "storage_bucket": "donnearound.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:864082552121:android:9dbf4f7e4a11c4432934e8",
+        "android_client_info": {
+          "package_name": "com.ssafy.a705"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBL1EUNiCSX10sYMl0nmyxR-cv3T51d_Sg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
