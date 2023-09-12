@@ -23,7 +23,6 @@ class StartPage extends StatelessWidget {
               '동네에서 가볍게, 내 손안의 은행',
               textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,color: Colors.grey),
-
             ),
             //로그인 버튼
             GestureDetector(
