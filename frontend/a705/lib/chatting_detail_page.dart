@@ -44,7 +44,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
             centerTitle: true,
           ),
           body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Container(
                 margin: const EdgeInsets.fromLTRB(20, 2, 20, 10),
@@ -294,7 +294,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                   ),
                                 ],
                               ),
-                              child: const Icon(Icons.account_balance_wallet_outlined),
+                              child: const Icon(
+                                  Icons.account_balance_wallet_outlined),
                             ),
                             const Text('송금'),
                           ],
@@ -347,62 +348,99 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
       reverse: true,
       itemCount: chatList.length,
       itemBuilder: (BuildContext context, int index) {
-        return Row(
-          children: [
-            Padding(
-                padding: const EdgeInsets.only(bottom: 15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.only(left: 00),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            const SizedBox(width: 10),
-                            const Column(
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage: AssetImage('assets/images/profile.jpg'),
-                                  radius: 25,
-                                ),
-                                SizedBox(height: 10),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Row(
-                                  children: [
-                                    SizedBox(width: 10),
-                                    Text('옹골찬', style: TextStyle(fontWeight: FontWeight.bold),),
-                                  ],
-                                ),
-                                BubbleSpecialOne(
-                                  text: chatList[index],
-                                  isSender: false,
-                                  color: Colors.grey.shade200,
-                                  textStyle: const TextStyle(
-                                      color: Colors.black, fontSize: 15),
-                                ),
-                              ],
-                            ),
-                            const Text('오후 2: 10',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                ))
-                          ],
-                        ))
-                  ],
-                ))
-          ],
-        );
+        return index > 1
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.only(bottom: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.only(left: 00),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  const SizedBox(width: 10),
+                                  const Column(
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundImage: AssetImage(
+                                            'assets/images/profile.jpg'),
+                                        radius: 25,
+                                      ),
+                                      SizedBox(height: 10),
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Row(
+                                        children: [
+                                          SizedBox(width: 10),
+                                          Text(
+                                            '옹골찬',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                      BubbleSpecialOne(
+                                        text: chatList[index],
+                                        isSender: false,
+                                        color: Colors.grey.shade200,
+                                        textStyle: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15),
+                                      ),
+                                    ],
+                                  ),
+                                  const Text('오후 2: 10',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                      ))
+                                ],
+                              ))
+                        ],
+                      ))
+                ],
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        const Text('오후 2: 20',
+                            style: TextStyle(
+                              fontSize: 10,
+                            )),
+                        BubbleSpecialOne(
+                          text: chatList[index],
+                          isSender: true,
+                          color: const Color(0xFFFFE897),
+                          textStyle: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 15,
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              );
       },
     );
   }
 }
 
 List<String> chatList = [
+  "3시까지 나갈게요~",
+  "네 알겠습니다!",
   "도착하시면 연락 부탁드려요.",
   "흰 티에 청바지 입고있어요",
   "역삼역 1번출구 앞에서 직거래 희망합니다",
