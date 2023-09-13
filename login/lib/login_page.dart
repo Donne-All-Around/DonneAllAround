@@ -191,7 +191,7 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     child: Container(
                       margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-                      height: 50,
+                      height: 60,
                       width: double.infinity,
                       decoration:  BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
@@ -276,7 +276,7 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           child: Container(
                             margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-                            height: 50,
+                            height: 60,
                             width: double.infinity,
                             decoration:  BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
