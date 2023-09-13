@@ -200,9 +200,19 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 10,),
                     Column(
                       children: [
+                        if (_isInputVisible) // ture 일 때만 입력창 보이도록 조건부
+                          TextButton(
+                              onPressed: (){},
+                              child: const Text(
+                                '인증문자 재발송',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              )),
+                        const SizedBox(height: 5,),
                         if (_isInputVisible) // ture 일 때만 입력창 보이도록 조건부
                         Container(
                           // key: certiKey, // 키 할당
