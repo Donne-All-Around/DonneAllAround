@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   int _remainingTime = 180; // 3분을 초 단위로 표현
   late Timer _timer;
   final FocusNode _certificationFocus = FocusNode(); // 자동 포커스 주기 위해
-
+  var _buttonText = '인증문자 받기';
 
   bool _isValid(){
     final phoneNumber = _phoneNumberController.text.replaceAll('-', '');
@@ -37,6 +37,10 @@ class _LoginPageState extends State<LoginPage> {
       // 버튼을 누르면 타이머를 시작합니다.
       startTimer();
       // TODO: 인증문자 보내는 기능 구현
+      // 인증번호를 받은 후에 버튼 비활성화
+      // setState(() {  // 인증번호 받기 버튼 비활성화
+      //   _isButtonEnabled = false;
+      // });
     }
   }
   bool _isStart() {
@@ -168,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 10,),
                   GestureDetector(
                     onTap: (){
                       if (_isValid()) {
@@ -176,6 +180,9 @@ class _LoginPageState extends State<LoginPage> {
                         _showInput();
                         // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
                         _text();
+                        if(_buttonText == '인증문자 받기') {
+                          _buttonText = '인증문자 재발송';
+                        }
                         // Scrollable.ensureVisible(   // 클릭 시, certikey 위치로 스크롤 이동
                         //   certiKey.currentContext!,
                         //   duration: const Duration(seconds: 1),
@@ -189,30 +196,35 @@ class _LoginPageState extends State<LoginPage> {
                       decoration:  BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
+                          color: Colors.black,// 버튼 테두리 색상 변경
                         ),
-                        color: _isButtonEnabled ? Colors.white : Colors.grey[400], // 버튼 색상 변경
+                        color: _isButtonEnabled ? Colors.white : Colors.grey[300], // 버튼 색상 변경
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Text(
-                          '인증문자 받기',
-                          style: TextStyle(fontSize:25,fontWeight: FontWeight.bold),
+                          _buttonText,
+                          style: TextStyle(
+                              fontSize:25,
+                              fontWeight: FontWeight.bold,
+                            color: _isButtonEnabled ? Colors.black : Colors.grey, // 버튼 텍스트 색상 변경),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10,),
+                  ),
+                  const SizedBox(height: 30,),
                     Column(
                       children: [
-                        if (_isInputVisible) // ture 일 때만 입력창 보이도록 조건부
-                          TextButton(
-                              onPressed: (){},
-                              child: const Text(
-                                '인증문자 재발송',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                ),
-                              )),
-                        const SizedBox(height: 5,),
+                        // if (_isInputVisible) // ture 일 때만 입력창 보이도록 조건부
+                        //   TextButton(
+                        //       onPressed: (){},
+                        //       child: const Text(
+                        //         '인증문자 재발송',
+                        //         style: TextStyle(
+                        //           color: Colors.black,
+                        //         ),
+                        //       )),
+                        // const SizedBox(height: 5,),
                         if (_isInputVisible) // ture 일 때만 입력창 보이도록 조건부
                         Container(
                           // key: certiKey, // 키 할당
@@ -249,7 +261,7 @@ class _LoginPageState extends State<LoginPage> {
                             },
                           ),
                         ),
-                        const SizedBox(height: 20,),
+                        const SizedBox(height: 10,),
                         // 인증번호 받기 버튼 등을 여기에 추가
                         if (_isInputVisible)
                         GestureDetector(
@@ -268,14 +280,17 @@ class _LoginPageState extends State<LoginPage> {
                             width: double.infinity,
                             decoration:  BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                              ),
-                              color: _isStartEnabled ?  const Color(0xFFFFD954) : Colors.grey[400], // 버튼 색상 변경
+                              // border: Border.all(
+                              // ),
+                              color: _isStartEnabled ?  const Color(0xFFFFD954) : Colors.grey[300], // 버튼 색상 변경
                             ),
-                            child: const Center(
+                            child:  Center(
                               child: Text(
                                 '시작하기',
-                                style: TextStyle(fontSize:25,fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    fontSize:25,
+                                    fontWeight: FontWeight.bold,
+                                  color: _isStartEnabled ? Colors.black : Colors.grey,),
                               ),
                             ),
                           ),
