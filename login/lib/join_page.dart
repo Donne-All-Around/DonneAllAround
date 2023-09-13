@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:login/location_information.dart';
 import 'package:login/personal_information.dart';
-import 'package:login/profile1_page.dart';
+import 'package:login/profilesetting_page.dart';
 
 class JoinPage extends StatefulWidget {
   const JoinPage({super.key});
@@ -231,7 +231,7 @@ class _JoinPageState extends State<JoinPage> {
                       // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const ProfilePage()),
+                        MaterialPageRoute(builder: (context) => const ProfileSettingPage()),
                       );
                     }
                   },
