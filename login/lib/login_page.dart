@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:login/start_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,10 +11,11 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
-  final _phoneNumberController = TextEditingController();
-  bool _isButtonEnabled = false; // 버튼 활성화 상태를 저장 하는 변수
-  bool _showVerification = false; // 버튼 클릭시 스크롤
-  TextEditingController _verificationController = TextEditingController(); // 인증번호 입력칸 컨트롤러
+  final _phoneNumberController = TextEditingController(); // 전화번호 컨트롤러
+  bool _isButtonEnabled = false; // 인증문자 받기 버튼 활성화 상태를 저장 하는 변수
+  final _certificationController = TextEditingController(); // 인증번호 컨트롤러
+  bool _isStartEnabled = false; // 시작하기 버튼 활성화 상태 저장 하는 변수
+
 
   bool _isValid(){
     final phoneNumber = _phoneNumberController.text.replaceAll('-', '');
@@ -27,14 +29,22 @@ class _LoginPageState extends State<LoginPage> {
   void _text() {
     // 인증문자 받기
     setState(() {
-      _showVerification = true;
+
     });
+  }
+
+  bool _isStart() {
+    final certification = _certificationController.text;
+    final isStart = certification.length == 5;
+  setState(() {
+    _isStartEnabled = isStart;
+  });
+    return isStart;
   }
 
   @override
   void dispose(){
     _phoneNumberController.dispose();
-    _verificationController.dispose(); // 컨트롤러 해제
     super.dispose();
   }
 
@@ -65,7 +75,6 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  if (!_showVerification)
                     const Text(
                       '휴대폰 번호로',
                       textAlign: TextAlign.start,
@@ -74,7 +83,6 @@ class _LoginPageState extends State<LoginPage> {
                         fontSize: 30,
                       ),
                     ),
-                  if (!_showVerification)
                     const Text(
                       '로그인 해주세요!',
                       textAlign: TextAlign.start,
@@ -124,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                   GestureDetector(
                     onTap: (){
                       if (_isValid()) {
-                        // 버튼을 활성화하고 이벤트를 처리합니다.
+                        // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
                         _text();
                       }
                     },
@@ -147,13 +155,12 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 20,),
-                  if (_showVerification) // 인증번호 입력 관련 위젯 표시
                     Column(
                       children: [
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 30),
                           child: TextField(
-                            controller: _verificationController, // 인증번호 입력칸
+                            controller: _certificationController, // 인증번호 컨트롤러
                             keyboardType: TextInputType.number, // 키보드 숫자로 나타남
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly, //숫자만!
@@ -174,10 +181,44 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               // contentPadding: EdgeInsets.all(20.0),
                             ),
+                            onChanged: (text){
+                              setState(() {
+                                _isStartEnabled = _isStart();
+                              });
+                            },
                           ),
                         ),
                         const SizedBox(height: 20,),
                         // 인증번호 받기 버튼 등을 여기에 추가
+                        GestureDetector(
+                          onTap: (){
+                            if (_isStart()) {
+                              // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const StartPage()),
+                              );
+                            }
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                            height: 50,
+                            width: double.infinity,
+                            decoration:  BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                              ),
+                              color: _isStartEnabled ?  const Color(0xFFFFD954) : Colors.grey[400], // 버튼 색상 변경
+                            ),
+                            child: const Center(
+                              child: Text(
+                                '시작하기',
+                                style: TextStyle(fontSize:25,fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ),
+
                       ],
                     ),
                 ],
