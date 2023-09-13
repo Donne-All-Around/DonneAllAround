@@ -15,7 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isButtonEnabled = false; // 인증문자 받기 버튼 활성화 상태를 저장 하는 변수
   final _certificationController = TextEditingController(); // 인증번호 컨트롤러
   bool _isStartEnabled = false; // 시작하기 버튼 활성화 상태 저장 하는 변수
-
+  final GlobalKey certiKey = GlobalKey(); // 해당 위젯으로 스크롤 하기 위한 키 생성
 
   bool _isValid(){
     final phoneNumber = _phoneNumberController.text.replaceAll('-', '');
@@ -134,6 +134,10 @@ class _LoginPageState extends State<LoginPage> {
                       if (_isValid()) {
                         // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
                         _text();
+                        Scrollable.ensureVisible(   // 클릭 시, certikey 위치로 스크롤 이동
+                          certiKey.currentContext!,
+                          duration: const Duration(seconds: 1),
+                        );
                       }
                     },
                     child: Container(
@@ -158,6 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                     Column(
                       children: [
                         Container(
+                          key: certiKey, // 키 할당
                           margin: const EdgeInsets.symmetric(horizontal: 30),
                           child: TextField(
                             controller: _certificationController, // 인증번호 컨트롤러
