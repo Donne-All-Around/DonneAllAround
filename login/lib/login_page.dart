@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:login/start_page.dart';
+import 'dart:async';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,7 +16,12 @@ class _LoginPageState extends State<LoginPage> {
   bool _isButtonEnabled = false; // 인증문자 받기 버튼 활성화 상태를 저장 하는 변수
   final _certificationController = TextEditingController(); // 인증번호 컨트롤러
   bool _isStartEnabled = false; // 시작하기 버튼 활성화 상태 저장 하는 변수
-  final GlobalKey certiKey = GlobalKey(); // 해당 위젯으로 스크롤 하기 위한 키 생성
+  // final GlobalKey certiKey = GlobalKey(); // 해당 위젯으로 스크롤 하기 위한 키 생성
+  bool _isInputVisible = false; // 입력창의 가시성 상태 저장 변수
+  int _remainingTime = 180; // 3분을 초 단위로 표현
+  late Timer _timer;
+  final FocusNode _certificationFocus = FocusNode(); // 자동 포커스 주기 위해
+
 
   bool _isValid(){
     final phoneNumber = _phoneNumberController.text.replaceAll('-', '');
@@ -27,12 +33,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _text() {
-    // 인증문자 받기
-    setState(() {
-
-    });
+    if (_isValid()) {
+      // 버튼을 누르면 타이머를 시작합니다.
+      startTimer();
+      // TODO: 인증문자 보내는 기능 구현
+    }
   }
-
   bool _isStart() {
     final certification = _certificationController.text;
     final isStart = certification.length == 5;
@@ -42,11 +48,45 @@ class _LoginPageState extends State<LoginPage> {
     return isStart;
   }
 
+  void _showInput() {
+    setState(() {
+      _isInputVisible = true;
+    });
+    _certificationFocus.requestFocus(); // 자동 커서
+  }
+
+  // @override
+  // void initState() {  // 타이머 바로 작동
+  //   super.initState();
+  //   startTimer();
+  // }
+    void startTimer() {
+    const oneSecond = Duration(seconds: 1);
+    _timer = Timer.periodic(oneSecond, (timer) {
+      setState(() {
+        if (_remainingTime > 0) {
+          _remainingTime--;
+        } else {
+          _timer.cancel(); // 타이머 중지
+        }
+      });
+    });
+  }
+  
+  String formatRemainingTime(int seconds) {  // 타이머 형식
+    final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
+    final remainingSeconds = (seconds % 60).toString().padLeft(2, '0');
+    return '$minutes:$remainingSeconds';
+  }
+
   @override
-  void dispose(){
+  void dispose(){ // 컨트롤러 객체가 제거 될 때 변수에 할당 된 메모리를 해제
     _phoneNumberController.dispose();
+    _certificationController.dispose();
+    _timer.cancel(); // 페이지가 dispose될 때 타이머 종료
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -132,12 +172,14 @@ class _LoginPageState extends State<LoginPage> {
                   GestureDetector(
                     onTap: (){
                       if (_isValid()) {
+                        // 버튼 누르면 입력창 보이도록 상태 업데이트
+                        _showInput();
                         // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
                         _text();
-                        Scrollable.ensureVisible(   // 클릭 시, certikey 위치로 스크롤 이동
-                          certiKey.currentContext!,
-                          duration: const Duration(seconds: 1),
-                        );
+                        // Scrollable.ensureVisible(   // 클릭 시, certikey 위치로 스크롤 이동
+                        //   certiKey.currentContext!,
+                        //   duration: const Duration(seconds: 1),
+                        // );
                       }
                     },
                     child: Container(
@@ -161,16 +203,18 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 20,),
                     Column(
                       children: [
+                        if (_isInputVisible) // ture 일 때만 입력창 보이도록 조건부
                         Container(
-                          key: certiKey, // 키 할당
+                          // key: certiKey, // 키 할당
                           margin: const EdgeInsets.symmetric(horizontal: 30),
-                          child: TextField(
+                          child: TextFormField(
+                            focusNode: _isInputVisible ? _certificationFocus : null, // 입력창 나타나면 자동 포커스(삼항 연산자)
                             controller: _certificationController, // 인증번호 컨트롤러
                             keyboardType: TextInputType.number, // 키보드 숫자로 나타남
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly, //숫자만!
-                              LengthLimitingTextInputFormatter(6),
-                              // 6자리 숫자만 입력받도록
+                              LengthLimitingTextInputFormatter(5),
+                              // 5자리 숫자만 입력받도록
                             ],
                             style: const TextStyle(
                               fontSize: 18,
@@ -181,6 +225,8 @@ class _LoginPageState extends State<LoginPage> {
                                 // borderSide: BorderSide(color: Colors.black),
                               ),
                               hintText: '인증번호 입력',
+                              suffixText: formatRemainingTime(_remainingTime),
+                              suffixStyle: const TextStyle(color: Colors.red),
                               labelStyle: const TextStyle(
                                 fontSize: 20,
                               ),
@@ -195,6 +241,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 20,),
                         // 인증번호 받기 버튼 등을 여기에 추가
+                        if (_isInputVisible)
                         GestureDetector(
                           onTap: (){
                             if (_isStart()) {
