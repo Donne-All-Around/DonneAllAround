@@ -1,5 +1,7 @@
 import 'package:a705/choose_location_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+// import 'package:intl/intl.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});
@@ -9,6 +11,11 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage> {
+  final _valueList = ['첫 번째', '두 번째', '세 번째'];
+  var _selectedValue = '첫 번째';
+
+  // var f = NumberFormat('###,###,###,###');
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -19,6 +26,7 @@ class _TransactionPageState extends State<TransactionPage> {
         child: Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
+            elevation: 2,
             backgroundColor: Colors.white,
             leading: IconButton(
               icon: const Icon(
@@ -64,19 +72,15 @@ class _TransactionPageState extends State<TransactionPage> {
                     '제목',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 17,
                     ),
                   ),
                   const SizedBox(height: 5),
                   TextField(
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: const Color(0xFFF8F8F8),
+                      fillColor: const Color(0xFFF2F2F2),
                       hintText: '글 제목',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.transparent),
-                      ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: const BorderSide(color: Colors.transparent),
@@ -93,63 +97,156 @@ class _TransactionPageState extends State<TransactionPage> {
                     '화폐 종류',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 17,
                     ),
                   ),
                   const SizedBox(height: 5),
-                  TextField(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color(0xFFF8F8F8),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.transparent),
+                  Container(
+                    height: 60,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
                       ),
+                      color: Color(0xFFF2F2F2),
+                    ),
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 10),
+                        DropdownButton(
+                          value: _selectedValue,
+                          items: _valueList.map((value) {
+                            return DropdownMenuItem(
+                              value: value,
+                              child: Row(
+                                children: [
+                                  const CircleAvatar(
+                                    backgroundImage: AssetImage(
+                                        'assets/images/australia.png'),
+                                    radius: 10,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(value),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedValue = value!;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextField(
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.transparent),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                        borderSide:
+                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.transparent),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                        borderSide:
+                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
                       ),
+                      suffixText: ' \$',
                     ),
                     cursorColor: Colors.black87,
+                    textAlign: TextAlign.end,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 15),
                   const Text(
                     '가격',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 17,
                     ),
                   ),
                   const SizedBox(height: 5),
-                  TextField(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color(0xFFF8F8F8),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.transparent),
+                  Container(
+                    height: 60,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
                       ),
+                      color: Color(0xFFF2F2F2),
+                    ),
+                    child: const Row(
+                      children: [
+                        SizedBox(width: 10),
+                        CircleAvatar(
+                          backgroundImage:
+                              AssetImage('assets/images/korea.png'),
+                          radius: 10,
+                        ),
+                        SizedBox(width: 5),
+                        Text(
+                          '대한민국(원화) KRW',
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextField(
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.transparent),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                        borderSide:
+                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.transparent),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                        borderSide:
+                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
                       ),
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      suffixText: ' ₩',
                     ),
                     cursorColor: Colors.black87,
+                    textAlign: TextAlign.end,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 15),
                   const Text(
                     '설명',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 17,
                     ),
                   ),
                   const SizedBox(height: 5),
@@ -158,11 +255,7 @@ class _TransactionPageState extends State<TransactionPage> {
                     decoration: InputDecoration(
                       hintText: '설명을 입력하세요',
                       filled: true,
-                      fillColor: const Color(0xFFF8F8F8),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.transparent),
-                      ),
+                      fillColor: const Color(0xFFF2F2F2),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: const BorderSide(color: Colors.transparent),
@@ -179,7 +272,7 @@ class _TransactionPageState extends State<TransactionPage> {
                     '거래 희망 장소',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 17,
                     ),
                   ),
                   const SizedBox(height: 5),
@@ -197,7 +290,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         // border: Border.all(color: Colors.black),
-                        color: const Color(0xFFF8F8F8),
+                        color: const Color(0xFFF2F2F2),
                       ),
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -227,7 +320,8 @@ class _TransactionPageState extends State<TransactionPage> {
                     child: const Center(
                         child: Text(
                       '작성 완료',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     )),
                   ),
                 ],
