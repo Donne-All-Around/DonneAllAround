@@ -1,5 +1,10 @@
+import 'package:a705/service/database.dart';
+import 'package:a705/service/shared_pref.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:random_string/random_string.dart';
 
 class ChattingDetailPage extends StatefulWidget {
   const ChattingDetailPage({super.key});
@@ -10,6 +15,144 @@ class ChattingDetailPage extends StatefulWidget {
 
 class _ChattingDetailPageState extends State<ChattingDetailPage> {
   bool isVisible = false;
+  TextEditingController messageController = new TextEditingController();
+  // String? myProfilePic, messageId;
+  String? myUserName, myProfilePic, myPhone, messageId, chatRoomId;
+  Stream? messageStream;
+
+
+
+
+
+  // 채팅방 정보 가져오기
+  getthesharedpref() async {
+    /**
+     * 채팅방 정보 추후에 받아오기
+     */
+    // myUserName = await SharedPreferenceHelper().getUserName();
+    // myProfilePic = await SharedPreferenceHelper().getUserPic();
+    // myPhone = await SharedPreferenceHelper().getUserPhone();
+    // 예시 시작
+    chatRoomId = "1";
+    myUserName = "이병건";
+    myPhone = "010-1111-1111";
+    // 예시 끝
+    setState(() {});
+  }
+
+  // 로드
+  ontheload() async {
+    await getthesharedpref();
+    await getAndSetMessages(); // 이 부분을 추가하여 메시지를 초기에 가져옵니다.
+    setState(() {});
+  }
+
+  // 초기화
+  @override
+  void initState() {
+    super.initState();
+    ontheload();
+  }
+
+  // 채팅 메시지 타일
+  Widget chatMessageTile(String message, bool sendByMe) {
+    return Row(
+      mainAxisAlignment:
+      sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+      children: [
+        Flexible(
+            child: Container(
+              padding: EdgeInsets.all(16),
+              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24),
+                      bottomRight:
+                      sendByMe ? Radius.circular(0) : Radius.circular(24),
+                      topRight: Radius.circular(24),
+                      bottomLeft:
+                      sendByMe ? Radius.circular(24) : Radius.circular(0)),
+                  color: sendByMe
+                      ? Color.fromARGB(255, 234, 236, 240)
+                      : Color.fromARGB(255, 211, 228, 243)),
+              child: Text(
+                message,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.w500),
+              ),
+            )),
+      ],
+    );
+  }
+  // 채팅 메시지
+  Widget chatMessage() {
+    return StreamBuilder(
+        stream: messageStream,
+        builder: (context, AsyncSnapshot snapshot) {
+          return snapshot.hasData
+              ? ListView.builder(
+              padding: EdgeInsets.only(bottom: 90.0, top: 130),
+              itemCount: snapshot.data.docs.length,
+              reverse: true,
+              itemBuilder: (context, index) {
+                DocumentSnapshot ds = snapshot.data.docs[index];
+                return chatMessageTile(
+                    ds["message"], myUserName == ds["sendBy"]);
+              })
+              : Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+  }
+
+  // 메시지 추가
+  addMessage(bool sendClicked){
+    if(messageController.text != ""){
+      String message = messageController.text;
+      messageController.text = "";
+
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('h:mma').format(now);
+      Map<String, dynamic> messageInfoMap = {
+        "message" : message,
+        "sendBy" : myUserName,
+        "ts" : formattedDate, // timestamp
+        "time" : FieldValue.serverTimestamp(),
+        "imgUrl" : myProfilePic,
+      };
+      // if(messageId == null){
+      //   messageId = randomAlphaNumeric(10);
+      // }
+      /**
+       * 메시지 ID가 null이면 랜덤 10 ID 부여
+       */
+      messageId ??= randomAlphaNumeric(10);
+      // 마지막 메시지
+      DatabaseMethods().addMessage(chatRoomId!, messageId!, messageInfoMap)
+          .then((value) {
+        Map<String, dynamic> lastMessageInfoMap = {
+          "lastMessage" : message,
+          "lastMessageSendTs" : formattedDate,
+          "time" : FieldValue.serverTimestamp(),
+          "lastMessageSendBy" : myUserName,
+        };
+        print(lastMessageInfoMap);
+        DatabaseMethods().updateLastMessageSend(chatRoomId!, lastMessageInfoMap);
+        if(sendClicked){
+          messageId = null;
+        }
+      });
+    }
+  }
+
+  // 메시지 작성 읽기
+  getAndSetMessages() async {
+    chatRoomId = "1";
+    messageStream = await DatabaseMethods().getChatRoomMessages(chatRoomId);
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,9 +292,13 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                   ],
                 ),
               ),
-              const Expanded(
-                child: ListViewBuilder(),
+
+              Expanded(
+                child: chatMessage(),
               ),
+              // const Expanded(
+              //   child: ListViewBuilder(),
+              // ),
               Container(
                 color: const Color(0xFFFFD954),
                 child: Row(
@@ -173,6 +320,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                         child: TextField(
+                          controller: messageController, // 메시지 전송 컨트롤러
                           onTap: () {
                             setState(() {
                               isVisible = false;
@@ -204,9 +352,11 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         ),
                       ),
                     ),
-                    const IconButton(
+                    IconButton(
+                      onPressed: () {
+                        addMessage(true);
+                      },
                       icon: Icon(Icons.send),
-                      onPressed: null,
                       padding: EdgeInsets.zero,
                       constraints: BoxConstraints(),
                     ),
@@ -439,10 +589,12 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
 }
 
 List<String> chatList = [
+  "제가 감기에 걸려가..",
+  "죄송한데 3시 30분도 가능하실까요",
   "3시까지 나갈게요~",
   "네 알겠습니다!",
   "도착하시면 연락 부탁드려요.",
   "흰 티에 청바지 입고있어요",
   "역삼역 1번출구 앞에서 직거래 희망합니다",
-  "3시에 거래 가능할까요"
+  "3시에 거래 가능할까요",
 ];

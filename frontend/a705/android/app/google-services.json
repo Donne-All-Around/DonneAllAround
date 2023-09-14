@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:864082552121:android:9dbf4f7e4a11c4432934e8",
+        "mobilesdk_app_id": "1:864082552121:android:5c2853a2541218102934e8",
         "android_client_info": {
-          "package_name": "com.ssafy.a705"
+          "package_name": "com.ssafy.a705.a705"
         }
       },
       "oauth_client": [],
