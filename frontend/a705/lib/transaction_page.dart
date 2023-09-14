@@ -26,7 +26,7 @@ class _TransactionPageState extends State<TransactionPage> {
         child: Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
-            elevation: 2,
+            elevation: 0,
             backgroundColor: Colors.white,
             leading: IconButton(
               icon: const Icon(
@@ -171,6 +171,13 @@ class _TransactionPageState extends State<TransactionPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text("거래 가격 "),
+                      Text("100,000~120,000원"),
+                    ],
+                  ),
                   const SizedBox(height: 15),
                   const Text(
                     '가격',
@@ -309,7 +316,7 @@ class _TransactionPageState extends State<TransactionPage> {
                   ),
                   const SizedBox(height: 30),
                   Container(
-                    height: 60,
+                    height: 50,
                     width: double.infinity,
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(
