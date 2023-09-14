@@ -3,6 +3,7 @@ import 'package:login/location_information.dart';
 import 'package:login/personal_information.dart';
 import 'package:login/profilesetting_page.dart';
 
+
 class JoinPage extends StatefulWidget {
   const JoinPage({super.key});
 
