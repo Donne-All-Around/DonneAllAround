@@ -1,15 +1,23 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:io';
 
 class ProfileSettingPage extends StatefulWidget {
-  const  ProfileSettingPage({super.key});
+  const ProfileSettingPage({Key? key}) : super(key: key);
 
   @override
-  State< ProfileSettingPage> createState() => _ProfileSettingPageState();
+  State<ProfileSettingPage> createState() => _ProfileSettingPageState();
 }
 
-class _ProfileSettingPageState extends State< ProfileSettingPage> {
+class _ProfileSettingPageState extends State<ProfileSettingPage> {
+  final ImagePicker _picker = ImagePicker(); // ImagePicker 초기화
+  File? _pickedFile; // 이미지 담을 변수 선언
+  final ImageProvider<Object> _profileImage = const AssetImage('assets/images/wagon_don.png');
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
@@ -30,10 +38,10 @@ class _ProfileSettingPageState extends State< ProfileSettingPage> {
         body: SingleChildScrollView(
           child: Container(
             margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
-            child: const Column(
+            child: Column(
               children: [
                 // 멘트
-                Row(
+                const Row(
                   children: [
                     Text(
                       '프로필 사진과',
@@ -45,7 +53,7 @@ class _ProfileSettingPageState extends State< ProfileSettingPage> {
                     ),
                   ],
                 ),
-                Row(
+                const Row(
                   children: [
                     Text(
                       '닉네임을 설정해주세요.',
@@ -57,11 +65,10 @@ class _ProfileSettingPageState extends State< ProfileSettingPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 20,),
-                // 사진변경
-
+                const SizedBox(height: 20,),
+                // 사진 변경
+                imageProfile(),
                 // 닉네임 & 중복체크
-
                 // 시작하기 버튼
               ],
             ),
@@ -70,5 +77,161 @@ class _ProfileSettingPageState extends State< ProfileSettingPage> {
       ),
     );
   }
+
+  Widget imageProfile() {
+    return Center(
+      child: Stack(
+        children: [
+          CircleAvatar(
+            radius: 80,
+            backgroundImage: _pickedFile == null
+                ? _profileImage // 이 부분을 수정
+                : FileImage(_pickedFile!), // File로 수정
+          ),
+          Positioned(
+            bottom: -10,
+            top: 100,
+            right: 0,
+            child: InkWell(
+              onTap: () {
+                _showDialog();
+              },
+              child: const Icon(
+                Icons.camera_alt_outlined,
+                color: Colors.yellow,
+                size: 40,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  // 사진선택 다이얼로그
+  Future<void> _showDialog() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('사진 선택'),
+          content: Container(
+            width: double.maxFinite, // 최대 너비 설정
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton.icon(
+                  icon: const Icon(
+                    Icons.photo_camera_outlined,
+                    size: 50,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context); // 다이얼로그 닫기
+                    takePhoto(ImageSource.camera);
+                  },
+                  label: const Text(
+                    'Camera',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+                TextButton.icon(
+                  icon: const Icon(
+                    Icons.photo_library_outlined,
+                    size: 50,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context); // 다이얼로그 닫기
+                    _takePhoto(ImageSource.gallery);
+                  },
+                  label: const Text(
+                    'Gallery',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // 갤러리에서 가져오기
+  Future<void> _takePhoto(ImageSource source) async {
+    final pickedFile = await _picker.pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        _pickedFile = File(pickedFile.path);
+      });
+    } else {
+      if (kDebugMode) {
+        print('이미지 선택 안 함');
+      }
+    }
+  }
+
+  // 카메라에서 가져오기
+  Future<void> takePhoto(ImageSource source) async {
+    final pickedFile = await _picker.pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        _pickedFile = File(pickedFile.path);
+      });
+    } else {
+      if (kDebugMode) {
+        print('이미지 선택 안 함');
+      }
+    }
+  }
+
+  // Widget dialogSheet() {
+  //   return Container(
+  //     height: 100,
+  //     width: MediaQuery.of(context).size.width, // as BuildContext 제거
+  //     margin: const EdgeInsets.symmetric(
+  //       horizontal: 20,
+  //       vertical: 20,
+  //     ),
+  //     child: Column(
+  //       children: [
+  //         const Text(
+  //           '사진선택',
+  //           style: TextStyle(
+  //             fontSize: 20,
+  //           ),
+  //         ),
+  //         const SizedBox(
+  //           height: 20,
+  //         ),
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             TextButton.icon(
+  //               icon: const Icon(Icons.photo_camera_outlined,
+  //                 size: 50,
+  //               ),
+  //               onPressed: () {
+  //                 takePhoto(ImageSource.camera);
+  //               },
+  //               label: const Text('Camera',
+  //                 style: TextStyle(fontSize: 20),),
+  //             ),
+  //             TextButton.icon(
+  //               icon: const Icon(Icons.photo_library_outlined,
+  //                 size: 50,
+  //               ),
+  //               onPressed: () {
+  //                 _takePhoto(ImageSource.gallery);
+  //               },
+  //               label: const Text('Gallery',
+  //                 style: TextStyle(fontSize: 20),),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
 
 }

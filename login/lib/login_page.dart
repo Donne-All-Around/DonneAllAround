@@ -113,33 +113,43 @@ class _LoginPageState extends State<LoginPage> {
             elevation: 0,
           ),
           body: SingleChildScrollView(
-            child: Center(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
               child: Column(
                 children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                    const Text(
-                      '휴대폰 번호로',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30,
-                      ),
+                  // const SizedBox(
+                  //   height: 20,
+                  // ),
+                    const Row(
+                      children: [
+                        Text(
+                          '휴대폰 번호로',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                          ),
+                        ),
+                      ],
                     ),
-                    const Text(
-                      '로그인 해주세요!',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30,
-                      ),
+                    const Row(
+                      children: [
+                        Text(
+                          '로그인 해주세요!',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                          ),
+                        ),
+                      ],
                     ),
+
                   const SizedBox(
                     height: 20,
                   ),
                   Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 30),
+                    // margin: const EdgeInsets.symmetric(horizontal: 30),
                     child: TextField(
                       controller: _phoneNumberController,// 전화번호 입력칸
                       keyboardType: TextInputType.number, // 키보드 숫자로 나타남
@@ -190,7 +200,7 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                     child: Container(
-                      margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                      // margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                       height: 60,
                       width: double.infinity,
                       decoration:  BoxDecoration(
@@ -228,7 +238,7 @@ class _LoginPageState extends State<LoginPage> {
                         if (_isInputVisible) // ture 일 때만 입력창 보이도록 조건부
                         Container(
                           // key: certiKey, // 키 할당
-                          margin: const EdgeInsets.symmetric(horizontal: 30),
+                          // margin: const EdgeInsets.symmetric(horizontal: 30),
                           child: TextFormField(
                             focusNode: _isInputVisible ? _certificationFocus : null, // 입력창 나타나면 자동 포커스(삼항 연산자)
                             controller: _certificationController, // 인증번호 컨트롤러
@@ -275,7 +285,7 @@ class _LoginPageState extends State<LoginPage> {
                             }
                           },
                           child: Container(
-                            margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                            // margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                             height: 60,
                             width: double.infinity,
                             decoration:  BoxDecoration(
