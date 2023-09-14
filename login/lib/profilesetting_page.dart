@@ -115,9 +115,10 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                     ],
                   ),
                 ),
-                const SizedBox(height:50,),
+                const SizedBox(height:30,),
                 // 닉네임 & 중복체크
                 Container(
+                  height: 50,
                   child: Row(
                     children: [
                       Flexible(
@@ -144,6 +145,9 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                         height: 60,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             backgroundColor: const Color(0xFFFFD954),
                             elevation: 0,
                           ),
@@ -159,6 +163,39 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                 ),
                 const SizedBox(height: 20,),
                 // 시작하기 버튼
+                GestureDetector(
+                  onTap: (){
+                    // if (_isNext()) {
+                      // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ProfileSettingPage()),
+                      );
+                    },
+                  // },
+                  child: Container(
+                    height: 50,
+                    width: double.infinity,
+                    decoration:  BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      // border: Border.all(
+                      // ),
+                      color: const Color(0xFFFFD954),
+                      // color: _isNext() ?  const Color(0xFFFFD954) : Colors.grey[300], // 버튼 색상 변경
+                    ),
+                    child:  const Center(
+                      child: Text(
+                        '시작하기',
+                        style: TextStyle(
+                          fontSize:25,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          // color: _isNext() ? Colors.black : Colors.grey,),
+                      ),
+                    ),
+                  ),
+                ),
+                ),
               ],
             ),
           ),
