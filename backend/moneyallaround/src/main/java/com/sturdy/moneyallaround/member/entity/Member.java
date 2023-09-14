@@ -1,13 +1,14 @@
 package com.sturdy.moneyallaround.member.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Entity
@@ -35,11 +36,22 @@ public class Member implements UserDetails {
     @Column(name = "phonenumber")
     private String tel;
 
+//    @Column(name = "is_tel")
+//    @ColumnDefault("false")
+//    private Boolean isTel;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private List<Role> roles = new ArrayList<>(List.of(Role.ROLE_USER));
+
+    //
 
     @Override
     public String getUsername() {

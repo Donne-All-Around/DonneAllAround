@@ -36,6 +36,12 @@ dependencies {
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+
+
+	//SMS 인증
+	// Import the BoM for the Firebase platform
+	//implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
+	//implementation("com.google.firebase:firebase-auth")
 }
 
 tasks.named('test') {
