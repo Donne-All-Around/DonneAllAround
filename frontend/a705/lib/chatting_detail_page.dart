@@ -401,7 +401,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                       ),
                                     ],
                                   ),
-                                  const Text('오후 2: 10',
+                                  const Text('오후 2:10',
                                       style: TextStyle(
                                         fontSize: 10,
                                       ))
@@ -419,7 +419,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Text('오후 2: 20',
+                        const Text('오후 2:20',
                             style: TextStyle(
                               fontSize: 10,
                             )),
