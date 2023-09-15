@@ -2,10 +2,10 @@ import 'package:a705/profile_page.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:flutter/material.dart';
 
-import 'calculate_page.dart';
-import 'chatting_page.dart';
-import 'exchange_page.dart';
-import 'home_page.dart';
+import 'package:a705/calculate_page.dart';
+import 'package:a705/chatting_page.dart';
+import 'package:a705/exchange_page.dart';
+import 'package:a705/home_page.dart';
 
 const List<TabItem> items = [
   TabItem(
