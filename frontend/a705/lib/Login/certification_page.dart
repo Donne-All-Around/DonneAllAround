@@ -1,16 +1,16 @@
+import 'package:a705/Login/profilesetting_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:a705/main_page.dart';
 import 'dart:async';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class CertificationPage extends StatefulWidget {
+  const CertificationPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<CertificationPage> createState() => _CertificationPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _CertificationPageState extends State<CertificationPage> {
 
   final _phoneNumberController = TextEditingController(); // 전화번호 컨트롤러
   bool _isButtonEnabled = false; // 인증문자 받기 버튼 활성화 상태를 저장 하는 변수
@@ -46,9 +46,9 @@ class _LoginPageState extends State<LoginPage> {
   bool _isStart() {
     final certification = _certificationController.text;
     final isStart = certification.length == 5;
-  setState(() {
-    _isStartEnabled = isStart;
-  });
+    setState(() {
+      _isStartEnabled = isStart;
+    });
     return isStart;
   }
 
@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
   //   super.initState();
   //   startTimer();
   // }
-    void startTimer() {
+  void startTimer() {
     const oneSecond = Duration(seconds: 1);
     _timer = Timer.periodic(oneSecond, (timer) {
       setState(() {
@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
       });
     });
   }
-  
+
   String formatRemainingTime(int seconds) {  // 타이머 형식
     final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
     final remainingSeconds = (seconds % 60).toString().padLeft(2, '0');
@@ -120,30 +120,30 @@ class _LoginPageState extends State<LoginPage> {
                   // const SizedBox(
                   //   height: 20,
                   // ),
-                    const Row(
-                      children: [
-                        Text(
-                          '휴대폰 번호로',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30,
-                          ),
+                  const Row(
+                    children: [
+                      Text(
+                        '휴대폰 번호로',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
                         ),
-                      ],
-                    ),
-                    const Row(
-                      children: [
-                        Text(
-                          '로그인 해주세요!',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30,
-                          ),
+                      ),
+                    ],
+                  ),
+                  const Row(
+                    children: [
+                      Text(
+                        '가입해주세요!',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
 
                   const SizedBox(
                     height: 20,
@@ -214,28 +214,28 @@ class _LoginPageState extends State<LoginPage> {
                         child: Text(
                           _buttonText,
                           style: TextStyle(
-                              fontSize:25,
-                              fontWeight: FontWeight.bold,
+                            fontSize:25,
+                            fontWeight: FontWeight.bold,
                             color: _isButtonEnabled ? Colors.black : Colors.grey, // 버튼 텍스트 색상 변경),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  ),
                   const SizedBox(height: 30,),
-                    Column(
-                      children: [
-                        // if (_isInputVisible) // ture 일 때만 입력창 보이도록 조건부
-                        //   TextButton(
-                        //       onPressed: (){},
-                        //       child: const Text(
-                        //         '인증문자 재발송',
-                        //         style: TextStyle(
-                        //           color: Colors.black,
-                        //         ),
-                        //       )),
-                        // const SizedBox(height: 5,),
-                        if (_isInputVisible) // ture 일 때만 입력창 보이도록 조건부
+                  Column(
+                    children: [
+                      // if (_isInputVisible) // ture 일 때만 입력창 보이도록 조건부
+                      //   TextButton(
+                      //       onPressed: (){},
+                      //       child: const Text(
+                      //         '인증문자 재발송',
+                      //         style: TextStyle(
+                      //           color: Colors.black,
+                      //         ),
+                      //       )),
+                      // const SizedBox(height: 5,),
+                      if (_isInputVisible) // ture 일 때만 입력창 보이도록 조건부
                         Container(
                           // key: certiKey, // 키 할당
                           // margin: const EdgeInsets.symmetric(horizontal: 30),
@@ -271,16 +271,16 @@ class _LoginPageState extends State<LoginPage> {
                             },
                           ),
                         ),
-                        const SizedBox(height: 10,),
-                        // 인증번호 받기 버튼 등을 여기에 추가
-                        if (_isInputVisible)
+                      const SizedBox(height: 10,),
+                      // 인증번호 받기 버튼 등을 여기에 추가
+                      if (_isInputVisible)
                         GestureDetector(
                           onTap: (){
                             if (_isStart()) {
                               // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const MainPage()),
+                                MaterialPageRoute(builder: (context) => const ProfileSettingPage()),
                               );
                             }
                           },
@@ -296,18 +296,18 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             child:  Center(
                               child: Text(
-                                '시작하기',
+                                '다  음',
                                 style: TextStyle(
-                                    fontSize:25,
-                                    fontWeight: FontWeight.bold,
+                                  fontSize:25,
+                                  fontWeight: FontWeight.bold,
                                   color: _isStartEnabled ? Colors.black : Colors.grey,),
                               ),
                             ),
                           ),
                         ),
 
-                      ],
-                    ),
+                    ],
+                  ),
                 ],
               ),
             ),

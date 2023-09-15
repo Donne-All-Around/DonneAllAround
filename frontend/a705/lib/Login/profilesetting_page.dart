@@ -1,3 +1,4 @@
+import 'package:a705/main_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -173,7 +174,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                       // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const ProfileSettingPage()),
+                        MaterialPageRoute(builder: (context) => const MainPage()),
                       );
                     },
                   // },
