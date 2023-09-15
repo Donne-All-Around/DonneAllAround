@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 
 class ProfileSettingPage extends StatefulWidget {
@@ -15,6 +16,9 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
   final ImagePicker _picker = ImagePicker(); // ImagePicker 초기화
   File? _pickedFile; // 이미지 담을 변수 선언
   final ImageProvider<Object> _profileImage = const AssetImage('assets/images/wagon_don.png');
+
+
+
 
   @override
   Widget build(BuildContext context) {

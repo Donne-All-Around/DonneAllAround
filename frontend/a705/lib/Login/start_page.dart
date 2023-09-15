@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart'; //기본 import
-import 'package:login/login_page.dart'; // login_page import
-import 'package:login/join_page.dart'; // join_page import
+import 'package:a705/Login/login_page.dart'; // login_page import
+import 'package:a705/Login/join_page.dart'; // join_page import
 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});
