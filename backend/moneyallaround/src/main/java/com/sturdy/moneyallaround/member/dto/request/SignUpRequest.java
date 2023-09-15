@@ -1,4 +1,13 @@
 package com.sturdy.moneyallaround.member.dto.request;
 
-public record SignUpRequest() {
+import jakarta.validation.constraints.NotNull;
+
+public record SignUpRequest(
+
+        @NotNull String tel,
+        @NotNull String nickname,
+        String imageUrl
+
+
+) {
 }

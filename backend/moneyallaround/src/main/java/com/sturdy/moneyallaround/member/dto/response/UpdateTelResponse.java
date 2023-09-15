@@ -1,7 +1,7 @@
 package com.sturdy.moneyallaround.member.dto.response;
 
-public record LogInResponse(
-       //TokenInfo token
+public record UpdateTelResponse(
 
+        String resultMessage
 ) {
 }

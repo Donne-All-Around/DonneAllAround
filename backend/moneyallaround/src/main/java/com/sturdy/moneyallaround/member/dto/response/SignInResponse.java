@@ -1,6 +1,6 @@
 package com.sturdy.moneyallaround.member.dto.response;
 
-public record SignInResponse() {
-
+public record SignInResponse(
+        String tel) {
 
 }

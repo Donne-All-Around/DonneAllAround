@@ -1,4 +1,8 @@
 package com.sturdy.moneyallaround.member.dto.request;
 
-public record LogInRequest() {
+import jakarta.validation.constraints.NotNull;
+
+public record LogInRequest(
+        @NotNull String tel
+) {
 }
