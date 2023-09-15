@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:a705/Login/location_information.dart';
 import 'package:a705/Login/personal_information.dart';
-import 'package:login/profilesetting_page.dart';
+import 'package:a705/Login/profilesetting_page.dart';
 
 
 class JoinPage extends StatefulWidget {
