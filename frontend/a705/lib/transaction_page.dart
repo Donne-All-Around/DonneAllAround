@@ -81,55 +81,54 @@ class _TransactionPageState extends State<TransactionPage> {
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: SizedBox(
-                            width: double.infinity, // To show images in particular area only
-                            height: 80,
-                            child: selectedImages
-                                    .isEmpty // If no images is selected
-                                ? const Center(
-                                    child: Text('Sorry nothing selected!!'))
-                                // If at least 1 images is selected
-                                : GridView.builder(
-                                    itemCount: selectedImages.length,
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 10,
-                                      childAspectRatio: 1 / 1,
-                                      crossAxisSpacing: 10,
-                                      // Horizontally only 3 images will show
-                                    ),
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(15),
-                                        ),
-                                        child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            child: kIsWeb
-                                                ? Image.network(
-                                                    selectedImages[index].path,
-                                                    width: 80,
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                : Image.file(
-                                                    selectedImages[index],
-                                                    width: 80,
-                                                    fit: BoxFit.cover,
-                                                  )),
-                                      );
-
-                                      // If you are making the web app then you have to
-                                      // use image provider as network image or in
-                                      // android or iOS it will as file only
-                                    },
+                        child: SizedBox(
+                          width: double.infinity, // To show images in particular area only
+                          height: 80,
+                          child: selectedImages
+                                  .isEmpty // If no images is selected
+                              ? const Center(
+                                  child: Text('Sorry nothing selected!!'))
+                              // If at least 1 images is selected
+                              : GridView.builder(
+                            scrollDirection: Axis.horizontal,
+                            physics: const ScrollPhysics(),
+                                  itemCount: selectedImages.length,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 1,
+                                    childAspectRatio: 1 / 1,
+                                    mainAxisSpacing: 10,
+                                    // Horizontally only 3 images will show
                                   ),
-                          ),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Container(
+                                      height: 70,
+                                      width: 70,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: kIsWeb
+                                              ? Image.network(
+                                                  selectedImages[index].path,
+                                                  width: 80,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : Image.file(
+                                                  selectedImages[index],
+                                                  width: 80,
+                                                  fit: BoxFit.cover,
+                                                )),
+                                    );
+
+                                    // If you are making the web app then you have to
+                                    // use image provider as network image or in
+                                    // android or iOS it will as file only
+                                  },
+                                ),
                         ),
                       ),
                     ],
@@ -422,10 +421,11 @@ class _TransactionPageState extends State<TransactionPage> {
         for (var i = 0; i < xfilePick.length; i++) {
           selectedImages.add(File(xfilePick[i].path));
         }
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Nothing is selected')));
       }
+      // else {
+      //   ScaffoldMessenger.of(context)
+      //       .showSnackBar(const SnackBar(content: Text('Nothing is selected')));
+      // }
     });
   }
 }
