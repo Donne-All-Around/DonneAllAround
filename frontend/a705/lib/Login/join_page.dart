@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:login/location_information.dart';
+import 'package:a705/Login/location_information.dart';
 import 'package:login/personal_information.dart';
 import 'package:login/profilesetting_page.dart';
 
