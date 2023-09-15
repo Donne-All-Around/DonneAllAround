@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:a705/choose_location_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 // import 'package:intl/intl.dart';
 
 class TransactionPage extends StatefulWidget {
@@ -14,7 +18,8 @@ class _TransactionPageState extends State<TransactionPage> {
   final _valueList = ['첫 번째', '두 번째', '세 번째'];
   var _selectedValue = '첫 번째';
 
-  // var f = NumberFormat('###,###,###,###');
+  List<File> selectedImages = [];
+  final picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -52,14 +57,81 @@ class _TransactionPageState extends State<TransactionPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    height: 80,
-                    width: 80,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color(0xFFF3F3F3),
-                    ),
-                    child: const Icon(Icons.camera_alt_outlined),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          getImages();
+                        },
+                        child: Container(
+                          height: 80,
+                          width: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: const Color(0xFFF3F3F3),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.camera_alt_outlined),
+                              Text("${selectedImages.length}/10"),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: SizedBox(
+                          width: double.infinity, // To show images in particular area only
+                          height: 80,
+                          child: selectedImages
+                                  .isEmpty // If no images is selected
+                              ? const Center(
+                                  child: Text('Sorry nothing selected!!'))
+                              // If at least 1 images is selected
+                              : GridView.builder(
+                            scrollDirection: Axis.horizontal,
+                            physics: const ScrollPhysics(),
+                                  itemCount: selectedImages.length,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 1,
+                                    childAspectRatio: 1 / 1,
+                                    mainAxisSpacing: 10,
+                                    // Horizontally only 3 images will show
+                                  ),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Container(
+                                      height: 70,
+                                      width: 70,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: kIsWeb
+                                              ? Image.network(
+                                                  selectedImages[index].path,
+                                                  width: 80,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : Image.file(
+                                                  selectedImages[index],
+                                                  width: 80,
+                                                  fit: BoxFit.cover,
+                                                )),
+                                    );
+
+                                    // If you are making the web app then you have to
+                                    // use image provider as network image or in
+                                    // android or iOS it will as file only
+                                  },
+                                ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 15),
                   Container(
@@ -338,5 +410,22 @@ class _TransactionPageState extends State<TransactionPage> {
         ),
       ),
     );
+  }
+
+  Future getImages() async {
+    final pickedFile = await picker.pickMultiImage();
+    List<XFile> xfilePick = pickedFile;
+
+    setState(() {
+      if (xfilePick.isNotEmpty) {
+        for (var i = 0; i < xfilePick.length; i++) {
+          selectedImages.add(File(xfilePick[i].path));
+        }
+      }
+      // else {
+      //   ScaffoldMessenger.of(context)
+      //       .showSnackBar(const SnackBar(content: Text('Nothing is selected')));
+      // }
+    });
   }
 }
