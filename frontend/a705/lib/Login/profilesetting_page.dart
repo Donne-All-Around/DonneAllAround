@@ -172,10 +172,15 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                   onTap: (){
                     // if (_isNext()) {
                       // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const MainPage()),
-                      );
+
+                    //// 메인페이지에서 뒤로 가기 가능.
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => const MainPage()),
+                      // );
+                    // 메인페이지 가면 뒤로가기 안됨 ( 기존 스택들 제거)
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>
+                    const MainPage()), (Route<dynamic> route) => false);
                     },
                   // },
                   child: Container(
