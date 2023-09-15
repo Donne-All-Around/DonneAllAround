@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../frontend/a705/lib/Login/start_page.dart';
+import 'start_page.dart';
 import 'dart:async';
 
 class LoginPage extends StatefulWidget {
