@@ -15,13 +15,11 @@ import java.util.List;
 public class TradeImageService {
     private final TradeImageRepository tradeImageRepository;
 
-//    public void createTradeImage(List<String> urlList, Trade trade) {
-//        for (int i = 0; i < urlList.size(); i++) {
-//            tradeImageRepository.save(new TradeImage(urlList.get(i), i == 0, trade));
-//        }
-//    }
+    public void createTradeImageList(List<String> imageUrlList, Trade trade) {
+        imageUrlList.forEach(imageUrl -> tradeImageRepository.save(new TradeImage(imageUrl, trade)));
+    }
 
-    public List<TradeImage> getTradeImage(Long tradeId) {
-        return tradeImageRepository.findByTradeId(tradeId);
+    public void deleteTradeImageByTradeId(Long tradeId) {
+        tradeImageRepository.deleteByTradeId(tradeId);
     }
 }

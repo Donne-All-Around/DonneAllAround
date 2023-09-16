@@ -22,8 +22,9 @@ public record TradeHistoryResponseDto(@NotNull Long id,
                                       @NotNull String preferredTradeCity,
                                       @NotNull String preferredTradeDistrict,
                                       @NotNull String preferredTradeTown,
-                                      @NotNull LocalDateTime createTime) {
-    public static TradeHistoryResponseDto from(Trade trade) {
+                                      @NotNull LocalDateTime createTime,
+                                      @NotNull Boolean hasReview) {
+    public static TradeHistoryResponseDto from(Trade trade, Boolean hasReview) {
         return TradeHistoryResponseDto.builder()
                 .id(trade.getId())
                 .title(trade.getTitle())
@@ -39,6 +40,7 @@ public record TradeHistoryResponseDto(@NotNull Long id,
                 .preferredTradeDistrict(trade.getPreferredTradeDistrict())
                 .preferredTradeTown(trade.getPreferredTradeTown())
                 .createTime(trade.getCreateTime())
+                .hasReview(hasReview)
                 .build();
     }
 }

@@ -59,7 +59,7 @@ public class Trade extends BaseEntity {
     private TradeType type;
 
     @Column(nullable = false)
-    private Boolean isShow;
+    private Boolean isDeleted;
 
     @Column(nullable = true)
     private LocalDateTime directTradeTime;
@@ -68,7 +68,7 @@ public class Trade extends BaseEntity {
     private String directTradeLocationDetail;
 
     @Column(nullable = false)
-    private Boolean isDeliveryReceived;
+    private Boolean isCompleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
@@ -100,8 +100,53 @@ public class Trade extends BaseEntity {
         this.preferredTradeDistrict = preferredTradeDistrict;
         this.preferredTradeTown = preferredTradeTown;
         type = TradeType.DIRECT;
-        isShow = true;
-        isDeliveryReceived = false;
+        isDeleted = false;
+        isCompleted = false;
         this.seller = seller;
+    }
+
+    public void update(String title, String description, String thumbnailImageUrl, String countryCode, Integer foreignCurrencyAmount, Integer koreanWonAmount, Double latitude, Double longitude, String preferredTradeCountry, String preferredTradeCity, String preferredTradeDistrict, String preferredTradeTown) {
+        this.title = title;
+        this.description = description;
+        this.thumbnailImageUrl = thumbnailImageUrl;
+        this.countryCode = countryCode;
+        this.foreignCurrencyAmount = foreignCurrencyAmount;
+        this.koreanWonAmount = koreanWonAmount;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.preferredTradeCountry = preferredTradeCountry;
+        this.preferredTradeCity = preferredTradeCity;
+        this.preferredTradeDistrict = preferredTradeDistrict;
+        this.preferredTradeTown = preferredTradeTown;
+    }
+
+    public void delete() {
+        isDeleted = true;
+    }
+
+    public void makePromise(Member buyer, TradeType type, LocalDateTime directTradeTime, String directTradeLocationDetail) {
+        status = TradeStatus.PROGRESS;
+        this.buyer = buyer;
+        this.type = type;
+        this.directTradeTime = directTradeTime;
+        this.directTradeLocationDetail = directTradeLocationDetail;
+    }
+
+    public void updatePromise(TradeType type, LocalDateTime directTradeTime, String directTradeLocationDetail) {
+        this.type = type;
+        this.directTradeTime = directTradeTime;
+        this.directTradeLocationDetail = directTradeLocationDetail;
+    }
+
+    public void cancelPromise() {
+        status = TradeStatus.WAIT;
+        buyer = null;
+        type = TradeType.DIRECT;
+        directTradeTime = null;
+        directTradeLocationDetail = null;
+    }
+
+    public void complete() {
+        status = TradeStatus.COMPLETE;
     }
 }

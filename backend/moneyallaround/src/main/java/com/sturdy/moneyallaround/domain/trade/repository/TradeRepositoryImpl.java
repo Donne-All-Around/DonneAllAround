@@ -17,6 +17,7 @@ import org.springframework.data.domain.*;
 import java.util.List;
 
 import static com.sturdy.moneyallaround.domain.trade.entity.QTrade.trade;
+import static com.sturdy.moneyallaround.domain.trade.entity.QTradeLike.tradeLike;
 
 @RequiredArgsConstructor
 public class TradeRepositoryImpl implements TradeRepositoryCustom {
@@ -27,6 +28,7 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
         List<Trade> result = queryFactory
                 .selectFrom(trade)
                 .where(
+                        trade.isDeleted.eq(false),
                         trade.status.in(TradeStatus.WAIT, TradeStatus.PROGRESS),
                         trade.countryCode.eq(tradeListRequestDto.countryCode()),
                         eqPreferredTradeLocation(tradeListRequestDto.preferredTradeCountry(), tradeListRequestDto.preferredTradeCity(), tradeListRequestDto.preferredTradeDistrict(), tradeListRequestDto.preferredTradeTown()),
@@ -38,37 +40,72 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
                 .orderBy(tradeSort(pageable), trade.createTime.desc())
                 .fetch();
 
-        boolean hasNext = false;
-        if (result.size() > pageable.getPageSize()) {
-            result.remove(pageable.getPageSize());
-            hasNext = true;
-        }
-
-        return new SliceImpl<>(result, pageable, hasNext);
+        return checkLastPage(result, pageable);
     }
 
     @Override
-    //public Slice<Trade> findBySellerAndStatus(Long lastTradeId, Member seller, TradeStatus status, Pageable pageable) {
-    public Slice<Trade> findBySellerAndStatus(Long lastTradeId, TradeStatus status, Pageable pageable) {
+    public Slice<Trade> findCompleteTradeBySeller(Member seller, Long lastTradeId, Pageable pageable) {
         List<Trade> result = queryFactory
                 .selectFrom(trade)
                 .where(
-                        //trade.seller.eq(seller),
-                        trade.status.eq(status),
+                        trade.seller.eq(seller),
+                        trade.status.eq(TradeStatus.COMPLETE),
                         ltLastTradeId(lastTradeId)
                 )
                 .orderBy(trade.createTime.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        boolean hasNext = false;
+        return checkLastPage(result, pageable);
+    }
 
-        if (result.size() > pageable.getPageSize()) {
-            hasNext = true;
-            result.remove(pageable.getPageSize());
-        }
+    @Override
+    public Slice<Trade> findSaleTradeBySeller(Member seller, Long lastTradeId, Pageable pageable) {
+        List<Trade> result = queryFactory
+                .selectFrom(trade)
+                .where(
+                        trade.seller.eq(seller),
+                        trade.status.ne(TradeStatus.COMPLETE),
+                        ltLastTradeId(lastTradeId)
+                )
+                .orderBy(trade.createTime.desc())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-        return new SliceImpl<>(result, pageable, hasNext);
+        return checkLastPage(result, pageable);
+    }
+
+    @Override
+    public Slice<Trade> findByBuyerAndStatus(Member buyer, Long lastTradeId, Pageable pageable) {
+        List<Trade> result = queryFactory
+                .selectFrom(trade)
+                .where(
+                        trade.buyer.eq(buyer),
+                        trade.status.eq(TradeStatus.COMPLETE),
+                        ltLastTradeId(lastTradeId)
+                )
+                .orderBy(trade.createTime.desc())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return checkLastPage(result, pageable);
+    }
+
+    @Override
+    public Slice<Trade> findLikeTradeByMember(Member member, Long lastTradeId, Pageable pageable) {
+        List<Trade> result = queryFactory
+                .select(trade)
+                .from(tradeLike)
+                .join(tradeLike.trade, trade)
+                .where(
+                        tradeLike.member.eq(member),
+                        ltLastTradeId(lastTradeId)
+                )
+                .orderBy(trade.createTime.desc())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return checkLastPage(result, pageable);
     }
 
     private BooleanExpression eqPreferredTradeLocation(String preferredTradeCountry, String preferredTradeCity, String preferredTradeDistrict, String preferredTradeTown) {
@@ -116,5 +153,16 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
         }
 
         return null;
+    }
+
+    private Slice<Trade> checkLastPage(List<Trade> result, Pageable pageable) {
+        boolean hasNext = false;
+
+        if (result.size() > pageable.getPageSize()) {
+            hasNext = true;
+            result.remove(pageable.getPageSize());
+        }
+
+        return new SliceImpl<>(result, pageable, hasNext);
     }
 }

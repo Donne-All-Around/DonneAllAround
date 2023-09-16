@@ -33,4 +33,12 @@ public class TradeReview extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewee_id", nullable = false)
     private Member reviewee;
+
+    public TradeReview(Integer score, String comment, Trade trade, Member reviewer, Member reviewee) {
+        this.score = score;
+        this.comment = comment;
+        this.trade = trade;
+        this.reviewer = reviewer;
+        this.reviewee = reviewee;
+    }
 }

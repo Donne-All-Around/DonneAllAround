@@ -27,5 +27,5 @@ public class Member {
     private Integer rating;
 
     @Column(nullable = false)
-    private String profileImageUrl;
+    private String imageUrl;
 }
