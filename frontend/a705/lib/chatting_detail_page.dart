@@ -1,3 +1,4 @@
+import 'package:a705/appointment_page.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
 import 'package:flutter/material.dart';
 
@@ -130,21 +131,30 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         )
                       ],
                     ),
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(20, 0, 20, 15),
-                      height: 35,
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return const AppointmentPage();
+                          },
+                        ));
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+                        height: 35,
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(20),
+                          ),
+                          color: Color(0xFFFFD954),
                         ),
-                        color: Color(0xFFFFD954),
+                        child: const Center(
+                            child: Text(
+                          '약속 잡기',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )),
                       ),
-                      child: const Center(
-                          child: Text(
-                        '약속 잡기',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )),
                     ),
                   ],
                 ),
