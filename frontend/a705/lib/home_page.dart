@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
           elevation: 0,
           leading: Row(
             children: [
-              const SizedBox(width: 10),
+              const SizedBox(width: 20),
               GestureDetector(
                 onTap: () {
                   showModalBottomSheet(
@@ -299,36 +299,24 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              // DropdownButton(
-              //   value: _selectedValue,
-              //   items: _valueList.map((value) {
-              //     return DropdownMenuItem(
-              //       value: value,
-              //       child: Row(
-              //         children: [
-              //           const CircleAvatar(
-              //             backgroundImage:
-              //                 AssetImage('assets/images/australia.png'),
-              //             radius: 10,
-              //           ),
-              //           const SizedBox(width: 5),
-              //           Text(
-              //             value,
-              //             style: const TextStyle(fontSize: 17),
-              //           ),
-              //         ],
-              //       ),
-              //     );
-              //   }).toList(),
-              //   onChanged: (value) {
-              //     setState(() {
-              //       _selectedValue = value!;
-              //     });
-              //   },
-              // ),
             ],
           ),
           leadingWidth: double.infinity,
+          actions: [
+            IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () {},
+                icon: const Icon(Icons.search_rounded, color: Colors.black87)),
+            const SizedBox(width: 15),
+            IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () {},
+                icon: const Icon(Icons.notifications_none_rounded,
+                    color: Colors.black87)),
+            const SizedBox(width: 30),
+          ],
         ),
         body: Stack(children: [
           Container(
@@ -366,27 +354,73 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Container(
                                 padding:
-                                    const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                    const EdgeInsets.fromLTRB(20, 0, 20, 0),
                                 width: double.infinity,
-                                height: 30,
-                                decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.all(
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
                                     Radius.circular(10),
                                   ),
+                                  border: Border.all(
+                                    color: const Color(0xFFD9D9D9),
+                                    width: 2,
+                                  ),
                                   color: Colors.white,
+                                ),
+                                child: Row(
+                                  children: [
+                                    DropdownButtonHideUnderline(
+                                      child: DropdownButton(
+                                        value: _selectedValue,
+                                        items: _valueList.map((value) {
+                                          return DropdownMenuItem(
+                                            value: value,
+                                            child: Text(
+                                              value,
+                                              style:
+                                                  const TextStyle(fontSize: 15),
+                                              textAlign: TextAlign.end,
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _selectedValue = value!;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               Container(
                                 padding:
-                                    const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                    const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
                                 width: double.infinity,
-                                height: 30,
-                                decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.all(
+                                height: kMinInteractiveDimension,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
                                     Radius.circular(10),
                                   ),
+                                  border: Border.all(
+                                    color: const Color(0xFFD9D9D9),
+                                    width: 2,
+                                  ),
                                   color: Colors.white,
+                                ),
+                                child: const Row(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundImage:
+                                          AssetImage('assets/images/korea.png'),
+                                      radius: 8,
+                                    ),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      '대한민국(원화) KRW',
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -403,10 +437,13 @@ class _HomePageState extends State<HomePage> {
                         items: _valueList.map((value) {
                           return DropdownMenuItem(
                             value: value,
-                            child: Text(
-                              value,
-                              style: const TextStyle(fontSize: 17),
-                              textAlign: TextAlign.end,
+                            child: SizedBox(
+                              width: 100,
+                              child: Text(
+                                value,
+                                style: const TextStyle(fontSize: 17),
+                                textAlign: TextAlign.end,
+                              ),
                             ),
                           );
                         }).toList(),
@@ -470,7 +507,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
         itemCount: transactions.length,
         itemBuilder: (BuildContext context, int index) {
           return Container(
-            margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+            margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
             width: 20,
             height: 100,
             decoration: BoxDecoration(
