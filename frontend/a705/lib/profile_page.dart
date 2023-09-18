@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'withdrawal_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -100,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               // '내 주머니' 버튼 클릭 시 동작
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.white,
+                              backgroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
@@ -125,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               // '내 계좌' 버튼 클릭 시 동작
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: const Color(0xFFE0AE00),
+                              backgroundColor: const Color(0xFFE0AE00),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
@@ -460,18 +461,20 @@ class _ProfilePageState extends State<ProfilePage> {
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Padding(
-                                    padding: EdgeInsets.all(16.0),
-                                    child: Text(
-                                      '로그아웃',
-                                      style: TextStyle(
-                                        fontSize: 25.0,
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.bold,
+                                  const Align(
+                                    alignment: Alignment.center,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(16.0),
+                                      child: Text(
+                                        '로그아웃',
+                                        style: TextStyle(
+                                          fontSize: 25.0,
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        textAlign: TextAlign.center,
                                       ),
-                                      textAlign: TextAlign.center,
                                     ),
                                   ),
                                   const Padding(
@@ -526,14 +529,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                   Padding(
                                     padding: const EdgeInsets.all(16.0),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         ElevatedButton(
                                           onPressed: () {
                                             Navigator.of(context).pop();
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            primary: Colors.white,
+                                            backgroundColor: Colors.grey,
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(8.0),
                                             ),
@@ -545,17 +548,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                               fontSize: 15.0,
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.black,
+                                              color: Colors.white,
                                             )
                                           ),
                                         ),
-                                        const SizedBox(width: 16.0),
+                                        const SizedBox(width: 30.0),
                                         ElevatedButton(
                                           onPressed: () {
                                             // 로그아웃 버튼 로직
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            primary: Colors.white,
+                                            backgroundColor: const Color(0xFFFFD954),
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(8.0),
                                             ),
@@ -567,7 +570,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                               fontSize: 15.0,
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.black,
+                                              color: Colors.white,
                                             )
                                           ),
                                         ),
@@ -602,9 +605,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   InkWell(
-                  //  onTap: () {
-                  //    Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
-                  //  },
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => WithdrawalPage()));
+                    },
                     child: Container(
                       height: 35.0,
                       child: const Row(
