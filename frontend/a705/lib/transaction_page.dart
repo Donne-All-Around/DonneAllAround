@@ -87,7 +87,7 @@ class _TransactionPageState extends State<TransactionPage> {
                           child: selectedImages
                                   .isEmpty // If no images is selected
                               ? const Center(
-                                  child: Text('Sorry nothing selected!!'))
+                                  child: Text('사진을 선택하세요'))
                               // If at least 1 images is selected
                               : GridView.builder(
                             scrollDirection: Axis.horizontal,
@@ -422,10 +422,6 @@ class _TransactionPageState extends State<TransactionPage> {
           selectedImages.add(File(xfilePick[i].path));
         }
       }
-      // else {
-      //   ScaffoldMessenger.of(context)
-      //       .showSnackBar(const SnackBar(content: Text('Nothing is selected')));
-      // }
     });
   }
 }

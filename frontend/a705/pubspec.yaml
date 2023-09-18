@@ -77,11 +77,11 @@ flutter:
      - assets/images/wagon.png
      - assets/images/wagon_box.png
      - assets/images/wagon_don.png
-      - assets/images/profile.jpg
-      - assets/images/ausdollar.jpg
-      - assets/images/australia.png
-      - assets/images/korea.png
-      - assets/images/marker.png
+     - assets/images/profile.jpg
+     - assets/images/ausdollar.jpg
+     - assets/images/australia.png
+     - assets/images/korea.png
+     - assets/images/marker.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
