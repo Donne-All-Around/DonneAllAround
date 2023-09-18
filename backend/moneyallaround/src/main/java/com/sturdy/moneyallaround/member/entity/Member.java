@@ -1,6 +1,7 @@
 package com.sturdy.moneyallaround.member.entity;
 
 import com.sturdy.moneyallaround.member.dto.request.SignUpRequest;
+import com.sturdy.moneyallaround.member.dto.request.UpdateProfileRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -57,9 +58,18 @@ public class Member implements UserDetails {
     }
 
     //Member Update
-//    public static Member from(SignUpRequest request, PasswordEncoder encoder){
-//
-//    }
+    public static Member from(SignUpRequest request, PasswordEncoder encoder){
+        return Member.builder()
+                .nickname(request.nickname())
+                .imageUrl(request.imageUrl())
+                .tel(request.tel())
+                .build();
+    }
+
+    public void update(UpdateProfileRequest request){
+        this.nickname = request.nickname();
+        this.imageUrl = request.imageUrl();
+    }
 
 
     @Override
