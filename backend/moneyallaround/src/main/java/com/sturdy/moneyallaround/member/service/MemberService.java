@@ -1,10 +1,13 @@
 package com.sturdy.moneyallaround.member.service;
 
+import com.sturdy.moneyallaround.Exception.message.ExceptionMessage;
+import com.sturdy.moneyallaround.Exception.model.SmsAuthenticationException;
 import com.sturdy.moneyallaround.config.security.jwt.JwtTokenProvider;
 import com.sturdy.moneyallaround.member.dto.request.SignUpRequest;
 import com.sturdy.moneyallaround.member.dto.response.SignUpResponse;
 import com.sturdy.moneyallaround.member.entity.Member;
 import com.sturdy.moneyallaround.member.repository.MemberRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,5 +28,13 @@ public class MemberService {
     private final RefreshTokenService refreshTokenService;
 
 
+    @Transactional
+    public Member findByMemberId(String memberId){
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new SmsAuthenticationException(ExceptionMessage.SMS_NOT_FOUND)
+        );
+
+        return member;
+    }
 
 }
