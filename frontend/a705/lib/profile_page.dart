@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'withdrawal_page.dart';
+import 'exchange_record_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -317,9 +318,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 10.0),
                   InkWell(
-                  //  onTap: (){
-                  //    Navigator.push(context,MaterialPageRoute(builder: (context) => MainPage()));
-                  //  },
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ExchangeRecordPage()));
+                    },
                     child: Container(
                       height: 35.0,
                       child: const Row(
