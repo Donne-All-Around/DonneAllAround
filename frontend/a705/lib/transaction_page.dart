@@ -21,6 +21,8 @@ class _TransactionPageState extends State<TransactionPage> {
   List<File> selectedImages = [];
   final picker = ImagePicker();
 
+  String _addr = "장소 선택";
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -356,12 +358,14 @@ class _TransactionPageState extends State<TransactionPage> {
                   ),
                   const SizedBox(height: 5),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return const ChooseLocationPage();
-                        },
-                      ));
+                    onTap: () async {
+                      String addr = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ChooseLocationPage()));
+                      setState(() {
+                        _addr = addr;
+                      });
                     },
                     child: Container(
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -371,17 +375,17 @@ class _TransactionPageState extends State<TransactionPage> {
                         // border: Border.all(color: Colors.black),
                         color: const Color(0xFFF2F2F2),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '장소 선택',
-                            style: TextStyle(
+                            _addr,
+                            style: const TextStyle(
                               fontSize: 15,
                               color: Color(0xFF757575),
                             ),
                           ),
-                          Icon(Icons.chevron_right_rounded),
+                          const Icon(Icons.chevron_right_rounded),
                         ],
                       ),
                     ),
