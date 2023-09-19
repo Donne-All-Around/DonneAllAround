@@ -187,29 +187,31 @@ class _TransactionPageState extends State<TransactionPage> {
                     child: Row(
                       children: [
                         const SizedBox(width: 10),
-                        DropdownButton(
-                          value: _selectedValue,
-                          items: _valueList.map((value) {
-                            return DropdownMenuItem(
-                              value: value,
-                              child: Row(
-                                children: [
-                                  const CircleAvatar(
-                                    backgroundImage: AssetImage(
-                                        'assets/images/australia.png'),
-                                    radius: 10,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(value),
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedValue = value!;
-                            });
-                          },
+                        DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                            value: _selectedValue,
+                            items: _valueList.map((value) {
+                              return DropdownMenuItem(
+                                value: value,
+                                child: Row(
+                                  children: [
+                                    const CircleAvatar(
+                                      backgroundImage: AssetImage(
+                                          'assets/images/australia.png'),
+                                      radius: 10,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Text(value),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedValue = value!;
+                              });
+                            },
+                          ),
                         ),
                       ],
                     ),

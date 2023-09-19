@@ -12,8 +12,10 @@ class DirectTransactionPage extends StatefulWidget {
 }
 
 class _DirectTransactionPageState extends State<DirectTransactionPage> {
+
   var appointmentDate = DateTime.now();
   String _addr = "장소 선택";
+  String appt = "";
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,15 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  appt += DateFormat('yy년 MM월 dd일 HH시 mm분').format(appointmentDate);
+                  appt += " ";
+                  appt += _addr;
+                });
+                Navigator.pop(context, appt);
+                Navigator.pop(context, appt);
+              },
               icon: const Icon(
                 Icons.check_rounded,
                 color: Colors.black,
@@ -196,7 +206,6 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                       builder: (context) => const ChooseLocationPage()));
               setState(() {
                 _addr = addr;
-                print(addr);
               });
             },
             child: Container(

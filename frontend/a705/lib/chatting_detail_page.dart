@@ -10,7 +10,9 @@ class ChattingDetailPage extends StatefulWidget {
 }
 
 class _ChattingDetailPageState extends State<ChattingDetailPage> {
+
   bool isVisible = false;
+  String _appt = "약속 잡기";
 
   @override
   Widget build(BuildContext context) {
@@ -132,12 +134,12 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       ],
                     ),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return const AppointmentPage();
-                          },
-                        ));
+                      onTap: () async {
+                        String appt = await Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => const AppointmentPage()));
+                        setState(() {
+                          _appt = appt;
+                        });
                       },
                       child: Container(
                         margin: const EdgeInsets.fromLTRB(20, 0, 20, 15),
@@ -145,14 +147,14 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         width: double.infinity,
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(
-                            Radius.circular(20),
+                            Radius.circular(10),
                           ),
                           color: Color(0xFFFFD954),
                         ),
-                        child: const Center(
+                        child: Center(
                             child: Text(
-                          '약속 잡기',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          _appt,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         )),
                       ),
                     ),

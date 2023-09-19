@@ -10,6 +10,9 @@ class AppointmentPage extends StatefulWidget {
 }
 
 class _AppointmentPageState extends State<AppointmentPage> {
+
+  String appt = "약속 잡기";
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -23,7 +26,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   color: Colors.black87,
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context, appt);
                 },
               ),
               elevation: 0,
