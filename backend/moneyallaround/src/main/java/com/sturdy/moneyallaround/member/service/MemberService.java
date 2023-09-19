@@ -4,18 +4,15 @@ import com.sturdy.moneyallaround.Exception.message.ExceptionMessage;
 import com.sturdy.moneyallaround.Exception.model.UserAuthException;
 import com.sturdy.moneyallaround.Exception.model.UserException;
 import com.sturdy.moneyallaround.config.security.jwt.JwtTokenProvider;
-import com.sturdy.moneyallaround.member.dto.request.CheckNicknameRequest;
-import com.sturdy.moneyallaround.member.dto.request.CheckTelnumberRequest;
-import com.sturdy.moneyallaround.member.dto.request.SignUpRequest;
-import com.sturdy.moneyallaround.member.dto.response.CheckNicknameResponse;
-import com.sturdy.moneyallaround.member.dto.response.CheckTelResponse;
-import com.sturdy.moneyallaround.member.dto.response.ReIssueResponse;
-import com.sturdy.moneyallaround.member.dto.response.SignUpResponse;
+import com.sturdy.moneyallaround.config.security.jwt.TokenInfo;
+import com.sturdy.moneyallaround.member.dto.request.*;
+import com.sturdy.moneyallaround.member.dto.response.*;
 import com.sturdy.moneyallaround.member.entity.Member;
 import com.sturdy.moneyallaround.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,12 +46,69 @@ public class MemberService {
     }
 
     //로그인
+//    @Transactional
+//    public LogInResponse logIn(LogInRequest request) {
+//
+//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken();
+//        log.info("authenticationToken = {}", authenticationToken);
+//    }
+
+//    @Transactional
+//    public LogInResponse signIn(LogInRequest request) {
+//
+//        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
+//        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
+//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.id(), request.password());
+//        log.info("authenticationToken={}", authenticationToken);
+//
+//        log.info("Email Login");
+//        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+//        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
+//        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+//        log.info("authentication={}", authentication);
+//
+//        // 2-1. 비밀번호 체크
+//        Optional<Member> member = memberRepository.findById(request.id());
+//        log.info("member={}", member.get().getId());
+//        if(member.isEmpty()){
+//            throw new UserAuthException(ExceptionMessage.USER_NOT_FOUND);
+//        } else if(!encoder.matches(request.password(), member.get().getPassword())) {
+//            throw new UserAuthException(ExceptionMessage.MISMATCH_PASSWORD);
+//        }
+//        // 3. 인증 정보를 기반으로 JWT 토큰 생성
+//        TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
+//
+//        String nickname = member.get().getNickname();
+//        String image = member.get().getImage();
+//
+//        return new SignInResponse(request.id(), nickname,image, tokenInfo);
+//    }
+
 
     //멤버 업데이트
+    @Transactional
+    public UpdateProfileResponse updateProfile(UpdateProfileRequest request,Long memberId) {
+        try {
+            Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
+            member.update(request);
+            return UpdateProfileResponse.from(member);
+        } catch (DataIntegrityViolationException e) {
+            throw new UserAuthException(ExceptionMessage.FAIL_UPDATE_DATA);
+        }
+    }
 
     //UpdateTelResponse
 
     // 멤버 삭제
+    public String deleteMember(String memberId) {
+        try {
+            memberRepository.deleteById(memberId);
+        } catch (DataIntegrityViolationException e) {
+            throw new UserAuthException(ExceptionMessage.FAIL_DELETE_DATA);
+        }
+
+        return "SUCCESS";
+    }
 
     @Transactional
     public ReIssueResponse getAuthorize(String accessToken){
