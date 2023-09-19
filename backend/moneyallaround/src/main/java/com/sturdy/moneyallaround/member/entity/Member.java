@@ -2,9 +2,11 @@ package com.sturdy.moneyallaround.member.entity;
 
 import com.sturdy.moneyallaround.member.dto.request.SignUpRequest;
 import com.sturdy.moneyallaround.member.dto.request.UpdateProfileRequest;
+import io.lettuce.core.dynamic.annotation.CommandNaming;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,8 +24,9 @@ import java.util.List;
 public class Member implements UserDetails {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, unique = true, nullable = false)
-    private String id;
+    private Long id;
 
     @Column(name = "nickname")
     private String nickname;
@@ -74,7 +77,7 @@ public class Member implements UserDetails {
 
     @Override
     public String getUsername() {
-        return id;
+        return nickname;
     }
 
     @Override
