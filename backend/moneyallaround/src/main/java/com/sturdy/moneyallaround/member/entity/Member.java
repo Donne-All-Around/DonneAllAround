@@ -2,6 +2,7 @@ package com.sturdy.moneyallaround.member.entity;
 
 import com.sturdy.moneyallaround.member.dto.request.SignUpRequest;
 import com.sturdy.moneyallaround.member.dto.request.UpdateProfileRequest;
+import com.sturdy.moneyallaround.member.dto.request.UpdateTelRequest;
 import io.lettuce.core.dynamic.annotation.CommandNaming;
 import jakarta.persistence.*;
 import lombok.*;
@@ -74,6 +75,9 @@ public class Member implements UserDetails {
         this.imageUrl = request.imageUrl();
     }
 
+    public void updateTel(UpdateTelRequest request){
+        this.tel = request.telNew();
+    }
 
     @Override
     public String getUsername() {

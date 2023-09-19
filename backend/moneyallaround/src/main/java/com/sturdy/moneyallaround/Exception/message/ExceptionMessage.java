@@ -20,7 +20,7 @@ public enum ExceptionMessage {
 
     AUTH_NOT_FOUND("권한 정보가 없는 토큰입니다."),
 
-    //MISMATCH_TOKEN("토큰명이 일치하지 않습니다."),
+    MISMATCH_TOKEN("토큰명이 일치하지 않습니다."),
 
     USER_NOT_FOUND("유저를 찾을 수 없습니다.");
 
