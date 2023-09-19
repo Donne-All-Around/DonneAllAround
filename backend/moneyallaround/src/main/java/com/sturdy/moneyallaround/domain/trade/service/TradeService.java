@@ -1,5 +1,6 @@
 package com.sturdy.moneyallaround.domain.trade.service;
 
+import com.sturdy.moneyallaround.domain.keyword.service.KeywordNotificationService;
 import com.sturdy.moneyallaround.domain.member.service.MemberService;
 import com.sturdy.moneyallaround.domain.trade.dto.request.PromiseCreateRequestDto;
 import com.sturdy.moneyallaround.domain.trade.dto.request.PromiseUpdateRequestDto;
@@ -21,6 +22,7 @@ public class TradeService {
     private final TradeRepository tradeRepository;
     private final MemberService memberService;
     private final TradeImageService tradeImageService;
+    private final KeywordNotificationService keywordNotificationService;
 
     public Slice<Trade> findAll(TradeListRequestDto tradeListRequestDto, Pageable pageable) {
         return tradeRepository.findAll(tradeListRequestDto, pageable);
@@ -50,6 +52,7 @@ public class TradeService {
     public Trade createTrade(TradeRequestDto tradeCreateRequestDto, Long memberId) {
         Trade trade =  tradeRepository.save(tradeCreateRequestDto.toTrade(memberService.findById(memberId)));
         tradeImageService.createTradeImageList(tradeCreateRequestDto.imageUrlList(), trade);
+        createKeywordNotificationByTrade(trade);
         return findTrade(trade.getId());
     }
 
@@ -110,5 +113,9 @@ public class TradeService {
                         () -> { throw new EntityNotFoundException(); });
 
         return findTrade(tradeId);
+    }
+
+    public void createKeywordNotificationByTrade(Trade trade) {
+        keywordNotificationService.createKeywordNotification(trade);
     }
 }

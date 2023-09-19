@@ -18,4 +18,9 @@ public class MemberService {
     public Member findById(Long id) {
         return memberRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
+
+    @Transactional
+    public void updateRating(Long revieweeId, int reviewScore) {
+        findById(revieweeId).updateRating(reviewScore);
+    }
 }

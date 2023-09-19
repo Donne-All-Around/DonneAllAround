@@ -22,4 +22,9 @@ public class TradeLike {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    public TradeLike(Trade trade, Member member) {
+        this.trade = trade;
+        this.member = member;
+    }
 }

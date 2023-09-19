@@ -107,6 +107,7 @@ public class TradeController {
     public ApiResponse<TradeDetailResponseDto> createTrade(@RequestBody TradeRequestDto tradeRequestDto) {
         Long memberId = 1L;
         Trade trade = tradeService.createTrade(tradeRequestDto, memberId);
+
         return ApiResponse.success("거래 글 작성 성공", TradeDetailResponseDto.from(trade, tradeLikeService.existTradeLike(trade.getId(), memberId)));
     }
 
@@ -141,4 +142,19 @@ public class TradeController {
     public ApiResponse<TradeChatResponseDto> completePromise(@PathVariable Long tradeId) {
         return ApiResponse.success("거래 완료 성공", TradeChatResponseDto.from(tradeService.completePromise(tradeId)));
     }
+
+    @PostMapping("/{tradeId}/like")
+    public ApiResponse<Object> tradeLike(@PathVariable Long tradeId) {
+        Long memberId = 1L;
+        tradeLikeService.like(tradeId, memberId);
+        return ApiResponse.success("관심 거래 등록 성공", null);
+    }
+
+    @DeleteMapping("/{tradeId}/like")
+    public ApiResponse<TradeDetailResponseDto> tradeUnlike(@PathVariable Long tradeId) {
+        Long memberId = 1L;
+        tradeLikeService.unlike(tradeId, memberId);
+        return ApiResponse.success("관심 거래 취소 성공", null);
+    }
+
 }

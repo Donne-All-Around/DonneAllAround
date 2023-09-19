@@ -28,4 +28,8 @@ public class Member {
 
     @Column(nullable = false)
     private String imageUrl;
+
+    public void updateRating(int reviewScore) {
+        rating = (rating + (rating + reviewScore * 50) * 2) / 3;
+    }
 }

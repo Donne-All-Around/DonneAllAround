@@ -4,6 +4,7 @@ import com.sturdy.moneyallaround.common.audit.BaseEntity;
 import com.sturdy.moneyallaround.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,16 +20,26 @@ public class Keyword extends BaseEntity {
     @Column(nullable = false)
     private String countryCode;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String preferredTradeCountry;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String preferredTradeCity;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String preferredTradeDistrict;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String preferredTradeTown;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @Builder
+    public Keyword(String countryCode, String preferredTradeCountry, String preferredTradeCity, String preferredTradeDistrict, String preferredTradeTown, Member member) {
+        this.countryCode = countryCode;
+        this.preferredTradeCountry = preferredTradeCountry;
+        this.preferredTradeCity = preferredTradeCity;
+        this.preferredTradeDistrict = preferredTradeDistrict;
+        this.preferredTradeTown = preferredTradeTown;
+        this.member = member;
+    }
 }

@@ -1,11 +1,9 @@
 package com.sturdy.moneyallaround.domain.trade.repository;
 
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sturdy.moneyallaround.domain.member.entity.Member;
 import com.sturdy.moneyallaround.domain.trade.dto.request.TradeListRequestDto;
@@ -34,7 +32,7 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
                         eqPreferredTradeLocation(tradeListRequestDto.preferredTradeCountry(), tradeListRequestDto.preferredTradeCity(), tradeListRequestDto.preferredTradeDistrict(), tradeListRequestDto.preferredTradeTown()),
                         ltLastTradeId(tradeListRequestDto.lastTradeId()),
                         gtLastTradeKoreanWon(tradeListRequestDto.lastTradeKoreanWon()),
-                        gtLastTradeForeignCurrencyPerKoreanWon(tradeListRequestDto.lastTradeForeignCurrencyPerKoreanWon())
+                        gtLastTradeKoreanWonPerForeignCurrency(tradeListRequestDto.lastTradeForeignCurrencyPerKoreanWon())
                 )
                 .limit(pageable.getPageSize() + 1)
                 .orderBy(tradeSort(pageable), trade.createTime.desc())
@@ -125,14 +123,8 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
         return lastTradeKoreanWon == null ? null : trade.koreanWonAmount.gt(lastTradeKoreanWon);
     }
 
-    private BooleanExpression gtLastTradeForeignCurrencyPerKoreanWon(Double lastTradeForeignCurrencyPerKoreanWon) {
-        if (lastTradeForeignCurrencyPerKoreanWon == null) {
-            return null;
-        }
-
-        NumberExpression<Double> foreignCurrencyPerKoreanWon = trade.koreanWonAmount.doubleValue()
-                .divide(trade.foreignCurrencyAmount.doubleValue());
-        return foreignCurrencyPerKoreanWon.gt(lastTradeForeignCurrencyPerKoreanWon);
+    private BooleanExpression gtLastTradeKoreanWonPerForeignCurrency(Double lastTradeKoreanWonPerForeignCurrency) {
+        return lastTradeKoreanWonPerForeignCurrency == null ? null : trade.koreanWonPerForeignCurrency.gt(lastTradeKoreanWonPerForeignCurrency);
     }
 
     private OrderSpecifier<?> tradeSort(Pageable pageable) {
@@ -145,9 +137,7 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
                     return new OrderSpecifier<>(Order.ASC, trade.koreanWonAmount);
                 }
                 case "foreignCurrencyPerKoreanWon" -> {
-                    Expression<Double> foreignCurrencyPerKoreanWon = trade.koreanWonAmount.doubleValue()
-                            .divide(trade.foreignCurrencyAmount.doubleValue());
-                    return new OrderSpecifier<>(Order.ASC, foreignCurrencyPerKoreanWon);
+                    return new OrderSpecifier<>(Order.ASC, trade.koreanWonPerForeignCurrency);
                 }
             }
         }

@@ -23,4 +23,9 @@ public class KeywordNotification {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    public KeywordNotification(Trade trade, Member member) {
+        this.trade = trade;
+        this.member = member;
+    }
 }

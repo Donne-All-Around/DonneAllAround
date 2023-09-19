@@ -17,6 +17,7 @@ public record TradeDetailResponseDto(@NotNull Long id,
                                      @NotNull String countryCode,
                                      @NotNull Integer foreignCurrencyAmount,
                                      @NotNull Integer koreanWonAmount,
+                                     @NotNull Double koreanWonPerForeignCurrency,
                                      @NotNull Double latitude,
                                      @NotNull Double longitude,
                                      @NotNull String preferredTradeCountry,
@@ -39,6 +40,7 @@ public record TradeDetailResponseDto(@NotNull Long id,
                 .countryCode(trade.getCountryCode())
                 .foreignCurrencyAmount(trade.getForeignCurrencyAmount())
                 .koreanWonAmount(trade.getKoreanWonAmount())
+                .koreanWonPerForeignCurrency(trade.getKoreanWonPerForeignCurrency())
                 .latitude(trade.getLatitude())
                 .longitude(trade.getLongitude())
                 .preferredTradeCountry(trade.getPreferredTradeCountry())

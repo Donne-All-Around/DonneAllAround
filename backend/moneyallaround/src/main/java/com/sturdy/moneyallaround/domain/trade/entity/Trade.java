@@ -39,6 +39,8 @@ public class Trade extends BaseEntity {
     private Integer foreignCurrencyAmount;
     @Column(nullable = false)
     private Integer koreanWonAmount;
+    @Column(nullable = false)
+    private Double koreanWonPerForeignCurrency;
 
     @Column(nullable = false)
     private Double latitude;
@@ -93,6 +95,7 @@ public class Trade extends BaseEntity {
         this.countryCode = countryCode;
         this.foreignCurrencyAmount = foreignCurrencyAmount;
         this.koreanWonAmount = koreanWonAmount;
+        koreanWonPerForeignCurrency = (double)koreanWonAmount / (double)foreignCurrencyAmount;
         this.latitude = latitude;
         this.longitude = longitude;
         this.preferredTradeCountry = preferredTradeCountry;
@@ -112,6 +115,7 @@ public class Trade extends BaseEntity {
         this.countryCode = countryCode;
         this.foreignCurrencyAmount = foreignCurrencyAmount;
         this.koreanWonAmount = koreanWonAmount;
+        koreanWonPerForeignCurrency = (double)koreanWonAmount / (double)foreignCurrencyAmount;
         this.latitude = latitude;
         this.longitude = longitude;
         this.preferredTradeCountry = preferredTradeCountry;

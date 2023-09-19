@@ -15,6 +15,7 @@ public record TradeSimpleResponseDto(@NotNull Long id,
                                      @NotNull String countryCode,
                                      @NotNull Integer foreignCurrencyAmount,
                                      @NotNull Integer koreanWonAmount,
+                                     @NotNull Double koreanWonPerForeignCurrency,
                                      @NotNull String preferredTradeCountry,
                                      @NotNull String preferredTradeCity,
                                      @NotNull String preferredTradeDistrict,
@@ -30,6 +31,7 @@ public record TradeSimpleResponseDto(@NotNull Long id,
                 .countryCode(trade.getCountryCode())
                 .foreignCurrencyAmount(trade.getForeignCurrencyAmount())
                 .koreanWonAmount(trade.getKoreanWonAmount())
+                .koreanWonPerForeignCurrency(trade.getKoreanWonPerForeignCurrency())
                 .preferredTradeCountry(trade.getPreferredTradeCountry())
                 .preferredTradeCity(trade.getPreferredTradeCity())
                 .preferredTradeDistrict(trade.getPreferredTradeDistrict())

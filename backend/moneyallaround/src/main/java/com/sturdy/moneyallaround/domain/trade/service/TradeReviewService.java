@@ -3,7 +3,6 @@ package com.sturdy.moneyallaround.domain.trade.service;
 import com.sturdy.moneyallaround.domain.member.entity.Member;
 import com.sturdy.moneyallaround.domain.member.service.MemberService;
 import com.sturdy.moneyallaround.domain.trade.dto.request.TradeReviewRequestDto;
-import com.sturdy.moneyallaround.domain.trade.entity.Trade;
 import com.sturdy.moneyallaround.domain.trade.entity.TradeReview;
 import com.sturdy.moneyallaround.domain.trade.repository.TradeReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +24,8 @@ public class TradeReviewService {
 
     @Transactional
     public void createTradeReview(Long tradeId, Long reviewerId, TradeReviewRequestDto tradeReviewRequestDto) {
-        /*
-            라연 : 후기 평가 점수 계산
-         */
         tradeReviewRepository.save(tradeReviewRequestDto.toTradeReview(tradeService.findTrade(tradeId), memberService.findById(reviewerId), memberService.findById(tradeReviewRequestDto.revieweeId())));
+        memberService.updateRating(tradeReviewRequestDto.revieweeId(), tradeReviewRequestDto.score());
     }
 
     public Slice<TradeReview> findTradeReview(Long reviweeId, Long lastTradeId, Pageable pageable) {
