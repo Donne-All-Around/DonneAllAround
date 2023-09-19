@@ -8,18 +8,22 @@ class ExchangeDetailPage extends StatefulWidget {
 }
 
 class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
-
   final _valueList = ['미국', '호주', '일본'];
   var _selectedValue = '미국';
 
   Map<String, Map<String, String>> currencyInfo = {
     '미국': {'imagePath': 'assets/images/usa.png', 'currencyName': '미국 달러 USD'},
-    '호주': {'imagePath': 'assets/images/australia.png', 'currencyName': '호주 달러 AUD'},
+    '호주': {
+      'imagePath': 'assets/images/australia.png',
+      'currencyName': '호주 달러 AUD'
+    },
     '일본': {'imagePath': 'assets/images/japan.png', 'currencyName': '일본 엔 JPY'},
   };
 
+  String selectedButton = ''; // 선택된 버튼
+  
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: SafeArea(
@@ -40,156 +44,247 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
             title: const Text(
               '환율 검색',
               style:
-              TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+                  TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
             ),
             centerTitle: true,
           ),
           body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  // 나라별 상세 통화
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-                    width: 350,
-                    height: 300,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.black38),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 348,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),topRight:Radius.circular(20) ),
-                                border: Border.all(color: Colors.transparent),
-                                color: const Color(0xFFFFD954),
-                              ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.fromLTRB(10, 10, 30, 10),
-                                    width: 170,
-                                    height: 55,
-                                    // color: Colors.red,
-                                    child: DropdownButtonHideUnderline(
-                                      child: DropdownButton(
-                                        value: _selectedValue,
-                                        items: _valueList.map((value){
-                                              return DropdownMenuItem(
-                                                value: value,
-                                                  child:Row(
-                                                    children: [
-                                                      Image.asset(
-                                                        currencyInfo[value]!['imagePath']!,
-                                                        width: 20,
-                                                        height: 20,
-                                                      ),
-                                                      const SizedBox(width: 10,),
-                                                      Text(currencyInfo[value]!['currencyName']!),
-                                                    ],
-                                                  ) ,);
-                                            },
-                                        ).toList(),
-                                        onChanged: (value){
-                                          setState(() {
-                                            _selectedValue = value.toString();
-                                          });
+            child: Column(
+              children: [
+                // 나라별 상세 통화
+                Container(
+                  margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                  width: 350,
+                  height: 300,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.black38),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 348,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20)),
+                              border: Border.all(color: Colors.transparent),
+                              color: const Color(0xFFFFD954),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  margin:
+                                      const EdgeInsets.fromLTRB(10, 10, 30, 10),
+                                  width: 170,
+                                  height: 55,
+                                  // color: Colors.red,
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton(
+                                      value: _selectedValue,
+                                      items: _valueList.map(
+                                        (value) {
+                                          return DropdownMenuItem(
+                                            value: value,
+                                            child: Row(
+                                              children: [
+                                                Image.asset(
+                                                  currencyInfo[value]![
+                                                      'imagePath']!,
+                                                  width: 20,
+                                                  height: 20,
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text(currencyInfo[value]![
+                                                    'currencyName']!),
+                                              ],
+                                            ),
+                                          );
                                         },
-                                      ),
+                                      ).toList(),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _selectedValue = value.toString();
+                                        });
+                                      },
                                     ),
                                   ),
-                                  Container(
-                                    width: 120,
-                                    height: 50,
-                                    // color: Colors.red,
-                                    margin: const EdgeInsets.fromLTRB(0, 15, 10, 10),
-                                    child: const Text(' 1,300.00원', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.red),),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-
-                      ],
-                    ),
-                  ),
-                        // 은행별 환율 정보
-                        const SizedBox(height: 20,),
-                        Row(
-                          children: [
-                            GestureDetector(
-                              child: Container(
-                                margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-                                width: 350,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.black38),
                                 ),
-                              ),
+                                Container(
+                                  width: 120,
+                                  height: 50,
+                                  // color: Colors.red,
+                                  margin:
+                                      const EdgeInsets.fromLTRB(0, 15, 10, 10),
+                                  child: const Text(
+                                    ' 1,300.00원',
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.red),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                  const SizedBox(height: 20,),
-                  Row(
-                    children: [
-                      GestureDetector(
-                        child: Container(
-                          margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-                          width: 350,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.black38),
                           ),
-                        ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectedButton = '1w';
+                                });
+                              },
+                              child: Text(
+                                '1w',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: selectedButton == '1w' ? Colors.black : Colors.grey,
+                                ),
+                              )),
+                          TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectedButton = '1m';
+                                });
+                              },
+                              child:  Text(
+                                '1m',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: selectedButton == '1m' ? Colors.black : Colors.grey,
+                                ),
+                              )),
+                          TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectedButton = '3m';
+                                });
+                              },
+                              child: Text(
+                                '3m',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: selectedButton == '3m' ? Colors.black : Colors.grey,
+                                ),
+                              )),
+                          TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectedButton = '6m';
+                                });
+                              },
+                              child: Text(
+                                '6m',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: selectedButton == '6m' ? Colors.black : Colors.grey,
+                                ),
+                              )),
+                          TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectedButton = '1y';
+                                });
+                              },
+                              child: Text(
+                                '1y',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: selectedButton == '1y' ? Colors.black : Colors.grey,
+                                ),
+                              )),
+                        ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20,),
-                  Row(
-                    children: [
-                      GestureDetector(
-                        child: Container(
-                          margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-                          width: 350,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.black38),
-                          ),
+                ),
+                // 은행별 환율 정보
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    GestureDetector(
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                        width: 350,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.black38),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 20,),
-                  Row(
-                    children: [
-                      GestureDetector(
-                        child: Container(
-                          margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-                          width: 350,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.black38),
-                          ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    GestureDetector(
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                        width: 350,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.black38),
                         ),
                       ),
-                    ],
-                  ),
-
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    GestureDetector(
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                        width: 350,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.black38),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    GestureDetector(
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                        width: 350,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.black38),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
+          ),
         ),
       ),
     );
   }
-
 }
