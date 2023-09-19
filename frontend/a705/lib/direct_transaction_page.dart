@@ -69,7 +69,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                     Container(
                       height: 70,
                       width: 70,
-                      margin: const EdgeInsets.fromLTRB(20, 15, 10, 10),
+                      margin: const EdgeInsets.fromLTRB(20, 15, 10, 15),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                       ),
