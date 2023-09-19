@@ -118,4 +118,8 @@ public class TradeService {
     public void createKeywordNotificationByTrade(Trade trade) {
         keywordNotificationService.createKeywordNotification(trade);
     }
+
+    public Slice<Trade> search(String keyword, Long lastTradeId, Pageable pageable) {
+        return tradeRepository.findByKeyword(keyword, lastTradeId, pageable);
+    }
 }

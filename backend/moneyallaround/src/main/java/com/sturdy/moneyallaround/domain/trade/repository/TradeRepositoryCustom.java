@@ -12,4 +12,5 @@ public interface TradeRepositoryCustom {
     Slice<Trade> findSaleTradeBySeller(Member seller, Long lastTradeId, Pageable pageable);
     Slice<Trade> findByBuyerAndStatus(Member buyer, Long lastTradeId, Pageable pageable);
     Slice<Trade> findLikeTradeByMember(Member member, Long lastTradeId, Pageable pageable);
+    Slice<Trade> findByKeyword(String keyword, Long lastTradeId, Pageable pageable);
 }

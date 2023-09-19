@@ -157,4 +157,15 @@ public class TradeController {
         return ApiResponse.success("관심 거래 취소 성공", null);
     }
 
+    @GetMapping("/search")
+    public ApiResponse<Map<String, Object>> search(@RequestParam String keyword,
+                                                   @RequestParam Long lastTradeId,
+                                                   @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Slice<Trade> slices = tradeService.search(keyword, lastTradeId, pageable);
+        Map<String, Object> response = new HashMap<>();
+        response.put("tradeList", slices.stream().map(TradeSimpleResponseDto::from).toList());
+        response.put("last", slices.isLast());
+        return ApiResponse.success("거래 목록 검색 성공", response);
+    }
 }

@@ -51,7 +51,7 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
                         ltLastTradeId(lastTradeId)
                 )
                 .orderBy(trade.createTime.desc())
-                .limit(pageable.getPageSize())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
 
         return checkLastPage(result, pageable);
@@ -67,7 +67,7 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
                         ltLastTradeId(lastTradeId)
                 )
                 .orderBy(trade.createTime.desc())
-                .limit(pageable.getPageSize())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
 
         return checkLastPage(result, pageable);
@@ -83,7 +83,7 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
                         ltLastTradeId(lastTradeId)
                 )
                 .orderBy(trade.createTime.desc())
-                .limit(pageable.getPageSize())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
 
         return checkLastPage(result, pageable);
@@ -92,12 +92,27 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
     @Override
     public Slice<Trade> findLikeTradeByMember(Member member, Long lastTradeId, Pageable pageable) {
         List<Trade> result = queryFactory
-                .select(trade)
-                .from(tradeLike)
+                .selectFrom(trade)
                 .join(tradeLike.trade, trade)
                 .where(
                         tradeLike.member.eq(member),
                         ltLastTradeId(lastTradeId)
+                )
+                .orderBy(trade.createTime.desc())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        return checkLastPage(result, pageable);
+    }
+
+    @Override
+    public Slice<Trade> findByKeyword(String keyword, Long lastTradeId, Pageable pageable) {
+        List<Trade> result = queryFactory
+                .selectFrom(trade)
+                .where(
+                        ltLastTradeId(lastTradeId),
+                        trade.title.contains(keyword)
+                                .or(trade.description.contains(keyword))
                 )
                 .orderBy(trade.createTime.desc())
                 .limit(pageable.getPageSize())
