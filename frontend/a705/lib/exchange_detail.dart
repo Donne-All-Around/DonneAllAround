@@ -207,6 +207,7 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                     ],
                   ),
                 ),
+
                 // 은행별 환율 정보
                 const SizedBox(
                   height: 20,
@@ -217,12 +218,112 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                       child: Container(
                         margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                         width: 350,
-                        height: 100,
+                        height: 160,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.black38),
                         ),
+                        child:  Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                    margin: const EdgeInsets.fromLTRB(30, 10, 20, 0),
+                                    child:  const Text('하나은행', style: TextStyle(fontSize: 16),)),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.fromLTRB(10, 10, 40, 10),
+                                  child: const Text('상세 환율          수수료', style: TextStyle(color: Colors.grey),),
+                                )
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                                  // color: Colors.red,
+                                  child: const Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text('현찰 살 때'),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text('현찰 팔 때'),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text('송금 보낼 때'),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 50,),
+                                Container(
+                                  margin: const EdgeInsets.fromLTRB(0, 0, 30, 10),
+                                  // color: Colors.red,
+                                  child: const Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text('1,354.29원', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text('1,354.29원', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text('1,354.29원', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                  // color: Colors.red,
+                                  child: const Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text('1.75%', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text('1.75%', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text('1.75%', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
+                      // 은행 상세 페이지로.
+                      onTap: (){},
                     ),
                   ],
                 ),
