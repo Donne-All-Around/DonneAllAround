@@ -81,6 +81,8 @@ flutter:
      - assets/images/profile.jpg
      - assets/images/ausdollar.jpg
      - assets/images/australia.png
+     - assets/images/usa.png
+     - assets/images/japan.png
      - assets/images/korea.png
      - assets/images/marker.png
 

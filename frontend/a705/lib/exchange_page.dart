@@ -1,3 +1,4 @@
+import 'package:a705/exchange_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:intl/intl.dart';
@@ -140,6 +141,12 @@ class _ExchangePageState extends State<ExchangePage> {
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(color: Colors.black38),
                                 ),
+                                // 드롭다운
+                                // child: Row(
+                                //   children: [
+                                //     DropdownButton(items: , onChanged: ),
+                                //   ],
+                                // ),
                               ),
                             ],
                           ),
@@ -171,7 +178,8 @@ class _ExchangePageState extends State<ExchangePage> {
                             ),
                             child:IconButton(
                               padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
-                              onPressed: (){},
+                              onPressed: (){
+                              },
                               icon: const Icon(Icons.drag_handle_rounded),
                               iconSize: 50,
                               color: Colors.white,
@@ -198,7 +206,12 @@ class _ExchangePageState extends State<ExchangePage> {
                  //국가별 실시간 환율
                      GestureDetector(
                        // 상세페이지 이동
-                       onTap: (){} ,
+                       onTap: (){
+                         Navigator.push(
+                               context,
+                               MaterialPageRoute(builder: (context) => const ExchangeDetailPage()),
+                             );
+                       } ,
                        child: Row(
                          children: [
                            Container(
