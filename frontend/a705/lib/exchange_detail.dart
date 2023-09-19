@@ -65,7 +65,8 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                               height: 60,
                               decoration: BoxDecoration(
                                 borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),topRight:Radius.circular(20) ),
-                                border: Border.all(color: Colors.black38),
+                                border: Border.all(color: Colors.transparent),
+                                color: const Color(0xFFFFD954),
                               ),
                               child: Row(
                                 children: [
@@ -73,7 +74,7 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                     margin: const EdgeInsets.fromLTRB(10, 10, 30, 10),
                                     width: 170,
                                     height: 55,
-                                    color: Colors.red,
+                                    // color: Colors.red,
                                     child: DropdownButtonHideUnderline(
                                       child: DropdownButton(
                                         value: _selectedValue,
@@ -100,6 +101,13 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                         },
                                       ),
                                     ),
+                                  ),
+                                  Container(
+                                    width: 120,
+                                    height: 50,
+                                    // color: Colors.red,
+                                    margin: const EdgeInsets.fromLTRB(0, 15, 10, 10),
+                                    child: const Text(' 1,300.00원', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.red),),
                                   ),
                                 ],
                               ),
