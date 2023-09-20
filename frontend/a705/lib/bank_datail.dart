@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class BankDetailPage extends StatefulWidget {
   const BankDetailPage({super.key});
@@ -8,6 +9,26 @@ class BankDetailPage extends StatefulWidget {
 }
 
 class _BankDetailPageState extends State<BankDetailPage> {
+  
+  final _bankList = ['신한은행', '하나은행'];
+  var _selectedValue = '신한은행';
+
+  Map<String, Map<String, String>> currencyInfo = {
+    '신한은행': {'imagePath': 'assets/images/usa.png', 'currencyName': '신한은행'},
+    '하나은행': {
+      'imagePath': 'assets/images/australia.png',
+      'currencyName': '하나은행'
+    },
+    
+  };
+
+  String getToday() {
+    DateTime now = DateTime.now();
+    DateFormat formatter = DateFormat('yyyy.MM.dd HH:mm');
+    var strToday = formatter.format(now);
+    return strToday;
+  }
+
   @override
   Widget build(BuildContext context){
     return GestureDetector(
@@ -39,18 +60,99 @@ class _BankDetailPageState extends State<BankDetailPage> {
               children: [
                 Container(
                   margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-                  child: const Column(
-                    children: [
-                      // 멘트
-
-                      SizedBox(height: 20,),
-                      // 사진변경
-
-                      // 닉네임 & 중복체크
-
-                      // 시작하기 버튼
-                    ],
+                  width: 350,
+                  height: 400,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.black38),
                   ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 348,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20)),
+                              border: Border.all(color: Colors.transparent),
+                              color: const Color(0xFFFFD954),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  margin:
+                                  const EdgeInsets.fromLTRB(10, 10, 30, 10),
+                                  width: 170,
+                                  height: 55,
+                                  // color: Colors.red,
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton(
+                                      value: _selectedValue,
+                                      items: _bankList.map(
+                                            (value) {
+                                          return DropdownMenuItem(
+                                            value: value,
+                                            child: Row(
+                                              children: [
+                                                Image.asset(
+                                                  currencyInfo[value]![
+                                                  'imagePath']!,
+                                                  width: 20,
+                                                  height: 20,
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text(currencyInfo[value]![
+                                                'currencyName']!,
+                                                style: TextStyle(fontWeight: FontWeight.bold),),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      ).toList(),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _selectedValue = value.toString();
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(10, 0,30, 10),
+                            padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                            width: 220,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(color: Colors.black38),
+                            ),
+                            child: Text(
+                              getToday(),
+                              style: const TextStyle(fontSize: 25),),
+                          ),
+                          const SizedBox(width: 10,),
+                          IconButton(
+                            onPressed: (){},
+                            icon: const Icon(Icons.cached_rounded),
+                            iconSize: 35,
+                            color: Colors.grey,),
+                        ],
+                      ),
+          ],
+        ),
                 ),
               ],
             ),
