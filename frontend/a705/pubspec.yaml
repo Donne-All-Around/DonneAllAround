@@ -48,6 +48,7 @@ dependencies:
   flutter_chat_bubble: ^2.0.2
   bottom_picker: ^2.1.0
   carousel_slider: ^4.2.1
+  multiple_images_picker: ^1.0.1
 
 dev_dependencies:
   flutter_test:

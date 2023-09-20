@@ -249,9 +249,6 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          width: double.infinity,
-                          height: kMinInteractiveDimension,
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.all(
                               Radius.circular(10),
@@ -260,29 +257,81 @@ class _HomePageState extends State<HomePage> {
                               color: const Color(0xFFD9D9D9),
                               width: 2,
                             ),
-                            color: Colors.white,
+                            color: const Color(0xFFD9D9D9),
                           ),
                           child: Row(
                             children: [
-                              CircleAvatar(
-                                backgroundImage: AssetImage(
-                                    'assets/images/${currency[_idx]}.png'),
-                                radius: 8,
-                              ),
-                              const SizedBox(width: 5),
-                              Expanded(
+                              Container(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                width:
+                                    MediaQuery.of(context).size.width / 2 - 23,
+                                height: kMinInteractiveDimension,
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(10),
+                                    topLeft: Radius.circular(10),
+                                  ),
+                                  color: Color(0xFFF7F7F7),
+                                ),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      '${country[_idx]} ${currency[_idx]}',
-                                      style: const TextStyle(fontSize: 15),
+                                    CircleAvatar(
+                                      backgroundImage: AssetImage(
+                                          'assets/images/${currency[_idx]}.png'),
+                                      radius: 8,
                                     ),
-                                    Text(
-                                      sign[_idx],
-                                      style: const TextStyle(fontSize: 15),
+                                    const SizedBox(width: 5),
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            '${country[_idx]} ${currency[_idx]}',
+                                            style:
+                                                const TextStyle(fontSize: 15),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text('${unit[_idx]}',
+                                                  style: const TextStyle(
+                                                      fontSize: 15)),
+                                              Text(
+                                                sign[_idx],
+                                                style: const TextStyle(
+                                                    fontSize: 15),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                width: 2,
+                                color: const Color(0xFFD9D9D9),
+                              ),
+                              Container(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                width:
+                                    MediaQuery.of(context).size.width / 2 - 83,
+                                height: kMinInteractiveDimension,
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(10),
+                                    topRight: Radius.circular(10),
+                                  ),
+                                  color: Colors.white,
+                                ),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text('1300 ₩',
+                                        style: TextStyle(fontSize: 15)),
                                   ],
                                 ),
                               ),
@@ -487,8 +536,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
                                         children: [
-                                          Icon(
-                                              Icons.people_outline_rounded,
+                                          Icon(Icons.people_outline_rounded,
                                               size: 17),
                                           SizedBox(width: 2),
                                           Text("3"),
@@ -538,6 +586,8 @@ List<String> currency = [
   'HKD'
 ];
 List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫', '\$'];
+
+List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1];
 
 class CountryListViewBuilder extends StatefulWidget {
   const CountryListViewBuilder({super.key});
