@@ -50,8 +50,8 @@ dependencies {
 
 	//SMS 인증
 	//Import the BoM for the Firebase platform
-	implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
-	implementation("com.google.firebase:firebase-auth")
+//	implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
+//	implementation("com.google.firebase:firebase-auth")
 }
 
 tasks.named('test') {

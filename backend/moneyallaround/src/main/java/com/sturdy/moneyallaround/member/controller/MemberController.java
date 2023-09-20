@@ -2,6 +2,7 @@ package com.sturdy.moneyallaround.member.controller;
 
 import com.sturdy.moneyallaround.common.ApiResponse;
 import com.sturdy.moneyallaround.member.dto.request.CheckNicknameRequest;
+import com.sturdy.moneyallaround.member.dto.request.LogoutRequest;
 import com.sturdy.moneyallaround.member.dto.request.SignUpRequest;
 import com.sturdy.moneyallaround.member.dto.request.UpdateProfileRequest;
 import com.sturdy.moneyallaround.member.service.MemberService;
@@ -63,6 +64,23 @@ public class MemberController {
 //        Long memberId =
 //        return ApiResponse.success(memberService.updateProfile(request, memberId));
 //    }
+
+//    @Operation(summary = "로그아웃", description = "로그아웃")
+//    @ApiResponses({
+//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
+//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 실패"),
+//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "사용자 없음"),
+//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
+//    })
+//    @PostMapping("/logout")
+//    public ApiResponse logout (@RequestBody LogoutRequest reqeust){
+//        log.info("로그아웃 시작");
+//        log.info("refreshToken={}", reqeust.refreshToken());
+//        refreshTokenService.delValues(reqeust.refreshToken()); // Redis에 저장된 refreshToken 삭제
+//        return ApiResponse.success("SUCCESS");
+//    }
+
+
 
 
 }
