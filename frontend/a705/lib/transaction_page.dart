@@ -15,8 +15,30 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage> {
-  final _valueList = ['첫 번째', '두 번째', '세 번째'];
-  var _selectedValue = '첫 번째';
+  final _valueList = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '중국(위안) CNY',
+    '베트남(동) VND',
+    '홍콩(달러) HKD'
+  ];
+  var _selectedValue = '미국(달러) USD';
+  int idx = 0;
+
+  List<String> currency = [
+    'USD',
+    'JPY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CNY',
+    'VND',
+    'HKD'
+  ];
+  List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫', '\$'];
 
   List<File> selectedImages = [];
   final picker = ImagePicker();
@@ -195,9 +217,9 @@ class _TransactionPageState extends State<TransactionPage> {
                                 value: value,
                                 child: Row(
                                   children: [
-                                    const CircleAvatar(
+                                    CircleAvatar(
                                       backgroundImage: AssetImage(
-                                          'assets/images/AUD.png'),
+                                          'assets/images/${currency[_valueList.indexOf(value)]}.png'),
                                       radius: 10,
                                     ),
                                     const SizedBox(width: 5),
@@ -209,6 +231,7 @@ class _TransactionPageState extends State<TransactionPage> {
                             onChanged: (value) {
                               setState(() {
                                 _selectedValue = value!;
+                                idx = _valueList.indexOf(value);
                               });
                             },
                           ),
@@ -219,10 +242,10 @@ class _TransactionPageState extends State<TransactionPage> {
                   TextField(
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      enabledBorder: OutlineInputBorder(
+                      enabledBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(10),
                           bottomRight: Radius.circular(10),
@@ -230,7 +253,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         borderSide:
                             BorderSide(color: Color(0xFFF2F2F2), width: 3),
                       ),
-                      focusedBorder: OutlineInputBorder(
+                      focusedBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(10),
                           bottomRight: Radius.circular(10),
@@ -238,7 +261,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         borderSide:
                             BorderSide(color: Color(0xFFF2F2F2), width: 3),
                       ),
-                      suffixText: ' \$',
+                      suffixText: ' ${sign[idx]}',
                     ),
                     cursorColor: Colors.black87,
                     textAlign: TextAlign.end,
