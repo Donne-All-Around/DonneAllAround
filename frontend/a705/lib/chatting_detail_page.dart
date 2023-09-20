@@ -1,5 +1,4 @@
 import 'package:a705/service/database.dart';
-import 'package:a705/service/shared_pref.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -17,18 +16,23 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   ScrollController _scrollController = ScrollController();
   bool isVisible = false;
   TextEditingController messageController = new TextEditingController();
+
   // String? myProfilePic, messageId;
-  String? myUserName, myProfilePic, myPhone, messageId, chatRoomId;
+  String? myUserName, // 내 닉네임
+      myProfilePic, // 내 프로필
+      myPhone, // 내 번호
+      messageId, // 메시지 아이디
+      chatRoomId, // 채팅방 아이디
+      otherUserName, // 상대방 닉네임
+      seller, // 판매자 닉네임
+      buyer, // 구매자 닉네임
+      transactionId; // 거래글 아이디
+
   Stream? messageStream;
   int batchSize = 10; // 한 번에 가져올 메시지 수
   bool isLoadingMore = false; // 추가 메시지 로딩 중인지 여부
   DocumentSnapshot? lastVisibleMessage; // 마지막으로 로드된 메시지를 추적하는 데 사용됩니다.
   bool reachedTop = false; // 스크롤이 맨 위에 도달했는지 여부
-
-
-
-
-
 
 
   // 채팅방 정보 가져오기
@@ -39,10 +43,16 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     // myUserName = await SharedPreferenceHelper().getUserName();
     // myProfilePic = await SharedPreferenceHelper().getUserPic();
     // myPhone = await SharedPreferenceHelper().getUserPhone();
+
     // 예시 시작
-    chatRoomId = "1";
-    myUserName = "이병건";
+    chatRoomId = "board1_쏘영이_이병건";
+    myUserName = "쏘영이";
+    otherUserName = "이병건";
+    seller = "쏘영이";
     myPhone = "010-1111-1111";
+    transactionId = "board1";
+    String userId = myUserName == seller ? "1" : "2";
+    DatabaseMethods().setRead(chatRoomId,userId); // 읽음 처리
     // 예시 끝
     setState(() {});
   }
@@ -50,7 +60,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   // 로드
   ontheload() async {
     await getthesharedpref();
-    await getAndSetMessages(); // 이 부분을 추가하여 메시지를 초기에 가져옵니다.
+    await getAndSetMessages();
+    // await getAndSetMessages(); // 이 부분을 추가하여 메시지를 초기에 가져옵니다.
     setState(() {});
   }
 
@@ -60,6 +71,43 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     super.initState();
     ontheload();
   }
+
+  void _loadMoreMessages() async {
+    if (!isLoadingMore) {
+      setState(() {
+        isLoadingMore = true;
+      });
+
+      Query query = FirebaseFirestore.instance
+          .collection("chatRooms")
+          .doc(chatRoomId)
+          .collection("chats")
+          .orderBy("time", descending: true)
+          .startAfterDocument(lastVisibleMessage!)
+          .limit(batchSize);
+
+      QuerySnapshot additionalMessages = await query.get();
+
+      if (additionalMessages.docs.isNotEmpty) {
+        lastVisibleMessage =
+            additionalMessages.docs[additionalMessages.docs.length - 1];
+        // 기존의 messageStream을 업데이트합니다.
+        messageStream = FirebaseFirestore.instance
+            .collection("chatRooms")
+            .doc(chatRoomId)
+            .collection("chats")
+            .orderBy("time", descending: true)
+            .startAfterDocument(lastVisibleMessage!)
+            .limit(batchSize)
+            .snapshots();
+      }
+
+      setState(() {
+        isLoadingMore = false;
+      });
+    }
+  }
+
 // 채팅 메시지 가져오기
   Future<Stream<QuerySnapshot>> getChatRoomMessages(String chatRoomId) async {
     return FirebaseFirestore.instance
@@ -69,110 +117,176 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         .orderBy("time", descending: true) // 시간 역순으로 스트림 반환
         .snapshots();
   }
+
   // 채팅 메시지 타일
-  Widget chatMessageTile(String message, bool sendByMe, String ts) {
+  Widget chatMessageTile(
+      String message, bool sendByMe, String ts, bool showTs, bool showProfile) {
     return Row(
-      mainAxisAlignment:
-      sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-      children: [
-        Flexible(
+        mainAxisAlignment:
+            sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          sendByMe
+              ? Container(
+                  margin: EdgeInsets.only(left: 16.0),
+                  child: showTs
+                      ? Text(
+                    ts,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey,
+                    ),
+                  )
+                      : Text(""),
+                )
+              : Row(
+                  children: [
+                    showProfile
+                        ? const Padding(
+                            padding: EdgeInsets.only(left: 16.0),
+                            child: CircleAvatar(
+                              backgroundImage:
+                                  AssetImage('assets/images/profile.jpg'),
+                              radius: 25,
+                            ),
+                          )
+                        : const Padding(padding: EdgeInsets.only(left: 66.0)),
+                    const SizedBox(height: 10)
+                  ],
+                ),
+          Flexible(
             child: Container(
               padding: EdgeInsets.all(16),
               margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      bottomRight:
-                      sendByMe ? Radius.circular(0) : Radius.circular(24),
-                      topRight: Radius.circular(24),
-                      bottomLeft:
-                      sendByMe ? Radius.circular(24) : Radius.circular(0)),
+                      topLeft:
+                          sendByMe ? Radius.circular(18) : Radius.circular(0),
+                      bottomRight: Radius.circular(18),
+                      topRight:
+                          sendByMe ? Radius.circular(0) : Radius.circular(18),
+                      bottomLeft: Radius.circular(18)),
                   color: sendByMe
                       ? const Color(0xFFFFE897)
                       : Colors.grey.shade200),
+              // : Colors.grey.shade200),
               child: Text(
                 message,
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.black,
                     fontSize: 15.0,
                     fontWeight: FontWeight.w500),
+                maxLines: 6, // 텍스트 줄 수 제한 없음
+                softWrap: true, // 자동 줄 바꿈 활성화
+                overflow: TextOverflow.clip, // 잘린 부분은 보이도록 함
               ),
-            )),
-      ],
-    );
+            ),
+          ),
+          sendByMe
+              ? const Text("")
+              : Container(
+                  margin: EdgeInsets.only(right: 16.0), // 왼쪽 마진 설정
+                  child: showTs
+                      ? Text(
+                          ts,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.grey,
+                          ),
+                        )
+                      : Text(""),
+                )
+        ]);
   }
-  // Widget chatMessageTile(String message, bool sendByMe) {
-  //   return Row(
-  //     mainAxisAlignment:
-  //     sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-  //     children: [
-  //       Flexible(
-  //           child: Container(
-  //             padding: EdgeInsets.all(16),
-  //             margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-  //             decoration: BoxDecoration(
-  //                 borderRadius: BorderRadius.only(
-  //                     topLeft: Radius.circular(24),
-  //                     bottomRight:
-  //                     sendByMe ? Radius.circular(0) : Radius.circular(24),
-  //                     topRight: Radius.circular(24),
-  //                     bottomLeft:
-  //                     sendByMe ? Radius.circular(24) : Radius.circular(0)),
-  //                 color: sendByMe
-  //                     ? Color.fromARGB(255, 234, 236, 240)
-  //                     : Color.fromARGB(255, 211, 228, 243)),
-  //             child: Text(
-  //               message,
-  //               style: TextStyle(
-  //                   color: Colors.black,
-  //                   fontSize: 15.0,
-  //                   fontWeight: FontWeight.w500),
-  //             ),
-  //           )),
-  //     ],
-  //   );
-  // }
+
   // 채팅 메시지
   Widget chatMessage() {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (ScrollNotification scrollInfo) {
-        if (!isLoadingMore &&
-            scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent &&
-            !reachedTop) {
-          // 스크롤이 맨 아래에 도달하면 추가 메시지를 가져오도록 하고,
-          // 스크롤이 맨 위에 도달하지 않았을 때만 호출합니다.
-          loadMoreMessages();
-          return true;
-        } else if (scrollInfo.metrics.pixels == scrollInfo.metrics.minScrollExtent) {
-          // 스크롤이 맨 위로 도달하면 더 이상 메시지를 로드하지 않음을 표시합니다.
-          setState(() {
-            reachedTop = true;
-          });
-        }
-        return false;
-      },
+    return NotificationListener<ScrollUpdateNotification>(
+      // onNotification: (ScrollUpdateNotification scrollInfo) {
+      //   value.listner(scrollInfo);
+      //   // if (!isLoadingMore &&
+      //   //     scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent &&
+      //   //     !reachedTop) {
+      //   //   // 스크롤이 맨 아래에 도달하면 추가 메시지를 가져오도록 하고,
+      //   //   // 스크롤이 맨 위에 도달하지 않았을 때만 호출합니다.
+      //   //   loadMoreMessages();
+      //   //   return true;
+      //   // } else if (scrollInfo.metrics.pixels ==
+      //   //     scrollInfo.metrics.minScrollExtent) {
+      //   //   // 스크롤이 맨 위로 도달하면 더 이상 메시지를 로드하지 않음을 표시합니다.
+      //   //   setState(() {
+      //   //     reachedTop = true;
+      //   //   });
+      //   // }else if (reachedTop && !isLoadingMore) {
+      //   //   // 스크롤이 맨 위에 도달한 후 다시 스크롤을 아래로 내릴 때 추가 메시지를 불러오도록 합니다.
+      //   //   loadMoreMessages();
+      //   // }
+      //   return false;
+      // },
       child: StreamBuilder(
         stream: messageStream,
         builder: (context, AsyncSnapshot snapshot) {
           return snapshot.hasData
               ? ListView.builder(
-            controller: _scrollController, // 스크롤 컨트롤러 설정
-            padding: EdgeInsets.only(bottom: 90.0, top: 130),
-            itemCount: snapshot.data.docs.length,
-            reverse: true, // 화면이 맨 아래로 스크롤되도록 설정
-            itemBuilder: (context, index) {
-              DocumentSnapshot ds = snapshot.data.docs[index];
-              return chatMessageTile(
-                  ds["message"], myUserName == ds["sendBy"], ds["ts"],);
-            },
-          )
-              : Center(
-            child: CircularProgressIndicator(),
-          );
+                  controller: _scrollController,
+                  // 스크롤 컨트롤러 설정
+                  padding: EdgeInsets.only(bottom: 90.0, top: 130),
+                  itemCount: snapshot.data.docs.length,
+                  reverse: true,
+                  // 화면이 맨 아래로 스크롤되도록 설정
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot ds = snapshot.data.docs[index];
+
+                    // 프로필 이미지 출력 여부
+                    String? currentUserName = ds["sendBy"];
+                    String? currentTs = ds["ts"];
+
+                    bool showProfile = false;
+                    bool showTs = false;
+
+                    if (snapshot.data.docs.length != index + 1) {
+                      if (snapshot.data.docs[index + 1]["sendBy"] !=
+                          currentUserName) {
+                        showProfile = true;
+                      }else if(snapshot.data.docs[index+1]["ts"] != currentTs){
+                        showProfile = true;
+                      }
+                    } else {
+                      showProfile = myUserName != currentUserName;
+                    }
+                    // 시간 비교 출력 여부
+                    if (index > 0) {
+                      if (snapshot.data.docs[index - 1]["sendBy"] ==
+                          currentUserName) {
+                        // 시간이 다르면 출력
+                        if (snapshot.data.docs[index - 1]["ts"] != currentTs) {
+                          showTs = true;
+
+                        } // 같으면 출력 안 함
+                      } else {
+                        showTs = true;
+                      }
+                    }else{
+                      showTs = true;
+                    }
+                    return chatMessageTile(
+                      ds["message"],
+                      myUserName == currentUserName,
+                      ds["ts"],
+                      showTs,
+                      showProfile,
+                    );
+                  },
+                )
+              : const Center(
+                  child: CircularProgressIndicator(),
+                );
         },
       ),
     );
   }
+
 // 더 이전 메시지 가져오기
   void loadMoreMessages() async {
     if (!isLoadingMore) {
@@ -195,7 +309,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
 
       if (additionalMessages.docs.isNotEmpty) {
         lastVisibleMessage =
-        additionalMessages.docs[additionalMessages.docs.length - 1];
+            additionalMessages.docs[additionalMessages.docs.length - 1];
         messageStream = FirebaseFirestore.instance
             .collection("chatRooms")
             .doc(chatRoomId)
@@ -212,61 +326,52 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     }
   }
 
-  // // 채팅 메시지
-  // Widget chatMessage() {
-  //   return StreamBuilder(
-  //       stream: messageStream,
-  //       builder: (context, AsyncSnapshot snapshot) {
-  //         return snapshot.hasData
-  //             ? ListView.builder(
-  //             padding: EdgeInsets.only(bottom: 90.0, top: 130),
-  //             itemCount: snapshot.data.docs.length,
-  //             reverse: true,
-  //             itemBuilder: (context, index) {
-  //               DocumentSnapshot ds = snapshot.data.docs[index];
-  //               return chatMessageTile(
-  //                   ds["message"], myUserName == ds["sendBy"]);
-  //             })
-  //             : Center(
-  //           child: CircularProgressIndicator(),
-  //         );
-  //       });
-  // }
-
   // 메시지 추가
-  addMessage(bool sendClicked){
-    if(messageController.text != ""){
+  addMessage(bool sendClicked) {
+    if (messageController.text != "") {
       String message = messageController.text;
       messageController.text = "";
 
       DateTime now = DateTime.now();
-      String formattedDate = DateFormat('h:mma').format(now);
+      String formattedDate =
+          DateFormat('h:mma').format(now.add(Duration(hours: 9))); // UTC + 9
       Map<String, dynamic> messageInfoMap = {
-        "message" : message,
-        "sendBy" : myUserName,
-        "ts" : formattedDate, // timestamp
-        "time" : FieldValue.serverTimestamp(),
-        "imgUrl" : myProfilePic,
+        "message": message,
+        "sendBy": myUserName,
+        "ts": formattedDate, // timestamp
+        "time": FieldValue.serverTimestamp(),
+        "imgUrl": myProfilePic,
       };
-      // if(messageId == null){
-      //   messageId = randomAlphaNumeric(10);
-      // }
+
+      // 상대방 정보 업데이트
+      String userId = otherUserName == seller ? "1" : "2"; // seller면 1 buyer면 2
+      Map<String, dynamic> userInfoMap = {
+        "userName": otherUserName, // 상대방
+        "isExit": false, // 나가기를 했었다면, 강제 초대
+        "unRead": FieldValue.increment(1), // 안 읽음 수 증가
+      };
+
       /**
        * 메시지 ID가 null이면 랜덤 10 ID 부여
+       * if(messageId == null){messageId = randomAlphaNumeric(10);}
        */
       messageId ??= randomAlphaNumeric(10);
       // 마지막 메시지
-      DatabaseMethods().addMessage(chatRoomId!, messageId!, messageInfoMap)
+      DatabaseMethods()
+          .addMessageUser(
+              chatRoomId!, messageId!, messageInfoMap, userId!, userInfoMap)
           .then((value) {
         Map<String, dynamic> lastMessageInfoMap = {
-          "lastMessage" : message,
-          "lastMessageSendTs" : formattedDate,
-          "time" : FieldValue.serverTimestamp(),
-          "lastMessageSendBy" : myUserName,
+          "lastMessage": message,
+          "lastMessageSendTs": formattedDate,
+          "time": FieldValue.serverTimestamp(),
+          "lastMessageSendBy": myUserName,
+          "transactionId" : transactionId,
         };
         print(lastMessageInfoMap);
-        DatabaseMethods().updateLastMessageSend(chatRoomId!, lastMessageInfoMap);
-        if(sendClicked){
+        DatabaseMethods()
+            .updateLastMessageSend(chatRoomId!, lastMessageInfoMap);
+        if (sendClicked) {
           messageId = null;
         }
       });
@@ -281,7 +386,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
 
   // 메시지 작성 읽기
   getAndSetMessages() async {
-    chatRoomId = "1";
     messageStream = await DatabaseMethods().getChatRoomMessages(chatRoomId);
     setState(() {});
   }
@@ -311,8 +415,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
               },
             ),
             elevation: 0,
-            title: const Text(
-              '옹골찬',
+            title: Text(
+              otherUserName ?? "알수없음",
               style:
                   TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
             ),
@@ -674,8 +778,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                         isSender: false,
                                         color: Colors.grey.shade200,
                                         textStyle: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 15),
+                                            color: Colors.black, fontSize: 15),
                                       ),
                                     ],
                                   ),
