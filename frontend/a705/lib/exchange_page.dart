@@ -20,23 +20,66 @@ class _ExchangePageState extends State<ExchangePage> {
   }
   
   String selectedButton = '직접'; // 선택된 버튼
+ // 첫번째 통화
+  final _valueList = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '중국(위안) CNY',
+    '베트남(동) VND',
+    '한국(원) KRW',
+    '홍콩(달러) HKD'
+  ];
+  var _selectedValue = '미국(달러) USD';
+  int idx = 0;
 
-  final _valueList = ['미국', '호주', '일본'];
-  var _selectedValue = '미국';
-  var _selectedValue2 = '호주';
+  List<String> currency = [
+    'USD',
+    'JPY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CNY',
+    'VND',
+    'KRW',
+    'HKD'
+  ];
+  List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$'];
+ // 두번째 통화
+  final _valueList2 = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '중국(위안) CNY',
+    '베트남(동) VND',
+    '한국(원) KRW',
+    '홍콩(달러) HKD'
+  ];
+  var _selectedValue2 = '한국(원) KRW';
+  int idx2 = 7;
 
-  Map<String, Map<String, String>> currencyInfo = {
-    '미국': {'imagePath': 'assets/images/USD.png', 'currencyName': '미국 (달러) USD'},
-    '호주': {
-      'imagePath': 'assets/images/AUD.png',
-      'currencyName': '호주 (달러) AUD'
-    },
-    '일본': {'imagePath': 'assets/images/JPY.png', 'currencyName': '일본 (엔) JPY'},
-  };
+  List<String> currency2 = [
+    'USD',
+    'JPY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CNY',
+    'VND',
+    'KRW',
+    'HKD'
+  ];
+  List<String> sign2 = ['\$', '¥', '€', '£', '\$', '¥', '₫', '₩','\$'];
 
- // 텍스트 필드 컨트롤러
-  final TextEditingController _moneyController = TextEditingController(text: "1");
-  final TextEditingController _currencyController = TextEditingController(text: "\$");
+
+  // 텍스트 필드 컨트롤러
+  final TextEditingController _moneyController = TextEditingController(text: "1 ");
+  final TextEditingController _moneyController2 = TextEditingController(text: "1,300.00 ");
+
 
 
 
@@ -175,8 +218,8 @@ class _ExchangePageState extends State<ExchangePage> {
                                   children: [
                                     Container(
                                       height: 60,
-                                      width: 172,
-                                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                      width: 182,
+                                      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                                       decoration: BoxDecoration(
                                         borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
                                         border: Border.all(color: Colors.transparent),
@@ -191,17 +234,15 @@ class _ExchangePageState extends State<ExchangePage> {
                                                 value: value,
                                                 child: Row(
                                                   children: [
-                                                    Image.asset(
-                                                      currencyInfo[value]![
-                                                      'imagePath']!,
-                                                      width: 20,
-                                                      height: 20,
+                                                    CircleAvatar(
+                                                      backgroundImage: AssetImage(
+                                                          'assets/images/${currency[_valueList.indexOf(value)]}.png'),
+                                                      radius: 10,
                                                     ),
                                                     const SizedBox(
                                                       width: 10,
                                                     ),
-                                                    Text(currencyInfo[value]![
-                                                    'currencyName']!),
+                                                    Text(value),
                                                   ],
                                                 ),
                                               );
@@ -209,7 +250,8 @@ class _ExchangePageState extends State<ExchangePage> {
                                           ).toList(),
                                           onChanged: (value) {
                                             setState(() {
-                                              _selectedValue = value.toString();
+                                              _selectedValue = value!;
+                                              idx = _valueList.indexOf(value);
                                             });
                                           },
                                         ),
@@ -223,15 +265,24 @@ class _ExchangePageState extends State<ExchangePage> {
                                         borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
                                         border: Border.all(color: Colors.transparent),
                                       ),
-                                      child: TextFormField(
+                                      child: TextField(
+                                        keyboardType: TextInputType.number,
+                                        // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                         controller: _moneyController,
-                                        style: const TextStyle(decorationThickness: 0),
-                                        decoration: const InputDecoration(
-                                          enabledBorder: UnderlineInputBorder(
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          border: InputBorder.none,
+                                          enabledBorder: const UnderlineInputBorder(
                                             borderSide: BorderSide(color: Colors.transparent)
                                           ),
+                                          suffixText: ' ${sign[idx]}',
                                         ),
                                         textAlign: TextAlign.end,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -254,7 +305,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                 children: [
                                   Container(
                                     height: 60,
-                                    width: 172,
+                                    width: 182,
                                     padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                                     decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
@@ -264,23 +315,21 @@ class _ExchangePageState extends State<ExchangePage> {
                                     child: DropdownButtonHideUnderline(
                                       child: DropdownButton(
                                         value: _selectedValue2,
-                                        items: _valueList.map(
+                                        items: _valueList2.map(
                                               (value) {
                                             return DropdownMenuItem(
                                               value: value,
                                               child: Row(
                                                 children: [
-                                                  Image.asset(
-                                                    currencyInfo[value]![
-                                                    'imagePath']!,
-                                                    width: 20,
-                                                    height: 20,
+                                                  CircleAvatar(
+                                                    backgroundImage: AssetImage(
+                                                        'assets/images/${currency2[_valueList2.indexOf(value)]}.png'),
+                                                    radius: 10,
                                                   ),
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  Text(currencyInfo[value]![
-                                                  'currencyName']!),
+                                                  Text(value),
                                                 ],
                                               ),
                                             );
@@ -288,29 +337,39 @@ class _ExchangePageState extends State<ExchangePage> {
                                         ).toList(),
                                         onChanged: (value) {
                                           setState(() {
-                                            _selectedValue2 = value.toString();
+                                            _selectedValue2 = value!;
+                                            idx2 = _valueList2.indexOf(value);
                                           });
                                         },
                                       ),
                                     ),
                                   ),
                                   Container(
-                                    width: 140,
-                                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    width: 130,
+                                    margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                                     // color: Colors.red,
                                     decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
                                       border: Border.all(color: Colors.transparent),
                                     ),
-                                    child: TextFormField(
-                                      controller: _moneyController,
-                                      style: const TextStyle(decorationThickness: 0),
-                                      decoration: const InputDecoration(
-                                        enabledBorder: UnderlineInputBorder(
+                                    child: TextField(
+                                      keyboardType: TextInputType.number,
+                                      // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                      controller: _moneyController2,
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                        border: InputBorder.none,
+                                        enabledBorder: const UnderlineInputBorder(
                                             borderSide: BorderSide(color: Colors.transparent)
                                         ),
+                                        suffixText: ' ${sign[idx2]}',
                                       ),
                                       textAlign: TextAlign.end,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ],
