@@ -12,6 +12,9 @@ class ExchangeRecordCreatePage extends StatefulWidget {
 class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
   final _valueList = ['첫 번째', '두 번째', '세 번째'];
   var _selectedValue = '첫 번째';
+
+  final _banks = ['하나은행', '우리은행', '국민은행', '농협'];
+  String _selectedBank = '하나은행';
   DateTime selectedDate = DateTime.now();
 
   Future<void> _selectDate(BuildContext context) async {
@@ -263,37 +266,24 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
                       ),
                       color: Color(0xFFF2F2F2),
                     ),
-                  ),
-                  TextField(
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                        borderSide:
-                        BorderSide(color: Color(0xFFF2F2F2), width: 3),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                        borderSide:
-                        BorderSide(color: Color(0xFFF2F2F2), width: 3),
-                      ),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      suffixText: ' %',
-                    ),
-                    cursorColor: Colors.black87,
-                    textAlign: TextAlign.end,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 10),
+                        DropdownButton<String>(
+                          value: _selectedBank,
+                          items: _banks.map((bank) {
+                            return DropdownMenuItem<String>(
+                              value: bank,
+                              child: Text(bank),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedBank = value!;
+                            });
+                          }
+                        )
+                      ]
                     )
                   ),
                   const SizedBox(height: 15),
