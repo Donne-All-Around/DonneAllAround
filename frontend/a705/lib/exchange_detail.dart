@@ -1,3 +1,4 @@
+import 'package:a705/bank_datail.dart';
 import 'package:flutter/material.dart';
 
 class ExchangeDetailPage extends StatefulWidget {
@@ -323,7 +324,12 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                         ),
                       ),
                       // 은행 상세 페이지로.
-                      onTap: (){},
+                      onTap:(){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const BankDetailPage()),
+                        );
+                      },
                     ),
                   ],
                 ),

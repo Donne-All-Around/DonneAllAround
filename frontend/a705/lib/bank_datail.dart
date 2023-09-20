@@ -12,34 +12,46 @@ class _BankDetailPageState extends State<BankDetailPage> {
   Widget build(BuildContext context){
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
+      child: SafeArea(
+        child: Scaffold(
           backgroundColor: Colors.white,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios_new_outlined,
-              color: Colors.black87,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios_new_outlined,
+                color: Colors.black87,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+            elevation: 0,
+            title: const Text(
+              '환율 검색',
+                style:
+                TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
           ),
-          elevation: 0,
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-            child: const Column(
+          centerTitle: true,
+          ),
+          body: SingleChildScrollView(
+            child:Column(
               children: [
-                // 멘트
+                Container(
+                  margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                  child: const Column(
+                    children: [
+                      // 멘트
 
-                SizedBox(height: 20,),
-                // 사진변경
+                      SizedBox(height: 20,),
+                      // 사진변경
 
-                // 닉네임 & 중복체크
+                      // 닉네임 & 중복체크
 
-                // 시작하기 버튼
+                      // 시작하기 버튼
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

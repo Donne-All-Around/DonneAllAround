@@ -18,7 +18,9 @@ class _ExchangePageState extends State<ExchangePage> {
     var strToday = formatter.format(now);
     return strToday;
   }
-
+  
+  String selectedButton = '직접'; // 선택된 버튼
+  
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -110,19 +112,27 @@ class _ExchangePageState extends State<ExchangePage> {
                               child: Row(
                                 children: [
                                   ElevatedButton(
-                                      onPressed: (){},
+                                      onPressed: (){
+                                        setState(() {
+                                          selectedButton = '직접';
+                                        });
+                                      },
                                     style: ElevatedButton.styleFrom(
                                       elevation: 0,
-                                        backgroundColor: Colors.green
+                                        backgroundColor: selectedButton == '직접' ? Colors.green : Colors.grey,
                                     ),
 
                                       child: const Text('직접',),),
                                   const SizedBox(width: 5),
                                   ElevatedButton(
-                                      onPressed:(){},
+                                      onPressed:(){
+                                        setState(() {
+                                          selectedButton = '이중';
+                                        });
+                                      },
                                       style: ElevatedButton.styleFrom(
                                         elevation: 0,
-                                        backgroundColor: Colors.red,
+                                        backgroundColor: selectedButton == '이중' ? Colors.red : Colors.grey,
                                       ),
                                       child: const Text('이중') ),
                                 ],
