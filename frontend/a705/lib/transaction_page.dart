@@ -109,50 +109,50 @@ class _TransactionPageState extends State<TransactionPage> {
                           width: double.infinity, // To show images in particular area only
                           height: 80,
                           child: selectedImages
-                                  .isEmpty // If no images is selected
+                              .isEmpty // If no images is selected
                               ? const Center(
-                                  child: Text('사진을 선택하세요'))
-                              // If at least 1 images is selected
+                              child: Text('사진을 선택하세요'))
+                          // If at least 1 images is selected
                               : GridView.builder(
                             scrollDirection: Axis.horizontal,
                             physics: const ScrollPhysics(),
-                                  itemCount: selectedImages.length,
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 1,
-                                    childAspectRatio: 1 / 1,
-                                    mainAxisSpacing: 10,
-                                    // Horizontally only 3 images will show
-                                  ),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Container(
-                                      height: 70,
-                                      width: 70,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: kIsWeb
-                                              ? Image.network(
-                                                  selectedImages[index].path,
-                                                  width: 80,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : Image.file(
-                                                  selectedImages[index],
-                                                  width: 80,
-                                                  fit: BoxFit.cover,
-                                                )),
-                                    );
-
-                                    // If you are making the web app then you have to
-                                    // use image provider as network image or in
-                                    // android or iOS it will as file only
-                                  },
+                            itemCount: selectedImages.length,
+                            gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 1,
+                              childAspectRatio: 1 / 1,
+                              mainAxisSpacing: 10,
+                              // Horizontally only 3 images will show
+                            ),
+                            itemBuilder:
+                                (BuildContext context, int index) {
+                              return Container(
+                                height: 70,
+                                width: 70,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
+                                child: ClipRRect(
+                                    borderRadius:
+                                    BorderRadius.circular(10),
+                                    child: kIsWeb
+                                        ? Image.network(
+                                      selectedImages[index].path,
+                                      width: 80,
+                                      fit: BoxFit.cover,
+                                    )
+                                        : Image.file(
+                                      selectedImages[index],
+                                      width: 80,
+                                      fit: BoxFit.cover,
+                                    )),
+                              );
+
+                              // If you are making the web app then you have to
+                              // use image provider as network image or in
+                              // android or iOS it will as file only
+                            },
+                          ),
                         ),
                       ),
                     ],
@@ -251,7 +251,7 @@ class _TransactionPageState extends State<TransactionPage> {
                           bottomRight: Radius.circular(10),
                         ),
                         borderSide:
-                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                        BorderSide(color: Color(0xFFF2F2F2), width: 3),
                       ),
                       focusedBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.only(
@@ -259,7 +259,7 @@ class _TransactionPageState extends State<TransactionPage> {
                           bottomRight: Radius.circular(10),
                         ),
                         borderSide:
-                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                        BorderSide(color: Color(0xFFF2F2F2), width: 3),
                       ),
                       suffixText: ' ${sign[idx]}',
                     ),
@@ -300,7 +300,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         SizedBox(width: 10),
                         CircleAvatar(
                           backgroundImage:
-                              AssetImage('assets/images/KRW.png'),
+                          AssetImage('assets/images/KRW.png'),
                           radius: 10,
                         ),
                         SizedBox(width: 5),
@@ -327,7 +327,7 @@ class _TransactionPageState extends State<TransactionPage> {
                           bottomRight: Radius.circular(10),
                         ),
                         borderSide:
-                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                        BorderSide(color: Color(0xFFF2F2F2), width: 3),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.only(
@@ -335,7 +335,7 @@ class _TransactionPageState extends State<TransactionPage> {
                           bottomRight: Radius.circular(10),
                         ),
                         borderSide:
-                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                        BorderSide(color: Color(0xFFF2F2F2), width: 3),
                       ),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       suffixText: ' ₩',
@@ -427,10 +427,10 @@ class _TransactionPageState extends State<TransactionPage> {
                     ),
                     child: const Center(
                         child: Text(
-                      '작성 완료',
-                      style:
+                          '작성 완료',
+                          style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    )),
+                        )),
                   ),
                 ],
               ),
