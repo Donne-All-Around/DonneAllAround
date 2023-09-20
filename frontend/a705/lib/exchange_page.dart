@@ -26,17 +26,17 @@ class _ExchangePageState extends State<ExchangePage> {
   var _selectedValue2 = '호주';
 
   Map<String, Map<String, String>> currencyInfo = {
-    '미국': {'imagePath': 'assets/images/usa.png', 'currencyName': '미국 (달러) USD'},
+    '미국': {'imagePath': 'assets/images/USD.png', 'currencyName': '미국 (달러) USD'},
     '호주': {
-      'imagePath': 'assets/images/australia.png',
+      'imagePath': 'assets/images/AUD.png',
       'currencyName': '호주 (달러) AUD'
     },
-    '일본': {'imagePath': 'assets/images/japan.png', 'currencyName': '일본 (엔) JPY'},
+    '일본': {'imagePath': 'assets/images/JPY.png', 'currencyName': '일본 (엔) JPY'},
   };
 
  // 텍스트 필드 컨트롤러
-  TextEditingController _moneyController = TextEditingController(text: "1");
-  TextEditingController _currencyController = TextEditingController(text: "\$");
+  final TextEditingController _moneyController = TextEditingController(text: "1");
+  final TextEditingController _currencyController = TextEditingController(text: "\$");
 
 
 
@@ -407,7 +407,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                children: [
                                  SizedBox(width: 30,),
                                   CircleAvatar(
-                                   backgroundImage: AssetImage('assets/images/australia.png',),
+                                   backgroundImage: AssetImage('assets/images/AUD.png',),
                                    radius: 17,
                                  ),
                                  Text('  호주 (달러)' , style: TextStyle(fontSize: 17),),
@@ -438,7 +438,7 @@ class _ExchangePageState extends State<ExchangePage> {
                             children: [
                               SizedBox(width: 30,),
                               CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/australia.png',),
+                                backgroundImage: AssetImage('assets/images/AUD.png',),
                                 radius: 17,
                               ),
                               Text('  호주 (달러)' , style: TextStyle(fontSize: 17),),
@@ -469,7 +469,7 @@ class _ExchangePageState extends State<ExchangePage> {
                             children: [
                               SizedBox(width: 30,),
                               CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/australia.png',),
+                                backgroundImage: AssetImage('assets/images/AUD.png',),
                                 radius: 17,
                               ),
                               Text('  호주 (달러)' , style: TextStyle(fontSize: 17),),
@@ -500,7 +500,7 @@ class _ExchangePageState extends State<ExchangePage> {
                             children: [
                               SizedBox(width: 30,),
                               CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/australia.png',),
+                                backgroundImage: AssetImage('assets/images/AUD.png',),
                                 radius: 17,
                               ),
                               Text('  호주 (달러)' , style: TextStyle(fontSize: 17),),
@@ -531,7 +531,7 @@ class _ExchangePageState extends State<ExchangePage> {
                             children: [
                               SizedBox(width: 30,),
                               CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/australia.png',),
+                                backgroundImage: AssetImage('assets/images/AUD.png',),
                                 radius: 17,
                               ),
                               Text('  호주 (달러)' , style: TextStyle(fontSize: 17),),
