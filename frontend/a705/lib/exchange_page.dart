@@ -20,7 +20,26 @@ class _ExchangePageState extends State<ExchangePage> {
   }
   
   String selectedButton = '직접'; // 선택된 버튼
-  
+
+  final _valueList = ['미국', '호주', '일본'];
+  var _selectedValue = '미국';
+  var _selectedValue2 = '호주';
+
+  Map<String, Map<String, String>> currencyInfo = {
+    '미국': {'imagePath': 'assets/images/usa.png', 'currencyName': '미국 (달러) USD'},
+    '호주': {
+      'imagePath': 'assets/images/australia.png',
+      'currencyName': '호주 (달러) AUD'
+    },
+    '일본': {'imagePath': 'assets/images/japan.png', 'currencyName': '일본 (엔) JPY'},
+  };
+
+ // 텍스트 필드 컨트롤러
+  TextEditingController _moneyController = TextEditingController(text: "1");
+  TextEditingController _currencyController = TextEditingController(text: "\$");
+
+
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -152,11 +171,84 @@ class _ExchangePageState extends State<ExchangePage> {
                                   border: Border.all(color: Colors.black38),
                                 ),
                                 // 드롭다운
-                                // child: Row(
-                                //   children: [
-                                //     DropdownButton(items: , onChanged: ),
-                                //   ],
-                                // ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      height: 60,
+                                      width: 167,
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
+                                        border: Border.all(color: Colors.transparent),
+                                        color:  Colors.grey[300],
+                                      ),
+                                      child: DropdownButtonHideUnderline(
+                                        child: DropdownButton(
+                                          value: _selectedValue,
+                                          items: _valueList.map(
+                                                (value) {
+                                              return DropdownMenuItem(
+                                                value: value,
+                                                child: Row(
+                                                  children: [
+                                                    Image.asset(
+                                                      currencyInfo[value]![
+                                                      'imagePath']!,
+                                                      width: 20,
+                                                      height: 20,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text(currencyInfo[value]![
+                                                    'currencyName']!),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          ).toList(),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedValue = value.toString();
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 140,
+                                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                      // color: Colors.red,
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
+                                        border: Border.all(color: Colors.transparent),
+                                      ),
+                                      child: TextFormField(
+                                        controller: _moneyController,
+                                        style: const TextStyle(decorationThickness: 0),
+                                        decoration: const InputDecoration(
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.transparent)
+                                          ),
+                                        ),
+                                        textAlign: TextAlign.end,
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 25,
+                                      // color: Colors.red,
+                                      child: TextFormField(
+                                        controller: _currencyController,
+                                        style: const TextStyle(decorationThickness: 0, fontSize: 18),
+                                        decoration: const InputDecoration(
+                                          enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.transparent)
+                                          ),
+                                        ),
+                                        textAlign: TextAlign.end,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -170,6 +262,84 @@ class _ExchangePageState extends State<ExchangePage> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(color: Colors.black38),
+                              ),
+                              child:  Row(
+                                children: [
+                                  Container(
+                                    height: 60,
+                                    width: 167,
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
+                                      border: Border.all(color: Colors.transparent),
+                                      color:  Colors.grey[300],
+                                    ),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton(
+                                        value: _selectedValue2,
+                                        items: _valueList.map(
+                                              (value) {
+                                            return DropdownMenuItem(
+                                              value: value,
+                                              child: Row(
+                                                children: [
+                                                  Image.asset(
+                                                    currencyInfo[value]![
+                                                    'imagePath']!,
+                                                    width: 20,
+                                                    height: 20,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text(currencyInfo[value]![
+                                                  'currencyName']!),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ).toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _selectedValue2 = value.toString();
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 140,
+                                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    // color: Colors.red,
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
+                                      border: Border.all(color: Colors.transparent),
+                                    ),
+                                    child: TextFormField(
+                                      controller: _moneyController,
+                                      style: const TextStyle(decorationThickness: 0),
+                                      decoration: const InputDecoration(
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.transparent)
+                                        ),
+                                      ),
+                                      textAlign: TextAlign.end,
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 25,
+                                    // color: Colors.red,
+                                    child: TextFormField(
+                                      controller: _currencyController,
+                                      style: const TextStyle(decorationThickness: 0, fontSize: 18),
+                                      decoration: const InputDecoration(
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.transparent)
+                                        ),
+                                      ),
+                                      textAlign: TextAlign.end,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],

@@ -13,12 +13,12 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
   var _selectedValue = '미국';
 
   Map<String, Map<String, String>> currencyInfo = {
-    '미국': {'imagePath': 'assets/images/usa.png', 'currencyName': '미국 달러 USD'},
+    '미국': {'imagePath': 'assets/images/usa.png', 'currencyName': '미국 (달러) USD'},
     '호주': {
       'imagePath': 'assets/images/australia.png',
-      'currencyName': '호주 달러 AUD'
+      'currencyName': '호주 (달러) AUD'
     },
-    '일본': {'imagePath': 'assets/images/japan.png', 'currencyName': '일본 엔 JPY'},
+    '일본': {'imagePath': 'assets/images/japan.png', 'currencyName': '일본 (엔) JPY'},
   };
 
   String selectedButton = ''; // 선택된 버튼
