@@ -102,7 +102,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                   children: [
                                     CircleAvatar(
                                       backgroundImage: AssetImage(
-                                          'assets/images/australia.png'),
+                                          'assets/images/AUD.png'),
                                       radius: 8,
                                     ),
                                     SizedBox(width: 5),

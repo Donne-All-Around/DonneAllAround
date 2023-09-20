@@ -14,6 +14,8 @@ class TransactionDetailPage extends StatefulWidget {
 }
 
 class _TransactionDetailPageState extends State<TransactionDetailPage> {
+  bool isLiked = false;
+
   @override
   void initState() {
     super.initState();
@@ -182,8 +184,17 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                     child: Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.favorite_border_rounded),
-                          onPressed: () {},
+                          icon: isLiked
+                              ? const Icon(
+                                  Icons.favorite_rounded,
+                                  color: Colors.red,
+                                )
+                              : const Icon(Icons.favorite_border_rounded),
+                          onPressed: () {
+                            setState(() {
+                              isLiked = !isLiked;
+                            });
+                          },
                         ),
                         const SizedBox(width: 10),
                         Container(width: 1, color: Colors.black26),
@@ -200,7 +211,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                       SizedBox(width: 10),
                                       CircleAvatar(
                                         backgroundImage:
-                                        AssetImage('assets/images/australia.png'),
+                                            AssetImage('assets/images/AUD.png'),
                                         radius: 8,
                                       ),
                                       SizedBox(width: 5),
@@ -213,7 +224,12 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                       ),
                                     ],
                                   ),
-                                  Text('42,000원', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                                  Text(
+                                    '42,000원',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ],
                               ),
                               GestureDetector(
@@ -225,8 +241,10 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                   ));
                                 },
                                 child: Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 5, 20, 5),
-                                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                  margin:
+                                      const EdgeInsets.fromLTRB(0, 5, 20, 5),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 0, 20, 0),
                                   decoration: BoxDecoration(
                                     color: const Color(0xFFFFD954),
                                     borderRadius: BorderRadius.circular(15),
@@ -234,7 +252,9 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                   child: const Center(
                                     child: Text(
                                       '채팅하기',
-                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
                                     ),
                                   ),
                                 ),
@@ -242,7 +262,6 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                             ],
                           ),
                         ),
-
                       ],
                     )),
               ],

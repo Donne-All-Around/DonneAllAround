@@ -197,7 +197,7 @@ class _TransactionPageState extends State<TransactionPage> {
                                   children: [
                                     const CircleAvatar(
                                       backgroundImage: AssetImage(
-                                          'assets/images/australia.png'),
+                                          'assets/images/AUD.png'),
                                       radius: 10,
                                     ),
                                     const SizedBox(width: 5),

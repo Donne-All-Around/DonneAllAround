@@ -81,8 +81,15 @@ flutter:
      - assets/images/wagon_don.png
      - assets/images/profile.jpg
      - assets/images/ausdollar.jpg
-     - assets/images/australia.png
-     - assets/images/korea.png
+     - assets/images/AUD.png
+     - assets/images/JPY.png
+     - assets/images/EUR.png
+     - assets/images/GBP.png
+     - assets/images/CNY.png
+     - assets/images/VND.png
+     - assets/images/HKD.png
+     - assets/images/USD.png
+     - assets/images/KRW.png
      - assets/images/marker.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
