@@ -13,6 +13,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _valueList = ['최신순', '낮은 가격순'];
   var _selectedValue = '최신순';
+  int _idx = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -137,8 +138,8 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(width: 10),
               GestureDetector(
-                onTap: () {
-                  showModalBottomSheet(
+                onTap: () async {
+                  int idx = await showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
                       shape: RoundedRectangleBorder(
@@ -170,22 +171,26 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ));
                       });
+                  setState(() {
+                    _idx = idx;
+                  });
                 },
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                  child: const Row(
+                  child: Row(
                     children: [
                       CircleAvatar(
                         backgroundImage:
-                            AssetImage('assets/images/AUD.png'),
+                            AssetImage('assets/images/${currency[_idx]}.png'),
                         radius: 10,
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Text(
-                        'AUD',
-                        style: TextStyle(color: Colors.black, fontSize: 17),
+                        currency[_idx],
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 17),
                       ),
-                      Icon(
+                      const Icon(
                         Icons.keyboard_arrow_down_rounded,
                         color: Colors.black,
                       )
@@ -257,17 +262,29 @@ class _HomePageState extends State<HomePage> {
                             ),
                             color: Colors.white,
                           ),
-                          child: const Row(
+                          child: Row(
                             children: [
                               CircleAvatar(
-                                backgroundImage:
-                                    AssetImage('assets/images/KRW.png'),
+                                backgroundImage: AssetImage(
+                                    'assets/images/${currency[_idx]}.png'),
                                 radius: 8,
                               ),
-                              SizedBox(width: 5),
-                              Text(
-                                '대한민국(원화) KRW',
-                                style: TextStyle(fontSize: 15),
+                              const SizedBox(width: 5),
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '${country[_idx]} ${currency[_idx]}',
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                    Text(
+                                      sign[_idx],
+                                      style: const TextStyle(fontSize: 15),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -384,7 +401,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                       Container(
                         height: 100,
                         width: 100,
-                        margin: const EdgeInsets.fromLTRB(20, 15, 10, 15),
+                        margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                         ),
@@ -431,8 +448,8 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                               const Row(
                                 children: [
                                   CircleAvatar(
-                                    backgroundImage: AssetImage(
-                                        'assets/images/AUD.png'),
+                                    backgroundImage:
+                                        AssetImage('assets/images/AUD.png'),
                                     radius: 8,
                                   ),
                                   SizedBox(width: 5),
@@ -458,28 +475,34 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                     ),
                                     child: const Text('예약중'),
                                   ),
-                                  const Text(
-                                    '42,000원',
-                                    style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  // SizedBox(width: 20),
+                                  const Column(
+                                    children: [
+                                      Text(
+                                        '42,000원',
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Icon(
+                                              Icons.people_outline_rounded,
+                                              size: 17),
+                                          SizedBox(width: 2),
+                                          Text("3"),
+                                          SizedBox(width: 3),
+                                          Icon(Icons.favorite_border_rounded,
+                                              size: 17),
+                                          SizedBox(width: 2),
+                                          Text("2"),
+                                        ],
+                                      ),
+                                    ],
+                                  )
                                 ],
                               ),
-                              const Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Icon(Icons.chat_bubble_outline_rounded,
-                                      size: 17),
-                                  SizedBox(width: 2),
-                                  Text("3"),
-                                  SizedBox(width: 3),
-                                  Icon(Icons.favorite_border_rounded, size: 17),
-                                  SizedBox(width: 2),
-                                  Text("2"),
-                                ],
-                              )
                             ],
                           ),
                         ),
@@ -494,8 +517,27 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
   }
 }
 
-List<String> country = ['미국(달러)', '일본(엔)', '유럽(유로)', '영국(파운드)', '호주(달러)', '중국(위안)', '베트남(동)', '홍콩(달러)'];
-List<String> currency = ['USD', 'JPY', 'EUR', 'GBP', 'AUD', 'CNY', 'VND', 'HKD'];
+List<String> country = [
+  '미국(달러)',
+  '일본(엔)',
+  '유럽(유로)',
+  '영국(파운드)',
+  '호주(달러)',
+  '중국(위안)',
+  '베트남(동)',
+  '홍콩(달러)'
+];
+List<String> currency = [
+  'USD',
+  'JPY',
+  'EUR',
+  'GBP',
+  'AUD',
+  'CNY',
+  'VND',
+  'HKD'
+];
+List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫', '\$'];
 
 class CountryListViewBuilder extends StatefulWidget {
   const CountryListViewBuilder({super.key});
@@ -505,62 +547,65 @@ class CountryListViewBuilder extends StatefulWidget {
 }
 
 class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
+  int idx = 0;
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: country.length,
       itemBuilder: (BuildContext context, int index) {
-        return Container(
-          margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-          height: 50,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(10),
-            ),
-            color: Color(0xFFFFD954),
-          ),
-          child: Row(
-            children: [
-              Row(
-                children: [
-                  const SizedBox(width: 20),
-                  CircleAvatar(
-                    backgroundImage: AssetImage(
-                        'assets/images/${currency[index]}.png'),
-                    radius: 10,
-                  ),
-                  const SizedBox(width: 10),
-                ],
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              idx = index;
+            });
+            Navigator.pop(context, idx);
+          },
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+            height: 50,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
               ),
-              Expanded(
-                flex: 1,
-                child: Row(
-                  mainAxisAlignment:
-                  MainAxisAlignment
-                      .spaceBetween,
-                  crossAxisAlignment:
-                  CrossAxisAlignment.center,
+              color: Color(0xFFFFD954),
+            ),
+            child: Row(
+              children: [
+                Row(
                   children: [
-                    Text(
-                      country[index],
-                      style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight:
-                          FontWeight.bold),
+                    const SizedBox(width: 20),
+                    CircleAvatar(
+                      backgroundImage:
+                          AssetImage('assets/images/${currency[index]}.png'),
+                      radius: 10,
                     ),
-                    Text(
-                      currency[index],
-                      style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight:
-                          FontWeight.bold),
-                    ),
+                    const SizedBox(width: 10),
                   ],
                 ),
-              ),
-              const SizedBox(width: 20),
-            ],
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        country[index],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        currency[index],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 20),
+              ],
+            ),
           ),
         );
       },
