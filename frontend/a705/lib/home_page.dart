@@ -1,5 +1,7 @@
+import 'package:a705/transaction_detail_page.dart';
 import 'package:a705/transaction_page.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -9,8 +11,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _valueList = ['첫 번째', '두 번째', '세 번째'];
-  var _selectedValue = '첫 번째';
+  final _valueList = ['최신순', '낮은 가격순'];
+  var _selectedValue = '최신순';
 
   @override
   Widget build(BuildContext context) {
@@ -19,58 +21,293 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
+          elevation: 0,
           leading: Row(
             children: [
-              const SizedBox(width: 10),
-              DropdownButton(
-                value: _selectedValue,
-                items: _valueList.map((value) {
-                  return DropdownMenuItem(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedValue = value!;
-                  });
+              const SizedBox(width: 20),
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      builder: (BuildContext context) {
+                        return Container(
+                            height: MediaQuery.of(context).size.height / 5 * 4,
+                            color: Colors.transparent,
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.fromLTRB(30, 20, 30, 20),
+                              height:
+                                  MediaQuery.of(context).size.height / 5 * 4,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    children: [
+                                      const SizedBox(height: 10),
+                                      const Text(
+                                        '지역 검색',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      TextField(
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: const BorderSide(
+                                                color: Colors.black87),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: const BorderSide(
+                                                color: Colors.black87),
+                                          ),
+                                        ),
+                                        cursorColor: Colors.black87,
+                                      ),
+                                      const SizedBox(height: 20),
+                                      const Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '\'역삼동\' 검색 결과',
+                                            style: TextStyle(fontSize: 17),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Container(
+                                          height: 1, color: Colors.black38),
+                                      const SizedBox(height: 10),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Container(
+                                        height: 50,
+                                        width: double.infinity,
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                          color: Color(0xFFFFD954),
+                                        ),
+                                        child: const Center(
+                                            child: Text(
+                                          '현재 위치로 찾기',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        )),
+                                      ),
+                                      const SizedBox(height: 10),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ));
+                      });
                 },
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
+                  child: const Row(
+                    children: [
+                      Text(
+                        '역삼동',
+                        style: TextStyle(color: Colors.black, fontSize: 17),
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: Colors.black,
+                      )
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(width: 10),
-              DropdownButton(
-                value: _selectedValue,
-                items: _valueList.map((value) {
-                  return DropdownMenuItem(
-                    value: value,
-                    child: Row(
-                      children: [
-                        const CircleAvatar(
-                          backgroundImage:
-                              AssetImage('assets/images/australia.png'),
-                          radius: 10,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(value),
-                      ],
-                    ),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedValue = value!;
-                  });
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      builder: (BuildContext context) {
+                        return Container(
+                            height: MediaQuery.of(context).size.height / 5 * 4,
+                            color: Colors.transparent,
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.fromLTRB(30, 20, 30, 20),
+                              height:
+                                  MediaQuery.of(context).size.height / 5 * 4,
+                              child: const Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(height: 10),
+                                  Text(
+                                    '통화 선택',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Expanded(child: CountryListViewBuilder()),
+                                ],
+                              ),
+                            ));
+                      });
                 },
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                  child: const Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundImage:
+                            AssetImage('assets/images/AUD.png'),
+                        radius: 10,
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        'AUD',
+                        style: TextStyle(color: Colors.black, fontSize: 17),
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: Colors.black,
+                      )
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
-          leadingWidth: 200,
+          leadingWidth: double.infinity,
+          actions: [
+            IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () {},
+                icon: const Icon(Icons.notifications_none_rounded,
+                    color: Colors.black87)),
+            const SizedBox(width: 30),
+          ],
         ),
         body: Stack(children: [
           Container(
             height: double.infinity,
             width: double.infinity,
-            color: Colors.blue,
-            child: const Text('HomePage'),
+            color: Colors.white,
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                    color: Color(0xFFFFD954),
+                  ),
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                '매매기준율',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              Text(
+                                  '${DateFormat('yyyy.MM.dd HH:mm').format(DateTime.now())} 기준')
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          width: double.infinity,
+                          height: kMinInteractiveDimension,
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            border: Border.all(
+                              color: const Color(0xFFD9D9D9),
+                              width: 2,
+                            ),
+                            color: Colors.white,
+                          ),
+                          child: const Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundImage:
+                                    AssetImage('assets/images/KRW.png'),
+                                radius: 8,
+                              ),
+                              SizedBox(width: 5),
+                              Text(
+                                '대한민국(원화) KRW',
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    DropdownButtonHideUnderline(
+                      child: DropdownButton(
+                        value: _selectedValue,
+                        items: _valueList.map((value) {
+                          return DropdownMenuItem(
+                            value: value,
+                            child: SizedBox(
+                              width: 100,
+                              child: Text(
+                                value,
+                                style: const TextStyle(fontSize: 17),
+                                textAlign: TextAlign.end,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedValue = value!;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 30),
+                  ],
+                ),
+                const Expanded(child: ListViewBuilder()),
+              ],
+            ),
           ),
           Positioned(
             right: 20,
@@ -96,6 +333,237 @@ class _HomePageState extends State<HomePage> {
           ),
         ]),
       ),
+    );
+  }
+}
+
+List<String> transactions = ['옹골찬', '김싸피', '박싸피', '정현아', '문요환', '별의 커비', '뽀로로'];
+
+class ListViewBuilder extends StatefulWidget {
+  const ListViewBuilder({super.key});
+
+  @override
+  State<ListViewBuilder> createState() => _ListViewBuilderState();
+}
+
+class _ListViewBuilderState extends State<ListViewBuilder> {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        itemCount: transactions.length,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) {
+                  return const TransactionDetailPage();
+                },
+              ));
+            },
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(20, 2, 20, 10),
+              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      spreadRadius: 1,
+                      blurRadius: 3,
+                      offset: const Offset(0, 0),
+                    ),
+                  ]),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        height: 100,
+                        width: 100,
+                        margin: const EdgeInsets.fromLTRB(20, 15, 10, 15),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: const Image(
+                              height: 60,
+                              image: AssetImage(
+                                'assets/images/ausdollar.jpg',
+                              ),
+                              fit: BoxFit.cover,
+                            )),
+                      ),
+                      Flexible(
+                        flex: 1,
+                        child: SizedBox(
+                          // height: 100,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                '호주 달러 50달러 팔아요',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Row(
+                                children: [
+                                  Text(
+                                    '강남구 역삼동',
+                                    style: TextStyle(color: Colors.black54),
+                                  ),
+                                  Text(
+                                    ' · ',
+                                    style: TextStyle(color: Colors.black54),
+                                  ),
+                                  Text(
+                                    '1시간 전',
+                                    style: TextStyle(color: Colors.black54),
+                                  ),
+                                ],
+                              ),
+                              const Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundImage: AssetImage(
+                                        'assets/images/AUD.png'),
+                                    radius: 8,
+                                  ),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    '50 AUD',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blueAccent),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(3, 2, 3, 2),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFFFD954),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: const Text('예약중'),
+                                  ),
+                                  const Text(
+                                    '42,000원',
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  // SizedBox(width: 20),
+                                ],
+                              ),
+                              const Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Icon(Icons.chat_bubble_outline_rounded,
+                                      size: 17),
+                                  SizedBox(width: 2),
+                                  Text("3"),
+                                  SizedBox(width: 3),
+                                  Icon(Icons.favorite_border_rounded, size: 17),
+                                  SizedBox(width: 2),
+                                  Text("2"),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+}
+
+List<String> country = ['미국(달러)', '일본(엔)', '유럽(유로)', '영국(파운드)', '호주(달러)', '중국(위안)', '베트남(동)', '홍콩(달러)'];
+List<String> currency = ['USD', 'JPY', 'EUR', 'GBP', 'AUD', 'CNY', 'VND', 'HKD'];
+
+class CountryListViewBuilder extends StatefulWidget {
+  const CountryListViewBuilder({super.key});
+
+  @override
+  State<CountryListViewBuilder> createState() => _CountryListViewBuilderState();
+}
+
+class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: country.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Container(
+          margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+          height: 50,
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+            color: Color(0xFFFFD954),
+          ),
+          child: Row(
+            children: [
+              Row(
+                children: [
+                  const SizedBox(width: 20),
+                  CircleAvatar(
+                    backgroundImage: AssetImage(
+                        'assets/images/${currency[index]}.png'),
+                    radius: 10,
+                  ),
+                  const SizedBox(width: 10),
+                ],
+              ),
+              Expanded(
+                flex: 1,
+                child: Row(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .spaceBetween,
+                  crossAxisAlignment:
+                  CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      country[index],
+                      style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight:
+                          FontWeight.bold),
+                    ),
+                    Text(
+                      currency[index],
+                      style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight:
+                          FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 20),
+            ],
+          ),
+        );
+      },
     );
   }
 }

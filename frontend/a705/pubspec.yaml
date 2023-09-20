@@ -46,6 +46,8 @@ dependencies:
   image_picker: ^1.0.4
   permission_handler: ^11.0.0
   flutter_chat_bubble: ^2.0.2
+  bottom_picker: ^2.1.0
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:
@@ -80,12 +82,16 @@ flutter:
      - assets/images/wagon_don.png
      - assets/images/profile.jpg
      - assets/images/ausdollar.jpg
-     - assets/images/australia.png
-     - assets/images/usa.png
-     - assets/images/japan.png
-     - assets/images/korea.png
+     - assets/images/AUD.png
+     - assets/images/JPY.png
+     - assets/images/EUR.png
+     - assets/images/GBP.png
+     - assets/images/CNY.png
+     - assets/images/VND.png
+     - assets/images/HKD.png
+     - assets/images/USD.png
+     - assets/images/KRW.png
      - assets/images/marker.png
-
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

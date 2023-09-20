@@ -21,6 +21,8 @@ class _TransactionPageState extends State<TransactionPage> {
   List<File> selectedImages = [];
   final picker = ImagePicker();
 
+  String _addr = "장소 선택";
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -87,7 +89,7 @@ class _TransactionPageState extends State<TransactionPage> {
                           child: selectedImages
                                   .isEmpty // If no images is selected
                               ? const Center(
-                                  child: Text('Sorry nothing selected!!'))
+                                  child: Text('사진을 선택하세요'))
                               // If at least 1 images is selected
                               : GridView.builder(
                             scrollDirection: Axis.horizontal,
@@ -185,29 +187,31 @@ class _TransactionPageState extends State<TransactionPage> {
                     child: Row(
                       children: [
                         const SizedBox(width: 10),
-                        DropdownButton(
-                          value: _selectedValue,
-                          items: _valueList.map((value) {
-                            return DropdownMenuItem(
-                              value: value,
-                              child: Row(
-                                children: [
-                                  const CircleAvatar(
-                                    backgroundImage: AssetImage(
-                                        'assets/images/australia.png'),
-                                    radius: 10,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(value),
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedValue = value!;
-                            });
-                          },
+                        DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                            value: _selectedValue,
+                            items: _valueList.map((value) {
+                              return DropdownMenuItem(
+                                value: value,
+                                child: Row(
+                                  children: [
+                                    const CircleAvatar(
+                                      backgroundImage: AssetImage(
+                                          'assets/images/AUD.png'),
+                                      radius: 10,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Text(value),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedValue = value!;
+                              });
+                            },
+                          ),
                         ),
                       ],
                     ),
@@ -356,12 +360,14 @@ class _TransactionPageState extends State<TransactionPage> {
                   ),
                   const SizedBox(height: 5),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return const ChooseLocationPage();
-                        },
-                      ));
+                    onTap: () async {
+                      String addr = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ChooseLocationPage()));
+                      setState(() {
+                        _addr = addr;
+                      });
                     },
                     child: Container(
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -371,17 +377,17 @@ class _TransactionPageState extends State<TransactionPage> {
                         // border: Border.all(color: Colors.black),
                         color: const Color(0xFFF2F2F2),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '장소 선택',
-                            style: TextStyle(
+                            _addr,
+                            style: const TextStyle(
                               fontSize: 15,
                               color: Color(0xFF757575),
                             ),
                           ),
-                          Icon(Icons.chevron_right_rounded),
+                          const Icon(Icons.chevron_right_rounded),
                         ],
                       ),
                     ),
@@ -422,10 +428,6 @@ class _TransactionPageState extends State<TransactionPage> {
           selectedImages.add(File(xfilePick[i].path));
         }
       }
-      // else {
-      //   ScaffoldMessenger.of(context)
-      //       .showSnackBar(const SnackBar(content: Text('Nothing is selected')));
-      // }
     });
   }
 }

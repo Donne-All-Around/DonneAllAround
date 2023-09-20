@@ -1,3 +1,4 @@
+import 'package:a705/appointment_page.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,9 @@ class ChattingDetailPage extends StatefulWidget {
 }
 
 class _ChattingDetailPageState extends State<ChattingDetailPage> {
+
   bool isVisible = false;
+  String _appt = "약속 잡기";
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +102,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                   children: [
                                     CircleAvatar(
                                       backgroundImage: AssetImage(
-                                          'assets/images/australia.png'),
+                                          'assets/images/AUD.png'),
                                       radius: 8,
                                     ),
                                     SizedBox(width: 5),
@@ -130,21 +133,30 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         )
                       ],
                     ),
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(20, 0, 20, 15),
-                      height: 35,
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20),
+                    GestureDetector(
+                      onTap: () async {
+                        String appt = await Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => const AppointmentPage()));
+                        setState(() {
+                          _appt = appt;
+                        });
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+                        height: 35,
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                          color: Color(0xFFFFD954),
                         ),
-                        color: Color(0xFFFFD954),
+                        child: Center(
+                            child: Text(
+                          _appt,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        )),
                       ),
-                      child: const Center(
-                          child: Text(
-                        '약속 잡기',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )),
                     ),
                   ],
                 ),
