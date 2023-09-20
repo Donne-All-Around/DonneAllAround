@@ -32,6 +32,7 @@ public class MemberService {
     private final PasswordEncoder encoder;
     private final RefreshTokenService refreshTokenService;
 
+
     //registMember
     @Transactional
     public SignUpResponse registNewMember(SignUpRequest request){
@@ -97,7 +98,11 @@ public class MemberService {
         }
     }
 
+
+
     //UpdateTelResponse
+
+
 
     // 멤버 삭제
     public String deleteMember(String memberId) {

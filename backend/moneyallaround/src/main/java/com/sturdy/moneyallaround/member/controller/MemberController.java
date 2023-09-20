@@ -24,6 +24,7 @@ public class MemberController {
     private final MemberService memberService;
     private final RefreshTokenService refreshTokenService;
 
+
     @Operation(summary = "닉네임 중복확인", description = "닉네임 중복을 확인한다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
@@ -46,11 +47,13 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
     })
 
+
     @PostMapping("/signup")
     public ApiResponse signUp(@RequestBody SignUpRequest request) {
         log.info("회원가입 시작");
         return ApiResponse.success(memberService.registNewMember(request));
     }
+
 
 //    @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정한다.")
 //    @ApiResponses({
@@ -64,6 +67,7 @@ public class MemberController {
 //        Long memberId =
 //        return ApiResponse.success(memberService.updateProfile(request, memberId));
 //    }
+
 
 //    @Operation(summary = "로그아웃", description = "로그아웃")
 //    @ApiResponses({
