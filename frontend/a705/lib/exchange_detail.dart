@@ -9,17 +9,30 @@ class ExchangeDetailPage extends StatefulWidget {
 }
 
 class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
-  final _valueList = ['미국', '호주', '일본'];
-  var _selectedValue = '미국';
+  final _valueList = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '중국(위안) CNY',
+    '베트남(동) VND',
+    '한국(원) KRW',
+    '홍콩(달러) HKD'
+  ];
+  var _selectedValue = '미국(달러) USD';
 
-  Map<String, Map<String, String>> currencyInfo = {
-    '미국': {'imagePath': 'assets/images/USD.png', 'currencyName': '미국 (달러) USD'},
-    '호주': {
-      'imagePath': 'assets/images/AUD.png',
-      'currencyName': '호주 (달러) AUD'
-    },
-    '일본': {'imagePath': 'assets/images/JPY.png', 'currencyName': '일본 (엔) JPY'},
-  };
+  List<String> currency = [
+    'USD',
+    'JPY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CNY',
+    'VND',
+    'KRW',
+    'HKD'
+  ];
 
   String selectedButton = ''; // 선택된 버튼
   
@@ -80,7 +93,7 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                 Container(
                                   margin:
                                       const EdgeInsets.fromLTRB(10, 10, 30, 10),
-                                  width: 170,
+                                  width: 180,
                                   height: 55,
                                   // color: Colors.red,
                                   child: DropdownButtonHideUnderline(
@@ -92,32 +105,30 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                             value: value,
                                             child: Row(
                                               children: [
-                                                Image.asset(
-                                                  currencyInfo[value]![
-                                                      'imagePath']!,
-                                                  width: 20,
-                                                  height: 20,
+                                                CircleAvatar(
+                                                  backgroundImage: AssetImage(
+                                                      'assets/images/${currency[_valueList.indexOf(value)]}.png'),
+                                                  radius: 10,
                                                 ),
                                                 const SizedBox(
                                                   width: 10,
                                                 ),
-                                                Text(currencyInfo[value]![
-                                                    'currencyName']!),
-                                              ],
+                                          Text(value),
+                                          ],
                                             ),
                                           );
                                         },
                                       ).toList(),
                                       onChanged: (value) {
                                         setState(() {
-                                          _selectedValue = value.toString();
+                                          _selectedValue = value!;
                                         });
                                       },
                                     ),
                                   ),
                                 ),
                                 Container(
-                                  width: 120,
+                                  width: 110,
                                   height: 50,
                                   // color: Colors.red,
                                   margin:
@@ -125,7 +136,7 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                   child: const Text(
                                     ' 1,300.00원',
                                     style: TextStyle(
-                                        fontSize: 22,
+                                        fontSize: 20,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.red),
                                   ),

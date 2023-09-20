@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class BankDetailPage extends StatefulWidget {
@@ -9,7 +10,7 @@ class BankDetailPage extends StatefulWidget {
 }
 
 class _BankDetailPageState extends State<BankDetailPage> {
-  
+
   final _bankList = ['신한은행', '하나은행'];
   var _selectedValue = '신한은행';
 
@@ -19,7 +20,6 @@ class _BankDetailPageState extends State<BankDetailPage> {
       'imagePath': 'assets/images/AUD.png',
       'currencyName': '하나은행'
     },
-    
   };
 
   String getToday() {
@@ -28,22 +28,79 @@ class _BankDetailPageState extends State<BankDetailPage> {
     var strToday = formatter.format(now);
     return strToday;
   }
+// 첫번째 통화
+  final _valueList1 = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '중국(위안) CNY',
+    '베트남(동) VND',
+    '한국(원) KRW',
+    '홍콩(달러) HKD'
+  ];
+  var _selectedValue1 = '미국(달러) USD';
+  int idx1 = 0;
 
-  final _valueList = ['미국', '호주', '일본'];
-  var _selectedValue1 = '미국';
-  var _selectedValue2 = '호주';
+  List<String> currency1 = [
+    'USD',
+    'JPY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CNY',
+    'VND',
+    'KRW',
+    'HKD'
+  ];
+  List<String> sign1 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$'];
+  // 두번째 통화
+  final _valueList2 = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '중국(위안) CNY',
+    '베트남(동) VND',
+    '한국(원) KRW',
+    '홍콩(달러) HKD'
+  ];
+  var _selectedValue2 = '한국(원) KRW';
+  int idx2 = 7;
 
-  Map<String, Map<String, String>> currencyInfo = {
-    '미국': {'imagePath': 'assets/images/USD.png', 'currencyName': '미국 (달러) USD'},
-    '호주': {
-      'imagePath': 'assets/images/AUD.png',
-      'currencyName': '호주 (달러) AUD'
-    },
-    '일본': {'imagePath': 'assets/images/JPY.png', 'currencyName': '일본 (엔) JPY'},
-  };
+  List<String> currency2 = [
+    'USD',
+    'JPY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CNY',
+    'VND',
+    'KRW',
+    'HKD'
+  ];
+  List<String> sign2 = ['\$', '¥', '€', '£', '\$', '¥', '₫', '₩','\$'];
+
+ // 수수료 
+  final _percentList = [
+    '현찰 살 때',
+    '현찰 팔 때',
+    '송금 보낼 때',
+  ];
+  var _selectedValue3 = '현찰 살 때';
+  
+  List<String> currency3 = [
+    '현찰 살 때',
+    '혈찰 팔 때',
+    '송금 보낼 때'
+  ];
 
   // 텍스트 필드 컨트롤러
-  final TextEditingController _moneyController = TextEditingController(text: "1");
+  final TextEditingController _moneyController1 = TextEditingController(text: "1 ");
+  final TextEditingController _moneyController2 = TextEditingController(text: "1,300.00 ");
+  final TextEditingController _percentController = TextEditingController(text: "30");
 
 
 
@@ -68,10 +125,10 @@ class _BankDetailPageState extends State<BankDetailPage> {
             elevation: 0,
             title: const Text(
               '환율 검색',
-                style:
-                TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
-          ),
-          centerTitle: true,
+              style:
+              TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+            ),
+            centerTitle: true,
           ),
           body: SingleChildScrollView(
             child:Column(
@@ -79,7 +136,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                 Container(
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   width: 370,
-                  height: 400,
+                  height: 500,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: Colors.black38),
@@ -126,7 +183,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                                 ),
                                                 Text(bankInfo[value]![
                                                 'currencyName']!,
-                                                style: TextStyle(fontWeight: FontWeight.bold),),
+                                                  style: const TextStyle(fontWeight: FontWeight.bold),),
                                               ],
                                             ),
                                           );
@@ -216,7 +273,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                               children: [
                                 Container(
                                   height: 60,
-                                  width: 172,
+                                  width: 182,
                                   padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                                   decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
@@ -226,23 +283,21 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                   child: DropdownButtonHideUnderline(
                                     child: DropdownButton(
                                       value: _selectedValue1,
-                                      items: _valueList.map(
+                                      items: _valueList1.map(
                                             (value) {
                                           return DropdownMenuItem(
                                             value: value,
                                             child: Row(
                                               children: [
-                                                Image.asset(
-                                                  currencyInfo[value]![
-                                                  'imagePath']!,
-                                                  width: 20,
-                                                  height: 20,
+                                                CircleAvatar(
+                                                  backgroundImage: AssetImage(
+                                                      'assets/images/${currency1[_valueList1.indexOf(value)]}.png'),
+                                                  radius: 10,
                                                 ),
                                                 const SizedBox(
                                                   width: 10,
                                                 ),
-                                                Text(currencyInfo[value]![
-                                                'currencyName']!),
+                                                Text(value),
                                               ],
                                             ),
                                           );
@@ -250,7 +305,8 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                       ).toList(),
                                       onChanged: (value) {
                                         setState(() {
-                                          _selectedValue1 = value.toString();
+                                          _selectedValue1 = value!;
+                                          idx1 = _valueList1.indexOf(value);
                                         });
                                       },
                                     ),
@@ -264,15 +320,19 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                     borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
                                     border: Border.all(color: Colors.transparent),
                                   ),
-                                  child: TextFormField(
-                                    controller: _moneyController,
-                                    style: const TextStyle(decorationThickness: 0),
-                                    decoration: const InputDecoration(
-                                      enabledBorder: UnderlineInputBorder(
+                                  child: TextField(
+                                    controller: _moneyController1,
+                                    decoration:  InputDecoration(
+                                      enabledBorder: const UnderlineInputBorder(
                                           borderSide: BorderSide(color: Colors.transparent)
                                       ),
+                                      suffixText: ' ${sign1[idx1]}',
                                     ),
                                     textAlign: TextAlign.end,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
 
@@ -298,7 +358,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                               children: [
                                 Container(
                                   height: 60,
-                                  width: 172,
+                                  width: 182,
                                   padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                                   decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
@@ -308,23 +368,21 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                   child: DropdownButtonHideUnderline(
                                     child: DropdownButton(
                                       value: _selectedValue2,
-                                      items: _valueList.map(
+                                      items: _valueList2.map(
                                             (value) {
                                           return DropdownMenuItem(
                                             value: value,
                                             child: Row(
                                               children: [
-                                                Image.asset(
-                                                  currencyInfo[value]![
-                                                  'imagePath']!,
-                                                  width: 20,
-                                                  height: 20,
+                                                CircleAvatar(
+                                                  backgroundImage: AssetImage(
+                                                      'assets/images/${currency2[_valueList2.indexOf(value)]}.png'),
+                                                  radius: 10,
                                                 ),
                                                 const SizedBox(
                                                   width: 10,
                                                 ),
-                                                Text(currencyInfo[value]![
-                                                'currencyName']!),
+                                                Text(value),
                                               ],
                                             ),
                                           );
@@ -332,7 +390,8 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                       ).toList(),
                                       onChanged: (value) {
                                         setState(() {
-                                          _selectedValue2 = value.toString();
+                                          _selectedValue2 = value!;
+                                          idx2 = _valueList2.indexOf(value);
                                         });
                                       },
                                     ),
@@ -340,31 +399,107 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                 ),
                                 Container(
                                   width: 140,
-                                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                  margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                                   // color: Colors.red,
                                   decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
                                     border: Border.all(color: Colors.transparent),
                                   ),
-                                  child: TextFormField(
-                                    controller: _moneyController,
-                                    style: const TextStyle(decorationThickness: 0),
-                                    decoration: const InputDecoration(
-                                      enabledBorder: UnderlineInputBorder(
+                                  child: TextField(
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                    controller: _moneyController2,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      border: InputBorder.none,
+                                      enabledBorder: const UnderlineInputBorder(
                                           borderSide: BorderSide(color: Colors.transparent)
                                       ),
+                                      suffixText: ' ${sign2[idx2]}',
                                     ),
                                     textAlign: TextAlign.end,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
-
                               ],
                             ),
                           ),
                         ],
                       ),
-          ],
-        ),
+                      const SizedBox(height: 10,),
+                      Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(15, 0, 20, 0),
+                            width: 200,
+                            height: 50,
+                            // color: Colors.red,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.black38),
+                            ),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton(
+                                value: _selectedValue3,
+                                items: _percentList.map(
+                                    (value) {
+                                      return DropdownMenuItem(
+                                          value: value,
+                                          child: Row(
+                                            // Text(currency3[_percentList(value)]),
+                                          ),);
+                                    }
+                                ).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedValue3 = value!;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                            width: 110,
+                            height: 50,
+                            // color: Colors.red,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.black38),
+                            ),
+                            child:  TextField(
+                              controller: _percentController,
+                              cursorColor: Colors.black38,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                              decoration:  InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: InputBorder.none,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: const BorderSide(color: Colors.transparent),
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                                  borderSide: BorderSide(color: Colors.transparent),
+                                ),
+                                suffixText: '%',
+                              ),
+                              textAlign: TextAlign.end,
+                              style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
