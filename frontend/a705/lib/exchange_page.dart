@@ -102,7 +102,7 @@ class _ExchangePageState extends State<ExchangePage> {
                           children: [
                             Container(
                               margin: const EdgeInsets.fromLTRB(10, 20,40, 10),
-                              padding: const EdgeInsets.fromLTRB(15, 10, 10, 5),
+                              padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
                               width: 230,
                               height: 40,
                               decoration: BoxDecoration(
@@ -175,11 +175,12 @@ class _ExchangePageState extends State<ExchangePage> {
                                   children: [
                                     Container(
                                       height: 60,
-                                      width: 167,
+                                      width: 172,
+                                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                                       decoration: BoxDecoration(
                                         borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
                                         border: Border.all(color: Colors.transparent),
-                                        color:  Colors.grey[300],
+                                        color:  Colors.grey[200],
                                       ),
                                       child: DropdownButtonHideUnderline(
                                         child: DropdownButton(
@@ -233,20 +234,6 @@ class _ExchangePageState extends State<ExchangePage> {
                                         textAlign: TextAlign.end,
                                       ),
                                     ),
-                                    Container(
-                                      width: 25,
-                                      // color: Colors.red,
-                                      child: TextFormField(
-                                        controller: _currencyController,
-                                        style: const TextStyle(decorationThickness: 0, fontSize: 18),
-                                        decoration: const InputDecoration(
-                                          enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.transparent)
-                                          ),
-                                        ),
-                                        textAlign: TextAlign.end,
-                                      ),
-                                    ),
                                   ],
                                 ),
                               ),
@@ -267,11 +254,12 @@ class _ExchangePageState extends State<ExchangePage> {
                                 children: [
                                   Container(
                                     height: 60,
-                                    width: 167,
+                                    width: 172,
+                                    padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                                     decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
                                       border: Border.all(color: Colors.transparent),
-                                      color:  Colors.grey[300],
+                                      color:  Colors.grey[200],
                                     ),
                                     child: DropdownButtonHideUnderline(
                                       child: DropdownButton(
@@ -317,20 +305,6 @@ class _ExchangePageState extends State<ExchangePage> {
                                     child: TextFormField(
                                       controller: _moneyController,
                                       style: const TextStyle(decorationThickness: 0),
-                                      decoration: const InputDecoration(
-                                        enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.transparent)
-                                        ),
-                                      ),
-                                      textAlign: TextAlign.end,
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 25,
-                                    // color: Colors.red,
-                                    child: TextFormField(
-                                      controller: _currencyController,
-                                      style: const TextStyle(decorationThickness: 0, fontSize: 18),
                                       decoration: const InputDecoration(
                                         enabledBorder: UnderlineInputBorder(
                                             borderSide: BorderSide(color: Colors.transparent)

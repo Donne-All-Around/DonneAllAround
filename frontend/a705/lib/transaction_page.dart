@@ -277,7 +277,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         SizedBox(width: 10),
                         CircleAvatar(
                           backgroundImage:
-                              AssetImage('assets/images/korea.png'),
+                              AssetImage('assets/images/KRW.png'),
                           radius: 10,
                         ),
                         SizedBox(width: 5),
