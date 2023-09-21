@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:a705/Login/start_page.dart';
 import 'package:flutter/material.dart';
 import 'main_page.dart';
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: const Color(0xFFFFD954),
       ),
-      home: const MainPage(),
+      home: const StartPage(),
     );
   }
 }

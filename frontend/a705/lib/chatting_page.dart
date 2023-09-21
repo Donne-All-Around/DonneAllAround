@@ -37,7 +37,7 @@ class _ChattingPageState extends State<ChattingPage> {
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          // const SizedBox(height: 10),
           const Expanded(
             child: ListViewBuilder()
           ),
@@ -47,7 +47,7 @@ class _ChattingPageState extends State<ChattingPage> {
   }
 }
 
-List<String> chatroom = ['옹골찬', '김싸피', '박싸피', '정현아'];
+List<String> chatroom = ['옹골찬', '김싸피', '박싸피', '정현아', '문요환', '별의 커비', '뽀로로'];
 
 class ListViewBuilder extends StatefulWidget {
   const ListViewBuilder({super.key});
@@ -98,25 +98,25 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Column(
+                        Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
                                 Text(
-                                  '옹골찬',
-                                  style: TextStyle(
+                                  chatroom[index],
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(width: 10),
-                                Text('1시간 전')
+                                const SizedBox(width: 5),
+                                const Text('1시간 전')
                               ],
                             ),
-                            SizedBox(height: 5),
-                            Text('좋은 밤 되세요'),
+                            const SizedBox(height: 5),
+                            const Text('좋은 밤 되세요'),
                           ],
                         ),
                         Container(

@@ -1,4 +1,5 @@
 import 'package:a705/service/database.dart';
+import 'package:a705/appointment_page.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -389,6 +390,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     messageStream = await DatabaseMethods().getChatRoomMessages(chatRoomId);
     setState(() {});
   }
+  String _appt = "약속 잡기";
 
   @override
   Widget build(BuildContext context) {
@@ -478,7 +480,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                   children: [
                                     CircleAvatar(
                                       backgroundImage: AssetImage(
-                                          'assets/images/australia.png'),
+                                          'assets/images/AUD.png'),
                                       radius: 8,
                                     ),
                                     SizedBox(width: 5),
@@ -509,21 +511,30 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         )
                       ],
                     ),
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(20, 0, 20, 15),
-                      height: 35,
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20),
+                    GestureDetector(
+                      onTap: () async {
+                        String appt = await Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => const AppointmentPage()));
+                        setState(() {
+                          _appt = appt;
+                        });
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+                        height: 35,
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                          color: Color(0xFFFFD954),
                         ),
-                        color: Color(0xFFFFD954),
+                        child: Center(
+                            child: Text(
+                          _appt,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        )),
                       ),
-                      child: const Center(
-                          child: Text(
-                        '약속 잡기',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )),
                     ),
                   ],
                 ),
@@ -562,6 +573,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                               isVisible = false;
                             });
                           },
+                          cursorColor: Colors.black38,
                           textAlignVertical: TextAlignVertical.center,
                           decoration: const InputDecoration(
                               contentPadding:
@@ -636,6 +648,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                               ),
                               child: const Icon(Icons.photo_outlined),
                             ),
+                            const SizedBox(height: 5),
                             const Text('사진'),
                           ],
                         ),
@@ -659,6 +672,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                               ),
                               child: const Icon(Icons.edit_calendar_outlined),
                             ),
+                            const SizedBox(height: 5),
                             const Text('약속'),
                           ],
                         ),
@@ -683,6 +697,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                               child: const Icon(
                                   Icons.account_balance_wallet_outlined),
                             ),
+                            const SizedBox(height: 5),
                             const Text('송금'),
                           ],
                         ),
@@ -706,6 +721,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                               ),
                               child: const Icon(Icons.email_outlined),
                             ),
+                            const SizedBox(height: 5),
                             const Text('배송정보'),
                           ],
                         ),
@@ -782,7 +798,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                       ),
                                     ],
                                   ),
-                                  const Text('오후 2: 10',
+                                  const Text('오후 2:10',
                                       style: TextStyle(
                                         fontSize: 10,
                                       ))
@@ -800,7 +816,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Text('오후 2: 20',
+                        const Text('오후 2:20',
                             style: TextStyle(
                               fontSize: 10,
                             )),
