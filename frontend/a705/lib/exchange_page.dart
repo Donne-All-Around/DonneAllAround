@@ -1,5 +1,7 @@
+import 'package:a705/double_currency.dart';
 import 'package:a705/exchange_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:intl/intl.dart';
 
@@ -74,12 +76,20 @@ class _ExchangePageState extends State<ExchangePage> {
     'HKD'
   ];
   List<String> sign2 = ['\$', '¥', '€', '£', '\$', '¥', '₫', '₩','\$'];
+  
+  final _bankList = ['신한은행', '하나은행'];
+  var _selectedValue3 = '신한은행';
+  Map<String, Map<String, String>> bankInfo = {
+    '신한은행': { 'currencyName': '신한은행'},
+    '하나은행': {'currencyName': '하나은행'},
+  };
 
 
   // 텍스트 필드 컨트롤러
   final TextEditingController _moneyController = TextEditingController(text: "1 ");
   final TextEditingController _moneyController2 = TextEditingController(text: "1,300.00 ");
-
+  final TextEditingController _percentController = TextEditingController(text: "30");
+   bool _isDouble = false;
 
 
 
@@ -134,7 +144,7 @@ class _ExchangePageState extends State<ExchangePage> {
                   Container(
                     margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                     width: double.infinity,
-                    height: 310,
+                    height: _isDouble ? 470 : 310,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(color: Colors.black38),
@@ -164,6 +174,36 @@ class _ExchangePageState extends State<ExchangePage> {
                                 color: Colors.grey,),
                           ],
                         ),
+                        if (_isDouble)
+                          Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
+                                width: 340,
+                                height: 60,
+                                // color: Colors.red,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.grey[200],
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 5,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ]),
+                                child: const Text(
+                                  '+ 2,300 ₩',
+                                  textAlign: TextAlign.end,
+                                  style: TextStyle(
+                                    fontSize: 40,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         Row(
                           children: [
                             Container(
@@ -177,6 +217,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                       onPressed: (){
                                         setState(() {
                                           selectedButton = '직접';
+                                          _isDouble = false;
                                         });
                                       },
                                     style: ElevatedButton.styleFrom(
@@ -190,6 +231,11 @@ class _ExchangePageState extends State<ExchangePage> {
                                       onPressed:(){
                                         setState(() {
                                           selectedButton = '이중';
+                                          _isDouble = true;
+                                          // Navigator.push(
+                                          //       context,
+                                          //       MaterialPageRoute(builder: (context) => const DoubleCurrencyPage()),
+                                          //     );
                                         });
                                       },
                                       style: ElevatedButton.styleFrom(
@@ -202,6 +248,7 @@ class _ExchangePageState extends State<ExchangePage> {
                             ),
                           ],
                         ),
+
                           Row(
                             children: [
                               Container(
@@ -377,6 +424,82 @@ class _ExchangePageState extends State<ExchangePage> {
                             ),
                           ],
                         ),
+                        if (_isDouble)
+                        Row(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.fromLTRB(10, 10, 20, 10),
+                              width: 180,
+                              height: 50,
+                              // color: Colors.red,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.black38),
+                                  color: Colors.grey[200]
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton(
+                                  value: _selectedValue3,
+                                  items: _bankList.map(
+                                          (value) {
+                                        return DropdownMenuItem(
+                                          value: value,
+                                          child:
+                                          Container(
+                                            margin: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                            child: Text(bankInfo[value]![
+                                            'currencyName']!,
+                                              style: const TextStyle(fontWeight: FontWeight.bold,),
+                                              textAlign: TextAlign.center,),
+                                          ),
+                                        );
+                                      }
+                                  ).toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedValue3 = value!;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.fromLTRB(30, 0, 10, 0),
+                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                              width: 110,
+                              height: 50,
+                              // color: Colors.red,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: Colors.black38),
+                              ),
+                              child:  TextField(
+                                controller: _percentController,
+                                cursorColor: Colors.black38,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                decoration:  InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: InputBorder.none,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    borderSide: const BorderSide(color: Colors.transparent),
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                                    borderSide: BorderSide(color: Colors.transparent),
+                                  ),
+                                  suffixText: '%',
+                                ),
+                                textAlign: TextAlign.end,
+                                style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
+                              ),
+                            ),
+                          ],
+                        ),
+
                       Row(
                         children: [
                           Container(
@@ -405,6 +528,7 @@ class _ExchangePageState extends State<ExchangePage> {
                     ),
                   ),
                   // 말풍선
+                  if (_isDouble == false)
                   Row(
                     children: [
                       Container(
