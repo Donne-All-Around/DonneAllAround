@@ -1,4 +1,3 @@
-import 'package:a705/double_currency.dart';
 import 'package:a705/exchange_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -90,6 +89,7 @@ class _ExchangePageState extends State<ExchangePage> {
   final TextEditingController _moneyController2 = TextEditingController(text: "1,300.00 ");
   final TextEditingController _percentController = TextEditingController(text: "30");
    bool _isDouble = false;
+   bool _iscalculate  = false;
 
 
 
@@ -218,6 +218,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                         setState(() {
                                           selectedButton = '직접';
                                           _isDouble = false;
+                                          _iscalculate = false;
                                         });
                                       },
                                     style: ElevatedButton.styleFrom(
@@ -499,7 +500,7 @@ class _ExchangePageState extends State<ExchangePage> {
                             ),
                           ],
                         ),
-
+                        if (_isDouble == false)
                       Row(
                         children: [
                           Container(
@@ -524,6 +525,34 @@ class _ExchangePageState extends State<ExchangePage> {
                           ),
                         ],
                       ),
+                        if (_isDouble)
+                          Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(270, 10, 10, 0),
+                                width: 70,
+                                height: 50,
+                                // color: const Color(0xFFFFD954),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  // border: Border.all(color: Colors.black38),
+                                  color:  const Color(0xFFFFD954),
+                                ),
+                                child:IconButton(
+                                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
+                                  onPressed: (){
+                                    setState(() {
+                                      _iscalculate = true;
+                                    });
+                                  },
+                                  icon: const Icon(Icons.drag_handle_rounded),
+                                  iconSize: 50,
+                                  color: Colors.white,
+
+                                ),
+                              ),
+                            ],
+                          ),
                       ],
                     ),
                   ),
@@ -540,167 +569,23 @@ class _ExchangePageState extends State<ExchangePage> {
                       ),
                     ],
                   ),
-                 //국가별 실시간 환율
-                     GestureDetector(
-                       // 상세페이지 이동
-                       onTap: (){
-                         Navigator.push(
-                               context,
-                               MaterialPageRoute(builder: (context) => const ExchangeDetailPage()),
-                             );
-                       } ,
-                       child: Row(
-                         children: [
-                           Container(
-                             margin: const EdgeInsets.fromLTRB(25, 10, 20, 0),
-                             width: 360,
-                             height: 50,
-                             decoration: BoxDecoration(
-                               borderRadius: BorderRadius.circular(20),
-                               border: Border.all(color: Colors.black38),
-                             ),
-                             child:
-                             const Row(
-                               children: [
-                                 SizedBox(width: 30,),
-                                  CircleAvatar(
-                                   backgroundImage: AssetImage('assets/images/AUD.png',),
-                                   radius: 17,
-                                 ),
-                                 Text('  호주 (달러)' , style: TextStyle(fontSize: 17),),
-                                 Text(' AUD',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
-                                 SizedBox(width: 60,),
-                                 Text('853.73원',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),)
-                               ],
-                             ),
-                           ),
-                         ],
+                 if (_iscalculate)
+                   Row(
+                     children: [
+                       Container(
+                         margin: const EdgeInsets.fromLTRB(30, 10, 30, 0),
+                         width: 350,
+                         height: 120,
+                         child: getCalculateView(
+                             ChatBubbleClipper4(type: BubbleType.sendBubble),
+                             context),
                        ),
-                     ),
-                  GestureDetector(
-                    // 상세페이지 이동
-                    onTap: (){} ,
-                    child: Row(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(25, 10, 20, 0),
-                          width: 360,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.black38),
-                          ),
-                          child:
-                          const Row(
-                            children: [
-                              SizedBox(width: 30,),
-                              CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/AUD.png',),
-                                radius: 17,
-                              ),
-                              Text('  호주 (달러)' , style: TextStyle(fontSize: 17),),
-                              Text(' AUD',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
-                              SizedBox(width: 60,),
-                              Text('853.73원',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),)
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    // 상세페이지 이동
-                    onTap: (){} ,
-                    child: Row(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(25, 10, 20, 0),
-                          width: 360,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.black38),
-                          ),
-                          child:
-                          const Row(
-                            children: [
-                              SizedBox(width: 30,),
-                              CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/AUD.png',),
-                                radius: 17,
-                              ),
-                              Text('  호주 (달러)' , style: TextStyle(fontSize: 17),),
-                              Text(' AUD',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
-                              SizedBox(width: 60,),
-                              Text('853.73원',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),)
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    // 상세페이지 이동
-                    onTap: (){} ,
-                    child: Row(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(25, 10, 20, 0),
-                          width: 360,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.black38),
-                          ),
-                          child:
-                          const Row(
-                            children: [
-                              SizedBox(width: 30,),
-                              CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/AUD.png',),
-                                radius: 17,
-                              ),
-                              Text('  호주 (달러)' , style: TextStyle(fontSize: 17),),
-                              Text(' AUD',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
-                              SizedBox(width: 60,),
-                              Text('853.73원',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),)
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    // 상세페이지 이동
-                    onTap: (){} ,
-                    child: Row(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(25, 10, 20, 0),
-                          width: 360,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.black38),
-                          ),
-                          child:
-                          const Row(
-                            children: [
-                              SizedBox(width: 30,),
-                              CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/AUD.png',),
-                                radius: 17,
-                              ),
-                              Text('  호주 (달러)' , style: TextStyle(fontSize: 17),),
-                              Text(' AUD',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
-                              SizedBox(width: 60,),
-                              Text('853.73원',style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),)
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                     ],
+                   ),
+
+                 //국가별 실시간 환율
+                  if (_isDouble == false)
+                    const ListViewBuilder(),
 
                   ],
               ),
@@ -738,4 +623,159 @@ class _ExchangePageState extends State<ExchangePage> {
       ),
     ),
   );
+  
+  // 이중환전 말풍선
+ getCalculateView(CustomClipper clipper, BuildContext context) => ChatBubble(
+   clipper: clipper,
+   elevation: 0,
+   alignment: Alignment.topLeft,
+   margin: const EdgeInsets.all(0),
+   backGroundColor:const Color(0xFFFFD954),
+   child: Container(
+     // constraints: const BoxConstraints(
+     //   // maxWidth: MediaQuery.of(context).size.width * 1,
+     // ),
+     decoration: BoxDecoration(
+       borderRadius: BorderRadius.circular(30),
+     ),
+     child:  Column(
+       children: [
+         Row(
+           children: [
+             Container(
+               margin: EdgeInsets.fromLTRB(20, 10, 0, 10),
+               child: const Text(
+                 " 직접 환전 대비",
+                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
+               ),
+             ),
+           ],
+         ),
+         Row(
+           mainAxisAlignment: MainAxisAlignment.end,
+           children: [
+             Container(
+               margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+               child: const Text(
+                 "2,300 원",
+                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 30),
+               ),
+             ),
+             Container(
+               margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+               child: const Text(
+                 "절약 ",
+                 style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 25),
+               ),
+             )
+           ],
+         ),
+       ],
+     ),
+   ),
+ );
+  
 }
+
+class ListViewBuilder extends StatefulWidget {
+  const ListViewBuilder({super.key});
+
+  @override
+  State<ListViewBuilder> createState() => _ListViewBuilderState();
+}
+
+class _ListViewBuilderState extends State<ListViewBuilder> {
+  final _valueList1 = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '중국(위안) CNY',
+    '베트남(동) VND',
+    '한국(원) KRW',
+    '홍콩(달러) HKD'
+  ];
+  var _selectedValue1 = '미국(달러) USD';
+  int idx1 = 0;
+
+  List<String> currency1 = [
+    'USD',
+    'JPY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CNY',
+    'VND',
+    'KRW',
+    'HKD'
+  ];
+
+
+  @override
+  Widget build(BuildContext context) {
+    return  ListView.builder(
+      primary: false,
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemCount: _valueList1.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ExchangeDetailPage()),
+            );
+          },
+          child: Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                width: 360,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.black38),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(
+                              20, 10, 0, 0),
+                          width: 200,
+                          // color: Colors.red,
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundImage:
+                                AssetImage('assets/images/${currency1[index]}.png'),
+                                radius: 10,
+                              ),
+                              const SizedBox(width: 10),
+                              Text( _valueList1[index],
+                                style: const TextStyle(fontSize: 16),),
+                            ],
+                          ),),
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                            child: const Text(
+                              '1,300.00 원',
+                              textAlign: TextAlign.end,
+                              style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),))
+                      ],
+                    ),
+
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
