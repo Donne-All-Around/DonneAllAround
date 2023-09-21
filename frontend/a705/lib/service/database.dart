@@ -136,4 +136,7 @@ class DatabaseMethods {
    }
    return unReadCnt;
  }
+
+  // 유저 정보 가져오기
+
 }

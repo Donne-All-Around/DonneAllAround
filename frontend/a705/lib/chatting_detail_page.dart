@@ -28,7 +28,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
       seller, // 판매자 닉네임
       buyer, // 구매자 닉네임
       transactionId; // 거래글 아이디
-
+  String _appt = "약속 잡기";
   Stream? messageStream;
   int batchSize = 10; // 한 번에 가져올 메시지 수
   bool isLoadingMore = false; // 추가 메시지 로딩 중인지 여부
@@ -390,7 +390,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     messageStream = await DatabaseMethods().getChatRoomMessages(chatRoomId);
     setState(() {});
   }
-  String _appt = "약속 잡기";
+
 
   @override
   Widget build(BuildContext context) {
