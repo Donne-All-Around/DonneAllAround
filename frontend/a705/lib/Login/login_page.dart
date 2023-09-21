@@ -278,10 +278,16 @@ class _LoginPageState extends State<LoginPage> {
                           onTap: (){
                             if (_isStart()) {
                               // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const MainPage()),
-                              );
+
+                              // 뒤에 페이지들 스택 존재.
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(builder: (context) => const MainPage()),
+                              // );
+                              // 뒤에 페이지들 스택 없앰.
+                                Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(builder:(context) => const MainPage()),
+                                        (Route<dynamic> route) => false);
                             }
                           },
                           child: Container(

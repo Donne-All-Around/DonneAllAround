@@ -65,6 +65,14 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
               color: Colors.black,
             ),
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.check_rounded, color: Colors.black,),
+              onPressed: () {
+                Navigator.pop(context, addr);
+              },
+            ),
+          ],
         ),
         body: Stack(children: [
           Column(
@@ -184,7 +192,8 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
                 // print('hashCode: ${placemark.reversed.last.hashCode}');
 
                 setState(() {
-                  addr = "${placemark.reversed.last.subLocality} ${placemark.reversed.last.thoroughfare}";
+                  addr =
+                      "${placemark.reversed.last.subLocality} ${placemark.reversed.last.thoroughfare}";
                 });
               },
               child: Container(
@@ -197,7 +206,7 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
                 ),
                 child: const Center(
                   child: Text(
-                    '선택 완료',
+                    '선택하기',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),

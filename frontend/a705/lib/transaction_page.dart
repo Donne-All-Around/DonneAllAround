@@ -15,11 +15,35 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage> {
-  final _valueList = ['첫 번째', '두 번째', '세 번째'];
-  var _selectedValue = '첫 번째';
+  final _valueList = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '중국(위안) CNY',
+    '베트남(동) VND',
+    '홍콩(달러) HKD'
+  ];
+  var _selectedValue = '미국(달러) USD';
+  int idx = 0;
+
+  List<String> currency = [
+    'USD',
+    'JPY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CNY',
+    'VND',
+    'HKD'
+  ];
+  List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫', '\$'];
 
   List<File> selectedImages = [];
   final picker = ImagePicker();
+
+  String _addr = "장소 선택";
 
   @override
   Widget build(BuildContext context) {
@@ -81,54 +105,53 @@ class _TransactionPageState extends State<TransactionPage> {
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: SizedBox(
-                            width: double.infinity, // To show images in particular area only
-                            height: 80,
-                            child: selectedImages
-                                    .isEmpty // If no images is selected
-                                ? const Center(
-                                    child: Text('Sorry nothing selected!!'))
-                                // If at least 1 images is selected
-                                : GridView.builder(
-                                    itemCount: selectedImages.length,
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 10,
-                                      childAspectRatio: 1 / 1,
-                                      crossAxisSpacing: 10,
-                                      // Horizontally only 3 images will show
-                                    ),
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(15),
-                                        ),
-                                        child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            child: kIsWeb
-                                                ? Image.network(
-                                                    selectedImages[index].path,
-                                                    width: 80,
-                                                    fit: BoxFit.cover,
-                                                  )
-                                                : Image.file(
-                                                    selectedImages[index],
-                                                    width: 80,
-                                                    fit: BoxFit.cover,
-                                                  )),
-                                      );
+                        child: SizedBox(
+                          width: double.infinity, // To show images in particular area only
+                          height: 80,
+                          child: selectedImages
+                              .isEmpty // If no images is selected
+                              ? const Center(
+                              child: Text('사진을 선택하세요'))
+                          // If at least 1 images is selected
+                              : GridView.builder(
+                            scrollDirection: Axis.horizontal,
+                            physics: const ScrollPhysics(),
+                            itemCount: selectedImages.length,
+                            gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 1,
+                              childAspectRatio: 1 / 1,
+                              mainAxisSpacing: 10,
+                              // Horizontally only 3 images will show
+                            ),
+                            itemBuilder:
+                                (BuildContext context, int index) {
+                              return Container(
+                                height: 70,
+                                width: 70,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ClipRRect(
+                                    borderRadius:
+                                    BorderRadius.circular(10),
+                                    child: kIsWeb
+                                        ? Image.network(
+                                      selectedImages[index].path,
+                                      width: 80,
+                                      fit: BoxFit.cover,
+                                    )
+                                        : Image.file(
+                                      selectedImages[index],
+                                      width: 80,
+                                      fit: BoxFit.cover,
+                                    )),
+                              );
 
-                                      // If you are making the web app then you have to
-                                      // use image provider as network image or in
-                                      // android or iOS it will as file only
-                                    },
-                                  ),
+                              // If you are making the web app then you have to
+                              // use image provider as network image or in
+                              // android or iOS it will as file only
+                            },
                           ),
                         ),
                       ),
@@ -186,29 +209,32 @@ class _TransactionPageState extends State<TransactionPage> {
                     child: Row(
                       children: [
                         const SizedBox(width: 10),
-                        DropdownButton(
-                          value: _selectedValue,
-                          items: _valueList.map((value) {
-                            return DropdownMenuItem(
-                              value: value,
-                              child: Row(
-                                children: [
-                                  const CircleAvatar(
-                                    backgroundImage: AssetImage(
-                                        'assets/images/australia.png'),
-                                    radius: 10,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(value),
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedValue = value!;
-                            });
-                          },
+                        DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                            value: _selectedValue,
+                            items: _valueList.map((value) {
+                              return DropdownMenuItem(
+                                value: value,
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundImage: AssetImage(
+                                          'assets/images/${currency[_valueList.indexOf(value)]}.png'),
+                                      radius: 10,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Text(value),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedValue = value!;
+                                idx = _valueList.indexOf(value);
+                              });
+                            },
+                          ),
                         ),
                       ],
                     ),
@@ -216,26 +242,26 @@ class _TransactionPageState extends State<TransactionPage> {
                   TextField(
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      enabledBorder: OutlineInputBorder(
+                      enabledBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(10),
                           bottomRight: Radius.circular(10),
                         ),
                         borderSide:
-                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                        BorderSide(color: Color(0xFFF2F2F2), width: 3),
                       ),
-                      focusedBorder: OutlineInputBorder(
+                      focusedBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(10),
                           bottomRight: Radius.circular(10),
                         ),
                         borderSide:
-                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                        BorderSide(color: Color(0xFFF2F2F2), width: 3),
                       ),
-                      suffixText: ' \$',
+                      suffixText: ' ${sign[idx]}',
                     ),
                     cursorColor: Colors.black87,
                     textAlign: TextAlign.end,
@@ -274,7 +300,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         SizedBox(width: 10),
                         CircleAvatar(
                           backgroundImage:
-                              AssetImage('assets/images/korea.png'),
+                          AssetImage('assets/images/KRW.png'),
                           radius: 10,
                         ),
                         SizedBox(width: 5),
@@ -301,7 +327,7 @@ class _TransactionPageState extends State<TransactionPage> {
                           bottomRight: Radius.circular(10),
                         ),
                         borderSide:
-                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                        BorderSide(color: Color(0xFFF2F2F2), width: 3),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.only(
@@ -309,7 +335,7 @@ class _TransactionPageState extends State<TransactionPage> {
                           bottomRight: Radius.circular(10),
                         ),
                         borderSide:
-                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                        BorderSide(color: Color(0xFFF2F2F2), width: 3),
                       ),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       suffixText: ' ₩',
@@ -357,12 +383,14 @@ class _TransactionPageState extends State<TransactionPage> {
                   ),
                   const SizedBox(height: 5),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return const ChooseLocationPage();
-                        },
-                      ));
+                    onTap: () async {
+                      String addr = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ChooseLocationPage()));
+                      setState(() {
+                        _addr = addr;
+                      });
                     },
                     child: Container(
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -372,17 +400,17 @@ class _TransactionPageState extends State<TransactionPage> {
                         // border: Border.all(color: Colors.black),
                         color: const Color(0xFFF2F2F2),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '장소 선택',
-                            style: TextStyle(
+                            _addr,
+                            style: const TextStyle(
                               fontSize: 15,
                               color: Color(0xFF757575),
                             ),
                           ),
-                          Icon(Icons.chevron_right_rounded),
+                          const Icon(Icons.chevron_right_rounded),
                         ],
                       ),
                     ),
@@ -399,10 +427,10 @@ class _TransactionPageState extends State<TransactionPage> {
                     ),
                     child: const Center(
                         child: Text(
-                      '작성 완료',
-                      style:
+                          '작성 완료',
+                          style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    )),
+                        )),
                   ),
                 ],
               ),
@@ -422,9 +450,6 @@ class _TransactionPageState extends State<TransactionPage> {
         for (var i = 0; i < xfilePick.length; i++) {
           selectedImages.add(File(xfilePick[i].path));
         }
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Nothing is selected')));
       }
     });
   }
