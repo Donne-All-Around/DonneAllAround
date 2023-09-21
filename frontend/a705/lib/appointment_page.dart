@@ -1,3 +1,4 @@
+import 'package:a705/delivery_transaction_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:a705/direct_transaction_page.dart';
@@ -130,33 +131,42 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         ),
                       ),
                       const SizedBox(width: 30),
-                      Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            height: MediaQuery.of(context).size.width / 2 - 75,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    spreadRadius: 1,
-                                    blurRadius: 3,
-                                    offset: const Offset(0, 0),
-                                  ),
-                                ]),
-                            child: const Image(
-                              image: AssetImage('assets/images/wagon_box.png'),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return const DeliveryTransactionPage();
+                            },
+                          ));
+                        },
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              height: MediaQuery.of(context).size.width / 2 - 75,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      spreadRadius: 1,
+                                      blurRadius: 3,
+                                      offset: const Offset(0, 0),
+                                    ),
+                                  ]),
+                              child: const Image(
+                                image: AssetImage('assets/images/wagon_box.png'),
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            '택배 거래',
-                            style: TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                            const SizedBox(height: 10),
+                            const Text(
+                              '택배 거래',
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
