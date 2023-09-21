@@ -588,7 +588,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
         return Row(
           children: [
             Container(
-              margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
               width: 370,
               height: 160,
               decoration: BoxDecoration(
@@ -602,9 +602,26 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                     children: [
                       Container(
                           margin: const EdgeInsets.fromLTRB(
-                              30, 10, 20, 0),
-                          child: Text( _valueList1[index],
-                            style: const TextStyle(fontSize: 16),)),
+                              20, 10, 0, 0),
+                          width: 200,
+                          // color: Colors.red,
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundImage:
+                                AssetImage('assets/images/${currency1[index]}.png'),
+                                radius: 10,
+                              ),
+                              const SizedBox(width: 10),
+                              Text( _valueList1[index],
+                                style: const TextStyle(fontSize: 16),),
+                            ],
+                          ),),
+                      Container(
+                          child: const Text(
+                            '1,300.00 원',
+                            textAlign: TextAlign.end,
+                            style: TextStyle(fontSize: 20, color: Colors.red),))
                     ],
                   ),
                   Row(
@@ -715,9 +732,9 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                           ],
                         ),
                       ),
+                      const SizedBox(height: 10,),
                     ],
                   ),
-                  // const SizedBox(height: 10,),
                 ],
               ),
             ),
