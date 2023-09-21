@@ -1,28 +1,30 @@
 import 'dart:async';
 import 'package:geocoding/geocoding.dart';
-import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ChooseLocationPage extends StatefulWidget {
-  const ChooseLocationPage({super.key});
+
+  final double lat;
+  final double lng;
+
+  const ChooseLocationPage(this.lat, this.lng, {super.key});
 
   @override
   State<ChooseLocationPage> createState() => _ChooseLocationPageState();
 }
 
 class _ChooseLocationPageState extends State<ChooseLocationPage> {
-  LatLng currentPosition = const LatLng(37.5013068, 127.0396597);
+  late LatLng currentPosition = LatLng(widget.lat, widget.lng);
 
   final Completer<GoogleMapController> _controller = Completer();
   GoogleMapController? mapController;
 
   Future<Position> getCurrentLocation() async {
     LocationPermission permission = await Geolocator.requestPermission();
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    Position position =
+        await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     return position;
   }
 
@@ -49,12 +51,23 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
   @override
   void initState() {
     super.initState();
+    _getUserLocation();
   }
 
   @override
   void dispose() {
     myController.dispose();
     super.dispose();
+  }
+
+  void _getUserLocation() async {
+    var position = await GeolocatorPlatform.instance.getCurrentPosition(
+        locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.bestForNavigation));
+
+    setState(() {
+      currentPosition = LatLng(position.latitude, position.longitude);
+    });
   }
 
   @override
@@ -237,7 +250,7 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
                         });
                       },
                       initialCameraPosition: CameraPosition(
-                        target: currentPosition,
+                        target: LatLng(widget.lat, widget.lng),
                         zoom: 17,
                       ),
                       zoomControlsEnabled: false,
@@ -281,22 +294,22 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
                   List<Placemark> placemark = await placemarkFromCoordinates(
                       _currentCenter.latitude, _currentCenter.longitude);
 
-                  print('country: ${placemark.reversed.last.country}');
-                  print('locality: ${placemark.reversed.last.locality}');
-                  print('street: ${placemark.reversed.last.street}');
-                  print('subLocality: ${placemark.reversed.last.subLocality}');
-                  print('name: ${placemark.reversed.last.name}');
-                  print(
-                      'isoCountryCode: ${placemark.reversed.last.isoCountryCode}');
-                  print('postalCode: ${placemark.reversed.last.postalCode}');
-                  print(
-                      'administrativeArea: ${placemark.reversed.last.administrativeArea}');
-                  print(
-                      'subAdministrativeArea: ${placemark.reversed.last.subAdministrativeArea}');
-                  print(
-                      'subThoroughfare: ${placemark.reversed.last.subThoroughfare}');
-                  print('thoroughfare: ${placemark.reversed.last.thoroughfare}');
-                  print('hashCode: ${placemark.reversed.last.hashCode}');
+                  // print('country: ${placemark.reversed.last.country}');
+                  // print('locality: ${placemark.reversed.last.locality}');
+                  // print('street: ${placemark.reversed.last.street}');
+                  // print('subLocality: ${placemark.reversed.last.subLocality}');
+                  // print('name: ${placemark.reversed.last.name}');
+                  // print(
+                  //     'isoCountryCode: ${placemark.reversed.last.isoCountryCode}');
+                  // print('postalCode: ${placemark.reversed.last.postalCode}');
+                  // print(
+                  //     'administrativeArea: ${placemark.reversed.last.administrativeArea}');
+                  // print(
+                  //     'subAdministrativeArea: ${placemark.reversed.last.subAdministrativeArea}');
+                  // print(
+                  //     'subThoroughfare: ${placemark.reversed.last.subThoroughfare}');
+                  // print('thoroughfare: ${placemark.reversed.last.thoroughfare}');
+                  // print('hashCode: ${placemark.reversed.last.hashCode}');
 
                   setState(() {
                     addr =
