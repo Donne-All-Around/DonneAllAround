@@ -404,8 +404,8 @@ class _TransactionPageState extends State<TransactionPage> {
                       });
                     },
                     child: Container(
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      height: 50,
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      height: _addr == "장소 선택" ? 50 : null,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         // border: Border.all(color: Colors.black),
@@ -414,11 +414,13 @@ class _TransactionPageState extends State<TransactionPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            _addr,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              color: Color(0xFF757575),
+                          Expanded(
+                            child: Text(
+                              _addr,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                color: Color(0xFF757575),
+                              ),
                             ),
                           ),
                           const Icon(Icons.chevron_right_rounded),

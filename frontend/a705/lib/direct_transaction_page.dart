@@ -162,8 +162,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
             },
             child: Container(
               margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              height: 50,
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -210,8 +209,8 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
             },
             child: Container(
               margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              height: 50,
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              height: _addr == "장소 선택" ? 50 : null,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -228,10 +227,12 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    _addr,
-                    style: const TextStyle(
-                      fontSize: 15,
+                  Expanded(
+                    child: Text(
+                      _addr,
+                      style: const TextStyle(
+                        fontSize: 15,
+                      ),
                     ),
                   ),
                   const Icon(Icons.chevron_right_rounded),
