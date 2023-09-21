@@ -12,8 +12,10 @@ class DirectTransactionPage extends StatefulWidget {
 }
 
 class _DirectTransactionPageState extends State<DirectTransactionPage> {
+
   var appointmentDate = DateTime.now();
   String _addr = "장소 선택";
+  String appt = "";
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,15 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  appt += DateFormat('yy년 MM월 dd일 HH시 mm분').format(appointmentDate);
+                  appt += " ";
+                  appt += _addr;
+                });
+                Navigator.pop(context, appt);
+                Navigator.pop(context, appt);
+              },
               icon: const Icon(
                 Icons.check_rounded,
                 color: Colors.black,
@@ -69,7 +79,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                     Container(
                       height: 70,
                       width: 70,
-                      margin: const EdgeInsets.fromLTRB(20, 15, 10, 10),
+                      margin: const EdgeInsets.fromLTRB(20, 15, 10, 15),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -101,7 +111,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                               children: [
                                 CircleAvatar(
                                   backgroundImage:
-                                      AssetImage('assets/images/australia.png'),
+                                      AssetImage('assets/images/AUD.png'),
                                   radius: 8,
                                 ),
                                 SizedBox(width: 5),
@@ -152,8 +162,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
             },
             child: Container(
               margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              height: 50,
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -196,13 +205,12 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                       builder: (context) => const ChooseLocationPage()));
               setState(() {
                 _addr = addr;
-                print(addr);
               });
             },
             child: Container(
               margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              height: 50,
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              height: _addr == "장소 선택" ? 50 : null,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -219,10 +227,12 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    _addr,
-                    style: const TextStyle(
-                      fontSize: 15,
+                  Expanded(
+                    child: Text(
+                      _addr,
+                      style: const TextStyle(
+                        fontSize: 15,
+                      ),
                     ),
                   ),
                   const Icon(Icons.chevron_right_rounded),
