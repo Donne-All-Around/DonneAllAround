@@ -130,7 +130,7 @@ class _ExchangePageState extends State<ExchangePage> {
                               text: " 검색",
                               style: TextStyle(
                                 fontSize: 25,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.bold,git 
                                 color: Colors.black,
                               ),
                             ),
@@ -169,7 +169,9 @@ class _ExchangePageState extends State<ExchangePage> {
                             ),
                             const SizedBox(width: 10,),
                             IconButton(
-                                onPressed: (){},
+                                onPressed: (){
+
+                                },
                                 icon: const Icon(Icons.cached_rounded),
                                 iconSize: 40,
                                 color: Colors.grey,),
