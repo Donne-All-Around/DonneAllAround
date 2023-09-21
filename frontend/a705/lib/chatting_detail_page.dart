@@ -190,6 +190,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                               isVisible = false;
                             });
                           },
+                          cursorColor: Colors.black38,
                           textAlignVertical: TextAlignVertical.center,
                           decoration: const InputDecoration(
                               contentPadding:

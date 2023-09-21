@@ -1,7 +1,9 @@
 import 'package:a705/transaction_detail_page.dart';
 import 'package:a705/transaction_page.dart';
+import 'package:a705/notification_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,7 +27,7 @@ class _HomePageState extends State<HomePage> {
           elevation: 0,
           leading: Row(
             children: [
-              const SizedBox(width: 20),
+              const SizedBox(width: 15),
               GestureDetector(
                 onTap: () {
                   showModalBottomSheet(
@@ -121,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                       });
                 },
                 child: Container(
-                  padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
+                  padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
                   child: const Row(
                     children: [
                       Text(
@@ -136,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 5),
               GestureDetector(
                 onTap: () async {
                   int idx = await showModalBottomSheet(
@@ -205,10 +207,16 @@ class _HomePageState extends State<HomePage> {
             IconButton(
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return const NotificationPage();
+                    },
+                  ));
+                },
                 icon: const Icon(Icons.notifications_none_rounded,
                     color: Colors.black87)),
-            const SizedBox(width: 30),
+            const SizedBox(width: 15),
           ],
         ),
         body: Stack(children: [
@@ -220,7 +228,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Container(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                  margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(
@@ -265,7 +273,7 @@ class _HomePageState extends State<HomePage> {
                                 padding:
                                     const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                 width:
-                                    MediaQuery.of(context).size.width / 2 - 23,
+                                    MediaQuery.of(context).size.width / 2 - 5,
                                 height: kMinInteractiveDimension,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
@@ -318,7 +326,7 @@ class _HomePageState extends State<HomePage> {
                                 padding:
                                     const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                 width:
-                                    MediaQuery.of(context).size.width / 2 - 83,
+                                    MediaQuery.of(context).size.width / 2 - 72,
                                 height: kMinInteractiveDimension,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
@@ -429,7 +437,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
               ));
             },
             child: Container(
-              margin: const EdgeInsets.fromLTRB(20, 2, 20, 10),
+              margin: const EdgeInsets.fromLTRB(15, 2, 15, 10),
               padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
               width: double.infinity,
               decoration: BoxDecoration(
@@ -450,7 +458,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                       Container(
                         height: 100,
                         width: 100,
-                        margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                         ),
