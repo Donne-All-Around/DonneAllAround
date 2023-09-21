@@ -130,7 +130,7 @@ class _ExchangePageState extends State<ExchangePage> {
                               text: " 검색",
                               style: TextStyle(
                                 fontSize: 25,
-                                fontWeight: FontWeight.bold,git 
+                                fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
                             ),
@@ -168,9 +168,25 @@ class _ExchangePageState extends State<ExchangePage> {
                                 style: const TextStyle(fontSize: 25),),
                             ),
                             const SizedBox(width: 10,),
+                            if (_isDouble == false)
                             IconButton(
                                 onPressed: (){
-
+                                 setState(() {
+                                   _iscalculate = false;
+                                   _isDouble = false;
+                                   _isdoublecalculate = false;
+                                 });
+                                },
+                                icon: const Icon(Icons.cached_rounded),
+                                iconSize: 40,
+                                color: Colors.grey,),
+                            if (_isDouble)
+                              IconButton(
+                                onPressed: (){
+                                  setState(() {
+                                    _isDouble = true;
+                                    _isdoublecalculate = false;
+                                  });
                                 },
                                 icon: const Icon(Icons.cached_rounded),
                                 iconSize: 40,
