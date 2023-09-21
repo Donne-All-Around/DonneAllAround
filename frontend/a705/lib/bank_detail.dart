@@ -83,19 +83,15 @@ class _BankDetailPageState extends State<BankDetailPage> {
   ];
   List<String> sign2 = ['\$', '¥', '€', '£', '\$', '¥', '₫', '₩','\$'];
 
- // 수수료 
-  final _percentList = [
-    '현찰 살 때',
-    '현찰 팔 때',
-    '송금 보낼 때',
-  ];
+ // 수수료율
+  final _percentList = ['현찰 살 때', '현찰 팔 때', '송금 보낼 때'];
   var _selectedValue3 = '현찰 살 때';
-  
-  List<String> currency3 = [
-    '현찰 살 때',
-    '혈찰 팔 때',
-    '송금 보낼 때'
-  ];
+
+  Map<String, Map<String, String>> percentInfo = {
+    '현찰 살 때': { 'currencyName': '현찰 살 때'},
+    '현찰 팔 때': {'currencyName': '현찰 팔 때'},
+    '송금 보낼 때': {'currencyName': '송금 보낼 때'},
+  };
 
   // 텍스트 필드 컨트롤러
   final TextEditingController _moneyController1 = TextEditingController(text: "1 ");
@@ -136,7 +132,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                 Container(
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   width: 370,
-                  height: 500,
+                  height: 470,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: Colors.black38),
@@ -449,9 +445,15 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                     (value) {
                                       return DropdownMenuItem(
                                           value: value,
-                                          child: Row(
-                                            // Text(currency3[_percentList(value)]),
-                                          ),);
+                                          child:
+                                           Container(
+                                             margin: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                             child: Text(percentInfo[value]![
+                                              'currencyName']!,
+                                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                             textAlign: TextAlign.center,),
+                                           ),
+                                          );
                                     }
                                 ).toList(),
                                 onChanged: (value) {
@@ -498,8 +500,154 @@ class _BankDetailPageState extends State<BankDetailPage> {
                           ),
                         ],
                       ),
+                      Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(280, 10, 10, 0),
+                            width: 70,
+                            height: 50,
+                            // color: const Color(0xFFFFD954),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              // border: Border.all(color: Colors.black38),
+                              color:  const Color(0xFFFFD954),
+                            ),
+                            child:IconButton(
+                              padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
+                              onPressed: (){
+                              },
+                              icon: const Icon(Icons.drag_handle_rounded),
+                              iconSize: 50,
+                              color: Colors.white,
+
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
+                ),
+                // 나라별 환율
+                const SizedBox(height: 20,),
+                Row(
+                  children: [
+                    GestureDetector(
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                        width: 350,
+                        height: 160,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.black38),
+                        ),
+                        child:  Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                    margin: const EdgeInsets.fromLTRB(30, 10, 20, 0),
+                                    child:  const Text('미국', style: TextStyle(fontSize: 16),)),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.fromLTRB(10, 10, 40, 10),
+                                  child: const Text('상세 환율          수수료', style: TextStyle(color: Colors.grey),),
+                                )
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                                  // color: Colors.red,
+                                  child: const Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text('현찰 살 때'),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text('현찰 팔 때'),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text('송금 보낼 때'),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 50,),
+                                Container(
+                                  margin: const EdgeInsets.fromLTRB(0, 0, 30, 10),
+                                  // color: Colors.red,
+                                  child: const Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text('1,354.29원', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text('1,354.29원', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text('1,354.29원', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                  // color: Colors.red,
+                                  child: const Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text('1.75%', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text('1.75%', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text('1.75%', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      // 은행 상세 페이지로.
+                      onTap:(){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const BankDetailPage()),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
