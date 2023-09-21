@@ -142,8 +142,9 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         });
                       },
                       child: Container(
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                         margin: const EdgeInsets.fromLTRB(20, 0, 20, 15),
-                        height: 35,
+                        height: _appt == "약속 잡기" ? 40 : null,
                         width: double.infinity,
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(
@@ -190,6 +191,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                               isVisible = false;
                             });
                           },
+                          cursorColor: Colors.black38,
                           textAlignVertical: TextAlignVertical.center,
                           decoration: const InputDecoration(
                               contentPadding:

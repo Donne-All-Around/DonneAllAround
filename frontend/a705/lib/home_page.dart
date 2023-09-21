@@ -1,7 +1,9 @@
 import 'package:a705/transaction_detail_page.dart';
 import 'package:a705/transaction_page.dart';
+import 'package:a705/notification_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,7 +27,7 @@ class _HomePageState extends State<HomePage> {
           elevation: 0,
           leading: Row(
             children: [
-              const SizedBox(width: 20),
+              const SizedBox(width: 15),
               GestureDetector(
                 onTap: () {
                   showModalBottomSheet(
@@ -121,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                       });
                 },
                 child: Container(
-                  padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
+                  padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
                   child: const Row(
                     children: [
                       Text(
@@ -136,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 5),
               GestureDetector(
                 onTap: () async {
                   int idx = await showModalBottomSheet(
@@ -205,10 +207,16 @@ class _HomePageState extends State<HomePage> {
             IconButton(
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return const NotificationPage();
+                    },
+                  ));
+                },
                 icon: const Icon(Icons.notifications_none_rounded,
                     color: Colors.black87)),
-            const SizedBox(width: 30),
+            const SizedBox(width: 15),
           ],
         ),
         body: Stack(children: [
@@ -220,7 +228,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Container(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                  margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(
@@ -249,9 +257,6 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          width: double.infinity,
-                          height: kMinInteractiveDimension,
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.all(
                               Radius.circular(10),
@@ -260,29 +265,81 @@ class _HomePageState extends State<HomePage> {
                               color: const Color(0xFFD9D9D9),
                               width: 2,
                             ),
-                            color: Colors.white,
+                            color: const Color(0xFFD9D9D9),
                           ),
                           child: Row(
                             children: [
-                              CircleAvatar(
-                                backgroundImage: AssetImage(
-                                    'assets/images/${currency[_idx]}.png'),
-                                radius: 8,
-                              ),
-                              const SizedBox(width: 5),
-                              Expanded(
+                              Container(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                width:
+                                    MediaQuery.of(context).size.width / 2 - 5,
+                                height: kMinInteractiveDimension,
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(10),
+                                    topLeft: Radius.circular(10),
+                                  ),
+                                  color: Color(0xFFF7F7F7),
+                                ),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      '${country[_idx]} ${currency[_idx]}',
-                                      style: const TextStyle(fontSize: 15),
+                                    CircleAvatar(
+                                      backgroundImage: AssetImage(
+                                          'assets/images/${currency[_idx]}.png'),
+                                      radius: 8,
                                     ),
-                                    Text(
-                                      sign[_idx],
-                                      style: const TextStyle(fontSize: 15),
+                                    const SizedBox(width: 5),
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            '${country[_idx]} ${currency[_idx]}',
+                                            style:
+                                                const TextStyle(fontSize: 15),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text('${unit[_idx]}',
+                                                  style: const TextStyle(
+                                                      fontSize: 15)),
+                                              Text(
+                                                sign[_idx],
+                                                style: const TextStyle(
+                                                    fontSize: 15),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                width: 2,
+                                color: const Color(0xFFD9D9D9),
+                              ),
+                              Container(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                width:
+                                    MediaQuery.of(context).size.width / 2 - 72,
+                                height: kMinInteractiveDimension,
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(10),
+                                    topRight: Radius.circular(10),
+                                  ),
+                                  color: Colors.white,
+                                ),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text('1300 ₩',
+                                        style: TextStyle(fontSize: 15)),
                                   ],
                                 ),
                               ),
@@ -380,7 +437,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
               ));
             },
             child: Container(
-              margin: const EdgeInsets.fromLTRB(20, 2, 20, 10),
+              margin: const EdgeInsets.fromLTRB(15, 2, 15, 10),
               padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
               width: double.infinity,
               decoration: BoxDecoration(
@@ -401,7 +458,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                       Container(
                         height: 100,
                         width: 100,
-                        margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                         ),
@@ -487,8 +544,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
                                         children: [
-                                          Icon(
-                                              Icons.people_outline_rounded,
+                                          Icon(Icons.people_outline_rounded,
                                               size: 17),
                                           SizedBox(width: 2),
                                           Text("3"),
@@ -538,6 +594,8 @@ List<String> currency = [
   'HKD'
 ];
 List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫', '\$'];
+
+List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1];
 
 class CountryListViewBuilder extends StatefulWidget {
   const CountryListViewBuilder({super.key});

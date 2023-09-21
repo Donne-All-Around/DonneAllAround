@@ -77,7 +77,7 @@ class _TransactionPageState extends State<TransactionPage> {
           ),
           body: SingleChildScrollView(
             child: Container(
-              margin: const EdgeInsets.fromLTRB(30, 20, 30, 20),
+              margin: const EdgeInsets.fromLTRB(15, 15, 15, 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -109,50 +109,50 @@ class _TransactionPageState extends State<TransactionPage> {
                           width: double.infinity, // To show images in particular area only
                           height: 80,
                           child: selectedImages
-                                  .isEmpty // If no images is selected
+                              .isEmpty // If no images is selected
                               ? const Center(
-                                  child: Text('사진을 선택하세요'))
-                              // If at least 1 images is selected
+                              child: Text('사진을 선택하세요'))
+                          // If at least 1 images is selected
                               : GridView.builder(
                             scrollDirection: Axis.horizontal,
                             physics: const ScrollPhysics(),
-                                  itemCount: selectedImages.length,
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 1,
-                                    childAspectRatio: 1 / 1,
-                                    mainAxisSpacing: 10,
-                                    // Horizontally only 3 images will show
-                                  ),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Container(
-                                      height: 70,
-                                      width: 70,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: kIsWeb
-                                              ? Image.network(
-                                                  selectedImages[index].path,
-                                                  width: 80,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : Image.file(
-                                                  selectedImages[index],
-                                                  width: 80,
-                                                  fit: BoxFit.cover,
-                                                )),
-                                    );
-
-                                    // If you are making the web app then you have to
-                                    // use image provider as network image or in
-                                    // android or iOS it will as file only
-                                  },
+                            itemCount: selectedImages.length,
+                            gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 1,
+                              childAspectRatio: 1 / 1,
+                              mainAxisSpacing: 10,
+                              // Horizontally only 3 images will show
+                            ),
+                            itemBuilder:
+                                (BuildContext context, int index) {
+                              return Container(
+                                height: 70,
+                                width: 70,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
+                                child: ClipRRect(
+                                    borderRadius:
+                                    BorderRadius.circular(10),
+                                    child: kIsWeb
+                                        ? Image.network(
+                                      selectedImages[index].path,
+                                      width: 80,
+                                      fit: BoxFit.cover,
+                                    )
+                                        : Image.file(
+                                      selectedImages[index],
+                                      width: 80,
+                                      fit: BoxFit.cover,
+                                    )),
+                              );
+
+                              // If you are making the web app then you have to
+                              // use image provider as network image or in
+                              // android or iOS it will as file only
+                            },
+                          ),
                         ),
                       ),
                     ],
@@ -172,21 +172,26 @@ class _TransactionPageState extends State<TransactionPage> {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  TextField(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color(0xFFF2F2F2),
-                      hintText: '글 제목',
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.transparent),
+                  SizedBox(
+                    height: 50,
+                    child: TextField(
+                      style: const TextStyle(height: 1.4),
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        filled: true,
+                        fillColor: const Color(0xFFF2F2F2),
+                        hintText: '글 제목',
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.transparent),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.transparent),
+                        ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.transparent),
-                      ),
+                      cursorColor: Colors.black87,
                     ),
-                    cursorColor: Colors.black87,
                   ),
                   const SizedBox(height: 15),
                   const Text(
@@ -198,7 +203,7 @@ class _TransactionPageState extends State<TransactionPage> {
                   ),
                   const SizedBox(height: 5),
                   Container(
-                    height: 60,
+                    height: 50,
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
@@ -239,35 +244,38 @@ class _TransactionPageState extends State<TransactionPage> {
                       ],
                     ),
                   ),
-                  TextField(
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      enabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
+                  SizedBox(
+                    height: 50,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        enabledBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                          borderSide:
+                          BorderSide(color: Color(0xFFF2F2F2), width: 3),
                         ),
-                        borderSide:
-                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
+                        focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                          borderSide:
+                          BorderSide(color: Color(0xFFF2F2F2), width: 3),
                         ),
-                        borderSide:
-                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                        suffixText: ' ${sign[idx]}',
                       ),
-                      suffixText: ' ${sign[idx]}',
-                    ),
-                    cursorColor: Colors.black87,
-                    textAlign: TextAlign.end,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      cursorColor: Colors.black87,
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const Row(
@@ -287,7 +295,7 @@ class _TransactionPageState extends State<TransactionPage> {
                   ),
                   const SizedBox(height: 5),
                   Container(
-                    height: 60,
+                    height: 50,
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
@@ -300,7 +308,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         SizedBox(width: 10),
                         CircleAvatar(
                           backgroundImage:
-                              AssetImage('assets/images/KRW.png'),
+                          AssetImage('assets/images/KRW.png'),
                           radius: 10,
                         ),
                         SizedBox(width: 5),
@@ -313,38 +321,41 @@ class _TransactionPageState extends State<TransactionPage> {
                       ],
                     ),
                   ),
-                  TextField(
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
+                  SizedBox(
+                    height: 50,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                          borderSide:
+                          BorderSide(color: Color(0xFFF2F2F2), width: 3),
                         ),
-                        borderSide:
-                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                          borderSide:
+                          BorderSide(color: Color(0xFFF2F2F2), width: 3),
                         ),
-                        borderSide:
-                            BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        suffixText: ' ₩',
                       ),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      suffixText: ' ₩',
-                    ),
-                    cursorColor: Colors.black87,
-                    textAlign: TextAlign.end,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      cursorColor: Colors.black87,
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 15),
@@ -393,8 +404,8 @@ class _TransactionPageState extends State<TransactionPage> {
                       });
                     },
                     child: Container(
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      height: 60,
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      height: _addr == "장소 선택" ? 50 : null,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         // border: Border.all(color: Colors.black),
@@ -403,11 +414,13 @@ class _TransactionPageState extends State<TransactionPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            _addr,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              color: Color(0xFF757575),
+                          Expanded(
+                            child: Text(
+                              _addr,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                color: Color(0xFF757575),
+                              ),
                             ),
                           ),
                           const Icon(Icons.chevron_right_rounded),
@@ -427,10 +440,10 @@ class _TransactionPageState extends State<TransactionPage> {
                     ),
                     child: const Center(
                         child: Text(
-                      '작성 완료',
-                      style:
+                          '작성 완료',
+                          style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    )),
+                        )),
                   ),
                 ],
               ),
