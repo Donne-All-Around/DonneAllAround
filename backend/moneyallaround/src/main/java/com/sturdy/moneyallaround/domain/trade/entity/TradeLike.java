@@ -1,5 +1,6 @@
 package com.sturdy.moneyallaround.domain.trade.entity;
 
+import com.sturdy.moneyallaround.common.audit.BaseEntity;
 import com.sturdy.moneyallaround.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TradeLike {
+public class TradeLike extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
