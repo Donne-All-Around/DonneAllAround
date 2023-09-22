@@ -217,7 +217,13 @@ class _BankDetailPageState extends State<BankDetailPage> {
                               ),
                               const SizedBox(width: 20,),
                               IconButton(
-                                onPressed: (){},
+                                onPressed: (){
+                                  setState(() {
+                                    _moneyController2.clear();
+                                    _moneyController1.clear();
+                                    _percentController.clear();
+                                  });
+                                },
                                 icon: const Icon(Icons.cached_rounded),
                                 iconSize: 35,
                                 color: Colors.grey,),
