@@ -21,6 +21,13 @@ public record TradeChatResponseDto(@NotNull Long id,
                                    Long buyerId,
                                    LocalDateTime directTradeTime,
                                    String directTradeLocationDetail,
+                                   String sellerAccountNumber,
+                                   String deliveryRecipientName,
+                                   String deliveryRecipientTel,
+                                   String deliveryAddressZipCode,
+                                   String deliveryAddress,
+                                   String deliveryAddressDetail,
+                                   String trackingNumber,
                                    @NotNull Boolean isCompleted,
                                    @NotNull LocalDateTime createTime) {
     public static TradeChatResponseDto from(Trade trade) {
@@ -37,6 +44,13 @@ public record TradeChatResponseDto(@NotNull Long id,
                 .buyerId(trade.getBuyer().getId())
                 .directTradeTime(trade.getDirectTradeTime())
                 .directTradeLocationDetail(trade.getDirectTradeLocationDetail())
+                .sellerAccountNumber(trade.getSellerAccountNumber())
+                .deliveryRecipientName(trade.getDeliveryRecipientName())
+                .deliveryRecipientTel(trade.getDeliveryRecipientTel())
+                .deliveryAddressZipCode(trade.getDeliveryAddressZipCode())
+                .deliveryAddress(trade.getDeliveryAddress())
+                .deliveryAddressDetail(trade.getDeliveryAddressDetail())
+                .trackingNumber(trade.getTrackingNumber())
                 .isCompleted(trade.getIsCompleted())
                 .createTime(trade.getCreateTime())
                 .build();
