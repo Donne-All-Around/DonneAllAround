@@ -52,6 +52,7 @@ dependencies:
   carousel_slider: ^4.2.1
   multiple_images_picker: ^1.0.1
   address_search_field: ^5.0.3
+  kpostal: ^0.5.1
 
 dev_dependencies:
   flutter_test:

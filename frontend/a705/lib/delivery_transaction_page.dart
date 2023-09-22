@@ -1,10 +1,8 @@
-import 'package:bottom_picker/bottom_picker.dart';
+import 'package:a705/search_address_page.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-
-import 'package:a705/choose_location_page.dart';
 
 class DeliveryTransactionPage extends StatefulWidget {
   const DeliveryTransactionPage({super.key});
@@ -135,32 +133,47 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                                   ),
                                 ),
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    CircleAvatar(
-                                      backgroundImage:
-                                      AssetImage('assets/images/AUD.png'),
-                                      radius: 8,
+                                    Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundImage: AssetImage(
+                                                  'assets/images/AUD.png'),
+                                              radius: 8,
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              '50 AUD',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.blueAccent),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 15),
+                                      ],
                                     ),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      '50 AUD',
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blueAccent),
+                                    Column(
+                                      children: [
+                                        SizedBox(height: 15),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              '42,000원',
+                                              style: TextStyle(
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(width: 20),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      '42,000원',
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(width: 20),
                                   ],
                                 ),
                               ],
@@ -224,7 +237,7 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                   String addr = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ChooseLocationPage(currentPosition.latitude, currentPosition.longitude)));
+                          builder: (context) => const SearchAddressPage()));
                   setState(() {
                     _addr = addr;
                   });
