@@ -1,3 +1,4 @@
+import 'package:a705/bank_detail.dart';
 import 'package:a705/exchange_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,8 +22,9 @@ class _ExchangePageState extends State<ExchangePage> {
   }
   
   String selectedButton = '직접'; // 선택된 버튼
+
  // 첫번째 통화
-  final _valueList = [
+  final _valueList1 = [
     '미국(달러) USD',
     '일본(엔) JPY',
     '유럽(유로) EUR',
@@ -33,10 +35,10 @@ class _ExchangePageState extends State<ExchangePage> {
     '한국(원) KRW',
     '홍콩(달러) HKD'
   ];
-  var _selectedValue = '미국(달러) USD';
-  int idx = 0;
+  var _selectedValue1 = '미국(달러) USD';
+  int idx1 = 0;
 
-  List<String> currency = [
+  List<String> currency1 = [
     'USD',
     'JPY',
     'EUR',
@@ -47,7 +49,8 @@ class _ExchangePageState extends State<ExchangePage> {
     'KRW',
     'HKD'
   ];
-  List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$'];
+  List<String> sign1 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$'];
+  
  // 두번째 통화
   final _valueList2 = [
     '미국(달러) USD',
@@ -75,9 +78,66 @@ class _ExchangePageState extends State<ExchangePage> {
     'HKD'
   ];
   List<String> sign2 = ['\$', '¥', '€', '£', '\$', '¥', '₫', '₩','\$'];
-  
+
+  // 세번째 통화
+  final _valueList3 = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '중국(위안) CNY',
+    '베트남(동) VND',
+    '한국(원) KRW',
+    '홍콩(달러) HKD'
+  ];
+  var _selectedValue3 = '베트남(동) VND';
+  int idx3 = 6;
+
+  List<String> currency3 = [
+    'USD',
+    'JPY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CNY',
+    'VND',
+    'KRW',
+    'HKD'
+  ];
+  List<String> sign3 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$'];
+
+  // 네번째 통화
+  final _valueList4 = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '중국(위안) CNY',
+    '베트남(동) VND',
+    '한국(원) KRW',
+    '홍콩(달러) HKD'
+  ];
+  var _selectedValue4 = '한국(원) KRW';
+  int idx4 = 7;
+
+  List<String> currency4 = [
+    'USD',
+    'JPY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CNY',
+    'VND',
+    'KRW',
+    'HKD'
+  ];
+  List<String> sign4 = ['\$', '¥', '€', '£', '\$', '¥', '₫', '₩','\$'];
+
+
   final _bankList = ['신한은행', '하나은행'];
-  var _selectedValue3 = '신한은행';
+  var _selectedValue5 = '신한은행';
   Map<String, Map<String, String>> bankInfo = {
     '신한은행': { 'currencyName': '신한은행'},
     '하나은행': {'currencyName': '하나은행'},
@@ -85,12 +145,14 @@ class _ExchangePageState extends State<ExchangePage> {
 
 
   // 텍스트 필드 컨트롤러
-  final TextEditingController _moneyController = TextEditingController(text: "1 ");
+  final TextEditingController _moneyController1 = TextEditingController(text: "1 ");
   final TextEditingController _moneyController2 = TextEditingController(text: "1,300.00 ");
+  final TextEditingController _moneyController3 = TextEditingController(text: "2 ");
+  final TextEditingController _moneyController4 = TextEditingController(text: "600.00 ");
   final TextEditingController _percentController = TextEditingController(text: "30");
    bool _isDouble = false;
-   bool _iscalculate  = false;
-
+   bool _isdoublecalculate  = false;
+   bool _iscalculate = false;
 
 
   @override
@@ -167,8 +229,31 @@ class _ExchangePageState extends State<ExchangePage> {
                                 style: const TextStyle(fontSize: 25),),
                             ),
                             const SizedBox(width: 10,),
+                            if (_isDouble == false)
                             IconButton(
-                                onPressed: (){},
+                                onPressed: (){
+                                 setState(() {
+                                   _iscalculate = false;
+                                   _isDouble = false;
+                                   _isdoublecalculate = false;
+                                   _moneyController1.clear();
+                                   _moneyController2.clear();
+                                 });
+                                },
+                                icon: const Icon(Icons.cached_rounded),
+                                iconSize: 40,
+                                color: Colors.grey,),
+                            if (_isDouble)
+                              IconButton(
+                                onPressed: (){
+                                  setState(() {
+                                    _isDouble = true;
+                                    _isdoublecalculate = false;
+                                    _moneyController3.clear();
+                                    _moneyController4.clear();
+                                    _percentController.clear();
+                                  });
+                                },
                                 icon: const Icon(Icons.cached_rounded),
                                 iconSize: 40,
                                 color: Colors.grey,),
@@ -219,6 +304,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                           selectedButton = '직접';
                                           _isDouble = false;
                                           _iscalculate = false;
+                                          _isdoublecalculate = false;
                                         });
                                       },
                                     style: ElevatedButton.styleFrom(
@@ -233,6 +319,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                         setState(() {
                                           selectedButton = '이중';
                                           _isDouble = true;
+                                          _iscalculate = false;
                                           // Navigator.push(
                                           //       context,
                                           //       MaterialPageRoute(builder: (context) => const DoubleCurrencyPage()),
@@ -249,7 +336,7 @@ class _ExchangePageState extends State<ExchangePage> {
                             ),
                           ],
                         ),
-
+                        if (_isDouble == false)
                           Row(
                             children: [
                               Container(
@@ -275,8 +362,8 @@ class _ExchangePageState extends State<ExchangePage> {
                                       ),
                                       child: DropdownButtonHideUnderline(
                                         child: DropdownButton(
-                                          value: _selectedValue,
-                                          items: _valueList.map(
+                                          value: _selectedValue1,
+                                          items: _valueList1.map(
                                                 (value) {
                                               return DropdownMenuItem(
                                                 value: value,
@@ -284,7 +371,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                                   children: [
                                                     CircleAvatar(
                                                       backgroundImage: AssetImage(
-                                                          'assets/images/${currency[_valueList.indexOf(value)]}.png'),
+                                                          'assets/images/${currency1[_valueList1.indexOf(value)]}.png'),
                                                       radius: 10,
                                                     ),
                                                     const SizedBox(
@@ -298,8 +385,8 @@ class _ExchangePageState extends State<ExchangePage> {
                                           ).toList(),
                                           onChanged: (value) {
                                             setState(() {
-                                              _selectedValue = value!;
-                                              idx = _valueList.indexOf(value);
+                                              _selectedValue1 = value!;
+                                              idx1 = _valueList1.indexOf(value);
                                             });
                                           },
                                         ),
@@ -316,7 +403,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                       child: TextField(
                                         keyboardType: TextInputType.number,
                                         // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                        controller: _moneyController,
+                                        controller: _moneyController1,
                                         decoration: InputDecoration(
                                           filled: true,
                                           fillColor: Colors.white,
@@ -324,7 +411,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                           enabledBorder: const UnderlineInputBorder(
                                             borderSide: BorderSide(color: Colors.transparent)
                                           ),
-                                          suffixText: ' ${sign[idx]}',
+                                          suffixText: ' ${sign1[idx1]}',
                                         ),
                                         textAlign: TextAlign.end,
                                         style: const TextStyle(
@@ -338,6 +425,7 @@ class _ExchangePageState extends State<ExchangePage> {
                               ),
                             ],
                           ),
+                        if (_isDouble == false)
                         Row(
                           children: [
                             Container(
@@ -411,7 +499,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                         enabledBorder: const UnderlineInputBorder(
                                             borderSide: BorderSide(color: Colors.transparent)
                                         ),
-                                        suffixText: ' ${sign[idx2]}',
+                                        suffixText: ' ${sign2[idx2]}',
                                       ),
                                       textAlign: TextAlign.end,
                                       style: const TextStyle(
@@ -424,7 +512,183 @@ class _ExchangePageState extends State<ExchangePage> {
                               ),
                             ),
                           ],
-                        ),
+                        ),if (_isDouble)
+                          Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                width: 340,
+                                height: 60,
+                                // color: Colors.red,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.black38),
+                                ),
+                                // 드롭다운
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      height: 60,
+                                      width: 182,
+                                      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
+                                        border: Border.all(color: Colors.transparent),
+                                        color:  Colors.grey[200],
+                                      ),
+                                      child: DropdownButtonHideUnderline(
+                                        child: DropdownButton(
+                                          value: _selectedValue3,
+                                          items: _valueList3.map(
+                                                (value) {
+                                              return DropdownMenuItem(
+                                                value: value,
+                                                child: Row(
+                                                  children: [
+                                                    CircleAvatar(
+                                                      backgroundImage: AssetImage(
+                                                          'assets/images/${currency3[_valueList3.indexOf(value)]}.png'),
+                                                      radius: 10,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text(value),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          ).toList(),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedValue3 = value!;
+                                              idx3 = _valueList3.indexOf(value);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 140,
+                                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                      // color: Colors.red,
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
+                                        border: Border.all(color: Colors.transparent),
+                                      ),
+                                      child: TextField(
+                                        keyboardType: TextInputType.number,
+                                        // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                        controller: _moneyController3,
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          border: InputBorder.none,
+                                          enabledBorder: const UnderlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.transparent)
+                                          ),
+                                          suffixText: ' ${sign3[idx3]}',
+                                        ),
+                                        textAlign: TextAlign.end,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        if (_isDouble)
+                          Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                                width: 340,
+                                height: 60,
+                                // color: Colors.red,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.black38),
+                                ),
+                                child:  Row(
+                                  children: [
+                                    Container(
+                                      height: 60,
+                                      width: 182,
+                                      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
+                                        border: Border.all(color: Colors.transparent),
+                                        color:  Colors.grey[200],
+                                      ),
+                                      child: DropdownButtonHideUnderline(
+                                        child: DropdownButton(
+                                          value: _selectedValue4,
+                                          items: _valueList4.map(
+                                                (value) {
+                                              return DropdownMenuItem(
+                                                value: value,
+                                                child: Row(
+                                                  children: [
+                                                    CircleAvatar(
+                                                      backgroundImage: AssetImage(
+                                                          'assets/images/${currency4[_valueList4.indexOf(value)]}.png'),
+                                                      radius: 10,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text(value),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          ).toList(),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedValue4 = value!;
+                                              idx4 = _valueList4.indexOf(value);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 130,
+                                      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                      // color: Colors.red,
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
+                                        border: Border.all(color: Colors.transparent),
+                                      ),
+                                      child: TextField(
+                                        keyboardType: TextInputType.number,
+                                        // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                        controller: _moneyController4,
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          border: InputBorder.none,
+                                          enabledBorder: const UnderlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.transparent)
+                                          ),
+                                          suffixText: ' ${sign4[idx4]}',
+                                        ),
+                                        textAlign: TextAlign.end,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         if (_isDouble)
                         Row(
                           children: [
@@ -440,7 +704,7 @@ class _ExchangePageState extends State<ExchangePage> {
                               ),
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton(
-                                  value: _selectedValue3,
+                                  value: _selectedValue5,
                                   items: _bankList.map(
                                           (value) {
                                         return DropdownMenuItem(
@@ -458,7 +722,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                   ).toList(),
                                   onChanged: (value) {
                                     setState(() {
-                                      _selectedValue3 = value!;
+                                      _selectedValue5 = value!;
                                     });
                                   },
                                 ),
@@ -516,6 +780,9 @@ class _ExchangePageState extends State<ExchangePage> {
                             child:IconButton(
                               padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
                               onPressed: (){
+                                setState(() {
+                                  _iscalculate = true;
+                                });
                               },
                               icon: const Icon(Icons.drag_handle_rounded),
                               iconSize: 50,
@@ -542,7 +809,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                   padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
                                   onPressed: (){
                                     setState(() {
-                                      _iscalculate = true;
+                                      _isdoublecalculate = true;
                                     });
                                   },
                                   icon: const Icon(Icons.drag_handle_rounded),
@@ -557,7 +824,7 @@ class _ExchangePageState extends State<ExchangePage> {
                     ),
                   ),
                   // 말풍선
-                  if (_isDouble == false)
+                  if (_isDouble == false && _iscalculate == false)
                   Row(
                     children: [
                       Container(
@@ -569,7 +836,19 @@ class _ExchangePageState extends State<ExchangePage> {
                       ),
                     ],
                   ),
-                 if (_iscalculate)
+                 if(_iscalculate)
+                   Row(
+                     children: [
+                       Container(
+                         margin: const EdgeInsets.fromLTRB(30, 10, 30, 0),
+                         width: 350,
+                         height: 60,
+                         child:  getbankView(
+                             ChatBubbleClipper6(type: BubbleType.sendBubble), context),
+                       ),
+                     ],
+                   ),
+                 if (_isdoublecalculate)
                    Row(
                      children: [
                        Container(
@@ -584,9 +863,11 @@ class _ExchangePageState extends State<ExchangePage> {
                    ),
 
                  //국가별 실시간 환율
-                  if (_isDouble == false)
+                  if (_isDouble == false && _iscalculate == false)
                     const ListViewBuilder(),
 
+                  if (_iscalculate)
+                    const BankViewBuilder(),
                   ],
               ),
           ),
@@ -595,7 +876,7 @@ class _ExchangePageState extends State<ExchangePage> {
     );
   }
 
-   // 말풍선
+   // 기본말풍선
   getSenderView(CustomClipper clipper, BuildContext context) => ChatBubble(
     clipper: clipper,
     elevation: 0,
@@ -613,6 +894,35 @@ class _ExchangePageState extends State<ExchangePage> {
         children: [
           Text(
             " 국가별 실시간 환율",
+            style: TextStyle(color: Colors.white, fontSize: 17),
+          ),
+          Text(
+            "을 확인 할 수 있어요! ",
+            style: TextStyle(color: Colors.black, fontSize: 17),
+          ),
+        ],
+      ),
+    ),
+  );
+  
+  // 계산기 누르면 은행별 말풍선
+  getbankView(CustomClipper clipper, BuildContext context) => ChatBubble(
+    clipper: clipper,
+    elevation: 0,
+    alignment: Alignment.topLeft,
+    margin: const EdgeInsets.all(0),
+    backGroundColor:const Color(0xFFFFD954),
+    child: Container(
+      // constraints: const BoxConstraints(
+      //   // maxWidth: MediaQuery.of(context).size.width * 1,
+      // ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: const Row(
+        children: [
+          Text(
+            " 은행 별 예상 금액 ",
             style: TextStyle(color: Colors.white, fontSize: 17),
           ),
           Text(
@@ -643,7 +953,7 @@ class _ExchangePageState extends State<ExchangePage> {
          Row(
            children: [
              Container(
-               margin: EdgeInsets.fromLTRB(20, 10, 0, 10),
+               margin: const EdgeInsets.fromLTRB(20, 10, 0, 10),
                child: const Text(
                  " 직접 환전 대비",
                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
@@ -696,7 +1006,6 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
     '한국(원) KRW',
     '홍콩(달러) HKD'
   ];
-  var _selectedValue1 = '미국(달러) USD';
   int idx1 = 0;
 
   List<String> currency1 = [
@@ -779,3 +1088,209 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
   }
 }
 
+// 계산기 눌렀을 때, 은행별 리스트 => 은행 목록과 사진으로 바꿔야 함!!
+class BankViewBuilder extends StatefulWidget {
+  const BankViewBuilder({super.key});
+
+  @override
+  State<BankViewBuilder> createState() => _BankViewBuilderState();
+}
+
+class _BankViewBuilderState extends State<BankViewBuilder> {
+  final _valueList1 = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '중국(위안) CNY',
+    '베트남(동) VND',
+    '한국(원) KRW',
+    '홍콩(달러) HKD'
+  ];
+
+  int idx1 = 0;
+
+  List<String> currency1 = [
+    'USD',
+    'JPY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CNY',
+    'VND',
+    'KRW',
+    'HKD'
+  ];
+
+
+  @override
+  Widget build(BuildContext context) {
+    return  ListView.builder(
+      primary: false,
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemCount: _valueList1.length,
+      itemBuilder: (context, index) {
+        return Row(
+          children: [
+            GestureDetector(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BankDetailPage()),
+                );
+              },
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                width: 370,
+                height: 160,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.black38),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(
+                              20, 10, 0, 0),
+                          width: 200,
+                          // color: Colors.red,
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundImage:
+                                AssetImage('assets/images/${currency1[index]}.png'),
+                                radius: 10,
+                              ),
+                              const SizedBox(width: 10),
+                              Text( _valueList1[index],
+                                style: const TextStyle(fontSize: 16),),
+                            ],
+                          ),),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(
+                              0, 10, 40, 10),
+                          child: const Text(
+                            '상세 환율              수수료',
+                            style: TextStyle(color: Colors.grey),),
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(
+                              20, 0, 20, 10),
+                          // color: Colors.red,
+                          child: const Column(
+                            crossAxisAlignment: CrossAxisAlignment
+                                .start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text('현찰 살 때'),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text('현찰 팔 때'),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text('송금 보낼 때'),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 50,),
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(
+                              10, 0, 30, 10),
+                          // color: Colors.red,
+                          child: const Column(
+                            crossAxisAlignment: CrossAxisAlignment
+                                .start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text('1,354.29원',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text('1,354.29원',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text('1,354.29원',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(
+                              10, 0, 0, 10),
+                          // color: Colors.red,
+                          child: const Column(
+                            crossAxisAlignment: CrossAxisAlignment
+                                .start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text('1.75%', style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text('1.75%', style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text('1.75%', style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10,),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
