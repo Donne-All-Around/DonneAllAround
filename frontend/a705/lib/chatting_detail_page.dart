@@ -26,7 +26,9 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
       chatRoomId, // 채팅방 아이디
       otherUserName, // 상대방 닉네임
       seller, // 판매자 닉네임
+      sellerId, // 판매자 아이디
       buyer, // 구매자 닉네임
+      buyerId, // 구매자 아이디
       transactionId; // 거래글 아이디
   String _appt = "약속 잡기";
   Stream? messageStream;
@@ -47,12 +49,15 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
 
     // 예시 시작
     chatRoomId = "board1_쏘영이_이병건";
-    myUserName = "쏘영이";
-    otherUserName = "이병건";
+    myUserName = "이병건";
+    otherUserName = "쏘영이";
     seller = "쏘영이";
+    sellerId = "123456";
+    buyerId = "abcdef";
+    buyer = "이병건";
     myPhone = "010-1111-1111";
     transactionId = "board1";
-    String userId = myUserName == seller ? "1" : "2";
+    String userId = myUserName == seller ? "seller" : "buyer";
     DatabaseMethods().setRead(chatRoomId,userId); // 읽음 처리
     // 예시 끝
     setState(() {});
@@ -110,14 +115,14 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   }
 
 // 채팅 메시지 가져오기
-  Future<Stream<QuerySnapshot>> getChatRoomMessages(String chatRoomId) async {
-    return FirebaseFirestore.instance
-        .collection("chatRooms")
-        .doc(chatRoomId)
-        .collection("chats")
-        .orderBy("time", descending: true) // 시간 역순으로 스트림 반환
-        .snapshots();
-  }
+//   Future<Stream<QuerySnapshot>> getChatRoomMessages(String chatRoomId) async {
+//     return FirebaseFirestore.instance
+//         .collection("chatRooms")
+//         .doc(chatRoomId)
+//         .collection("chats")
+//         .orderBy("time", descending: true) // 시간 역순으로 스트림 반환
+//         .snapshots();
+//   }
 
   // 채팅 메시지 타일
   Widget chatMessageTile(
@@ -344,10 +349,23 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         "imgUrl": myProfilePic,
       };
 
-      // 상대방 정보 업데이트
-      String userId = otherUserName == seller ? "1" : "2"; // seller면 1 buyer면 2
-      Map<String, dynamic> userInfoMap = {
-        "userName": otherUserName, // 상대방
+      // user 정보 업데이트
+      /**
+       * 현재 접속한 user 비교 후, 상대방의 unread 갱신
+       */
+
+      String selectOtherUser = otherUserName == seller ? "seller" : "buyer"; // 상대방 collection 찾기
+
+      Map<String, dynamic> sellerInfoMap = {
+        "sellerId": sellerId, // 판매자 아이디
+        "userName": seller, // 판매자 닉네임
+        "isExit": false, // 나가기를 했었다면, 강제 초대
+        "unRead": FieldValue.increment(1), // 안 읽음 수 증가
+      };
+
+      Map<String, dynamic> buyerInfoMap = {
+        "buyerId": buyerId, // 구매자 아이디
+        "userName": buyer, // 구매자 닉네임
         "isExit": false, // 나가기를 했었다면, 강제 초대
         "unRead": FieldValue.increment(1), // 안 읽음 수 증가
       };
@@ -360,7 +378,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
       // 마지막 메시지
       DatabaseMethods()
           .addMessageUser(
-              chatRoomId!, messageId!, messageInfoMap, userId!, userInfoMap)
+              chatRoomId!, messageId!, messageInfoMap, selectOtherUser!, sellerInfoMap, buyerInfoMap)
           .then((value) {
         Map<String, dynamic> lastMessageInfoMap = {
           "lastMessage": message,
@@ -368,7 +386,16 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
           "time": FieldValue.serverTimestamp(),
           "lastMessageSendBy": myUserName,
           "transactionId" : transactionId,
+          "transactionUrl":"",
         };
+
+        // Map<String, dynamic> chatRoomListInfoMap = {
+        //   "lastMessage": message,
+        //   "lastMessageSendTs": formattedDate,
+        //   "isExit": false,
+        //   "otherUserName": otherUserName,
+        //   "other": ,
+        // }
         print(lastMessageInfoMap);
         DatabaseMethods()
             .updateLastMessageSend(chatRoomId!, lastMessageInfoMap);
