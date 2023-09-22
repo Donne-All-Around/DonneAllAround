@@ -273,7 +273,7 @@ class _HomePageState extends State<HomePage> {
                                 padding:
                                     const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                 width:
-                                    MediaQuery.of(context).size.width / 2 - 5,
+                                    MediaQuery.of(context).size.width / 2 - 38,
                                 height: kMinInteractiveDimension,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
@@ -287,7 +287,7 @@ class _HomePageState extends State<HomePage> {
                                     CircleAvatar(
                                       backgroundImage: AssetImage(
                                           'assets/images/${currency[_idx]}.png'),
-                                      radius: 8,
+                                      radius: 15,
                                     ),
                                     const SizedBox(width: 5),
                                     Expanded(
@@ -295,10 +295,21 @@ class _HomePageState extends State<HomePage> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
-                                            '${country[_idx]} ${currency[_idx]}',
-                                            style:
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                country[_idx],
+                                                style:
+                                                    const TextStyle(fontSize: 15),
+                                              ),
+                                              Text(
+                                                currency[_idx],
+                                                style:
                                                 const TextStyle(fontSize: 15),
+                                              ),
+                                            ],
                                           ),
                                           Row(
                                             children: [
@@ -326,7 +337,7 @@ class _HomePageState extends State<HomePage> {
                                 padding:
                                     const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                 width:
-                                    MediaQuery.of(context).size.width / 2 - 72,
+                                    MediaQuery.of(context).size.width / 2 - 38,
                                 height: kMinInteractiveDimension,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
