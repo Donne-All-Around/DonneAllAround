@@ -63,11 +63,41 @@ public class Trade extends BaseEntity {
     @Column(nullable = false)
     private Boolean isDeleted;
 
+    // 직거래 일시
     @Column(nullable = true)
     private LocalDateTime directTradeTime;
 
+    // 직거래 장소
     @Column(nullable = true)
     private String directTradeLocationDetail;
+
+    // 판매자 계좌번호
+    @Column(nullable = true)
+    private String sellerAccountNumber;
+
+    // 택배 수취인 이름
+    @Column(nullable = true)
+    private String deliveryRecipientName;
+
+    // 택배 수취인 전화번호
+    @Column(nullable = true)
+    private String deliveryRecipientTel;
+
+    // 배송지 우편번호
+    @Column(nullable = true)
+    private String deliveryAddressZipCode;
+
+    // 배송지
+    @Column(nullable = true)
+    private String deliveryAddress;
+
+    // 배송지 상세주소
+    @Column(nullable = true)
+    private String deliveryAddressDetail;
+
+    // 송장번호
+    @Column(nullable = true)
+    private String trackingNumber;
 
     @Column(nullable = false)
     private Boolean isCompleted;
@@ -128,26 +158,54 @@ public class Trade extends BaseEntity {
         isDeleted = true;
     }
 
-    public void makePromise(Member buyer, TradeType type, LocalDateTime directTradeTime, String directTradeLocationDetail) {
+    public void makeDirectPromise(Member buyer, LocalDateTime directTradeTime, String directTradeLocationDetail) {
         status = TradeStatus.PROGRESS;
+        type = TradeType.DIRECT;
         this.buyer = buyer;
-        this.type = type;
         this.directTradeTime = directTradeTime;
         this.directTradeLocationDetail = directTradeLocationDetail;
     }
 
-    public void updatePromise(TradeType type, LocalDateTime directTradeTime, String directTradeLocationDetail) {
-        this.type = type;
+    public void makeDeliveryPromise(Member buyer) {
+        status = TradeStatus.PROGRESS;
+        type = TradeType.DELIVERY;
+        this.buyer = buyer;
+    }
+
+    public void updateDirectPromise(LocalDateTime directTradeTime, String directTradeLocationDetail) {
         this.directTradeTime = directTradeTime;
         this.directTradeLocationDetail = directTradeLocationDetail;
+    }
+
+    public void updateSellerAccountNumber(String sellerAccountNumber) {
+        this.sellerAccountNumber = sellerAccountNumber;
+    }
+
+    public void updateDeliveryInfo(String deliveryRecipientName, String deliveryRecipientTel, String deliveryAddressZipCode, String deliveryAddress, String deliveryAddressDetail) {
+        this.deliveryRecipientName = deliveryRecipientName;
+        this.deliveryRecipientTel = deliveryRecipientTel;
+        this.deliveryAddressZipCode = deliveryAddressZipCode;
+        this.deliveryAddress = deliveryAddress;
+        this.deliveryAddressDetail = deliveryAddressDetail;
+    }
+
+    public void updateTrackingNumber(String trackingNumber) {
+        this.trackingNumber = trackingNumber;
     }
 
     public void cancelPromise() {
         status = TradeStatus.WAIT;
-        buyer = null;
         type = TradeType.DIRECT;
+        buyer = null;
         directTradeTime = null;
         directTradeLocationDetail = null;
+        sellerAccountNumber = null;
+        deliveryRecipientName = null;
+        deliveryRecipientTel = null;
+        deliveryAddressZipCode = null;
+        deliveryAddress = null;
+        deliveryAddressDetail = null;
+        trackingNumber = null;
     }
 
     public void complete() {

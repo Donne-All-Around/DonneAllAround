@@ -1,10 +1,7 @@
 package com.sturdy.moneyallaround.domain.trade.controller;
 
 import com.sturdy.moneyallaround.common.api.ApiResponse;
-import com.sturdy.moneyallaround.domain.trade.dto.request.PromiseCreateRequestDto;
-import com.sturdy.moneyallaround.domain.trade.dto.request.PromiseUpdateRequestDto;
-import com.sturdy.moneyallaround.domain.trade.dto.request.TradeRequestDto;
-import com.sturdy.moneyallaround.domain.trade.dto.request.TradeListRequestDto;
+import com.sturdy.moneyallaround.domain.trade.dto.request.*;
 import com.sturdy.moneyallaround.domain.trade.dto.response.TradeChatResponseDto;
 import com.sturdy.moneyallaround.domain.trade.dto.response.TradeDetailResponseDto;
 import com.sturdy.moneyallaround.domain.trade.dto.response.TradeHistoryResponseDto;
@@ -123,14 +120,34 @@ public class TradeController {
         return ApiResponse.success("거래 글 삭제 성공", null);
    }
 
-    @PutMapping("/promise/{tradeId}")
-    public ApiResponse<TradeChatResponseDto> makePromise(@PathVariable Long tradeId, @RequestBody PromiseCreateRequestDto promiseCreateRequestDto) {
-        return ApiResponse.success("약속 잡기 성공", TradeChatResponseDto.from(tradeService.makePromise(tradeId, promiseCreateRequestDto)));
+    @PutMapping("/promise/direct/{tradeId}")
+    public ApiResponse<TradeChatResponseDto> makeDirectPromise(@PathVariable Long tradeId, @RequestBody DirectTradeCreateRequestDto directTradeCreateRequestDto) {
+        return ApiResponse.success("직거래 약속 잡기 성공", TradeChatResponseDto.from(tradeService.makeDirectPromise(tradeId, directTradeCreateRequestDto)));
     }
 
-    @PutMapping("/promise/edit/{tradeId}")
-    public ApiResponse<TradeChatResponseDto> updatePromise(@PathVariable Long tradeId, @RequestBody PromiseUpdateRequestDto promiseUpdateRequestDto) {
-        return ApiResponse.success("약속 수정 성공", TradeChatResponseDto.from(tradeService.updatePromise(tradeId, promiseUpdateRequestDto)));
+    @PutMapping("/promise/delivery/{tradeId}")
+    public ApiResponse<TradeChatResponseDto> makeDeliveryPromise(@PathVariable Long tradeId, @RequestBody DeliveryTradeRequestDto directTradeCreateRequestDto) {
+        return ApiResponse.success("택배거래 약속 잡기 성공", TradeChatResponseDto.from(tradeService.makeDeliveryPromise(tradeId, directTradeCreateRequestDto)));
+    }
+
+    @PutMapping("/promise/direct/{tradeId}/edit")
+    public ApiResponse<TradeChatResponseDto> updateDirectPromise(@PathVariable Long tradeId, @RequestBody DirectTradeUpdateRequestDto directTradeUpdateRequestDto) {
+        return ApiResponse.success("직거래 약속 수정 성공", TradeChatResponseDto.from(tradeService.updateDirectPromise(tradeId, directTradeUpdateRequestDto)));
+    }
+
+    @PutMapping("/promise/delivery/{tradeId}/seller/account")
+    public ApiResponse<TradeChatResponseDto> updateSellerAccountNumber(@PathVariable Long tradeId, @RequestBody SellerAccountNumberRequestDto sellerAccountNumberRequestDto) {
+        return ApiResponse.success("직거래 약속 수정 성공", TradeChatResponseDto.from(tradeService.updateSellerAccountNumber(tradeId, sellerAccountNumberRequestDto)));
+    }
+
+    @PutMapping("/promise/delivery/{tradeId}/buyer/address")
+    public ApiResponse<TradeChatResponseDto> updateDeliveryInfo(@PathVariable Long tradeId, @RequestBody DeliveryInfoRequestDto deliveryInfoRequestDto) {
+        return ApiResponse.success("직거래 약속 수정 성공", TradeChatResponseDto.from(tradeService.updateDeliveryInfo(tradeId, deliveryInfoRequestDto)));
+    }
+
+    @PutMapping("/promise/delivery/{tradeId}/seller/tracking")
+    public ApiResponse<TradeChatResponseDto> updateTrackingNumber(@PathVariable Long tradeId, @RequestBody TrackingNumberRequestDto trackingNumberRequestDto) {
+        return ApiResponse.success("직거래 약속 수정 성공", TradeChatResponseDto.from(tradeService.updateTrackingNumber(tradeId, trackingNumberRequestDto)));
     }
 
     @PutMapping("/promise/cancel/{tradeId}")
