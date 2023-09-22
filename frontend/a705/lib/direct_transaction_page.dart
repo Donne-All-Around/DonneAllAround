@@ -70,7 +70,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
           IconButton(
               onPressed: () {
                 setState(() {
-                  appt += DateFormat('yy.MM.dd HH:mm').format(appointmentDate);
+                  appt += DateFormat('yy.MM.dd a hh:mm', 'ko').format(appointmentDate);
                   appt += " ";
                   appt += _addr;
                 });
@@ -206,7 +206,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
               child: Row(
                 children: [
                   Text(
-                    DateFormat('yy년 MM월 dd일 HH시 mm분').format(appointmentDate),
+                    DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko').format(appointmentDate),
                     style: const TextStyle(fontSize: 16),
                   ),
                 ],
