@@ -245,30 +245,35 @@ class BankViewBuilder extends StatefulWidget {
 
 class _BankViewBuilderState extends State<BankViewBuilder> {
   final _valueList1 = [
-    '미국(달러) USD',
-    '일본(엔) JPY',
-    '유럽(유로) EUR',
-    '영국(파운드) GBP',
-    '호주(달러) AUD',
-    '중국(위안) CNY',
-    '베트남(동) VND',
-    '한국(원) KRW',
-    '홍콩(달러) HKD'
+   '하나은행',
+   '우리은행',
+   'KB국민은행',
+   '신한은행',
+   'NH농협은행',
+   '기업은행',
+   'SC제일은행',
+   '시티은행',
+   '수협은행',
+   '부산은행',
+   '대구은행',
+   '전북은행',
+   '경남은행',
+   '제주은행',
   ];
 
   int idx1 = 0;
 
-  List<String> currency1 = [
-    'USD',
-    'JPY',
-    'EUR',
-    'GBP',
-    'AUD',
-    'CNY',
-    'VND',
-    'KRW',
-    'HKD'
-  ];
+  // List<String> currency1 = [
+  //   'USD',
+  //   'JPY',
+  //   'EUR',
+  //   'GBP',
+  //   'AUD',
+  //   'CNY',
+  //   'VND',
+  //   'KRW',
+  //   'HKD'
+  // ];
 
 
   @override
@@ -308,11 +313,11 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                           // color: Colors.red,
                           child: Row(
                             children: [
-                              CircleAvatar(
-                                backgroundImage:
-                                AssetImage('assets/images/${currency1[index]}.png'),
-                                radius: 10,
-                              ),
+                              // CircleAvatar(
+                              //   backgroundImage:
+                              //   AssetImage('assets/images/${currency1[index]}.png'),
+                              //   radius: 10,
+                              // ),
                               const SizedBox(width: 10),
                               Text( _valueList1[index],
                                 style: const TextStyle(fontSize: 16),),
