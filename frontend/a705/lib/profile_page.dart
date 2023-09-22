@@ -483,53 +483,62 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ),
                                   ),
-                                  const Padding(
-                                    padding: EdgeInsets.fromLTRB(16.0, 0, 16.0, 8.0),
-                                    child: Text(
-                                      '다시 로그인 하실 때',
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontFamily: 'Inter',
-                                      )
-                                    )
-                                  ),
-                                  const Padding(
-                                    padding: EdgeInsets.fromLTRB(16.0, 0, 16.0, 8.0),
-                                    child: Text(
-                                      '전화번호 인증이 필요합니다.',
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontFamily: 'Inter',
-                                      )
-                                    )
-                                  ),
-                                  const Padding(
-                                    padding: EdgeInsets.fromLTRB(16.0, 0, 16.0, 8.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          '정말 ',
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontFamily: 'Inter',
-                                          )
-                                        ),
-                                        Text(
-                                          '로그아웃',
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontFamily: 'Inter',
-                                            color: Colors.red,
-                                          )
-                                        ),
-                                        Text(
-                                          ' 하시겠습니까?',
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontFamily: 'Inter',
-                                          )
+                                  const Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(48.0, 0, 16.0, 8.0),
+                                      child: Text(
+                                        '다시 로그인 하실 때',
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontFamily: 'Inter',
                                         )
-                                      ]
+                                      ),
+                                    )
+                                  ),
+                                  const Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(48.0, 0, 16.0, 8.0),
+                                      child: Text(
+                                        '전화번호 인증이 필요합니다.',
+                                        style: TextStyle(
+                                         fontSize: 16.0,
+                                         fontFamily: 'Inter',
+                                        )
+                                      )
+                                    )
+                                  ),
+                                  const Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(48.0, 0, 16.0, 8.0),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            '정말 ',
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontFamily: 'Inter',
+                                            )
+                                          ),
+                                          Text(
+                                            '로그아웃',
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontFamily: 'Inter',
+                                              color: Colors.red,
+                                            )
+                                          ),
+                                          Text(
+                                            ' 하시겠습니까?',
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontFamily: 'Inter',
+                                            )
+                                          )
+                                        ]
+                                      )
                                     )
                                   ),
                                   Padding(

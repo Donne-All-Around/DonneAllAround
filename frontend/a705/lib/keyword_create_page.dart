@@ -10,8 +10,31 @@ class KeywordCreatePage extends StatefulWidget {
 
 class KeywordCreatePageState extends State<KeywordCreatePage> {
 
-  final _valueList = ['첫 번째', '두 번째', '세 번째'];
-  var _selectedValue = '첫 번째';
+  final _valueList = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '중국(위안) CNY',
+    '베트남(동) VND',
+    '한국(원) KRW',
+    '홍콩(달러) HKD'
+  ];
+  var _selectedValue = '미국(달러) USD';
+  int idx = 0;
+
+  List<String> currency = [
+    'USD',
+    'JPY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CNY',
+    'VND',
+    'KRW',
+    'HKD'
+  ];
 
   final _locationController = TextEditingController();
 
@@ -129,7 +152,7 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
                   ),
                   const SizedBox(height: 5),
                   Container(
-                    height: 60,
+                    height: 50,
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
@@ -140,29 +163,32 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
                     child: Row(
                       children: [
                         const SizedBox(width: 10),
-                        DropdownButton(
-                          value: _selectedValue,
-                          items: _valueList.map((value) {
-                            return DropdownMenuItem(
-                              value: value,
-                              child: Row(
-                                children: [
-                                  const CircleAvatar(
-                                    backgroundImage: AssetImage(
-                                        'assets/images/australia.png'),
-                                    radius: 10,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(value),
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedValue = value!;
-                            });
-                          },
+                        DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                            value: _selectedValue,
+                            items: _valueList.map((value) {
+                              return DropdownMenuItem(
+                                value: value,
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundImage: AssetImage(
+                                          'assets/images/${currency[_valueList.indexOf(value)]}.png'),
+                                      radius: 10,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Text(value),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedValue = value!;
+                                idx = _valueList.indexOf(value);
+                              });
+                            },
+                          ),
                         ),
                       ],
                     ),
