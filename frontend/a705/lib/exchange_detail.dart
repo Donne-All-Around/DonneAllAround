@@ -69,10 +69,11 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                 Container(
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   width: 360,
-                  height: 300,
+                  height: 380,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: Colors.black38),
+                    color: Colors.yellow[100],
                   ),
                   child: Column(
                     children: [
@@ -148,6 +149,7 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                       ),
                       const SizedBox(height: 5),
                       Row(
+
                         children: [
                           TextButton(
                               onPressed: () {
@@ -216,6 +218,23 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                               )),
                         ],
                       ),
+                      const SizedBox(height: 10,),
+                      // 그래프 공간
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 320,
+                            height: 240,
+                            decoration:BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.black38),
+                            ),
+                            // 그래프 UI
+                          ),
+                        ],
+                      ),
+
                     ],
                   ),
                 ),
