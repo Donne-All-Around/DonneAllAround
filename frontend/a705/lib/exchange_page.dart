@@ -22,8 +22,9 @@ class _ExchangePageState extends State<ExchangePage> {
   }
   
   String selectedButton = '직접'; // 선택된 버튼
+
  // 첫번째 통화
-  final _valueList = [
+  final _valueList1 = [
     '미국(달러) USD',
     '일본(엔) JPY',
     '유럽(유로) EUR',
@@ -34,10 +35,10 @@ class _ExchangePageState extends State<ExchangePage> {
     '한국(원) KRW',
     '홍콩(달러) HKD'
   ];
-  var _selectedValue = '미국(달러) USD';
-  int idx = 0;
+  var _selectedValue1 = '미국(달러) USD';
+  int idx1 = 0;
 
-  List<String> currency = [
+  List<String> currency1 = [
     'USD',
     'JPY',
     'EUR',
@@ -48,7 +49,8 @@ class _ExchangePageState extends State<ExchangePage> {
     'KRW',
     'HKD'
   ];
-  List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$'];
+  List<String> sign1 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$'];
+  
  // 두번째 통화
   final _valueList2 = [
     '미국(달러) USD',
@@ -76,9 +78,66 @@ class _ExchangePageState extends State<ExchangePage> {
     'HKD'
   ];
   List<String> sign2 = ['\$', '¥', '€', '£', '\$', '¥', '₫', '₩','\$'];
-  
+
+  // 세번째 통화
+  final _valueList3 = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '중국(위안) CNY',
+    '베트남(동) VND',
+    '한국(원) KRW',
+    '홍콩(달러) HKD'
+  ];
+  var _selectedValue3 = '베트남(동) VND';
+  int idx3 = 6;
+
+  List<String> currency3 = [
+    'USD',
+    'JPY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CNY',
+    'VND',
+    'KRW',
+    'HKD'
+  ];
+  List<String> sign3 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$'];
+
+  // 네번째 통화
+  final _valueList4 = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '중국(위안) CNY',
+    '베트남(동) VND',
+    '한국(원) KRW',
+    '홍콩(달러) HKD'
+  ];
+  var _selectedValue4 = '한국(원) KRW';
+  int idx4 = 7;
+
+  List<String> currency4 = [
+    'USD',
+    'JPY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CNY',
+    'VND',
+    'KRW',
+    'HKD'
+  ];
+  List<String> sign4 = ['\$', '¥', '€', '£', '\$', '¥', '₫', '₩','\$'];
+
+
   final _bankList = ['신한은행', '하나은행'];
-  var _selectedValue3 = '신한은행';
+  var _selectedValue5 = '신한은행';
   Map<String, Map<String, String>> bankInfo = {
     '신한은행': { 'currencyName': '신한은행'},
     '하나은행': {'currencyName': '하나은행'},
@@ -86,8 +145,10 @@ class _ExchangePageState extends State<ExchangePage> {
 
 
   // 텍스트 필드 컨트롤러
-  final TextEditingController _moneyController = TextEditingController(text: "1 ");
+  final TextEditingController _moneyController1 = TextEditingController(text: "1 ");
   final TextEditingController _moneyController2 = TextEditingController(text: "1,300.00 ");
+  final TextEditingController _moneyController3 = TextEditingController(text: "2 ");
+  final TextEditingController _moneyController4 = TextEditingController(text: "600.00 ");
   final TextEditingController _percentController = TextEditingController(text: "30");
    bool _isDouble = false;
    bool _isdoublecalculate  = false;
@@ -175,6 +236,8 @@ class _ExchangePageState extends State<ExchangePage> {
                                    _iscalculate = false;
                                    _isDouble = false;
                                    _isdoublecalculate = false;
+                                   _moneyController1.clear();
+                                   _moneyController2.clear();
                                  });
                                 },
                                 icon: const Icon(Icons.cached_rounded),
@@ -186,6 +249,9 @@ class _ExchangePageState extends State<ExchangePage> {
                                   setState(() {
                                     _isDouble = true;
                                     _isdoublecalculate = false;
+                                    _moneyController3.clear();
+                                    _moneyController4.clear();
+                                    _percentController.clear();
                                   });
                                 },
                                 icon: const Icon(Icons.cached_rounded),
@@ -270,7 +336,7 @@ class _ExchangePageState extends State<ExchangePage> {
                             ),
                           ],
                         ),
-
+                        if (_isDouble == false)
                           Row(
                             children: [
                               Container(
@@ -296,8 +362,8 @@ class _ExchangePageState extends State<ExchangePage> {
                                       ),
                                       child: DropdownButtonHideUnderline(
                                         child: DropdownButton(
-                                          value: _selectedValue,
-                                          items: _valueList.map(
+                                          value: _selectedValue1,
+                                          items: _valueList1.map(
                                                 (value) {
                                               return DropdownMenuItem(
                                                 value: value,
@@ -305,7 +371,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                                   children: [
                                                     CircleAvatar(
                                                       backgroundImage: AssetImage(
-                                                          'assets/images/${currency[_valueList.indexOf(value)]}.png'),
+                                                          'assets/images/${currency1[_valueList1.indexOf(value)]}.png'),
                                                       radius: 10,
                                                     ),
                                                     const SizedBox(
@@ -319,8 +385,8 @@ class _ExchangePageState extends State<ExchangePage> {
                                           ).toList(),
                                           onChanged: (value) {
                                             setState(() {
-                                              _selectedValue = value!;
-                                              idx = _valueList.indexOf(value);
+                                              _selectedValue1 = value!;
+                                              idx1 = _valueList1.indexOf(value);
                                             });
                                           },
                                         ),
@@ -337,7 +403,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                       child: TextField(
                                         keyboardType: TextInputType.number,
                                         // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                        controller: _moneyController,
+                                        controller: _moneyController1,
                                         decoration: InputDecoration(
                                           filled: true,
                                           fillColor: Colors.white,
@@ -345,7 +411,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                           enabledBorder: const UnderlineInputBorder(
                                             borderSide: BorderSide(color: Colors.transparent)
                                           ),
-                                          suffixText: ' ${sign[idx]}',
+                                          suffixText: ' ${sign1[idx1]}',
                                         ),
                                         textAlign: TextAlign.end,
                                         style: const TextStyle(
@@ -359,6 +425,7 @@ class _ExchangePageState extends State<ExchangePage> {
                               ),
                             ],
                           ),
+                        if (_isDouble == false)
                         Row(
                           children: [
                             Container(
@@ -432,7 +499,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                         enabledBorder: const UnderlineInputBorder(
                                             borderSide: BorderSide(color: Colors.transparent)
                                         ),
-                                        suffixText: ' ${sign[idx2]}',
+                                        suffixText: ' ${sign2[idx2]}',
                                       ),
                                       textAlign: TextAlign.end,
                                       style: const TextStyle(
@@ -445,7 +512,183 @@ class _ExchangePageState extends State<ExchangePage> {
                               ),
                             ),
                           ],
-                        ),
+                        ),if (_isDouble)
+                          Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                width: 340,
+                                height: 60,
+                                // color: Colors.red,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.black38),
+                                ),
+                                // 드롭다운
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      height: 60,
+                                      width: 182,
+                                      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
+                                        border: Border.all(color: Colors.transparent),
+                                        color:  Colors.grey[200],
+                                      ),
+                                      child: DropdownButtonHideUnderline(
+                                        child: DropdownButton(
+                                          value: _selectedValue3,
+                                          items: _valueList3.map(
+                                                (value) {
+                                              return DropdownMenuItem(
+                                                value: value,
+                                                child: Row(
+                                                  children: [
+                                                    CircleAvatar(
+                                                      backgroundImage: AssetImage(
+                                                          'assets/images/${currency3[_valueList3.indexOf(value)]}.png'),
+                                                      radius: 10,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text(value),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          ).toList(),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedValue3 = value!;
+                                              idx3 = _valueList3.indexOf(value);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 140,
+                                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                      // color: Colors.red,
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
+                                        border: Border.all(color: Colors.transparent),
+                                      ),
+                                      child: TextField(
+                                        keyboardType: TextInputType.number,
+                                        // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                        controller: _moneyController3,
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          border: InputBorder.none,
+                                          enabledBorder: const UnderlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.transparent)
+                                          ),
+                                          suffixText: ' ${sign3[idx3]}',
+                                        ),
+                                        textAlign: TextAlign.end,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        if (_isDouble)
+                          Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                                width: 340,
+                                height: 60,
+                                // color: Colors.red,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Colors.black38),
+                                ),
+                                child:  Row(
+                                  children: [
+                                    Container(
+                                      height: 60,
+                                      width: 182,
+                                      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
+                                        border: Border.all(color: Colors.transparent),
+                                        color:  Colors.grey[200],
+                                      ),
+                                      child: DropdownButtonHideUnderline(
+                                        child: DropdownButton(
+                                          value: _selectedValue4,
+                                          items: _valueList4.map(
+                                                (value) {
+                                              return DropdownMenuItem(
+                                                value: value,
+                                                child: Row(
+                                                  children: [
+                                                    CircleAvatar(
+                                                      backgroundImage: AssetImage(
+                                                          'assets/images/${currency4[_valueList4.indexOf(value)]}.png'),
+                                                      radius: 10,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text(value),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          ).toList(),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedValue4 = value!;
+                                              idx4 = _valueList4.indexOf(value);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 130,
+                                      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                      // color: Colors.red,
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
+                                        border: Border.all(color: Colors.transparent),
+                                      ),
+                                      child: TextField(
+                                        keyboardType: TextInputType.number,
+                                        // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                        controller: _moneyController4,
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          border: InputBorder.none,
+                                          enabledBorder: const UnderlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.transparent)
+                                          ),
+                                          suffixText: ' ${sign4[idx4]}',
+                                        ),
+                                        textAlign: TextAlign.end,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         if (_isDouble)
                         Row(
                           children: [
@@ -461,7 +704,7 @@ class _ExchangePageState extends State<ExchangePage> {
                               ),
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton(
-                                  value: _selectedValue3,
+                                  value: _selectedValue5,
                                   items: _bankList.map(
                                           (value) {
                                         return DropdownMenuItem(
@@ -479,7 +722,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                   ).toList(),
                                   onChanged: (value) {
                                     setState(() {
-                                      _selectedValue3 = value!;
+                                      _selectedValue5 = value!;
                                     });
                                   },
                                 ),
