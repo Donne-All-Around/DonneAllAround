@@ -92,7 +92,6 @@ class CustomModalWidget extends StatelessWidget {
 }
 
 
-
 class ExchangeRecordPageState extends State<ExchangeRecordPage> {
   @override
   Widget build(BuildContext context) {
