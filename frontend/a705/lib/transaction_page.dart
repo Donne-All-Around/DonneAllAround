@@ -4,6 +4,8 @@ import 'package:a705/choose_location_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 // import 'package:intl/intl.dart';
 
@@ -44,6 +46,31 @@ class _TransactionPageState extends State<TransactionPage> {
   final picker = ImagePicker();
 
   String _addr = "장소 선택";
+
+  Future<Position> getCurrentLocation() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+    Position position =
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return position;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserLocation();
+  }
+
+  void _getUserLocation() async {
+    var position = await GeolocatorPlatform.instance.getCurrentPosition(
+        locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.bestForNavigation));
+
+    setState(() {
+      currentPosition = LatLng(position.latitude, position.longitude);
+    });
+  }
+
+  late LatLng currentPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -398,7 +425,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       String addr = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const ChooseLocationPage()));
+                              builder: (context) => ChooseLocationPage(currentPosition.latitude, currentPosition.longitude)));
                       setState(() {
                         _addr = addr;
                       });

@@ -1,5 +1,7 @@
 import 'package:bottom_picker/bottom_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
 import 'package:a705/choose_location_page.dart';
@@ -16,6 +18,31 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
   var appointmentDate = DateTime.now();
   String _addr = "장소 선택";
   String appt = "";
+
+  Future<Position> getCurrentLocation() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+    Position position =
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return position;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserLocation();
+  }
+
+  void _getUserLocation() async {
+    var position = await GeolocatorPlatform.instance.getCurrentPosition(
+        locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.bestForNavigation));
+
+    setState(() {
+      currentPosition = LatLng(position.latitude, position.longitude);
+    });
+  }
+
+  late LatLng currentPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +70,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
           IconButton(
               onPressed: () {
                 setState(() {
-                  appt += DateFormat('yy년 MM월 dd일 HH시 mm분').format(appointmentDate);
+                  appt += DateFormat('yy.MM.dd a hh:mm', 'ko').format(appointmentDate);
                   appt += " ";
                   appt += _addr;
                 });
@@ -179,7 +206,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
               child: Row(
                 children: [
                   Text(
-                    DateFormat('yy년 MM월 dd일 HH시 mm분').format(appointmentDate),
+                    DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko').format(appointmentDate),
                     style: const TextStyle(fontSize: 16),
                   ),
                 ],
@@ -202,7 +229,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
               String addr = await Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const ChooseLocationPage()));
+                      builder: (context) => ChooseLocationPage(currentPosition.latitude, currentPosition.longitude)));
               setState(() {
                 _addr = addr;
               });
@@ -210,7 +237,6 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
             child: Container(
               margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-              height: _addr == "장소 선택" ? 50 : null,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,

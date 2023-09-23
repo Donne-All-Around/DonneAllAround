@@ -11,7 +11,6 @@ class AppointmentPage extends StatefulWidget {
 }
 
 class _AppointmentPageState extends State<AppointmentPage> {
-
   String appt = "약속 잡기";
 
   @override
@@ -143,7 +142,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
                           children: [
                             Container(
                               padding: const EdgeInsets.all(10),
-                              height: MediaQuery.of(context).size.width / 2 - 75,
+                              height:
+                                  MediaQuery.of(context).size.width / 2 - 75,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
                                   color: Colors.white,
@@ -156,7 +156,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                     ),
                                   ]),
                               child: const Image(
-                                image: AssetImage('assets/images/wagon_box.png'),
+                                image:
+                                    AssetImage('assets/images/wagon_box.png'),
                               ),
                             ),
                             const SizedBox(height: 10),
@@ -169,6 +170,120 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 30),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: const Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              '택배 거래',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              '택배거래를 진행하게 되면,',
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 17),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              '배송 후 구매자에게 ',
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 17),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              '수령 확인',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '을 받아야 합니다.',
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 17),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              '수령확인이 완료된 시점',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '에',
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 17),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              '송금',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '이 이루어집니다.',
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 17),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 5),
+                        Row(
+                          children: [
+                            Text(
+                              '단, 수령확인을 하지 않아도',
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 17, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                            Row(
+                          children: [
+                            Text(
+                              '7일 후',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '에는 ',
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 17, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '반드시 송금',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '이 이루어집니다.',
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 17, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

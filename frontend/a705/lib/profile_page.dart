@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'withdrawal_page.dart';
 import 'exchange_record_page.dart';
+import 'keyword_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -372,9 +373,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 10.0),
                   InkWell(
-                    // onTap: () {
-                    //   Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
-                    // },
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => KeywordPage()));
+                    },
                     child: Container(
                       height: 35.0,
                       child: const Row(
@@ -512,12 +515,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                           )
                                         ),
                                         Text(
-                                            '로그아웃',
-                                            style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontFamily: 'Inter',
-                                              color: Colors.red,
-                                            )
+                                          '로그아웃',
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontFamily: 'Inter',
+                                            color: Colors.red,
+                                          )
                                         ),
                                         Text(
                                           ' 하시겠습니까?',
