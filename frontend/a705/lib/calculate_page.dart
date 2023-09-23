@@ -11,6 +11,9 @@ class CalculatePage extends StatefulWidget {
 
 class _CalculatePageState extends State<CalculatePage> {
 
+  // 날짜 선택
+  DateTime date = DateTime.now();
+
   final _bankList1 = [
     '하나은행',
     '우리은행',
@@ -104,15 +107,37 @@ class _CalculatePageState extends State<CalculatePage> {
                         children: [
                           Container(
                             margin: const EdgeInsets.fromLTRB(10, 10, 20, 10),
+                            padding: const EdgeInsets.fromLTRB(20, 5, 10, 5),
                             width: 190,
                             height: 40,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(color: Colors.black38),
                             ),
+                            // 날짜 선택
+                            child: GestureDetector(
+                              onTap: () async {
+                                final selectedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: date,
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime.now(),
+
+                                );
+                                if (selectedDate != null) {
+                                  setState(() {
+                                    date = selectedDate;
+                                  });
+                                }
+                              },
+                              child:  Text(
+                                "${date?.year.toString()}.${date?.month.toString().padLeft(2, '0')}.${date?.day.toString().padLeft(2, '0')}",
+                            style: const TextStyle(fontSize: 26),),
                           ),
+                          ),
+                          const SizedBox(width: 10,),
                           Container(
-                            margin:const EdgeInsets.fromLTRB(60, 10, 10, 10),
+                            margin:const EdgeInsets.fromLTRB(50, 10, 10, 10),
                             width: 70,
                             height: 40,
                             decoration: BoxDecoration(
