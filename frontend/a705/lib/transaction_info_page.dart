@@ -6,14 +6,14 @@ import 'package:intl/intl.dart';
 
 import 'package:a705/choose_location_page.dart';
 
-class DeliveryTransactionPage extends StatefulWidget {
-  const DeliveryTransactionPage({super.key});
+class TransactionInfoPage extends StatefulWidget {
+  const TransactionInfoPage({super.key});
 
   @override
-  State<DeliveryTransactionPage> createState() => _DeliveryTransactionPageState();
+  State<TransactionInfoPage> createState() => _TransactionInfoPageState();
 }
 
-class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
+class _TransactionInfoPageState extends State<TransactionInfoPage> {
 
   var appointmentDate = DateTime.now();
   String _addr = "장소 선택";
@@ -62,7 +62,7 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
             ),
             elevation: 0,
             title: const Text(
-              '택배 거래',
+              '거래 정보',
               style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
             ),
             centerTitle: true,
@@ -70,11 +70,10 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
               IconButton(
                   onPressed: () {
                     setState(() {
-                      appt += DateFormat('yy.MM.dd a hh:mm', 'ko').format(appointmentDate);
+                      appt += DateFormat('yy.MM.dd HH:mm').format(appointmentDate);
                       appt += " ";
                       appt += _addr;
                     });
-                    Navigator.pop(context, appt);
                     Navigator.pop(context, appt);
                   },
                   icon: const Icon(
@@ -178,34 +177,39 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                 children: [
                   SizedBox(width: 30),
                   Text(
-                    '계좌번호',
+                    '약속 시간',
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
-              Container(
-                margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      spreadRadius: 1,
-                      blurRadius: 3,
-                      offset: const Offset(0, 0),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko').format(appointmentDate),
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ],
+              GestureDetector(
+                onTap: () {
+                  _openDateTimePicker(context);
+                },
+                child: Container(
+                  margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 1,
+                        blurRadius: 3,
+                        offset: const Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko').format(appointmentDate),
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -214,7 +218,7 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                 children: [
                   SizedBox(width: 30),
                   Text(
-                    '배송지',
+                    '거래 희망 장소',
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -264,5 +268,26 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
             ],
           ),
         ));
+  }
+
+  void _openDateTimePicker(BuildContext context) {
+    BottomPicker.dateTime(
+      title: '날짜를 선택하세요',
+      titleStyle: const TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 15,
+        color: Colors.black,
+      ),
+      onSubmit: (date) {
+        setState(() {
+          appointmentDate = date;
+        });
+      },
+      iconColor: Colors.black,
+      minDateTime: DateTime.now(),
+      maxDateTime: DateTime.now().add(const Duration(days: 7)),
+      initialDateTime: DateTime.now(),
+      buttonSingleColor: const Color(0xFFFFD954),
+    ).show(context);
   }
 }

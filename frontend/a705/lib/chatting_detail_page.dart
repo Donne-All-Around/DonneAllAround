@@ -1,4 +1,5 @@
 import 'package:a705/appointment_page.dart';
+import 'package:a705/transaction_info_page.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
 import 'package:flutter/material.dart';
 
@@ -286,30 +287,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                   ),
                                 ],
                               ),
-                              child: const Icon(Icons.edit_calendar_outlined),
-                            ),
-                            const SizedBox(height: 5),
-                            const Text('약속'),
-                          ],
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFD954),
-                                borderRadius: BorderRadius.circular(100),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    spreadRadius: 2,
-                                    blurRadius: 3,
-                                    offset: const Offset(0, 0),
-                                  ),
-                                ],
-                              ),
                               child: const Icon(
                                   Icons.account_balance_wallet_outlined),
                             ),
@@ -317,29 +294,38 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                             const Text('송금'),
                           ],
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFD954),
-                                borderRadius: BorderRadius.circular(100),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    spreadRadius: 2,
-                                    blurRadius: 3,
-                                    offset: const Offset(0, 0),
-                                  ),
-                                ],
+                        GestureDetector(
+                          onTap: () async {
+                            String appt = await Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => const TransactionInfoPage()));
+                            setState(() {
+                              _appt = appt;
+                            });
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFFD954),
+                                  borderRadius: BorderRadius.circular(100),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      spreadRadius: 2,
+                                      blurRadius: 3,
+                                      offset: const Offset(0, 0),
+                                    ),
+                                  ],
+                                ),
+                                child: const Icon(Icons.email_outlined),
                               ),
-                              child: const Icon(Icons.email_outlined),
-                            ),
-                            const SizedBox(height: 5),
-                            const Text('배송정보'),
-                          ],
+                              const SizedBox(height: 5),
+                              const Text('거래 정보'),
+                            ],
+                          ),
                         ),
                       ],
                     ),

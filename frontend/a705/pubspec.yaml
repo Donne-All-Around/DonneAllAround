@@ -38,6 +38,8 @@ dependencies:
   awesome_bottom_bar: ^1.2.4
   chat_bubbles: ^1.5.0
   intl: ^0.18.1
+  flutter_localizations:
+    sdk: flutter
   google_maps_flutter: ^2.5.0
   geolocator: ^10.0.1
   location: ^5.0.3
@@ -49,6 +51,7 @@ dependencies:
   bottom_picker: ^2.1.0
   carousel_slider: ^4.2.1
   multiple_images_picker: ^1.0.1
+  address_search_field: ^5.0.3
 
 dev_dependencies:
   flutter_test:
