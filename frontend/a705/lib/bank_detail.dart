@@ -88,11 +88,6 @@ class _BankDetailPageState extends State<BankDetailPage> {
   final _percentList = ['현찰 살 때', '현찰 팔 때', '송금 보낼 때'];
   var _selectedValue3 = '현찰 살 때';
 
-  Map<String, Map<String, String>> percentInfo = {
-    '현찰 살 때': { 'currencyName': '현찰 살 때'},
-    '현찰 팔 때': {'currencyName': '현찰 팔 때'},
-    '송금 보낼 때': {'currencyName': '송금 보낼 때'},
-  };
 
   // 텍스트 필드 컨트롤러
   final TextEditingController _moneyController1 = TextEditingController(text: "1 ");
@@ -456,8 +451,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                               child:
                                                Container(
                                                  margin: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                                 child: Text(percentInfo[value]![
-                                                  'currencyName']!,
+                                                 child: Text(value,
                                                     style: const TextStyle(fontWeight: FontWeight.bold,),
                                                  textAlign: TextAlign.center,),
                                                ),
