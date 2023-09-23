@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_chat_bubble/chat_bubble.dart';
 
 class CalculatePage extends StatefulWidget {
   const CalculatePage({super.key});
@@ -269,6 +270,19 @@ class _CalculatePageState extends State<CalculatePage> {
                     ],
                   ),
                 ),
+                const SizedBox(height: 20,),
+                Row(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(30, 10, 30, 0),
+                      width: 350,
+                      height: 60,
+                      child: getCalculateView(
+                          ChatBubbleClipper6(type: BubbleType.sendBubble),
+                          context),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -276,5 +290,50 @@ class _CalculatePageState extends State<CalculatePage> {
       ),
     );
   }
+
+
+  getCalculateView(CustomClipper clipper, BuildContext context) => ChatBubble(
+    clipper: clipper,
+    elevation: 0,
+    alignment: Alignment.topLeft,
+    margin: const EdgeInsets.all(0),
+    backGroundColor:const Color(0xFFFFD954),
+    child: Container(
+      // constraints: const BoxConstraints(
+      //   // maxWidth: MediaQuery.of(context).size.width * 1,
+      // ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child:  const Column(
+        children: [
+          Row(
+            children: [
+              Text(
+                " 환전 시기에 따른 ",
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              ),
+              Text(
+                "손익/손실 ",
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              Text(
+                "을 ",
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              ),
+              Text(
+                "비교 ",
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              Text(
+                "해보세요! ",
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
