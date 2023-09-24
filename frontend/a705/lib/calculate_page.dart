@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
@@ -15,7 +16,9 @@ class _CalculatePageState extends State<CalculatePage> {
   bool _iscalculate = false;
 
   // 날짜 선택
-  DateTime date = DateTime.now();
+  DateTime date1 = DateTime.now();
+  DateTime date2 = DateTime(2022, 09, 20);
+  DateTime date3 = DateTime.now();
 
   final _bankList1 = [
     '하나은행',
@@ -33,7 +36,7 @@ class _CalculatePageState extends State<CalculatePage> {
     '경남은행',
     '제주은행',
   ];
-  var _selectedBank = '하나은행';
+  var _selectedBank = '신한은행';
 
   int idx1 = 0;
   final TextEditingController _percentController = TextEditingController(text: "30");
@@ -126,30 +129,31 @@ class _CalculatePageState extends State<CalculatePage> {
                               onTap: () async {
                                 final selectedDate = await showDatePicker(
                                   context: context,
-                                  initialDate: date,
+                                  initialDate: date1,
                                   firstDate: DateTime(2000),
                                   lastDate: DateTime.now(),
 
                                 );
                                 if (selectedDate != null) {
                                   setState(() {
-                                    date = selectedDate;
+                                    date1 = selectedDate;
                                   });
                                 }
                               },
                               child:  Text(
-                                "${date?.year.toString()}.${date?.month.toString().padLeft(2, '0')}.${date?.day.toString().padLeft(2, '0')}",
+                                "${date1?.year.toString()}.${date1?.month.toString().padLeft(2, '0')}.${date1?.day.toString().padLeft(2, '0')}",
                             style: const TextStyle(fontSize: 26),),
                           ),
                           ),
                           const SizedBox(width: 10,),
                           Container(
                             margin:const EdgeInsets.fromLTRB(50, 10, 10, 10),
-                            width: 70,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.black38),
+                            child: const CircleAvatar(
+                              backgroundImage: AssetImage(
+                                'assets/images/USD.png'
+                              ),
+                              radius: 20,
+
                             ),
                           ),
                         ],
@@ -174,7 +178,7 @@ class _CalculatePageState extends State<CalculatePage> {
                                   ),
                                 ]),
                             child: const Text(
-                              '3,000.00 ',
+                              '7,853원',
                               textAlign: TextAlign.end,
                               style: TextStyle(
                                 fontSize: 40,
@@ -220,6 +224,7 @@ class _CalculatePageState extends State<CalculatePage> {
                                                 ],
                                               ),
                                               const SizedBox(height: 10),
+                                              // 환전기록
                                               Row(
                                                 children: [
                                                   Container(
@@ -548,31 +553,39 @@ class _CalculatePageState extends State<CalculatePage> {
                                 onTap: () async {
                                   final selectedDate = await showDatePicker(
                                     context: context,
-                                    initialDate: date,
+                                    initialDate: date2,
                                     firstDate: DateTime(2000),
                                     lastDate: DateTime.now(),
 
                                   );
                                   if (selectedDate != null) {
                                     setState(() {
-                                      date = selectedDate;
+                                      date2 = selectedDate;
                                     });
                                   }
                                 },
                                 child:  Text(
-                                  "${date?.year.toString()}.${date?.month.toString().padLeft(2, '0')}.${date?.day.toString().padLeft(2, '0')}",
+                                  "${date2?.year.toString()}.${date2?.month.toString().padLeft(2, '0')}.${date2?.day.toString().padLeft(2, '0')}",
                                   style: const TextStyle(fontSize: 24),),
                               ),
                             ),
                             // 기록 시 환전 값
                             Container(
                               margin: const EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(5),
                               width: 170,
                               height: 50,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(color: Colors.black38),
                               ),
+                              child: const Text(
+                                  '992,147.00 원',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                              textAlign: TextAlign.center,),
                             ),
                           ],
                         ),
@@ -593,31 +606,39 @@ class _CalculatePageState extends State<CalculatePage> {
                                 onTap: () async {
                                   final selectedDate = await showDatePicker(
                                     context: context,
-                                    initialDate: date,
+                                    initialDate: date3,
                                     firstDate: DateTime(2000),
                                     lastDate: DateTime.now(),
 
                                   );
                                   if (selectedDate != null) {
                                     setState(() {
-                                      date = selectedDate;
+                                      date3 = selectedDate;
                                     });
                                   }
                                 },
                                 child:  Text(
-                                  "${date?.year.toString()}.${date?.month.toString().padLeft(2, '0')}.${date?.day.toString().padLeft(2, '0')}",
+                                  "${date3?.year.toString()}.${date3?.month.toString().padLeft(2, '0')}.${date3?.day.toString().padLeft(2, '0')}",
                                   style: const TextStyle(fontSize: 24),),
                               ),
                               ),
                             // 현재 환전 값.
                             Container(
                               margin: const EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(5),
                               width: 170,
                               height: 50,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(color: Colors.black38),
                               ),
+                              child: const Text(
+                                '1,000,000.48 원',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                                textAlign: TextAlign.center,),
                             ),
                           ],
                         ),
@@ -634,7 +655,7 @@ class _CalculatePageState extends State<CalculatePage> {
                                      width: 140,
                                      height: 50,
                                      child: const Text(
-                                         '3,000000원',
+                                         '7,853원',
                                        style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
                                      ),
                                    ),
@@ -670,7 +691,7 @@ class _CalculatePageState extends State<CalculatePage> {
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(color: Colors.black38),
                               ),
-
+                              child: const LineChartSample2(),
                             ),
                           ],
                         ),
@@ -814,4 +835,205 @@ class CustomModalWidget extends StatelessWidget {
         )
     );
   }
+}
+
+
+// 환전기록 리스트뷰 (모달)
+class RecordViewBuilder extends StatefulWidget {
+  const RecordViewBuilder({super.key});
+
+  @override
+  State<RecordViewBuilder> createState() => _RecordViewBuilderState();
+
+}
+
+class _RecordViewBuilderState extends State<RecordViewBuilder> {
+
+  final _recordList = ['1331.66'];
+
+  Map<String, Map<String, String>> recordInfo = {
+    '1331.66' : {
+      'currencyName' : 'USD' , 'targetPrice' : '740', 'percent' : '30', 'exchange' : '1331.66', 'krw' : '992.147', 'date' : '2022.09.20', 'bank' : '신한은행'
+    }
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      primary: false,
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemBuilder: (BuildContext context, int index) {
+
+      },
+
+    );
+  }
+}
+
+
+// 환전 차이 그래프
+class LineChartSample2 extends StatefulWidget {
+  const LineChartSample2({super.key});
+
+  @override
+  State<LineChartSample2> createState() => _LineChartSample2State();
+}
+
+class _LineChartSample2State extends State<LineChartSample2> {
+  List<Color> gradientColors = [
+    const Color(0xff23b6e6),
+    const Color(0xff02d39a),
+  ];
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        AspectRatio(
+          aspectRatio: 1.70,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              right: 10,
+              left: 0,
+              top: 10,
+              bottom: 0,
+            ),
+            child: LineChart(
+               mainData(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget bottomTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 16,
+    );
+    Widget text;
+    switch (value.toInt()) {
+      case 2:
+        text = const Text('1331.66', style: style);
+        break;
+      case 4:
+        text = const Text('1336.50', style: style);
+        break;
+      default:
+        text = const Text('', style: style);
+        break;
+    }
+
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: text,
+    );
+  }
+
+  Widget leftTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 10,
+    );
+    String text;
+    switch (value.toInt()) {
+      case 1:
+        text = '1331.66';
+        break;
+      case 4:
+        text = '1336.50';
+        break;
+
+      default:
+        return Container();
+    }
+
+    return Text(text, style: style, textAlign: TextAlign.left);
+  }
+
+  LineChartData mainData() {
+    return LineChartData(
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: true,
+        horizontalInterval: 1,
+        verticalInterval: 1,
+        getDrawingHorizontalLine: (value) {
+          return const FlLine(
+            color: Colors.green,
+            strokeWidth: 1,
+          );
+        },
+        getDrawingVerticalLine: (value) {
+          return const FlLine(
+            color: Colors.green,
+            strokeWidth: 1,
+          );
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        rightTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        topTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 29,
+            interval: 1,
+            getTitlesWidget: bottomTitleWidgets,
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            interval: 1,
+            getTitlesWidget: leftTitleWidgets,
+            reservedSize: 43,
+          ),
+        ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: const Color(0xff37434d)),
+      ),
+      minX: 1,
+      maxX: 4,
+      minY: 1331,
+      maxY: 1336,
+      lineBarsData: [
+        LineChartBarData(
+          spots: const [
+            FlSpot(2, 1331.66), // 2023년 8월 25일
+            FlSpot(4, 1336.50), // 2023년 8월 26일
+
+          ],
+          isCurved: true,
+          gradient: LinearGradient(
+            colors: gradientColors,
+          ),
+          barWidth: 5,
+          isStrokeCapRound: true,
+          dotData: const FlDotData(
+            show: false,
+          ),
+          belowBarData: BarAreaData(
+            show: true,
+            gradient: LinearGradient(
+              colors: gradientColors
+                  .map((color) => color.withOpacity(0.3))
+                  .toList(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
 }
