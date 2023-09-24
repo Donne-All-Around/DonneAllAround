@@ -497,7 +497,7 @@ class _CalculatePageState extends State<CalculatePage> {
                             child:IconButton(
                               padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
                               onPressed: (){
-                                setState(() {
+                       s         setState(() {
                                   _iscalculate = true;
                                 });
                               },
