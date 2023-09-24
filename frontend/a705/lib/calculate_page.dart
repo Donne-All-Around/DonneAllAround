@@ -11,6 +11,9 @@ class CalculatePage extends StatefulWidget {
 
 class _CalculatePageState extends State<CalculatePage> {
 
+
+  bool _iscalculate = false;
+
   // 날짜 선택
   DateTime date = DateTime.now();
 
@@ -86,7 +89,11 @@ class _CalculatePageState extends State<CalculatePage> {
                         child:IconButton(
                           icon: const Icon(Icons.info_outline_rounded),
                           color: Colors.white,
-                          onPressed: () {  },
+                          onPressed: () {
+                            setState(() {
+                              _iscalculate = true;
+                            });
+                          },
                         ),
                       ),
                     ],
@@ -498,6 +505,7 @@ class _CalculatePageState extends State<CalculatePage> {
                   ),
                 ),
                 const SizedBox(height: 20,),
+                 if (_iscalculate == false)
                 Row(
                   children: [
                     Container(
@@ -507,6 +515,167 @@ class _CalculatePageState extends State<CalculatePage> {
                       child: getCalculateView(
                           ChatBubbleClipper6(type: BubbleType.sendBubble),
                           context),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.all(10),
+                      width: 368,
+                      height: 400,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.black38),
+                      ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // 초기값 기록 시기.
+                            Container(
+                              margin: const EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(7),
+                              width: 150,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.black38),
+                              ),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  final selectedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: date,
+                                    firstDate: DateTime(2000),
+                                    lastDate: DateTime.now(),
+
+                                  );
+                                  if (selectedDate != null) {
+                                    setState(() {
+                                      date = selectedDate;
+                                    });
+                                  }
+                                },
+                                child:  Text(
+                                  "${date?.year.toString()}.${date?.month.toString().padLeft(2, '0')}.${date?.day.toString().padLeft(2, '0')}",
+                                  style: const TextStyle(fontSize: 24),),
+                              ),
+                            ),
+                            // 기록 시 환전 값
+                            Container(
+                              margin: const EdgeInsets.all(10),
+                              width: 170,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.black38),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // 오늘 기준.
+                            Container(
+                                margin: const EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(7),
+                                width: 150,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.black38),
+                                ),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  final selectedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: date,
+                                    firstDate: DateTime(2000),
+                                    lastDate: DateTime.now(),
+
+                                  );
+                                  if (selectedDate != null) {
+                                    setState(() {
+                                      date = selectedDate;
+                                    });
+                                  }
+                                },
+                                child:  Text(
+                                  "${date?.year.toString()}.${date?.month.toString().padLeft(2, '0')}.${date?.day.toString().padLeft(2, '0')}",
+                                  style: const TextStyle(fontSize: 24),),
+                              ),
+                              ),
+                            // 현재 환전 값.
+                            Container(
+                              margin: const EdgeInsets.all(10),
+                              width: 170,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.black38),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                           Column(
+                             children: [
+                               // 차액
+                               Row(
+                                 children: [
+                                   Container(
+                                     margin: const EdgeInsets.all(10),
+                                     width: 140,
+                                     height: 50,
+                                     child: const Text(
+                                         '3,000000원',
+                                       style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
+                                     ),
+                                   ),
+                                 ],
+                               ),
+                               // 상승 or 하락
+                               Row(
+                                 children: [
+                                   Container(
+                                     margin: const EdgeInsets.all(5),
+                                     width: 130,
+                                     height: 40,
+                                     child: const Text(
+                                       '상승',
+                                       style: TextStyle(
+                                         fontSize: 20,
+                                         fontWeight: FontWeight.bold,
+                                         color: Colors.red,
+                                       ),
+                                       textAlign: TextAlign.center,
+                                     ),
+                                   ),
+                                 ],
+                               ),
+                             ],
+                           ),
+                            // 그래프 
+                            Container(
+                              margin: const EdgeInsets.all(10),
+                              width: 180,
+                              height: 180,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.black38),
+                              ),
+
+                            ),
+                          ],
+                        ),
+                      ],
+                    ) ,
                     ),
                   ],
                 ),
