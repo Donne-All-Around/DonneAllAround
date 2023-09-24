@@ -492,31 +492,13 @@ class _LineChartSample2State extends State<LineChartSample2> {
           aspectRatio: 1.70,
           child: Padding(
             padding: const EdgeInsets.only(
-              right: 18,
+              right: 10,
               left: 12,
-              top: 24,
-              bottom: 12,
+              top: 20,
+              bottom: 0,
             ),
             child: LineChart(
-              showAvg ? avgData() : mainData(),
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 60,
-          height: 34,
-          child: TextButton(
-            onPressed: () {
-              setState(() {
-                showAvg = !showAvg;
-              });
-            },
-            child: Text(
-              'avg',
-              style: TextStyle(
-                fontSize: 12,
-                color: showAvg ? Colors.white.withOpacity(0.5) : Colors.white,
-              ),
+             mainData(),
             ),
           ),
         ),
@@ -531,14 +513,11 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
     Widget text;
     switch (value.toInt()) {
-      case 2:
-        text = const Text('MAR', style: style);
+      case 10:
+        text = const Text('9월 3일', style: style);
         break;
-      case 5:
-        text = const Text('JUN', style: style);
-        break;
-      case 8:
-        text = const Text('SEP', style: style);
+      case 20:
+        text = const Text('9월 14일', style: style);
         break;
       default:
         text = const Text('', style: style);
@@ -554,18 +533,24 @@ class _LineChartSample2State extends State<LineChartSample2> {
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
-      fontSize: 15,
+      fontSize: 10,
     );
     String text;
     switch (value.toInt()) {
       case 1:
-        text = '10K';
-        break;
-      case 3:
-        text = '30k';
+        text = '1,310';
         break;
       case 5:
-        text = '50k';
+        text = '1,320';
+        break;
+      case 10:
+        text = '1,330';
+        break;
+      case 20:
+        text = '1,340';
+        break;
+      case 30:
+        text = '1,350';
         break;
       default:
         return Container();
@@ -605,7 +590,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 30,
+            reservedSize: 29,
             interval: 1,
             getTitlesWidget: bottomTitleWidgets,
           ),
@@ -613,9 +598,9 @@ class _LineChartSample2State extends State<LineChartSample2> {
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            interval: 1,
+            interval: 10,
             getTitlesWidget: leftTitleWidgets,
-            reservedSize: 42,
+            reservedSize: 43,
           ),
         ),
       ),
@@ -624,19 +609,43 @@ class _LineChartSample2State extends State<LineChartSample2> {
         border: Border.all(color: const Color(0xff37434d)),
       ),
       minX: 0,
-      maxX: 11,
-      minY: 0,
-      maxY: 6,
+      maxX: 30,
+      minY: 1310,
+      maxY: 1350,
       lineBarsData: [
         LineChartBarData(
           spots: const [
-            FlSpot(0, 3),
-            FlSpot(2.6, 2),
-            FlSpot(4.9, 5),
-            FlSpot(6.8, 3.1),
-            FlSpot(8, 4),
-            FlSpot(9.5, 3),
-            FlSpot(11, 4),
+            FlSpot(0, 1324.61), // 2023년 8월 25일
+            FlSpot(1, 1324.61), // 2023년 8월 26일
+            FlSpot(2, 1324.61), // 2023년 8월 27일
+            FlSpot(3, 1320.88), // 2023년 8월 28일
+            FlSpot(4, 1320.90), // 2023년 8월 29일
+            FlSpot(5, 1324.03), // 2023년 8월 30일
+            FlSpot(6, 1325.64), // 2023년 8월 31일
+            FlSpot(7, 1318.45), // 2023년 9월 1일
+            FlSpot(8, 1318.45), // 2023년 9월 2일
+            FlSpot(9, 1318.46), // 2023년 9월 3일
+            FlSpot(10, 1318.95), // 2023년 9월 4일
+            FlSpot(11, 1332.08), // 2023년 9월 5일
+            FlSpot(12, 1334.47), // 2023년 9월 6일
+            FlSpot(13, 1337.91), // 2023년 9월 7일
+            FlSpot(14, 1336.31), // 2023년 9월 8일
+            FlSpot(15, 1336.31), // 2023년 9월 9일
+            FlSpot(16, 1336.32), // 2023년 9월 10일
+            FlSpot(17, 1322.84), // 2023년 9월 11일
+            FlSpot(18, 1326.45), // 2023년 9월 12일
+            FlSpot(19, 1330.77), // 2023년 9월 13일
+            FlSpot(20, 1328.06), // 2023년 9월 14일
+            FlSpot(21, 1329.41), // 2023년 9월 15일
+            FlSpot(22, 1329.41), // 2023년 9월 16일
+            FlSpot(23, 1329.42), // 2023년 9월 17일
+            FlSpot(24, 1331.12), // 2023년 9월 18일
+            FlSpot(25, 1328.90), // 2023년 9월 19일
+            FlSpot(26, 1333.34), // 2023년 9월 20일
+            FlSpot(27, 1341.74), // 2023년 9월 21일
+            FlSpot(28, 1335.66), // 2023년 9월 22일
+            FlSpot(29, 1335.66), // 2023년 9월 23일
+            FlSpot(30, 1335.66), // 2023년 9월 24일
           ],
           isCurved: true,
           gradient: LinearGradient(
@@ -660,100 +669,4 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
   }
 
-  LineChartData avgData() {
-    return LineChartData(
-      lineTouchData: const LineTouchData(enabled: false),
-      gridData: FlGridData(
-        show: true,
-        drawHorizontalLine: true,
-        verticalInterval: 1,
-        horizontalInterval: 1,
-        getDrawingVerticalLine: (value) {
-          return const FlLine(
-            color: Color(0xff37434d),
-            strokeWidth: 1,
-          );
-        },
-        getDrawingHorizontalLine: (value) {
-          return const FlLine(
-            color: Color(0xff37434d),
-            strokeWidth: 1,
-          );
-        },
-      ),
-      titlesData: FlTitlesData(
-        show: true,
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            reservedSize: 30,
-            getTitlesWidget: bottomTitleWidgets,
-            interval: 1,
-          ),
-        ),
-        leftTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            getTitlesWidget: leftTitleWidgets,
-            reservedSize: 42,
-            interval: 1,
-          ),
-        ),
-        topTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-        rightTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-      ),
-      borderData: FlBorderData(
-        show: true,
-        border: Border.all(color: const Color(0xff37434d)),
-      ),
-      minX: 0,
-      maxX: 11,
-      minY: 0,
-      maxY: 6,
-      lineBarsData: [
-        LineChartBarData(
-          spots: const [
-            FlSpot(0, 3.44),
-            FlSpot(2.6, 3.44),
-            FlSpot(4.9, 3.44),
-            FlSpot(6.8, 3.44),
-            FlSpot(8, 3.44),
-            FlSpot(9.5, 3.44),
-            FlSpot(11, 3.44),
-          ],
-          isCurved: true,
-          gradient: LinearGradient(
-            colors: [
-              ColorTween(begin: gradientColors[0], end: gradientColors[1])
-                  .lerp(0.2)!,
-              ColorTween(begin: gradientColors[0], end: gradientColors[1])
-                  .lerp(0.2)!,
-            ],
-          ),
-          barWidth: 5,
-          isStrokeCapRound: true,
-          dotData: const FlDotData(
-            show: false,
-          ),
-          belowBarData: BarAreaData(
-            show: true,
-            gradient: LinearGradient(
-              colors: [
-                ColorTween(begin: gradientColors[0], end: gradientColors[1])
-                    .lerp(0.2)!
-                    .withOpacity(0.1),
-                ColorTween(begin: gradientColors[0], end: gradientColors[1])
-                    .lerp(0.2)!
-                    .withOpacity(0.1),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 }
