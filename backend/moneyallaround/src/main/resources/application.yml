@@ -14,6 +14,11 @@ spring:
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://j9a705.p.ssafy.io:3306/donnearound
+    url: jdbc:mariadb://j9a705.p.ssafy.io:3306/donnearound?useUnicode=true
     username: ssafy
     password: ssafy
+
+data:
+  redis:
+    host: docker-redis
+    port: 6380
