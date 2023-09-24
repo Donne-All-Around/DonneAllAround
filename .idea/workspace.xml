@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="586cfb3f-2e25-43ff-baaa-2c68ba34831f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/frontend/a705/lib/calculate_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/a705/lib/calculate_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/a705/lib/exchange_detail.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/a705/lib/exchange_detail.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

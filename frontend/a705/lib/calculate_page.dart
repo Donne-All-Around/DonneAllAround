@@ -652,7 +652,7 @@ class _CalculatePageState extends State<CalculatePage> {
                                  children: [
                                    Container(
                                      margin: const EdgeInsets.all(10),
-                                     width: 140,
+                                     width: 120,
                                      height: 50,
                                      child: const Text(
                                          '7,853원',
@@ -682,17 +682,9 @@ class _CalculatePageState extends State<CalculatePage> {
                                ),
                              ],
                            ),
-                            // 그래프 
-                            Container(
-                              margin: const EdgeInsets.all(10),
-                              width: 180,
-                              height: 180,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.black38),
-                              ),
-                              child: const LineChartSample2(),
-                            ),
+                            // 그래프
+                           const Expanded(
+                                child: LineChartSample2()),
                           ],
                         ),
                       ],
@@ -912,7 +904,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
-      fontSize: 16,
+      fontSize: 15,
     );
     Widget text;
     switch (value.toInt()) {
@@ -940,7 +932,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
     String text;
     switch (value.toInt()) {
-      case 1:
+      case 2:
         text = '1331.66';
         break;
       case 4:
@@ -1004,9 +996,9 @@ class _LineChartSample2State extends State<LineChartSample2> {
         border: Border.all(color: const Color(0xff37434d)),
       ),
       minX: 1,
-      maxX: 4,
+      maxX: 5,
       minY: 1331,
-      maxY: 1336,
+      maxY: 1337,
       lineBarsData: [
         LineChartBarData(
           spots: const [
