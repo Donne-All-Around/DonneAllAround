@@ -523,6 +523,7 @@ class _CalculatePageState extends State<CalculatePage> {
                     ),
                   ],
                 ),
+                if(_iscalculate)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -652,12 +653,14 @@ class _CalculatePageState extends State<CalculatePage> {
                                  children: [
                                    Container(
                                      margin: const EdgeInsets.all(10),
-                                     width: 120,
+                                     width: 100,
                                      height: 50,
                                      child: const Text(
                                          '7,853원',
-                                       style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
+                                       style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold,),
+                                         textAlign: TextAlign.center,
                                      ),
+
                                    ),
                                  ],
                                ),
@@ -665,8 +668,8 @@ class _CalculatePageState extends State<CalculatePage> {
                                Row(
                                  children: [
                                    Container(
-                                     margin: const EdgeInsets.all(5),
-                                     width: 130,
+                                     margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                     width: 100,
                                      height: 40,
                                      child: const Text(
                                        '상승',
