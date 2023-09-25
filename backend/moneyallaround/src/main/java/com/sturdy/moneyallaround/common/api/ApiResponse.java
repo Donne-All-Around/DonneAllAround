@@ -1,9 +1,11 @@
 package com.sturdy.moneyallaround.common.api;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
+@Getter
 @RequiredArgsConstructor
 public class ApiResponse<T> {
     private final ApiStatus status;
