@@ -107,4 +107,10 @@ public class Member implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
+    public void updateRating(int reviewScore) {
+        rating = (rating + (rating + reviewScore * 50) * 2) / 3;
+    }
+
 }

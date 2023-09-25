@@ -163,23 +163,27 @@ public class MemberService {
         return new CheckNicknameResponse(resultMessage); //중복 여부 반환
     }
 
-    //인증번호 발송 (이거 파이어베이스?)
-    //인증String 번호 제공 (이거 파이어베이스에서 하나?)
 
     @Transactional
-    public Member findByMemberId(String memberId){
-        Member member = memberRepository.findById(memberId).orElseThrow(
+    public Member findById(Long id){
+        Member member = memberRepository.findById(id).orElseThrow(
                 () -> new UserException(ExceptionMessage.USER_NOT_FOUND)
         );
         return member;
     }
 
     @Transactional
-    public Member findBuNickname(String nickname) {
+    public Member findByNickname(String nickname) {
         Member member = memberRepository.findByNickname(nickname).orElseThrow(
                 () -> new UserException(ExceptionMessage.USER_NOT_FOUND)
         );
         return member;
+
+    }
+
+    @Transactional
+    public void updateRating(Long revieweeId, int reviewScore) {
+            findById(revieweeId).updateRating(reviewScore);
     }
 
 }
