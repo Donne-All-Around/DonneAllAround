@@ -47,6 +47,7 @@ class _CalculatePageState extends State<CalculatePage> {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: SafeArea(
         child:Scaffold(
+          backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Column(
               children: [
@@ -103,426 +104,464 @@ class _CalculatePageState extends State<CalculatePage> {
                   ),
                 ),
                 const SizedBox(height: 10,),
-                Container(
-                  margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  width: double.infinity,
-                  height: 320,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.black38),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(10, 10, 20, 10),
-                            padding: const EdgeInsets.fromLTRB(20, 5, 10, 5),
-                            width: 190,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.black38),
-                            ),
-                            // 날짜 선택
-                            child: GestureDetector(
-                              onTap: () async {
-                                final selectedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: date1,
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime.now(),
-
-                                );
-                                if (selectedDate != null) {
-                                  setState(() {
-                                    date1 = selectedDate;
-                                  });
-                                }
-                              },
-                              child:  Text(
-                                "${date1?.year.toString()}.${date1?.month.toString().padLeft(2, '0')}.${date1?.day.toString().padLeft(2, '0')}",
-                            style: const TextStyle(fontSize: 26),),
-                          ),
-                          ),
-                          const SizedBox(width: 10,),
-                          Container(
-                            margin:const EdgeInsets.fromLTRB(50, 10, 10, 10),
-                            child: const CircleAvatar(
-                              backgroundImage: AssetImage(
-                                'assets/images/USD.png'
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        width: double.infinity,
+                        height: 320,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: const Offset(0, 0),
                               ),
-                              radius: 20,
+                            ]),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.fromLTRB(10, 10, 20, 10),
+                                  padding: const EdgeInsets.fromLTRB(20, 5, 10, 5),
+                                  width: 190,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 0),
+                                        ),
+                                      ]),
+                                  // 날짜 선택
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      final selectedDate = await showDatePicker(
+                                        context: context,
+                                        initialDate: date1,
+                                        firstDate: DateTime(2000),
+                                        lastDate: DateTime.now(),
 
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(20, 10, 10, 10),
-                            padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
-                            width: 330,
-                            height: 60,
-                            // color: Colors.red,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: Colors.grey[200],
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    spreadRadius: 5,
-                                    blurRadius: 3,
-                                    offset: const Offset(0, 0),
-                                  ),
-                                ]),
-                            child: const Text(
-                              '7,853원',
-                              textAlign: TextAlign.end,
-                              style: TextStyle(
-                                fontSize: 40,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(10, 10, 0, 10),
-                            width: 90,
-                            height: 30,
-                            // color: Colors.red,
-                            child: ElevatedButton(
-                              onPressed: (){
-                                showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
+                                      );
+                                      if (selectedDate != null) {
+                                        setState(() {
+                                          date1 = selectedDate;
+                                        });
+                                      }
+                                    },
+                                    child:  Text(
+                                      "${date1?.year.toString()}.${date1?.month.toString().padLeft(2, '0')}.${date1?.day.toString().padLeft(2, '0')}",
+                                  style: const TextStyle(fontSize: 26),),
+                                ),
+                                ),
+                                const SizedBox(width: 10,),
+                                Container(
+                                  margin:const EdgeInsets.fromLTRB(50, 10, 10, 10),
+                                  child: const CircleAvatar(
+                                    backgroundImage: AssetImage(
+                                      'assets/images/USD.png'
                                     ),
-                                    builder: (BuildContext context){
-                                  return Container(
-                                      height: MediaQuery.of(context).size.height / 5 * 4,
-                                      color: Colors.transparent,
-                                      child:Container(
-                                        padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
-                                          height: MediaQuery.of(context).size.height / 5 * 4,
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              const Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    '환전 기록',
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 20),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 10),
-                                              // 환전기록
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                      margin: const EdgeInsets.all(20.0),
-                                                      padding: const EdgeInsets.all(0.0),
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius: BorderRadius.circular(10.0),
-                                                      ),
-                                                      child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            const Text(
-                                                                '2022년 9월',
-                                                                style: TextStyle(
-                                                                  fontWeight: FontWeight.bold,
-                                                                  fontSize: 17,
-                                                                )
-                                                            ),
-                                                            const SizedBox(height: 4),
-                                                            Container(
-                                                                width: 350,
-                                                                height: 150,
-                                                                decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(18.0),
-                                                                  color: const Color(0xFFF2F2F2),
-                                                                ),
-                                                                child: Column(
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                    children: [
-                                                                      Container(
-                                                                          margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                                                                          child: Row(
-                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                              children: [
-                                                                                const Text(
-                                                                                  '2022년 9월 20일 수요일',
-                                                                                  style: TextStyle(
-                                                                                    fontWeight: FontWeight.bold,
-                                                                                  ),
-                                                                                ),
-                                                                                IconButton(
-                                                                                    icon: const Icon(
-                                                                                      Icons.more_horiz,
-                                                                                      color: Colors.black,
-                                                                                    ),
-                                                                                    onPressed: () {
-                                                                                      showDialog(
-                                                                                          context: context,
-                                                                                          builder: (BuildContext context) {
-                                                                                            return const CustomModalWidget();
-                                                                                          }
-                                                                                      );
-                                                                                    }
-                                                                                )
-                                                                              ]
-                                                                          )
-                                                                      ),
-                                                                      const SizedBox(height: 10),
-                                                                      GestureDetector(
-                                                                        onTap: (){
+                                    radius: 20,
 
-                                                                        },
-                                                                        child: Container(
-                                                                            margin: const EdgeInsets.symmetric(horizontal: 16),
-                                                                            child: const Row(
-                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                children: [
-                                                                                  Column(
-                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                      children: [
-                                                                                        Text(
-                                                                                            '1331.66',
-                                                                                            style: TextStyle(
-                                                                                              fontWeight: FontWeight.bold,
-                                                                                              fontSize: 30,
-                                                                                            )
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                    padding: const EdgeInsets.fromLTRB(0, 5, 10, 5),
+                                    width: double.infinity,
+                                    height: 60,
+                                    // color: Colors.red,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        color: Colors.grey[200],
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(0.1),
+                                            spreadRadius: 5,
+                                            blurRadius: 3,
+                                            offset: const Offset(0, 0),
+                                          ),
+                                        ]),
+                                    child: const Text(
+                                      '7,853원',
+                                      textAlign: TextAlign.end,
+                                      style: TextStyle(
+                                        fontSize: 40,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.fromLTRB(10, 10, 0, 10),
+                                  width: 90,
+                                  height: 30,
+                                  // color: Colors.red,
+                                  child: ElevatedButton(
+                                    onPressed: (){
+                                      showModalBottomSheet(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          builder: (BuildContext context){
+                                        return Container(
+                                            height: MediaQuery.of(context).size.height / 5 * 4,
+                                            color: Colors.transparent,
+                                            child:Container(
+                                              padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
+                                                height: MediaQuery.of(context).size.height / 5 * 4,
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    const Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          '환전 기록',
+                                                          style: TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 20),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(height: 10),
+                                                    // 환전기록
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                            margin: const EdgeInsets.all(20.0),
+                                                            padding: const EdgeInsets.all(0.0),
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.white,
+                                                              borderRadius: BorderRadius.circular(10.0),
+                                                            ),
+                                                            child: Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  const Text(
+                                                                      '2022년 9월',
+                                                                      style: TextStyle(
+                                                                        fontWeight: FontWeight.bold,
+                                                                        fontSize: 17,
+                                                                      )
+                                                                  ),
+                                                                  const SizedBox(height: 4),
+                                                                  Container(
+                                                                      width: 350,
+                                                                      height: 150,
+                                                                      decoration: BoxDecoration(
+                                                                        borderRadius: BorderRadius.circular(18.0),
+                                                                        color: const Color(0xFFF2F2F2),
+                                                                      ),
+                                                                      child: Column(
+                                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            Container(
+                                                                                margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                                                                                child: Row(
+                                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                    children: [
+                                                                                      const Text(
+                                                                                        '2022년 9월 20일 수요일',
+                                                                                        style: TextStyle(
+                                                                                          fontWeight: FontWeight.bold,
                                                                                         ),
-                                                                                        SizedBox(height:5),
-                                                                                        Row(
-                                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                                      ),
+                                                                                      IconButton(
+                                                                                          icon: const Icon(
+                                                                                            Icons.more_horiz,
+                                                                                            color: Colors.black,
+                                                                                          ),
+                                                                                          onPressed: () {
+                                                                                            showDialog(
+                                                                                                context: context,
+                                                                                                builder: (BuildContext context) {
+                                                                                                  return const CustomModalWidget();
+                                                                                                }
+                                                                                            );
+                                                                                          }
+                                                                                      )
+                                                                                    ]
+                                                                                )
+                                                                            ),
+                                                                            const SizedBox(height: 10),
+                                                                            GestureDetector(
+                                                                              onTap: (){
+
+                                                                              },
+                                                                              child: Container(
+                                                                                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                                                                                  child: const Row(
+                                                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                      children: [
+                                                                                        Column(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
                                                                                             children: [
                                                                                               Text(
-                                                                                                  '신한은행',
+                                                                                                  '1331.66',
                                                                                                   style: TextStyle(
-                                                                                                    fontSize: 17,
+                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                    fontSize: 30,
                                                                                                   )
                                                                                               ),
-                                                                                              Text(
-                                                                                                  '우대율30%',
-                                                                                                  style: TextStyle(
-                                                                                                    fontSize: 13,
-                                                                                                  )
+                                                                                              SizedBox(height:5),
+                                                                                              Row(
+                                                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                                                  children: [
+                                                                                                    Text(
+                                                                                                        '신한은행',
+                                                                                                        style: TextStyle(
+                                                                                                          fontSize: 17,
+                                                                                                        )
+                                                                                                    ),
+                                                                                                    Text(
+                                                                                                        '우대율30%',
+                                                                                                        style: TextStyle(
+                                                                                                          fontSize: 13,
+                                                                                                        )
+                                                                                                    )
+                                                                                                  ]
+                                                                                              )
+                                                                                            ]
+                                                                                        ),
+                                                                                        Column(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                                                                            children: [
+                                                                                              Row(
+                                                                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                  children: [
+                                                                                                    Text(
+                                                                                                        '740',
+                                                                                                        style: TextStyle(
+                                                                                                          fontSize: 20,
+                                                                                                          fontWeight: FontWeight.bold,
+                                                                                                          color: Color(0xFF0984E3),
+                                                                                                        )
+                                                                                                    ),
+                                                                                                    Text(
+                                                                                                        ' USD',
+                                                                                                        style: TextStyle(
+                                                                                                            fontSize: 20,
+                                                                                                            fontWeight: FontWeight.bold,
+                                                                                                            color: Color(0xFF0984E3)
+                                                                                                        )
+                                                                                                    ),
+                                                                                                    SizedBox(width: 10),
+                                                                                                    CircleAvatar(
+                                                                                                      backgroundImage:
+                                                                                                      AssetImage('assets/images/USD.png'),
+                                                                                                      radius: 16,
+                                                                                                    ),
+                                                                                                  ]
+                                                                                              ),
+                                                                                              SizedBox(height:6),
+                                                                                              Row(
+                                                                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                  children: [
+                                                                                                    Text(
+                                                                                                        '992,147',
+                                                                                                        style: TextStyle(
+                                                                                                          fontSize: 20,
+                                                                                                          fontWeight: FontWeight.bold,
+                                                                                                          color: Color(0xFFFF5656),
+                                                                                                        )
+                                                                                                    ),
+                                                                                                    Text(
+                                                                                                        ' KRW',
+                                                                                                        style: TextStyle(
+                                                                                                          fontSize: 20,
+                                                                                                          fontWeight: FontWeight.bold,
+                                                                                                          color: Color(0xFFFF5656),
+                                                                                                        )
+                                                                                                    ),
+                                                                                                    SizedBox(width: 10),
+                                                                                                    CircleAvatar(
+                                                                                                      backgroundImage:
+                                                                                                      AssetImage('assets/images/KRW.png'),
+                                                                                                      radius: 16,
+                                                                                                    ),
+                                                                                                  ]
                                                                                               )
                                                                                             ]
                                                                                         )
                                                                                       ]
-                                                                                  ),
-                                                                                  Column(
-                                                                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                                                                      children: [
-                                                                                        Row(
-                                                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                                                            children: [
-                                                                                              Text(
-                                                                                                  '740',
-                                                                                                  style: TextStyle(
-                                                                                                    fontSize: 20,
-                                                                                                    fontWeight: FontWeight.bold,
-                                                                                                    color: Color(0xFF0984E3),
-                                                                                                  )
-                                                                                              ),
-                                                                                              Text(
-                                                                                                  ' USD',
-                                                                                                  style: TextStyle(
-                                                                                                      fontSize: 20,
-                                                                                                      fontWeight: FontWeight.bold,
-                                                                                                      color: Color(0xFF0984E3)
-                                                                                                  )
-                                                                                              ),
-                                                                                              SizedBox(width: 10),
-                                                                                              CircleAvatar(
-                                                                                                backgroundImage:
-                                                                                                AssetImage('assets/images/USD.png'),
-                                                                                                radius: 16,
-                                                                                              ),
-                                                                                            ]
-                                                                                        ),
-                                                                                        SizedBox(height:6),
-                                                                                        Row(
-                                                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                                                            children: [
-                                                                                              Text(
-                                                                                                  '992,147',
-                                                                                                  style: TextStyle(
-                                                                                                    fontSize: 20,
-                                                                                                    fontWeight: FontWeight.bold,
-                                                                                                    color: Color(0xFFFF5656),
-                                                                                                  )
-                                                                                              ),
-                                                                                              Text(
-                                                                                                  ' KRW',
-                                                                                                  style: TextStyle(
-                                                                                                    fontSize: 20,
-                                                                                                    fontWeight: FontWeight.bold,
-                                                                                                    color: Color(0xFFFF5656),
-                                                                                                  )
-                                                                                              ),
-                                                                                              SizedBox(width: 10),
-                                                                                              CircleAvatar(
-                                                                                                backgroundImage:
-                                                                                                AssetImage('assets/images/KRW.png'),
-                                                                                                radius: 16,
-                                                                                              ),
-                                                                                            ]
-                                                                                        )
-                                                                                      ]
                                                                                   )
-                                                                                ]
+                                                                              ),
                                                                             )
-                                                                        ),
+                                                                          ]
                                                                       )
-                                                                    ]
-                                                                )
+                                                                  )
+                                                                ]
                                                             )
-                                                          ]
-                                                      )
-                                                  )
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                      ),
-                                  );
-                                    });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                elevation: 0,
-                                backgroundColor: Colors.green,
-                              ), child: const Text('환전기록'),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                            ),
+                                        );
+                                          });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      elevation: 0,
+                                      backgroundColor: Colors.green,
+                                    ), child: const Text('환전기록'),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
-                            width: 180,
-                            height: 50,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.black38),
-                                color: Colors.white,
-                            ),
-                            child:DropdownButtonHideUnderline(
-                              child:  DropdownButton(
-                                value: _selectedBank,
-                                items: _bankList1.map(
-                                    (value) {
-                                      return  DropdownMenuItem(
-                                        value: value,
-                                        child: Container(
-                                          margin: const EdgeInsets.fromLTRB(50, 0, 0, 0),
-                                          child: Text(value),
+                            Row(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+                                  width: 180,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 0),
                                         ),
+                                      ]),
+                                  child:DropdownButtonHideUnderline(
+                                    child:  DropdownButton(
+                                      value: _selectedBank,
+                                      items: _bankList1.map(
+                                          (value) {
+                                            return  DropdownMenuItem(
+                                              value: value,
+                                              child: Container(
+                                                margin: const EdgeInsets.fromLTRB(50, 0, 0, 0),
+                                                child: Text(value),
+                                              ),
 
-                                      );
-                                    }
-                                ).toList(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedBank = value!;
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10,),
-                          // 우대율
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(30, 0, 10, 5),
-                            padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
-                            width: 110,
-                            height: 50,
-                            // color: Colors.red,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.black38),
-                            ),
-                            child:  TextField(
-                              controller: _percentController,
-                              cursorColor: Colors.black38,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                              decoration:  InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white,
-                                border: InputBorder.none,
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                  borderSide: const BorderSide(color: Colors.transparent),
+                                            );
+                                          }
+                                      ).toList(),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _selectedBank = value!;
+                                        });
+                                      },
+                                    ),
+                                  ),
                                 ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                                  borderSide: BorderSide(color: Colors.transparent),
+                                const SizedBox(width: 10,),
+                                // 우대율
+                                Container(
+                                  margin: const EdgeInsets.fromLTRB(15, 0, 10, 5),
+                                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                                  width: 110,
+                                  height: 50,
+                                  // color: Colors.red,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 0),
+                                        ),
+                                      ]),
+                                  child:  TextField(
+                                    controller: _percentController,
+                                    cursorColor: Colors.black38,
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                    decoration:  InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      border: InputBorder.none,
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                        borderSide: const BorderSide(color: Colors.transparent),
+                                      ),
+                                      focusedBorder: const OutlineInputBorder(
+                                        borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                        borderSide: BorderSide(color: Colors.transparent),
+                                      ),
+                                      suffixText: '%',
+                                    ),
+                                    textAlign: TextAlign.end,
+                                    style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
+                                  ),
                                 ),
-                                suffixText: '%',
-                              ),
-                              textAlign: TextAlign.end,
-                              style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
-                            ),
-                          ),
 
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(280, 10, 10, 0),
-                            width: 70,
-                            height: 50,
-                            // color: const Color(0xFFFFD954),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              // border: Border.all(color: Colors.black38),
-                              color:  const Color(0xFFFFD954),
+                              ],
                             ),
-                            child:IconButton(
-                              padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
-                              onPressed: (){
-                                setState(() {
-                                  _iscalculate = true;
-                                });
-                              },
-                              icon: const Icon(Icons.drag_handle_rounded),
-                              iconSize: 50,
-                              color: Colors.white,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                  width: 70,
+                                  height: 50,
+                                  // color: const Color(0xFFFFD954),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    // border: Border.all(color: Colors.black38),
+                                    color:  const Color(0xFFFFD954),
+                                  ),
+                                  child:IconButton(
+                                    padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
+                                    onPressed: (){
+                                      setState(() {
+                                        _iscalculate = true;
+                                      });
+                                    },
+                                    icon: const Icon(Icons.drag_handle_rounded),
+                                    iconSize: 50,
+                                    color: Colors.white,
 
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20,),
                  if (_iscalculate == false)
                 Row(
                   children: [
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(30, 10, 30, 0),
-                      width: 350,
-                      height: 60,
-                      child: getCalculateView(
-                          ChatBubbleClipper6(type: BubbleType.sendBubble),
-                          context),
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(30, 10, 30, 0),
+                        width: double.infinity,
+                        height: 60,
+                        child: getCalculateView(
+                            ChatBubbleClipper6(type: BubbleType.sendBubble),
+                            context),
+                      ),
                     ),
                   ],
                 ),
@@ -530,171 +569,212 @@ class _CalculatePageState extends State<CalculatePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      margin: const EdgeInsets.all(10),
-                      width: 368,
-                      height: 400,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.black38),
-                      ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // 초기값 기록 시기.
-                            Container(
-                              margin: const EdgeInsets.all(10),
-                              padding: const EdgeInsets.all(7),
-                              width: 150,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.black38),
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                        width: double.infinity,
+                        height: 350,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: const Offset(0, 0),
                               ),
-                              child: GestureDetector(
-                                onTap: () async {
-                                  final selectedDate = await showDatePicker(
-                                    context: context,
-                                    initialDate: date2,
-                                    firstDate: DateTime(2000),
-                                    lastDate: DateTime.now(),
+                            ]),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // 초기값 기록 시기.
+                              Expanded(
+                                child: Container(
+                                  margin: const EdgeInsets.all(10),
+                                  padding: const EdgeInsets.all(7),
+                                  width: double.infinity,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 0),
+                                        ),
+                                      ]),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      final selectedDate = await showDatePicker(
+                                        context: context,
+                                        initialDate: date2,
+                                        firstDate: DateTime(2000),
+                                        lastDate: DateTime.now(),
 
-                                  );
-                                  if (selectedDate != null) {
-                                    setState(() {
-                                      date2 = selectedDate;
-                                    });
-                                  }
-                                },
-                                child:  Text(
-                                  "${date2?.year.toString()}.${date2?.month.toString().padLeft(2, '0')}.${date2?.day.toString().padLeft(2, '0')}",
-                                  style: const TextStyle(fontSize: 24),),
-                              ),
-                            ),
-                            // 기록 시 환전 값
-                            Container(
-                              margin: const EdgeInsets.all(10),
-                              padding: const EdgeInsets.all(5),
-                              width: 170,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.black38),
-                              ),
-                              child: const Text(
-                                  '992,147.00 원',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                              textAlign: TextAlign.center,),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // 오늘 기준.
-                            Container(
-                                margin: const EdgeInsets.all(10),
-                                padding: const EdgeInsets.all(7),
-                                width: 150,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: Colors.black38),
+                                      );
+                                      if (selectedDate != null) {
+                                        setState(() {
+                                          date2 = selectedDate;
+                                        });
+                                      }
+                                    },
+                                    child:  Text(
+                                      "${date2?.year.toString()}.${date2?.month.toString().padLeft(2, '0')}.${date2?.day.toString().padLeft(2, '0')}",
+                                      style: const TextStyle(fontSize: 24),),
+                                  ),
                                 ),
-                              child: GestureDetector(
-                                onTap: () async {
-                                  final selectedDate = await showDatePicker(
-                                    context: context,
-                                    initialDate: date3,
-                                    firstDate: DateTime(2000),
-                                    lastDate: DateTime.now(),
-
-                                  );
-                                  if (selectedDate != null) {
-                                    setState(() {
-                                      date3 = selectedDate;
-                                    });
-                                  }
-                                },
-                                child:  Text(
-                                  "${date3?.year.toString()}.${date3?.month.toString().padLeft(2, '0')}.${date3?.day.toString().padLeft(2, '0')}",
-                                  style: const TextStyle(fontSize: 24),),
                               ),
-                              ),
-                            // 현재 환전 값.
-                            Container(
-                              margin: const EdgeInsets.all(10),
-                              padding: const EdgeInsets.all(5),
-                              width: 170,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.black38),
-                              ),
-                              child: const Text(
-                                '1,000,000.48 원',
+                              // 기록 시 환전 값
+                              Container(
+                                margin: const EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(10),
+                                width: 170,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ]),
+                                child: const Text(
+                                    '992,147.00 원',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
                                 ),
                                 textAlign: TextAlign.center,),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                           Column(
-                             children: [
-                               // 차액
-                               Row(
-                                 children: [
-                                   Container(
-                                     margin: const EdgeInsets.all(10),
-                                     width: 100,
-                                     height: 50,
-                                     child: const Text(
-                                         '7,853원',
-                                       style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold,),
-                                         textAlign: TextAlign.center,
-                                     ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // 오늘 기준.
+                              Expanded(
+                                child: Container(
+                                    margin: const EdgeInsets.all(10),
+                                    padding: const EdgeInsets.all(7),
+                                    width: double.infinity,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(0.1),
+                                            spreadRadius: 1,
+                                            blurRadius: 3,
+                                            offset: const Offset(0, 0),
+                                          ),
+                                        ]),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      final selectedDate = await showDatePicker(
+                                        context: context,
+                                        initialDate: date3,
+                                        firstDate: DateTime(2000),
+                                        lastDate: DateTime.now(),
 
-                                   ),
-                                 ],
-                               ),
-                               // 상승 or 하락
-                               Row(
-                                 children: [
-                                   Container(
-                                     margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                     width: 100,
-                                     height: 40,
-                                     child: const Text(
-                                       '상승',
-                                       style: TextStyle(
-                                         fontSize: 20,
-                                         fontWeight: FontWeight.bold,
-                                         color: Colors.red,
+                                      );
+                                      if (selectedDate != null) {
+                                        setState(() {
+                                          date3 = selectedDate;
+                                        });
+                                      }
+                                    },
+                                    child:  Text(
+                                      "${date3?.year.toString()}.${date3?.month.toString().padLeft(2, '0')}.${date3?.day.toString().padLeft(2, '0')}",
+                                      style: const TextStyle(fontSize: 24),),
+                                  ),
+                                  ),
+                              ),
+                              // 현재 환전 값.
+                              Container(
+                                margin: const EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(10),
+                                width: 170,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ]),
+                                child: const Text(
+                                  '1,000,000.48 원',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                  textAlign: TextAlign.center,),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                             Column(
+                               children: [
+                                 // 차액
+                                 Row(
+                                   children: [
+                                     Container(
+                                       margin: const EdgeInsets.all(10),
+                                       width: 100,
+                                       height: 50,
+                                       child: const Text(
+                                           '7,853원',
+                                         style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold,),
+                                           textAlign: TextAlign.center,
                                        ),
-                                       textAlign: TextAlign.center,
+
                                      ),
-                                   ),
-                                 ],
-                               ),
-                             ],
-                           ),
-                            // 그래프
-                           const Expanded(
-                                child: LineChartSample2()),
-                          ],
-                        ),
-                      ],
-                    ) ,
+                                   ],
+                                 ),
+                                 // 상승 or 하락
+                                 Row(
+                                   children: [
+                                     Container(
+                                       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                       width: 100,
+                                       height: 40,
+                                       child: const Text(
+                                         '상승',
+                                         style: TextStyle(
+                                           fontSize: 20,
+                                           fontWeight: FontWeight.bold,
+                                           color: Colors.red,
+                                         ),
+                                         textAlign: TextAlign.center,
+                                       ),
+                                     ),
+                                   ],
+                                 ),
+                               ],
+                             ),
+                              // 그래프
+                             const Expanded(
+                                  child: LineChartSample2()),
+                            ],
+                          ),
+                        ],
+                      ) ,
+                      ),
                     ),
                   ],
                 ),
@@ -726,23 +806,23 @@ class _CalculatePageState extends State<CalculatePage> {
             children: [
               Text(
                 " 환전 시기에 따른 ",
-                style: TextStyle(color: Colors.black, fontSize: 16),
+                style: TextStyle(color: Colors.black, ),
               ),
               Text(
                 "손익/손실 ",
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                style: TextStyle(color: Colors.white, ),
               ),
               Text(
                 "을 ",
-                style: TextStyle(color: Colors.black, fontSize: 16),
+                style: TextStyle(color: Colors.black, ),
               ),
               Text(
                 "비교 ",
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                style: TextStyle(color: Colors.white, ),
               ),
               Text(
                 "해보세요! ",
-                style: TextStyle(color: Colors.black, fontSize: 16),
+                style: TextStyle(color: Colors.black, ),
               ),
             ],
           ),
