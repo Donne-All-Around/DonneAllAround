@@ -1,27 +1,34 @@
+import 'package:a705/chatting_page.dart';
 import 'package:a705/service/database.dart';
 import 'package:a705/appointment_page.dart';
-import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:random_string/random_string.dart';
 
 class ChattingDetailPage extends StatefulWidget {
-  const ChattingDetailPage({super.key});
+  // const ChattingDetailPage({super.key, required Map<String, dynamic> transactionInfoMap});
+  final Map<String, dynamic>? transactionInfoMap;
+
+  const ChattingDetailPage({
+    Key? key,
+    this.transactionInfoMap,
+  }) : super(key: key);
 
   @override
   State<ChattingDetailPage> createState() => _ChattingDetailPageState();
 }
+
+
 
 class _ChattingDetailPageState extends State<ChattingDetailPage> {
   ScrollController _scrollController = ScrollController();
   bool isVisible = false;
   TextEditingController messageController = new TextEditingController();
 
-  // String? myProfilePic, messageId;
   String? myUserName, // 내 닉네임
+      myUserId, // 내 아이디
       myProfilePic, // 내 프로필
-      myPhone, // 내 번호
       messageId, // 메시지 아이디
       chatRoomId, // 채팅방 아이디
       otherUserName, // 상대방 닉네임
@@ -36,38 +43,57 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   bool isLoadingMore = false; // 추가 메시지 로딩 중인지 여부
   DocumentSnapshot? lastVisibleMessage; // 마지막으로 로드된 메시지를 추적하는 데 사용됩니다.
   bool reachedTop = false; // 스크롤이 맨 위에 도달했는지 여부
+  bool? isSellerExit, isBuyerExit;
 
 
   // 채팅방 정보 가져오기
-  getthesharedpref() async {
-    /**
-     * 채팅방 정보 추후에 받아오기
-     */
-    // myUserName = await SharedPreferenceHelper().getUserName();
-    // myProfilePic = await SharedPreferenceHelper().getUserPic();
-    // myPhone = await SharedPreferenceHelper().getUserPhone();
-
+  getUserInfo() async {
     // 예시 시작
-    chatRoomId = "board1_쏘영이_이병건";
     myUserName = "이병건";
-    otherUserName = "쏘영이";
+    myUserId = "abcdef";
+    // 예시 끝
+    setState(() {});
+  }
+  getTransactionInfo() async {
     seller = "쏘영이";
     sellerId = "123456";
-    buyerId = "abcdef";
-    buyer = "이병건";
-    myPhone = "010-1111-1111";
+    chatRoomId = "board1_쏘영이_이병건";
     transactionId = "board1";
-    String userId = myUserName == seller ? "seller" : "buyer";
-    DatabaseMethods().setRead(chatRoomId,userId); // 읽음 처리
-    // 예시 끝
+
+    print('거래글 -> 채팅방: ${widget.transactionInfoMap}');
+    // 거래글 -> 채팅방
+    if(widget.transactionInfoMap != null){
+      // 새로 만들 시, 상대방은 seller 사용자는 buyer
+      seller = widget.transactionInfoMap?['seller'];
+      sellerId = widget.transactionInfoMap?['sellerId'];
+      buyer = myUserName;
+      buyerId = myUserId;
+      transactionId = widget.transactionInfoMap?['transactionId'];
+      chatRoomId = "${transactionId!}_${sellerId!}_${buyerId!}";
+      otherUserName = seller;
+      print(seller);
+
+      Map<String, dynamic> chatRoomListInfoMap = {
+        "sellerId" : sellerId,
+        "buyerId" : buyerId,
+      };
+
+      print("user에 chatlist update: ${transactionId}");
+      DatabaseMethods().setUserChatList(sellerId!, buyerId!, chatRoomId!, chatRoomListInfoMap);
+    }
+    // 채팅목록 -> 채팅방
+    else{
+      // 거래글 http api
+
+    }
     setState(() {});
   }
 
   // 로드
   ontheload() async {
-    await getthesharedpref();
-    await getAndSetMessages();
-    // await getAndSetMessages(); // 이 부분을 추가하여 메시지를 초기에 가져옵니다.
+    await getUserInfo(); // 내 정보 가져오기
+    await getTransactionInfo(); // 거래글 정보 가져오기
+    await getAndSetMessages(); // 채팅 내역 가져오기
     setState(() {});
   }
 
@@ -77,52 +103,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     super.initState();
     ontheload();
   }
-
-  void _loadMoreMessages() async {
-    if (!isLoadingMore) {
-      setState(() {
-        isLoadingMore = true;
-      });
-
-      Query query = FirebaseFirestore.instance
-          .collection("chatRooms")
-          .doc(chatRoomId)
-          .collection("chats")
-          .orderBy("time", descending: true)
-          .startAfterDocument(lastVisibleMessage!)
-          .limit(batchSize);
-
-      QuerySnapshot additionalMessages = await query.get();
-
-      if (additionalMessages.docs.isNotEmpty) {
-        lastVisibleMessage =
-            additionalMessages.docs[additionalMessages.docs.length - 1];
-        // 기존의 messageStream을 업데이트합니다.
-        messageStream = FirebaseFirestore.instance
-            .collection("chatRooms")
-            .doc(chatRoomId)
-            .collection("chats")
-            .orderBy("time", descending: true)
-            .startAfterDocument(lastVisibleMessage!)
-            .limit(batchSize)
-            .snapshots();
-      }
-
-      setState(() {
-        isLoadingMore = false;
-      });
-    }
-  }
-
-// 채팅 메시지 가져오기
-//   Future<Stream<QuerySnapshot>> getChatRoomMessages(String chatRoomId) async {
-//     return FirebaseFirestore.instance
-//         .collection("chatRooms")
-//         .doc(chatRoomId)
-//         .collection("chats")
-//         .orderBy("time", descending: true) // 시간 역순으로 스트림 반환
-//         .snapshots();
-//   }
 
   // 채팅 메시지 타일
   Widget chatMessageTile(
@@ -209,27 +189,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   // 채팅 메시지
   Widget chatMessage() {
     return NotificationListener<ScrollUpdateNotification>(
-      // onNotification: (ScrollUpdateNotification scrollInfo) {
-      //   value.listner(scrollInfo);
-      //   // if (!isLoadingMore &&
-      //   //     scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent &&
-      //   //     !reachedTop) {
-      //   //   // 스크롤이 맨 아래에 도달하면 추가 메시지를 가져오도록 하고,
-      //   //   // 스크롤이 맨 위에 도달하지 않았을 때만 호출합니다.
-      //   //   loadMoreMessages();
-      //   //   return true;
-      //   // } else if (scrollInfo.metrics.pixels ==
-      //   //     scrollInfo.metrics.minScrollExtent) {
-      //   //   // 스크롤이 맨 위로 도달하면 더 이상 메시지를 로드하지 않음을 표시합니다.
-      //   //   setState(() {
-      //   //     reachedTop = true;
-      //   //   });
-      //   // }else if (reachedTop && !isLoadingMore) {
-      //   //   // 스크롤이 맨 위에 도달한 후 다시 스크롤을 아래로 내릴 때 추가 메시지를 불러오도록 합니다.
-      //   //   loadMoreMessages();
-      //   // }
-      //   return false;
-      // },
       child: StreamBuilder(
         stream: messageStream,
         builder: (context, AsyncSnapshot snapshot) {
@@ -415,6 +374,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   // 메시지 작성 읽기
   getAndSetMessages() async {
     messageStream = await DatabaseMethods().getChatRoomMessages(chatRoomId);
+    String myRole = myUserName == seller ? "seller" : "buyer";
+    DatabaseMethods().setRead(chatRoomId,myRole); // 읽음 처리
     setState(() {});
   }
 
@@ -440,7 +401,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                 color: Colors.black87,
               ),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(context, "data_changed");
               },
             ),
             elevation: 0,
@@ -763,116 +724,3 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   }
 }
 
-class ListViewBuilder extends StatefulWidget {
-  const ListViewBuilder({super.key});
-
-  @override
-  State<ListViewBuilder> createState() => _ListViewBuilderState();
-}
-
-class _ListViewBuilderState extends State<ListViewBuilder> {
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      reverse: true,
-      itemCount: chatList.length,
-      itemBuilder: (BuildContext context, int index) {
-        return index > 1
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                      padding: const EdgeInsets.only(bottom: 15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                              padding: const EdgeInsets.only(left: 00),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  const SizedBox(width: 10),
-                                  const Column(
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundImage: AssetImage(
-                                            'assets/images/profile.jpg'),
-                                        radius: 25,
-                                      ),
-                                      SizedBox(height: 10),
-                                    ],
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Row(
-                                        children: [
-                                          SizedBox(width: 10),
-                                          Text(
-                                            '옹골찬',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
-                                      ),
-                                      BubbleSpecialOne(
-                                        text: chatList[index],
-                                        isSender: false,
-                                        color: Colors.grey.shade200,
-                                        textStyle: const TextStyle(
-                                            color: Colors.black, fontSize: 15),
-                                      ),
-                                    ],
-                                  ),
-                                  const Text('오후 2:10',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                      ))
-                                ],
-                              ))
-                        ],
-                      ))
-                ],
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const Text('오후 2:20',
-                            style: TextStyle(
-                              fontSize: 10,
-                            )),
-                        BubbleSpecialOne(
-                          text: chatList[index],
-                          isSender: true,
-                          color: const Color(0xFFFFE897),
-                          textStyle: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              );
-      },
-    );
-  }
-}
-
-List<String> chatList = [
-  "제가 감기에 걸려가..",
-  "죄송한데 3시 30분도 가능하실까요",
-  "3시까지 나갈게요~",
-  "네 알겠습니다!",
-  "도착하시면 연락 부탁드려요.",
-  "흰 티에 청바지 입고있어요",
-  "역삼역 1번출구 앞에서 직거래 희망합니다",
-  "3시에 거래 가능할까요",
-];

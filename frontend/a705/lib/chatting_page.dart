@@ -1,5 +1,4 @@
 import 'package:a705/service/database.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:a705/chatting_detail_page.dart';
@@ -12,57 +11,13 @@ class ChattingPage extends StatefulWidget {
 }
 
 class _ChattingPageState extends State<ChattingPage> {
-  // 내 정보
-  String? myUserName, // 내 닉네임
-      myProfilePic, // 내 프로필
-      myPhone, // 내 번호
-      messageId, // 메시지 아이디
-      chatRoomId, // 채팅방 아이디
-      otherUserName, // 상대방 닉네임
-      seller, // 판매자 닉네임
-      buyer, // 구매자 닉네임
-      transactionId, // 거래글 아이디
-      otherImgUrl,
-      boardImgUrl;
-  int? unRead; // 안 읽음 개수
-  bool? isExit; // 나감 여부
   Map<String, Map<String, String>> items={};
-  List<String> chatroom = ['옹골찬', '김싸피', '박싸피', '정현아', '문요환', '별의 커비', '뽀로로'];
+  Map<String,dynamic> chatroom = {};
   dynamic? lastMessage = "", ts = "";
-
-  // 채팅방 정보 가져오기
-  getUserInfo() async {
-    /**
-     * 채팅방 정보 추후에 받아오기
-     */
-    // 예시 시작
-    chatRoomId = "board1_쏘영이_이병건";
-    myUserName = "쏘영이";
-    otherUserName = "이병건";
-    seller = "쏘영이";
-    myPhone = "010-1111-1111";
-    transactionId = "board1";
-    // 예시 끝
-    setState(() {});
-  }
 
   // 로드
   ontheload() async {
-    await getUserInfo();
-    await getAndSetChatrooms();
-    // await getAndSetMessages(); // 이 부분을 추가하여 메시지를 초기에 가져옵니다.
     setState(() {});
-  }
-
-  // 메시지 작성 읽기
-  getAndSetChatrooms() async {
-    List<String> myList = ['board1_쏘영이_이병건'];
-    final fetchedItems = <String, Map<String, String>>{};
-    // chatroomStream = await DatabaseMethods().getChatList();
-    chatroom = await DatabaseMethods().getChatList(myList);
-    setState(() {
-      items = chatroom as Map<String, Map<String, String>>;
-    });
   }
 
   // 초기화
@@ -326,63 +281,112 @@ class _ChattingPageState extends State<ChattingPage> {
 //     'name': 'Item 5',
 //     'description': 'Item 5 Description',
 //   }};
+
 class ListViewBuilder extends StatefulWidget {
   const ListViewBuilder({super.key});
-
-
-
-
-
 
   @override
   State<ListViewBuilder> createState() => _ListViewBuilderState();
 }
-
+// 내 정보
+String? myUserName, // 내 닉네임
+    myProfilePic, // 내 프로필
+    myPhone, // 내 번호
+    messageId, // 메시지 아이디
+    chatRoomId, // 채팅방 아이디
+    otherUserName, // 상대방 닉네임
+    seller, // 판매자 닉네임
+    buyer, // 구매자 닉네임
+    transactionId, // 거래글 아이디
+    otherImgUrl,
+    myRole, otherRole,
+myUserId,otherUserId;
+String transactionUrl = 'assets/images/ausdollar.jpg';
+int? unRead; // 안 읽음 개수
+bool isExit = false; // 나감 여부
+bool isRead = false; // 읽음 여부
+Map<String, Map<String, String>> items={};
+Map<String,dynamic> chatroom = {};
+dynamic? lastMessage = "", ts = "";
 class _ListViewBuilderState extends State<ListViewBuilder> {
 
+  Map<String, dynamic> chatroom = {}; // chatroom 맵을 이 클래스로 옮깁니다.
+
+  // ListViewBuilder가 초기화될 때 chatroom 데이터를 가져오도록 initState를 사용합니다.
+  @override
+  void initState() {
+    super.initState();
+    getUserInfo();
+    getAndSetChatrooms();
+  }
+
+  getUserInfo() async {
+    /**
+     * 채팅방 정보 추후에 받아오기
+     */
+    // 예시 시작
+    chatRoomId = "board1_쏘영이_이병건";
+    myUserName = "이병건";
+    myUserId = "abcdef";
+    otherUserName = "쏘영이";
+    otherUserId = "123456";
+    seller = "쏘영이";
+    myPhone = "010-1111-1111";
+    transactionId = "board1";
+    transactionUrl = 'assets/images/ausdollar.jpg';
+
+    // 예시 끝
+    setState(() {});
+  }
+
+  // getAndSetChatrooms() 메서드는 이 클래스 내에서 정의합니다.
+  getAndSetChatrooms() async {
+    List<String> myList = ['board1_쏘영이_이병건'];
+    print('myUserId : ${myUserId}');
+    List<String> mylist = await DatabaseMethods().getUserChatList(myUserId!);
+    print('mylist : ${mylist}');
+    chatroom = await DatabaseMethods().getChatList(myList);
+    
+    setState(() {}); // 데이터를 가져온 후 화면을 업데이트합니다.
+  }
 
 
-  final Map<String, Map<String, String>> items = {
-    'item1': {
-      'name': 'Item 1',
-      'description': 'Item 1 Description',
-    },
-    'item2': {
-      'name': 'Item 2',
-      'description': 'Item 2 Description',
-    },
-    'item3': {
-      'name': 'Item 3',
-      'description': 'Item 3 Description',
-    },
-    'item4': {
-      'name': 'Item 4',
-      'description': 'Item 4 Description',
-    },
-    'item5': {
-      'name': 'Item 5',
-      'description': 'Item 5 Description',
-    }};
 
 
 
   @override
   Widget build(BuildContext context) {
-
     return ListView.builder(
-      itemCount: items.length,
+      itemCount: chatroom.length,
       itemBuilder: (BuildContext context, int index) {
-        final key = items.keys.elementAt(index);
-        final item = items[key];
+        final key = chatroom.keys.elementAt(index);
+        print(key);
+        final item = chatroom[key];
+        print(item);
+
+        // 상대방 이름 판별
+        myRole = myUserName == item['seller']['userName'] ? 'seller' : 'buyer';
+        otherRole = myRole == 'seller' ? 'buyer' : 'seller';
+        // 나가기 여부
+        isExit = item[myRole]['isExit'];
+        // 읽음 여부
+        isRead = item['seller']['unRead'] == 0 ? true : false;
+
         return GestureDetector(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(
               builder: (context) {
                 return const ChattingDetailPage();
               },
-            ));
+            )).then((result) {
+              // 다음 화면에서 반환한 데이터(result)를 처리
+              if (result == "data_changed") {
+                // 데이터가 변경되었을 때 처리
+                getAndSetChatrooms();
+              }
+            });
           },
-          child: Container(
+          child: isExit ? Row() : Container(
               margin: const EdgeInsets.fromLTRB(20, 7, 20, 7),
               width: double.infinity,
               height: 90,
@@ -411,7 +415,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                         SizedBox(width: 16),
                       ],
                     ),
-                    Positioned(
+                    isRead ? Row() : Positioned(
                       bottom: 3,
                       right: 10,
                       child: Container(
@@ -421,9 +425,9 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                           shape: BoxShape.circle,
                           color: Color(0xFFFFD954),
                         ),
-                        child: const Center(
+                        child:  Center(
                           child: Text(
-                            '5',
+                            item![otherRole]['unRead']!.toString(),
                             style: TextStyle(
                               fontSize: 11,
                               color: Colors.black87,
@@ -446,7 +450,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                             Row(
                               children: [
                                 Text(
-                                  item!['name']!,
+                                  item![otherRole]['userName']!,
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -454,7 +458,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                 ),
                                 const SizedBox(width: 9),
                                  Text(
-                                  item!['description']!,
+                                   item!['list']['lastMessageSendTs']!,
                                   style: TextStyle(
                                     color: Colors.grey,
                                     fontSize: 11,
@@ -463,7 +467,8 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                               ],
                             ),
                             const SizedBox(height: 5),
-                            const Text('좋은 밤 되세요',
+                            Text(
+                                item!['list']['lastMessage']!,
                                 style: TextStyle(fontSize: 17)),
                           ],
                         ),
@@ -475,12 +480,12 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                           ),
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(15),
-                              child: const Image(
+                              child:  Image(
                                   height: 58,
                                   width: 58,
                                   fit: BoxFit.cover,
                                   image: AssetImage(
-                                    'assets/images/ausdollar.jpg',
+                                    transactionUrl,
                                   ))),
                         )
                       ],

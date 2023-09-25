@@ -27,32 +27,36 @@ class DatabaseMethods {
   }
 
   // 채팅방 생성
-  createChatRoom(
-      String chatRoomId, String myUserName, String otherUserName, String boardId, Map<String, dynamic> chatRoomInfoMap, Map<String, dynamic> chatRoomListInfoMap) async {
-    // 채팅방 정보 얻기
-    final snapshot = await FirebaseFirestore.instance
-        .collection("chatrooms")
-        .doc(chatRoomId)
-        .get();
-    if (snapshot.exists) {
-      // 채팅방 이미 존재
-      return true;
-    } else {
-      // 채팅방 없음
-      // chatrooms에 채팅방 생성
-      await FirebaseFirestore.instance
-          .collection("chatrooms")
-          .doc(chatRoomId)
-          .set(chatRoomInfoMap);
-      // user에 채팅방 리스트 생성
-      await FirebaseFirestore.instance
-      .collection("users")
-      .doc(myUserName)
-      .collection("chatroomList")
-      .doc(boardId)
-      .set(chatRoomListInfoMap);
-    }
-  }
+  // createChatRoom(
+  //     String chatRoomId,
+  //     String myUserName,
+  //     String otherUserName,
+  //     Map<String, dynamic> chatRoomInfoMap,
+  //     Map<String, dynamic> chatRoomListInfoMap) async {
+  //   // 채팅방 정보 얻기
+  //   final snapshot = await FirebaseFirestore.instance
+  //       .collection("chatrooms")
+  //       .doc(chatRoomId)
+  //       .get();
+  //   if (snapshot.exists) {
+  //     // 채팅방 이미 존재
+  //     return true;
+  //   } else {
+  //     // 채팅방 없음
+  //     // chatrooms에 채팅방 생성
+  //     await FirebaseFirestore.instance
+  //         .collection("chatrooms")
+  //         .doc(chatRoomId)
+  //         .set(chatRoomInfoMap);
+  //     // user에 채팅방 리스트 생성
+  //     await FirebaseFirestore.instance
+  //         .collection("users")
+  //         .doc(myUserName)
+  //         .collection("chatroomList")
+  //         .doc(boardId)
+  //         .set(chatRoomListInfoMap);
+  //   }
+  // }
 
   // 채팅 메시지 추가 + 유저 정보 추가
   Future addMessageUser(
@@ -72,36 +76,37 @@ class DatabaseMethods {
         chatRoomDocRef.collection("userRole").doc(selectOtherUser);
     final snapshot = await userDocRef.get();
 
-    // 처음 생성
+    // 처음 userRole 생성
     if (!snapshot.exists) {
       Map<String, dynamic> setSellerInfoMap = {
         "sellerId": sellerInfoMap['sellerId'], // 판매자 아이디
         "userName": sellerInfoMap['userName'], // 판매자 닉네임
         "isExit": false, // 나가기를 했었다면, 강제 초대
-        "unRead": FieldValue.increment(1), // 안 읽음 수 증가
+        "unRead": 0, // 안 읽음
       };
       Map<String, dynamic> setBuyerInfoMap = {
         "buyerId": buyerInfoMap['buyerId'], // 구매자 아이디
         "userName": buyerInfoMap['userName'], // 구매자 닉네임
         "isExit": false, // 나가기를 했었다면, 강제 초대
-        "unRead": FieldValue.increment(1), // 안 읽음 수 증가
+        "unRead": 0, // 안 읽음
       };
 
       await chatRoomDocRef
           .collection("userRole")
           .doc("buyer")
-          .set(setSellerInfoMap);
+          .set(setBuyerInfoMap);
       await chatRoomDocRef
           .collection("userRole")
           .doc("seller")
-          .set(setBuyerInfoMap);
-    } else {
+          .set(setSellerInfoMap);
+    }
       print(sellerInfoMap['userName']);
 
       selectOtherUser == "seller"
           ? await userDocRef.update(sellerInfoMap)
           : await userDocRef.update(buyerInfoMap);
-    }
+
+    // user에 chatlist 저장
 
     // "chats" 추가
     await chatRoomDocRef.collection("chats").doc(messageId).set(messageInfoMap);
@@ -186,51 +191,91 @@ class DatabaseMethods {
   }
 
   // 채팅
-Future<List<String>> getChatList(myList) async {
-  List<String> dataList = [];
+  Future<Map<String, dynamic>> getChatList(List<String> myList) async {
+    Map<String, dynamic> chatList = {};
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('chatrooms')
+          .get();
 
-  try {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('chatrooms') // Firestore 컬렉션 이름을 지정하세요.
-        .get();
+      for (int i = 0; i < snapshot.docs.length; i++) {
+        DocumentSnapshot doc = snapshot.docs[i];
+        if (myList.contains(doc.id)) { // 내 채팅목록만 가져오기
+          Object? listData = doc.data();
+          print(listData);
+          DocumentReference seller =
+              doc.reference.collection("userRole").doc("seller");
+          DocumentReference buyer =
+              doc.reference.collection("userRole").doc("buyer");
 
-    snapshot.docs.forEach((doc) async {
-      // 각 문서에서 필요한 데이터를 가져와서 리스트에 추가
-      String data = doc['your_field_name']; // 필드 이름을 지정하세요.
+          // userRole의 데이터를 가져옵니다.
+          DocumentSnapshot sellerDs = await seller.get();
+          DocumentSnapshot buyerDs = await buyer.get();
 
-      // MyList에 있는 값과 일치하는 경우에만 데이터를 추가
-      if (myList.contains(data)) {
-        dataList.add(data);
+          Object? sellerData = sellerDs.data();
+          Object? buyerData = buyerDs.data();
 
-        QuerySnapshot userRoleSnapshot = await FirebaseFirestore.instance
-            .collectionGroup('userRole') // 하위 컬렉션 이름인 'messages'를 지정하세요.
-            .where('userName', isEqualTo: '이병건') // 필터링 조건을 추가할 수 있습니다.
-            .get();
-        
+          print(sellerData);
+          print(buyerData);
 
+          // chatList에 데이터를 추가합니다.
+          chatList[doc.id] = {
+            "list": listData,
+            "seller": sellerData,
+            "buyer": buyerData,
+          };
+          print(chatList);
+        }
       }
-    });
-
-    return dataList;
-  } catch (e) {
-    print('Firestore 데이터 가져오기 오류: $e');
-    return dataList; // 오류 발생 시 빈 리스트 반환 또는 오류 처리 방식을 변경할 수 있습니다.
+      return chatList;
+    } catch (e) {
+      print('Firestore 데이터 가져오기 오류: $e');
+    }
+    return chatList;
   }
-}
 
+  // users에 chatlist 추가
+  setUserChatList(String sellerId, String buyerId, String transactionId, Map<String, dynamic> chatRoomListInfoMap) async {
+    await FirebaseFirestore.instance
+            .collection("user")
+            .doc(sellerId)
+            .collection("chatroomList")
+            .doc(transactionId)
+            .set(chatRoomListInfoMap);
+    await FirebaseFirestore.instance
+            .collection("user")
+            .doc(buyerId)
+            .collection("chatroomList")
+            .doc(transactionId)
+            .set(chatRoomListInfoMap);
 
+  }
+  // users에서 채팅목록 조회
+  Future<List<String>> getUserChatList(String myUserId) async {
+   List<String> myList = [];
+    try {
+      // Firebase 초기화
+      await Firebase.initializeApp();
 
+      // Firestore 인스턴스 가져오기
+      final db = FirebaseFirestore.instance;
 
+      // collection을 가져오기
+      final collection = db.collection('user');
 
+      // doc 가져오기
+      final docs = await collection.doc('098765').collection('chatroomList').get();
 
-// 유저
-// 내 채팅 목록
-// 라스트 메시지
-// 라스트 메시지 시간
-// 안읽음
+      // doc의 id를 배열에 저장
+      final myList = docs.docs.map((doc) => doc.id).toList();
 
-// 상대방 이름
-// 상대방 이미지
-// 게시글 아이디
-// 게시글 프로필
+      // id 출력
+      print(myList);
+      return myList;
+
+    }catch(e){
+      print('Firestore 데이터 가져오기 오류: $e');
+    }
+    return myList;
+  }
 }
