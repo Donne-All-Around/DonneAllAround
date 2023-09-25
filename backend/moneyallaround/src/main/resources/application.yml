@@ -14,7 +14,7 @@ spring:
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://j9a705.p.ssafy.io:3306/donnearound?useUnicode=true
+    url: jdbc:mariadb://ssafy-db:3306/donnearound?useUnicode=true
     username: ssafy
     password: ssafy
 
