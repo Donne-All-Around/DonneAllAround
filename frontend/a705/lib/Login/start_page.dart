@@ -11,6 +11,7 @@ class StartPage extends StatelessWidget {
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Scaffold(
+            backgroundColor: Colors.white,
             resizeToAvoidBottomInset : false,
          body: SingleChildScrollView(
            child: Center(

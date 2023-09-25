@@ -47,6 +47,7 @@ class _CalculatePageState extends State<CalculatePage> {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: SafeArea(
         child:Scaffold(
+          backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Column(
               children: [
@@ -543,7 +544,7 @@ class _CalculatePageState extends State<CalculatePage> {
                   children: [
                     Expanded(
                       child: Container(
-                        margin: const EdgeInsets.all(20),
+                        margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
                         width: double.infinity,
                         height: 350,
                         decoration: BoxDecoration(

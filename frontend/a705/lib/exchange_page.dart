@@ -161,6 +161,7 @@ class _ExchangePageState extends State<ExchangePage> {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Column(
                 children: [
@@ -208,9 +209,16 @@ class _ExchangePageState extends State<ExchangePage> {
                     width: double.infinity,
                     height: _isDouble ? 470 : 310,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.black38),
-                    ),
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: const Offset(0, 0),
+                          ),
+                        ]),
                     child:Column(
                       children: [
                         Row(
@@ -343,7 +351,7 @@ class _ExchangePageState extends State<ExchangePage> {
                               Expanded(
                                 child: Container(
                                   margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                  width: 340,
+                                  width: double.infinity,
                                   height: 60,
                                   // color: Colors.red,
                                   decoration: BoxDecoration(
@@ -355,12 +363,12 @@ class _ExchangePageState extends State<ExchangePage> {
                                     children: [
                                       Container(
                                         height: 60,
-                                        width: 182,
+                                        width: MediaQuery.of(context).size.width / 2 - 4,
                                         padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                                         decoration: BoxDecoration(
                                           borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
                                           border: Border.all(color: Colors.transparent),
-                                          color:  Colors.grey[200],
+                                          color: const Color(0xFFF7F7F7),
                                         ),
                                         child: DropdownButtonHideUnderline(
                                           child: DropdownButton(
@@ -395,7 +403,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                         ),
                                       ),
                                       Container(
-                                        width: 140,
+                                        width:  MediaQuery.of(context).size.width / 2 - 72,
                                         margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                                         // color: Colors.red,
                                         decoration: BoxDecoration(
@@ -434,7 +442,7 @@ class _ExchangePageState extends State<ExchangePage> {
                             Expanded(
                               child: Container(
                                 margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                                width: 340,
+                                width: double.infinity,
                                 height: 60,
                                 // color: Colors.red,
                                 decoration: BoxDecoration(
@@ -445,12 +453,12 @@ class _ExchangePageState extends State<ExchangePage> {
                                   children: [
                                     Container(
                                       height: 60,
-                                      width: 182,
+                                      width: MediaQuery.of(context).size.width / 2 - 5,
                                       padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
-                                        border: Border.all(color: Colors.transparent),
-                                        color:  Colors.grey[200],
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
+                                        // border: Border.all(color: Colors.transparent),
+                                        color: Color(0xFFF7F7F7),
                                       ),
                                       child: DropdownButtonHideUnderline(
                                         child: DropdownButton(
@@ -485,7 +493,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                       ),
                                     ),
                                     Container(
-                                      width: 130,
+                                      width: MediaQuery.of(context).size.width / 2 - 72,
                                       margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                                       // color: Colors.red,
                                       decoration: BoxDecoration(
@@ -507,7 +515,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                         ),
                                         textAlign: TextAlign.end,
                                         style: const TextStyle(
-                                          fontSize: 18,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -523,7 +531,7 @@ class _ExchangePageState extends State<ExchangePage> {
                               Expanded(
                                 child: Container(
                                   margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                  width: 340,
+                                  width: double.infinity,
                                   height: 60,
                                   // color: Colors.red,
                                   decoration: BoxDecoration(
@@ -535,12 +543,12 @@ class _ExchangePageState extends State<ExchangePage> {
                                     children: [
                                       Container(
                                         height: 60,
-                                        width: 182,
+                                        width: MediaQuery.of(context).size.width / 2 - 5,
                                         padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                                         decoration: BoxDecoration(
                                           borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
                                           border: Border.all(color: Colors.transparent),
-                                          color:  Colors.grey[200],
+                                          color:  const Color(0xFFF7F7F7),
                                         ),
                                         child: DropdownButtonHideUnderline(
                                           child: DropdownButton(
@@ -575,7 +583,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                         ),
                                       ),
                                       Container(
-                                        width: 140,
+                                        width:  MediaQuery.of(context).size.width / 2 - 72,
                                         margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                                         // color: Colors.red,
                                         decoration: BoxDecoration(
@@ -614,7 +622,7 @@ class _ExchangePageState extends State<ExchangePage> {
                               Expanded(
                                 child: Container(
                                   margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                                  width: 340,
+                                  width: double.infinity,
                                   height: 60,
                                   // color: Colors.red,
                                   decoration: BoxDecoration(
@@ -625,12 +633,12 @@ class _ExchangePageState extends State<ExchangePage> {
                                     children: [
                                       Container(
                                         height: 60,
-                                        width: 182,
+                                        width: MediaQuery.of(context).size.width / 2 - 5,
                                         padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                                         decoration: BoxDecoration(
                                           borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
                                           border: Border.all(color: Colors.transparent),
-                                          color:  Colors.grey[200],
+                                          color:  const Color(0xFFF7F7F7),
                                         ),
                                         child: DropdownButtonHideUnderline(
                                           child: DropdownButton(
@@ -665,7 +673,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                         ),
                                       ),
                                       Container(
-                                        width: 130,
+                                        width:  MediaQuery.of(context).size.width / 2 - 72,
                                         margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                                         // color: Colors.red,
                                         decoration: BoxDecoration(
@@ -687,7 +695,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                           ),
                                           textAlign: TextAlign.end,
                                           style: const TextStyle(
-                                            fontSize: 18,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -709,7 +717,7 @@ class _ExchangePageState extends State<ExchangePage> {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(color: Colors.black38),
-                                  color: Colors.grey[200]
+                                  color: Color(0xFFF7F7F7),
                               ),
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton(
