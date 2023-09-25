@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.sturdy.moneyallaround.domain.exchange.entity.QExchangeRecord.exchangeRecord;
@@ -26,14 +27,27 @@ public class ExchangeRecordRepositoryImpl implements ExchangeRecordRepositoryCus
                         ltLastExchangeRecordId(lastExchangeRecordId)
                 )
                 .limit(pageable.getPageSize() + 1)
-                .orderBy(exchangeRecord.exchangeDate.desc())
+                .orderBy(exchangeRecord.exchangeDate.desc(), exchangeRecord.createTime.desc())
                 .fetch();
 
         return checkLastPage(result, pageable);
     }
 
     private BooleanExpression ltLastExchangeRecordId(Long lastExchangeRecordId) {
-        return lastExchangeRecordId == null ? null : exchangeRecord.id.lt(lastExchangeRecordId);
+        if (lastExchangeRecordId == 0) {
+            return null;
+        }
+
+        LocalDate lastExchangeRecordDate = queryFactory
+                .select(exchangeRecord.exchangeDate)
+                .from(exchangeRecord)
+                .where(
+                        exchangeRecord.id.eq(lastExchangeRecordId)
+                )
+                .fetchOne();
+
+        return exchangeRecord.exchangeDate.lt(lastExchangeRecordDate)
+                .or(exchangeRecord.exchangeDate.eq(lastExchangeRecordDate).and(exchangeRecord.id.lt(lastExchangeRecordId)));
     }
 
     private Slice<ExchangeRecord> checkLastPage(List<ExchangeRecord> result, Pageable pageable) {
