@@ -112,9 +112,16 @@ class _CalculatePageState extends State<CalculatePage> {
                         width: double.infinity,
                         height: 320,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.black38),
-                        ),
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: const Offset(0, 0),
+                              ),
+                            ]),
                         child: Column(
                           children: [
                             Row(
@@ -125,9 +132,16 @@ class _CalculatePageState extends State<CalculatePage> {
                                   width: 190,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.black38),
-                                  ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 0),
+                                        ),
+                                      ]),
                                   // 날짜 선택
                                   child: GestureDetector(
                                     onTap: () async {
@@ -422,10 +436,16 @@ class _CalculatePageState extends State<CalculatePage> {
                                   width: 180,
                                   height: 50,
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(color: Colors.black38),
+                                      borderRadius: BorderRadius.circular(15),
                                       color: Colors.white,
-                                  ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 0),
+                                        ),
+                                      ]),
                                   child:DropdownButtonHideUnderline(
                                     child:  DropdownButton(
                                       value: _selectedBank,
@@ -452,15 +472,22 @@ class _CalculatePageState extends State<CalculatePage> {
                                 const SizedBox(width: 10,),
                                 // 우대율
                                 Container(
-                                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+                                  margin: const EdgeInsets.fromLTRB(15, 0, 10, 5),
                                   padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                                   width: 110,
                                   height: 50,
                                   // color: Colors.red,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.black38),
-                                  ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 0),
+                                        ),
+                                      ]),
                                   child:  TextField(
                                     controller: _percentController,
                                     cursorColor: Colors.black38,
@@ -548,9 +575,16 @@ class _CalculatePageState extends State<CalculatePage> {
                         width: double.infinity,
                         height: 350,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.black38),
-                        ),
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 3,
+                                offset: const Offset(0, 0),
+                              ),
+                            ]),
                       child: Column(
                         children: [
                           Row(
@@ -564,9 +598,16 @@ class _CalculatePageState extends State<CalculatePage> {
                                   width: double.infinity,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: Colors.black38),
-                                  ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 0),
+                                        ),
+                                      ]),
                                   child: GestureDetector(
                                     onTap: () async {
                                       final selectedDate = await showDatePicker(
@@ -591,13 +632,20 @@ class _CalculatePageState extends State<CalculatePage> {
                               // 기록 시 환전 값
                               Container(
                                 margin: const EdgeInsets.all(10),
-                                padding: const EdgeInsets.all(5),
+                                padding: const EdgeInsets.all(10),
                                 width: 170,
                                 height: 50,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: Colors.black38),
-                                ),
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ]),
                                 child: const Text(
                                     '992,147.00 원',
                                 style: TextStyle(
@@ -619,9 +667,16 @@ class _CalculatePageState extends State<CalculatePage> {
                                     width: double.infinity,
                                     height: 40,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: Colors.black38),
-                                    ),
+                                        borderRadius: BorderRadius.circular(15),
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(0.1),
+                                            spreadRadius: 1,
+                                            blurRadius: 3,
+                                            offset: const Offset(0, 0),
+                                          ),
+                                        ]),
                                   child: GestureDetector(
                                     onTap: () async {
                                       final selectedDate = await showDatePicker(
@@ -646,13 +701,20 @@ class _CalculatePageState extends State<CalculatePage> {
                               // 현재 환전 값.
                               Container(
                                 margin: const EdgeInsets.all(10),
-                                padding: const EdgeInsets.all(5),
+                                padding: const EdgeInsets.all(10),
                                 width: 170,
                                 height: 50,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: Colors.black38),
-                                ),
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ]),
                                 child: const Text(
                                   '1,000,000.48 원',
                                   style: TextStyle(

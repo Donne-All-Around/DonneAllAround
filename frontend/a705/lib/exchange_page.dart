@@ -229,9 +229,16 @@ class _ExchangePageState extends State<ExchangePage> {
                               width: 230,
                               height: 40,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                border: Border.all(color: Colors.black38),
-                              ),
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      spreadRadius: 1,
+                                      blurRadius: 3,
+                                      offset: const Offset(0, 0),
+                                    ),
+                                  ]),
                               child: Text(
                                 getToday(),
                                 style: const TextStyle(fontSize: 25),),
@@ -355,9 +362,16 @@ class _ExchangePageState extends State<ExchangePage> {
                                   height: 60,
                                   // color: Colors.red,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.black38),
-                                  ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 0),
+                                        ),
+                                      ]),
                                   // 드롭다운
                                   child: Row(
                                     children: [
@@ -446,9 +460,16 @@ class _ExchangePageState extends State<ExchangePage> {
                                 height: 60,
                                 // color: Colors.red,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.black38),
-                                ),
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ]),
                                 child:  Row(
                                   children: [
                                     Container(
@@ -535,9 +556,16 @@ class _ExchangePageState extends State<ExchangePage> {
                                   height: 60,
                                   // color: Colors.red,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.black38),
-                                  ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 0),
+                                        ),
+                                      ]),
                                   // 드롭다운
                                   child: Row(
                                     children: [
@@ -626,9 +654,16 @@ class _ExchangePageState extends State<ExchangePage> {
                                   height: 60,
                                   // color: Colors.red,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.black38),
-                                  ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 0),
+                                        ),
+                                      ]),
                                   child:  Row(
                                     children: [
                                       Container(
@@ -715,10 +750,16 @@ class _ExchangePageState extends State<ExchangePage> {
                               height: 50,
                               // color: Colors.red,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.black38),
-                                  color: Color(0xFFF7F7F7),
-                              ),
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      spreadRadius: 1,
+                                      blurRadius: 3,
+                                      offset: const Offset(0, 0),
+                                    ),
+                                  ]),
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton(
                                   value: _selectedValue5,
@@ -746,15 +787,22 @@ class _ExchangePageState extends State<ExchangePage> {
                               ),
                             ),
                             Container(
-                              margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                              margin: const EdgeInsets.fromLTRB(15, 0, 10, 0),
                               padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                               width: 110,
                               height: 50,
                               // color: Colors.red,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.black38),
-                              ),
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      spreadRadius: 1,
+                                      blurRadius: 3,
+                                      offset: const Offset(0, 0),
+                                    ),
+                                  ]),
                               child:  TextField(
                                 controller: _percentController,
                                 cursorColor: Colors.black38,
@@ -1067,9 +1115,16 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                   width: double.infinity,
                   height: 50,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.black38),
-                  ),
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: const Offset(0, 0),
+                        ),
+                      ]),
                   child: Column(
                     children: [
                       Row(
@@ -1177,9 +1232,16 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                   width: double.infinity,
                   height: 160,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.black38),
-                  ),
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: const Offset(0, 0),
+                        ),
+                      ]),
                   child: Column(
                     children: [
                       Row(

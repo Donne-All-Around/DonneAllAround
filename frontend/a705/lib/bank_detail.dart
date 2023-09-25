@@ -130,9 +130,16 @@ class _BankDetailPageState extends State<BankDetailPage> {
                       width: double.infinity,
                       height: 470,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.black38),
-                      ),
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              spreadRadius: 1,
+                              blurRadius: 3,
+                              offset: const Offset(0, 0),
+                            ),
+                          ]),
                       child: Column(
                         children: [
                           Row(
@@ -206,9 +213,16 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                 width: 220,
                                 height: 30,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  border: Border.all(color: Colors.black38),
-                                ),
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ]),
                                 child: Text(
                                   getToday(),
                                   style: const TextStyle(fontSize: 25),),
@@ -264,25 +278,32 @@ class _BankDetailPageState extends State<BankDetailPage> {
                             children: [
                               Expanded(
                                 child: Container(
-                                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
                                   width: double.infinity,
                                   height: 60,
                                   // color: Colors.red,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.black38),
-                                  ),
+                                  decoration:BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 0),
+                                        ),
+                                      ]),
                                   // 드롭다운
                                   child: Row(
                                     children: [
                                       Container(
                                         height: 60,
-                                        width: 182,
+                                        width: MediaQuery.of(context).size.width / 2 - 5,
                                         padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                                         decoration: BoxDecoration(
                                           borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
                                           border: Border.all(color: Colors.transparent),
-                                          color:  Colors.grey[200],
+                                          color:   Color(0xFFF7F7F7),
                                         ),
                                         child: DropdownButtonHideUnderline(
                                           child: DropdownButton(
@@ -317,7 +338,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                         ),
                                       ),
                                       Container(
-                                        width: 140,
+                                        width: MediaQuery.of(context).size.width / 2 - 72,
                                         margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                                         // color: Colors.red,
                                         decoration: BoxDecoration(
@@ -355,21 +376,28 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                   width: double.infinity,
                                   height: 60,
                                   // color: Colors.red,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.black38),
-                                  ),
+                                  decoration:BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 0),
+                                        ),
+                                      ]),
                                   // 드롭다운
                                   child: Row(
                                     children: [
                                       Container(
                                         height: 60,
-                                        width: 182,
+                                        width: MediaQuery.of(context).size.width / 2 - 5,
                                         padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                                         decoration: BoxDecoration(
                                           borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
                                           border: Border.all(color: Colors.transparent),
-                                          color:  Colors.grey[200],
+                                          color:  const Color(0xFFF7F7F7),
                                         ),
                                         child: DropdownButtonHideUnderline(
                                           child: DropdownButton(
@@ -403,33 +431,26 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                           ),
                                         ),
                                       ),
-                                      Expanded(
-                                        child: Container(
-                                          width: double.infinity,
-                                          margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                          // color: Colors.red,
-                                          // decoration: BoxDecoration(
-                                          //   borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
-                                          //   border: Border.all(color: Colors.transparent),
-                                          // ),
-                                          child: TextField(
-                                            keyboardType: TextInputType.number,
-                                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                            controller: _moneyController2,
-                                            decoration: InputDecoration(
-                                              filled: true,
-                                              fillColor: Colors.white,
-                                              border: InputBorder.none,
-                                              enabledBorder: const UnderlineInputBorder(
-                                                  borderSide: BorderSide(color: Colors.transparent)
-                                              ),
-                                              suffixText: ' ${sign2[idx2]}',
+                                      Container(
+                                        width: MediaQuery.of(context).size.width / 2 - 72,
+                                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                        // color: Colors.red,
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
+                                          border: Border.all(color: Colors.transparent),
+                                        ),
+                                        child: TextField(
+                                          controller: _moneyController2,
+                                          decoration:  InputDecoration(
+                                            enabledBorder: const UnderlineInputBorder(
+                                                borderSide: BorderSide(color: Colors.transparent)
                                             ),
-                                            textAlign: TextAlign.end,
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                            suffixText: ' ${sign2[idx2]}',
+                                          ),
+                                          textAlign: TextAlign.end,
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
@@ -448,10 +469,16 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                 height: 50,
                                 // color: Colors.red,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.black38),
-                                  color: Colors.grey[200]
-                                ),
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ]),
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButton(
                                     value: _selectedValue3,
@@ -478,15 +505,22 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                 ),
                               ),
                               Container(
-                                margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                margin: const EdgeInsets.fromLTRB(15, 0, 10, 0),
                                 padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                                 width: 110,
                                 height: 50,
                                 // color: Colors.red,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Colors.black38),
-                                ),
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ]),
                                 child:  TextField(
                                   controller: _percentController,
                                   cursorColor: Colors.black38,
@@ -604,9 +638,16 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                 width: double.infinity,
                 height: 160,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.black38),
-                ),
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        spreadRadius: 1,
+                        blurRadius: 3,
+                        offset: const Offset(0, 0),
+                      ),
+                    ]),
                 child: Column(
                   children: [
                     Row(
