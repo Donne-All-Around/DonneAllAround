@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:kpostal/kpostal.dart';
 
 class DeliveryTransactionPage extends StatefulWidget {
   const DeliveryTransactionPage({super.key});
@@ -13,9 +14,13 @@ class DeliveryTransactionPage extends StatefulWidget {
 
 class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
 
+  String postCode = '-';
+  String address = '-';
+
   var appointmentDate = DateTime.now();
   String _addr = "장소 선택";
   String appt = "";
+  String _addrDetail = "";
 
   Future<Position> getCurrentLocation() async {
     LocationPermission permission = await Geolocator.requestPermission();
@@ -30,6 +35,12 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
     _getUserLocation();
   }
 
+  @override
+  void dispose() {
+    _addrTextEditController.dispose();
+    super.dispose();
+  }
+
   void _getUserLocation() async {
     var position = await GeolocatorPlatform.instance.getCurrentPosition(
         locationSettings: const LocationSettings(
@@ -41,6 +52,8 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
   }
 
   late LatLng currentPosition;
+
+  final _addrTextEditController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -67,10 +80,13 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
             actions: [
               IconButton(
                   onPressed: () {
+                    FocusScope.of(context).unfocus();
                     setState(() {
-                      appt += DateFormat('yy.MM.dd a hh:mm', 'ko').format(appointmentDate);
-                      appt += " ";
+                      // appt += DateFormat('yy.MM.dd a hh:mm', 'ko').format(appointmentDate);
                       appt += _addr;
+                      appt += " ";
+                      appt += _addrDetail;
+                      // appt += "($postCode)";
                     });
                     Navigator.pop(context, appt);
                     Navigator.pop(context, appt);
@@ -234,12 +250,24 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
               ),
               GestureDetector(
                 onTap: () async {
-                  String addr = await Navigator.push(
+                  await Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const SearchAddressPage()));
+                    MaterialPageRoute(
+                      builder: (_) => KpostalView(
+                        useLocalServer: true,
+                        localPort: 8080,
+                        kakaoKey: '0c75e0af40aaa0554ca69939967756ed',
+                        callback: (Kpostal result) {
+                          setState(() {
+                            postCode = result.postCode;
+                            address = result.address;
+                          });
+                        },
+                      ),
+                    ),);
                   setState(() {
-                    _addr = addr;
+                    _addr = "($postCode) ";
+                    _addr += address;
                   });
                 },
                 child: Container(
@@ -272,6 +300,47 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                       const Icon(Icons.chevron_right_rounded),
                     ],
                   ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 3,
+                      offset: const Offset(0, 0),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+
+                      child: TextField(
+                        controller: _addrTextEditController,
+                        decoration: InputDecoration(
+                          hintText: '상세주소를 입력하세요',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                          isDense: true,
+                          enabled: _addr == "장소 선택" ? false : true,
+                        ),
+                        style: const TextStyle(
+                          fontSize: 15,
+                        ),
+                        onChanged: (text) {
+                          _addrDetail = text;
+                        }
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

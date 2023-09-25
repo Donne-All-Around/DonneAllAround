@@ -11,10 +11,10 @@ class SearchAddressPage extends StatefulWidget {
 class _SearchAddressPageState extends State<SearchAddressPage> {
   String postCode = '-';
   String address = '-';
-  String latitude = '-';
-  String longitude = '-';
-  String kakaoLatitude = '-';
-  String kakaoLongitude = '-';
+  // String latitude = '-';
+  // String longitude = '-';
+  // String kakaoLatitude = '-';
+  // String kakaoLongitude = '-';
 
   @override
   Widget build(BuildContext context) {
@@ -35,17 +35,17 @@ class _SearchAddressPageState extends State<SearchAddressPage> {
                   MaterialPageRoute(
                     builder: (_) => KpostalView(
                       useLocalServer: true,
-                      localPort: 1024,
+                      localPort: 8080,
                       kakaoKey: '0c75e0af40aaa0554ca69939967756ed',
                       callback: (Kpostal result) {
                         setState(() {
                           postCode = result.postCode;
                           address = result.address;
-                          latitude = result.latitude.toString();
-                          longitude = result.longitude.toString();
-                          kakaoLatitude = result.kakaoLatitude.toString();
-                          kakaoLongitude =
-                              result.kakaoLongitude.toString();
+                          // latitude = result.latitude.toString();
+                          // longitude = result.longitude.toString();
+                          // kakaoLatitude = result.kakaoLatitude.toString();
+                          // kakaoLongitude =
+                          //     result.kakaoLongitude.toString();
                         });
                       },
                     ),
@@ -70,13 +70,13 @@ class _SearchAddressPageState extends State<SearchAddressPage> {
                   const Text('address',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   Text('result: $address'),
-                  const Text('LatLng', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(
-                      'latitude: $latitude / longitude: $longitude'),
-                  const Text('through KAKAO Geocoder',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(
-                      'latitude: $kakaoLatitude / longitude: $kakaoLongitude'),
+                  // const Text('LatLng', style: TextStyle(fontWeight: FontWeight.bold)),
+                  // Text(
+                  //     'latitude: $latitude / longitude: $longitude'),
+                  // const Text('through KAKAO Geocoder',
+                  //     style: TextStyle(fontWeight: FontWeight.bold)),
+                  // Text(
+                  //     'latitude: $kakaoLatitude / longitude: $kakaoLongitude'),
                 ],
               ),
             ),
