@@ -94,7 +94,7 @@ class _CalculatePageState extends State<CalculatePage> {
                           color: Colors.white,
                           onPressed: () {
                             setState(() {
-                              _iscalculate = true;
+
                             });
                           },
                         ),
@@ -497,6 +497,9 @@ class _CalculatePageState extends State<CalculatePage> {
                             child:IconButton(
                               padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
                               onPressed: (){
+                                setState(() {
+                                  _iscalculate = true;
+                                });
                               },
                               icon: const Icon(Icons.drag_handle_rounded),
                               iconSize: 50,
