@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'trade_like_page.dart';
+import 'sell_record_page.dart';
+import 'buy_record_page.dart';
 import 'withdrawal_page.dart';
 import 'keyword_page.dart';
 import 'exchange_record_page.dart';
-import 'comment_page.dart';
+import 'review_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -193,9 +196,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 10.0),
                   InkWell(
-                    //onTap: () {
-                  //    Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
-                  //  },
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => TradeLikePage()));
+                    },
                     child: Container(
                       height: 35.0,
                       child: const Row(
@@ -217,9 +222,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   InkWell(
-                    // onTap: (){
-                    //  Navigator.push
-                    // },
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SellRecordPage()));
+                      },
                     child: Container(
                       height: 35.0,
                       child: const Row(
@@ -242,9 +249,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     )
                   ),
                   InkWell(
-                  //   onTap: (){
-                  //    Navigator.push
-                  //  },
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => BuyRecordPage()));
+                      },
                     child: Container(
                       height:35.0,
                       child: const Row (
@@ -270,7 +279,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => CommentPage()));
+                        MaterialPageRoute(builder: (context) => const ReviewPage()));
                     },
                     child: Container(
                       height: 35.0,
@@ -357,7 +366,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               margin: const EdgeInsets.all(10.0),
               padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
-              height: 140,
+              height: 105,
               width: 360,
               child:  Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -401,30 +410,30 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                  InkWell(
+                  // InkWell(
                   //  onTap: () {
                   //    Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
                   //  },
-                    child: Container(
-                      height: 35.0,
-                      child: const Row(
-                        children: [
-                          Icon(
-                            Icons.monetization_on,
-                          ),
-                          SizedBox(width: 8.0),
-                          Text(
-                            "환율",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontFamily: "Inter",
-                              fontSize: 15.0,
-                              )
-                          )
-                        ]
-                      ),
-                    ),
-                  )
+                  //   child: Container(
+                  //     height: 35.0,
+                  //     child: const Row(
+                  //       children: [
+                  //         Icon(
+                  //           Icons.monetization_on,
+                  //         ),
+                  //         SizedBox(width: 8.0),
+                  //         Text(
+                  //           "환율",
+                  //           style: TextStyle(
+                  //             color: Colors.black,
+                  //             fontFamily: "Inter",
+                  //             fontSize: 15.0,
+                  //             )
+                  //         )
+                  //       ]
+                  //     ),
+                  //   ),
+                  // )
                 ]
               )
             ),

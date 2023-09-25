@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class CommentPage extends StatefulWidget {
-  const CommentPage({super.key});
+class ReviewPage extends StatefulWidget {
+  const ReviewPage({super.key});
 
   @override
-  State<CommentPage> createState() => CommentPageState();
+  State<ReviewPage> createState() => ReviewPageState();
 }
 
-class CommentPageState extends State<CommentPage> {
+class ReviewPageState extends State<ReviewPage> {
   // 서버에서 임티후기 count 받아오기
   int badCount = 5;
   int goodCount = 11;
