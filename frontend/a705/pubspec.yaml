@@ -98,6 +98,20 @@ flutter:
      - assets/images/USD.png
      - assets/images/KRW.png
      - assets/images/marker.png
+     - assets/images/banklogo/003.png
+     - assets/images/banklogo/004.png
+     - assets/images/banklogo/007.png
+     - assets/images/banklogo/011.png
+     - assets/images/banklogo/020.png
+     - assets/images/banklogo/023.png
+     - assets/images/banklogo/027.png
+     - assets/images/banklogo/031.png
+     - assets/images/banklogo/032.png
+     - assets/images/banklogo/034.png
+     - assets/images/banklogo/045.png
+     - assets/images/banklogo/048.png
+     - assets/images/banklogo/081.png
+     - assets/images/banklogo/088.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
