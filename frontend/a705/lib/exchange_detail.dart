@@ -1,6 +1,7 @@
 import 'package:a705/bank_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
 
 class ExchangeDetailPage extends StatefulWidget {
   const ExchangeDetailPage({super.key});
@@ -10,6 +11,15 @@ class ExchangeDetailPage extends StatefulWidget {
 }
 
 class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
+
+  String getToday() {
+    DateTime now = DateTime.now();
+    DateFormat formatter = DateFormat('yyyy.MM.dd HH:mm');
+    var strToday = formatter.format(now);
+    return strToday;
+  }
+
+
   final _valueList = [
     '미국(달러) USD',
     '일본(엔) JPY',
@@ -228,6 +238,7 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                             width: 320,
                             height: 240,
                             decoration:BoxDecoration(
+                              color: Colors.black.withOpacity(0.81),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(color: Colors.black38),
                             ),
@@ -236,8 +247,14 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Container(
-                                  margin : const EdgeInsets.fromLTRB(0, 0, 5,0),
-                                    child: const Text('2023년 09월 24일 기준')),
+                                  margin : const EdgeInsets.fromLTRB(0, 0, 10,0),
+                                    child:  Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(getToday(),style: const TextStyle(color: Colors.white),),
+                                        const Text(' 기준', style: TextStyle(color: Colors.white),),
+                                      ],
+                                    )),
                                 const LineChartSample2(),
 
                               ],
@@ -487,9 +504,10 @@ class LineChartSample2 extends StatefulWidget {
 
 class _LineChartSample2State extends State<LineChartSample2> {
   List<Color> gradientColors = [
-    const Color(0xff23b6e6),
-    // const Color(0xFFFFD954),
-    const Color(0xff02d39a),
+    // const Color(0xff23b6e6),
+    const Color(0xFFFFD954),
+    const Color(0xFFFFD954),
+    // const Color(0xff02d39a),
   ];
 
 
