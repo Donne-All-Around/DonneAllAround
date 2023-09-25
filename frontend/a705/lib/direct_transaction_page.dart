@@ -135,32 +135,47 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                               ),
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                CircleAvatar(
-                                  backgroundImage:
-                                      AssetImage('assets/images/AUD.png'),
-                                  radius: 8,
+                                Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage: AssetImage(
+                                              'assets/images/AUD.png'),
+                                          radius: 8,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          '50 AUD',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 15),
+                                  ],
                                 ),
-                                SizedBox(width: 5),
-                                Text(
-                                  '50 AUD',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blueAccent),
+                                Column(
+                                  children: [
+                                    SizedBox(height: 15),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          '42,000원',
+                                          style: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(width: 20),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  '42,000원',
-                                  style: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(width: 20),
                               ],
                             ),
                           ],

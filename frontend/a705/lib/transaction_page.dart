@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:intl/intl.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});
@@ -67,6 +66,8 @@ class _TransactionPageState extends State<TransactionPage> {
 
     setState(() {
       currentPosition = LatLng(position.latitude, position.longitude);
+      print("currentPosition: ${currentPosition.longitude}");
+
     });
   }
 
@@ -425,6 +426,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       String addr = await Navigator.push(
                           context,
                           MaterialPageRoute(
+                              // builder: (context) => ChooseLocationPage(currentPosition.latitude, currentPosition.longitude)));
                               builder: (context) => ChooseLocationPage(currentPosition.latitude, currentPosition.longitude)));
                       setState(() {
                         _addr = addr;
