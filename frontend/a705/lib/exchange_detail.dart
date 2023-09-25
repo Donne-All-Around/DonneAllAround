@@ -90,70 +90,72 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                     children: [
                       Row(
                         children: [
-                          Container(
-                            width: 358,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20)),
-                              border: Border.all(color: Colors.transparent),
-                              color: const Color(0xFFFFD954),
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  margin:
-                                      const EdgeInsets.fromLTRB(10, 10, 30, 10),
-                                  width: 180,
-                                  height: 55,
-                                  // color: Colors.red,
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton(
-                                      value: _selectedValue,
-                                      items: _valueList.map(
-                                        (value) {
-                                          return DropdownMenuItem(
-                                            value: value,
-                                            child: Row(
-                                              children: [
-                                                CircleAvatar(
-                                                  backgroundImage: AssetImage(
-                                                      'assets/images/${currency[_valueList.indexOf(value)]}.png'),
-                                                  radius: 10,
-                                                ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                          Text(value),
-                                          ],
-                                            ),
-                                          );
+                          Expanded(
+                            child: Container(
+                              width: double.infinity,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20)),
+                                border: Border.all(color: Colors.transparent),
+                                color: const Color(0xFFFFD954),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    margin:
+                                        const EdgeInsets.fromLTRB(10, 10, 30, 10),
+                                    width: 180,
+                                    height: 55,
+                                    // color: Colors.red,
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton(
+                                        value: _selectedValue,
+                                        items: _valueList.map(
+                                          (value) {
+                                            return DropdownMenuItem(
+                                              value: value,
+                                              child: Row(
+                                                children: [
+                                                  CircleAvatar(
+                                                    backgroundImage: AssetImage(
+                                                        'assets/images/${currency[_valueList.indexOf(value)]}.png'),
+                                                    radius: 10,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                            Text(value),
+                                            ],
+                                              ),
+                                            );
+                                          },
+                                        ).toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _selectedValue = value!;
+                                          });
                                         },
-                                      ).toList(),
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _selectedValue = value!;
-                                        });
-                                      },
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Container(
-                                  width: 110,
-                                  height: 50,
-                                  // color: Colors.red,
-                                  margin:
-                                      const EdgeInsets.fromLTRB(0, 15, 10, 10),
-                                  child: const Text(
-                                    ' 1,300.00원',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.red),
+                                  Container(
+                                    width: 110,
+                                    height: 50,
+                                    // color: Colors.red,
+                                    margin:
+                                        const EdgeInsets.fromLTRB(0, 15, 10, 10),
+                                    child: const Text(
+                                      ' 1,300.00원',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.red),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -333,157 +335,159 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
       itemBuilder: (context, index) {
         return Row(
           children: [
-            GestureDetector(
-              onTap: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const BankDetailPage()),
-                );
-              },
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                width: 370,
-                height: 160,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.black38),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(
-                              20, 10, 0, 0),
-                          width: 200,
-                          // color: Colors.red,
-                          child: Row(
-                            children: [
-                              // CircleAvatar(
-                              //   backgroundImage:
-                              //   AssetImage('assets/images/${currency1[index]}.png'),
-                              //   radius: 10,
-                              // ),
-                              const SizedBox(width: 10),
-                              Text( _valueList1[index],
-                                style: const TextStyle(fontSize: 16),),
-                            ],
-                          ),),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(
-                              0, 10, 40, 10),
-                          child: const Text(
-                            '상세 환율              수수료',
-                            style: TextStyle(color: Colors.grey),),
-                        )
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(
-                              20, 0, 20, 10),
-                          // color: Colors.red,
-                          child: const Column(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text('현찰 살 때'),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text('현찰 팔 때'),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text('송금 보낼 때'),
-                                ],
-                              )
-                            ],
+            Expanded(
+              child: GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const BankDetailPage()),
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                  width: 370,
+                  height: 160,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.black38),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(
+                                20, 10, 0, 0),
+                            width: 200,
+                            // color: Colors.red,
+                            child: Row(
+                              children: [
+                                // CircleAvatar(
+                                //   backgroundImage:
+                                //   AssetImage('assets/images/${currency1[index]}.png'),
+                                //   radius: 10,
+                                // ),
+                                const SizedBox(width: 10),
+                                Text( _valueList1[index],
+                                  style: const TextStyle(fontSize: 16),),
+                              ],
+                            ),),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(
+                                0, 10, 40, 10),
+                            child: const Text(
+                              '상세 환율              수수료',
+                              style: TextStyle(color: Colors.grey),),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(
+                                20, 0, 20, 10),
+                            // color: Colors.red,
+                            child: const Column(
+                              crossAxisAlignment: CrossAxisAlignment
+                                  .start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text('현찰 살 때'),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text('현찰 팔 때'),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text('송금 보낼 때'),
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 50,),
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(
-                              10, 0, 30, 10),
-                          // color: Colors.red,
-                          child: const Column(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text('1,354.29원',
-                                    style: TextStyle(
+                          const SizedBox(width: 50,),
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(
+                                10, 0, 30, 10),
+                            // color: Colors.red,
+                            child: const Column(
+                              crossAxisAlignment: CrossAxisAlignment
+                                  .start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text('1,354.29원',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text('1,354.29원',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text('1,354.29원',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(
+                                10, 0, 0, 10),
+                            // color: Colors.red,
+                            child: const Column(
+                              crossAxisAlignment: CrossAxisAlignment
+                                  .start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text('1.75%', style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16),),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text('1,354.29원',
-                                    style: TextStyle(
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text('1.75%', style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16),),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text('1,354.29원',
-                                    style: TextStyle(
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text('1.75%', style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16),),
-                                ],
-                              )
-                            ],
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.fromLTRB(
-                              10, 0, 0, 10),
-                          // color: Colors.red,
-                          child: const Column(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text('1.75%', style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text('1.75%', style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text('1.75%', style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 10,),
-                      ],
-                    ),
-                  ],
+                          const SizedBox(height: 10,),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

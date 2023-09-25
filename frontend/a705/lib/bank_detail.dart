@@ -418,7 +418,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                             controller: _moneyController2,
                                             decoration: InputDecoration(
                                               filled: true,
-                                              // fillColor: Colors.white,
+                                              fillColor: Colors.white,
                                               border: InputBorder.none,
                                               enabledBorder: const UnderlineInputBorder(
                                                   borderSide: BorderSide(color: Colors.transparent)
