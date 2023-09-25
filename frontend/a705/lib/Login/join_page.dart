@@ -45,7 +45,7 @@ class _JoinPageState extends State<JoinPage> {
           ),
           body: SingleChildScrollView(
             child: Container(
-              margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+              margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
               child: Column(
                 children: [
               // 멘트

@@ -114,7 +114,7 @@ class _CertificationPageState extends State<CertificationPage> {
           ),
           body: SingleChildScrollView(
             child: Container(
-              margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+              margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
               child: Column(
                 children: [
                   // const SizedBox(
@@ -168,6 +168,7 @@ class _CertificationPageState extends State<CertificationPage> {
                           // borderSide: BorderSide(color: Colors.black),
                         ),
                         hintText: '휴대폰 번호 ( - 없이 숫자만 입력)',
+                        hintStyle: const TextStyle(fontSize: 14),
                         labelStyle: const TextStyle(
                           fontSize: 20,
                           // textAlign: TextAlign.center,
