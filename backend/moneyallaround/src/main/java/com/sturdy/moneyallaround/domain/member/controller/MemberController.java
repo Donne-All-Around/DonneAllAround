@@ -1,18 +1,15 @@
-package com.sturdy.moneyallaround.member.controller;
+package com.sturdy.moneyallaround.domain.member.controller;
 
 import com.sturdy.moneyallaround.common.ApiResponse;
-import com.sturdy.moneyallaround.member.dto.request.CheckNicknameRequest;
-import com.sturdy.moneyallaround.member.dto.request.LogoutRequest;
-import com.sturdy.moneyallaround.member.dto.request.SignUpRequest;
-import com.sturdy.moneyallaround.member.dto.request.UpdateProfileRequest;
-import com.sturdy.moneyallaround.member.service.MemberService;
-import com.sturdy.moneyallaround.member.service.RefreshTokenService;
+import com.sturdy.moneyallaround.domain.member.dto.request.CheckNicknameRequest;
+import com.sturdy.moneyallaround.domain.member.dto.request.SignUpRequest;
+import com.sturdy.moneyallaround.domain.member.service.MemberService;
+import com.sturdy.moneyallaround.domain.member.service.RefreshTokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j

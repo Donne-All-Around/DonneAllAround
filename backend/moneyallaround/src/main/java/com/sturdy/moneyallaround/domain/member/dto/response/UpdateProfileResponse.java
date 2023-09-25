@@ -1,6 +1,6 @@
-package com.sturdy.moneyallaround.member.dto.response;
+package com.sturdy.moneyallaround.domain.member.dto.response;
 
-import com.sturdy.moneyallaround.member.entity.Member;
+import com.sturdy.moneyallaround.domain.member.entity.Member;
 
 public record UpdateProfileResponse(
         String nickname,

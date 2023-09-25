@@ -1,4 +1,4 @@
-package com.sturdy.moneyallaround.member.dto.request;
+package com.sturdy.moneyallaround.domain.member.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 

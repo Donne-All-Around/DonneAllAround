@@ -1,4 +1,4 @@
-package com.sturdy.moneyallaround.member.dto.response;
+package com.sturdy.moneyallaround.domain.member.dto.response;
 
 import com.sturdy.moneyallaround.config.security.jwt.TokenInfo;
 

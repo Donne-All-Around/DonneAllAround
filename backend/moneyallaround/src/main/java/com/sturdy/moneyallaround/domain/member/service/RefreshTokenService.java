@@ -1,4 +1,4 @@
-package com.sturdy.moneyallaround.member.service;
+package com.sturdy.moneyallaround.domain.member.service;
 
 import com.sturdy.moneyallaround.Exception.model.TokenNotFoundException;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.sturdy.moneyallaround.member.repository;
+package com.sturdy.moneyallaround.domain.member.repository;
 
 import com.sturdy.moneyallaround.config.security.jwt.RefreshToken;
 import org.springframework.data.annotation.Id;
