@@ -102,6 +102,8 @@ public class TradeController {
 
     @PostMapping("/create")
     public ApiResponse<TradeDetailResponseDto> createTrade(@RequestBody TradeRequestDto tradeRequestDto) {
+        log.info("거래 글 생성 tradeRequestDto = {}", tradeRequestDto);
+
         Long memberId = 1L;
         Trade trade = tradeService.createTrade(tradeRequestDto, memberId);
 

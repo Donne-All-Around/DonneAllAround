@@ -18,7 +18,7 @@ public class TradeImage {
     private String url;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trade_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "trade_id", nullable = false)
     private Trade trade;
 
     public TradeImage(String url, Trade trade) {

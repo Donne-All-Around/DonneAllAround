@@ -28,8 +28,12 @@ public class TradeReviewService {
         memberService.updateRating(tradeReviewRequestDto.revieweeId(), tradeReviewRequestDto.score());
     }
 
-    public Slice<TradeReview> findTradeReview(Long reviweeId, Long lastTradeId, Pageable pageable) {
-        return tradeReviewRepository.findByReviewee(memberService.findById(reviweeId), lastTradeId, pageable);
+    public Slice<TradeReview> findSellReview(Long reviweeId, Long lastTradeId, Pageable pageable) {
+        return tradeReviewRepository.findSellReviewByReviewee(memberService.findById(reviweeId), lastTradeId, pageable);
+    }
+
+    public Slice<TradeReview> findBuyReview(Long reviweeId, Long lastTradeId, Pageable pageable) {
+        return tradeReviewRepository.findBuyReviewByReviewee(memberService.findById(reviweeId), lastTradeId, pageable);
     }
 
     public Map<String, Integer> countScore(Long revieweeId) {

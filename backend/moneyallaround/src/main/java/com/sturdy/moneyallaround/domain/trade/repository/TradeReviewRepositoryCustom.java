@@ -6,5 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 public interface TradeReviewRepositoryCustom {
-    Slice<TradeReview> findByReviewee(Member reviewee, Long lastTradeId, Pageable pageable);
+    Slice<TradeReview> findBuyReviewByReviewee(Member reviewee, Long lastTradeId, Pageable pageable);
+    Slice<TradeReview> findSellReviewByReviewee(Member reviewee, Long lastTradeId, Pageable pageable);
 }

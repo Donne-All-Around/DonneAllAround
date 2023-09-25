@@ -122,10 +122,10 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
     }
 
     private BooleanExpression eqPreferredTradeLocation(String preferredTradeCountry, String preferredTradeCity, String preferredTradeDistrict, String preferredTradeTown) {
-        BooleanExpression countryExpression = trade.preferredTradeCountry.eq(preferredTradeCountry);
-        BooleanExpression cityExpression = trade.preferredTradeCity.eq(preferredTradeCity);
-        BooleanExpression districtExpression = trade.preferredTradeDistrict.eq(preferredTradeDistrict);
-        BooleanExpression townExpression = trade.preferredTradeTown.eq(preferredTradeTown);
+        BooleanExpression countryExpression = preferredTradeCountry == null ? null : trade.preferredTradeCountry.eq(preferredTradeCountry);
+        BooleanExpression cityExpression = preferredTradeCity == null ? null : trade.preferredTradeCity.eq(preferredTradeCity);
+        BooleanExpression districtExpression = preferredTradeDistrict == null ? null : trade.preferredTradeDistrict.eq(preferredTradeDistrict);
+        BooleanExpression townExpression = preferredTradeTown == null ? null : trade.preferredTradeTown.eq(preferredTradeTown);
 
         return Expressions.allOf(countryExpression, cityExpression, districtExpression, townExpression);
     }

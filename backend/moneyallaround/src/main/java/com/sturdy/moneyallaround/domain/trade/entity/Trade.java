@@ -99,9 +99,6 @@ public class Trade extends BaseEntity {
     @Column(nullable = true)
     private String trackingNumber;
 
-    @Column(nullable = false)
-    private Boolean isCompleted;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
     private Member seller;
@@ -134,7 +131,6 @@ public class Trade extends BaseEntity {
         this.preferredTradeTown = preferredTradeTown;
         type = TradeType.DIRECT;
         isDeleted = false;
-        isCompleted = false;
         this.seller = seller;
     }
 
@@ -210,5 +206,13 @@ public class Trade extends BaseEntity {
 
     public void complete() {
         status = TradeStatus.COMPLETE;
+    }
+
+    public void putImage(TradeImage tradeImage) {
+        this.imageList.add(tradeImage);
+    }
+
+    public void clearImageList() {
+        this.imageList.clear();
     }
 }

@@ -4,6 +4,7 @@ import com.sturdy.moneyallaround.domain.keyword.service.KeywordNotificationServi
 import com.sturdy.moneyallaround.domain.member.service.MemberService;
 import com.sturdy.moneyallaround.domain.trade.dto.request.*;
 import com.sturdy.moneyallaround.domain.trade.entity.Trade;
+import com.sturdy.moneyallaround.domain.trade.entity.TradeImage;
 import com.sturdy.moneyallaround.domain.trade.repository.TradeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -53,10 +54,10 @@ public class TradeService {
 
     // 거래 글 생성
     @Transactional
-    public Trade createTrade(TradeRequestDto tradeCreateRequestDto, Long memberId) {
-        Trade trade =  tradeRepository.save(tradeCreateRequestDto.toTrade(memberService.findById(memberId)));
-        tradeImageService.createTradeImageList(tradeCreateRequestDto.imageUrlList(), trade);
-        createKeywordNotificationByTrade(trade);
+    public Trade createTrade(TradeRequestDto tradeRequestDto, Long memberId) {
+        Trade trade =  tradeRepository.save(tradeRequestDto.toTrade(memberService.findById(memberId)));
+        tradeRequestDto.imageUrlList().forEach(imageUrl -> trade.putImage(new TradeImage(imageUrl, trade)));
+        //createKeywordNotificationByTrade(trade);
         return findTrade(trade.getId());
     }
 
@@ -65,8 +66,8 @@ public class TradeService {
     public Trade updateTrade(Long tradeId, TradeRequestDto tradeRequestDto) {
         tradeRepository.findById(tradeId)
                 .ifPresentOrElse(trade -> {
-                            tradeImageService.deleteTradeImageByTradeId(tradeId);
-                            tradeImageService.createTradeImageList(tradeRequestDto.imageUrlList(), trade);
+                            trade.clearImageList();
+                            tradeRequestDto.imageUrlList().forEach(imageUrl -> trade.getImageList().add(new TradeImage(imageUrl, trade)));
                             trade.update(tradeRequestDto.title(), tradeRequestDto.description(), tradeRequestDto.thumbnailImageUrl(), tradeRequestDto.countryCode(), tradeRequestDto.foreignCurrencyAmount(), tradeRequestDto.koreanWonAmount(), tradeRequestDto.latitude(), tradeRequestDto.longitude(), tradeRequestDto.preferredTradeCountry(), tradeRequestDto.preferredTradeCity(), tradeRequestDto.preferredTradeDistrict(), tradeRequestDto.preferredTradeTown());
                         },
                         () -> { throw new EntityNotFoundException(); });

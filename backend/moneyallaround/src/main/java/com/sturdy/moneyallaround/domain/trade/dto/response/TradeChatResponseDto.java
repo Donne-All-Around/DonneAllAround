@@ -28,7 +28,6 @@ public record TradeChatResponseDto(@NotNull Long id,
                                    String deliveryAddress,
                                    String deliveryAddressDetail,
                                    String trackingNumber,
-                                   @NotNull Boolean isCompleted,
                                    @NotNull LocalDateTime createTime) {
     public static TradeChatResponseDto from(Trade trade) {
         return TradeChatResponseDto.builder()
@@ -51,7 +50,6 @@ public record TradeChatResponseDto(@NotNull Long id,
                 .deliveryAddress(trade.getDeliveryAddress())
                 .deliveryAddressDetail(trade.getDeliveryAddressDetail())
                 .trackingNumber(trade.getTrackingNumber())
-                .isCompleted(trade.getIsCompleted())
                 .createTime(trade.getCreateTime())
                 .build();
     }

@@ -2,6 +2,7 @@ package com.sturdy.moneyallaround.domain.trade.dto.request;
 
 import com.sturdy.moneyallaround.domain.member.entity.Member;
 import com.sturdy.moneyallaround.domain.trade.entity.Trade;
+import com.sturdy.moneyallaround.domain.trade.entity.TradeImage;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;

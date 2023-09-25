@@ -30,10 +30,20 @@ public class TradeReviewController {
         return ApiResponse.success("거래 후기 등록 성공", null);
     }
 
-    @GetMapping
-    public ApiResponse<Map<String, Object>> tradeReviewList(@RequestParam Long lastTradeReviewId, @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
+    @GetMapping("/list/sell")
+    public ApiResponse<Map<String, Object>> tradeSellReviewList(@RequestParam Long lastTradeReviewId, @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
         Long revieweeId = 1L;
-        Slice<TradeReview> slices = tradeReviewService.findTradeReview(revieweeId, lastTradeReviewId, pageable);
+        Slice<TradeReview> slices = tradeReviewService.findSellReview(revieweeId, lastTradeReviewId, pageable);
+        Map<String, Object> response = new HashMap<>();
+        response.put("tradeReviewList", slices.stream().map(TradeReviewResponseDto::from).toList());
+        response.put("last", slices.isLast());
+        return ApiResponse.success("나의 후기 목록 조회 성공", response);
+    }
+
+    @GetMapping("/list/buy")
+    public ApiResponse<Map<String, Object>> tradeBuyReviewList(@RequestParam Long lastTradeReviewId, @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
+        Long revieweeId = 1L;
+        Slice<TradeReview> slices = tradeReviewService.findBuyReview(revieweeId, lastTradeReviewId, pageable);
         Map<String, Object> response = new HashMap<>();
         response.put("tradeReviewList", slices.stream().map(TradeReviewResponseDto::from).toList());
         response.put("last", slices.isLast());
