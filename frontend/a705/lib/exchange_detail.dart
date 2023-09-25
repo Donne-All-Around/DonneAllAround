@@ -232,7 +232,16 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                               border: Border.all(color: Colors.black38),
                             ),
                             // 그래프 UI
-                            child: const LineChartSample2(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Container(
+                                  margin : const EdgeInsets.fromLTRB(0, 0, 5,0),
+                                    child: const Text('2023년 09월 24일 기준')),
+                                const LineChartSample2(),
+
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -479,10 +488,10 @@ class LineChartSample2 extends StatefulWidget {
 class _LineChartSample2State extends State<LineChartSample2> {
   List<Color> gradientColors = [
     const Color(0xff23b6e6),
+    // const Color(0xFFFFD954),
     const Color(0xff02d39a),
   ];
 
-  bool showAvg = false;
 
   @override
   Widget build(BuildContext context) {
@@ -533,23 +542,17 @@ class _LineChartSample2State extends State<LineChartSample2> {
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
-      fontSize: 10,
+      fontSize: 14,
     );
     String text;
     switch (value.toInt()) {
-      case 1:
+      case 1310:
         text = '1,310';
         break;
-      case 5:
-        text = '1,320';
-        break;
-      case 10:
+      case 1330:
         text = '1,330';
         break;
-      case 20:
-        text = '1,340';
-        break;
-      case 30:
+      case 1350:
         text = '1,350';
         break;
       default:
@@ -561,11 +564,12 @@ class _LineChartSample2State extends State<LineChartSample2> {
 
   LineChartData mainData() {
     return LineChartData(
+      // backgroundColor: Colors.black,
       gridData: FlGridData(
-        show: true,
+        show: false,
         drawVerticalLine: true,
-        horizontalInterval: 1,
-        verticalInterval: 1,
+        horizontalInterval: 10,
+        verticalInterval: 10,
         getDrawingHorizontalLine: (value) {
           return const FlLine(
             color: Colors.green,
@@ -589,7 +593,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
         ),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
-            showTitles: true,
+            showTitles: false,
             reservedSize: 29,
             interval: 1,
             getTitlesWidget: bottomTitleWidgets,
@@ -597,15 +601,15 @@ class _LineChartSample2State extends State<LineChartSample2> {
         ),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
-            showTitles: true,
-            interval: 10,
+            showTitles: false,
+            interval: 1,
             getTitlesWidget: leftTitleWidgets,
-            reservedSize: 43,
+            reservedSize: 42,
           ),
         ),
       ),
       borderData: FlBorderData(
-        show: true,
+        show: false,
         border: Border.all(color: const Color(0xff37434d)),
       ),
       minX: 0,
@@ -657,7 +661,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
             show: false,
           ),
           belowBarData: BarAreaData(
-            show: true,
+            show: false,
             gradient: LinearGradient(
               colors: gradientColors
                   .map((color) => color.withOpacity(0.3))
