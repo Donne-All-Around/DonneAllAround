@@ -80,7 +80,7 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                 Container(
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   width: double.infinity,
-                  height: 380,
+                  height: 400,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.yellow[100],
@@ -108,10 +108,11 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                 color: const Color(0xFFFFD954),
                               ),
                               child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     margin:
-                                        const EdgeInsets.fromLTRB(10, 10, 30, 10),
+                                        const EdgeInsets.fromLTRB(10, 10, 0, 10),
                                     width: 180,
                                     height: 55,
                                     // color: Colors.red,
@@ -242,30 +243,33 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            width: 320,
-                            height: 240,
-                            decoration:BoxDecoration(
-                              color: Colors.black.withOpacity(0.81),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.black38),
-                            ),
-                            // 그래프 UI
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Container(
-                                  margin : const EdgeInsets.fromLTRB(0, 0, 10,0),
-                                    child:  Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text(getToday(),style: const TextStyle(color: Colors.white),),
-                                        const Text(' 기준', style: TextStyle(color: Colors.white),),
-                                      ],
-                                    )),
-                                const LineChartSample2(),
+                          Expanded(
+                            child: Container(
+                              margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              width: double.infinity,
+                              height: 240,
+                              decoration:BoxDecoration(
+                                color: Colors.black.withOpacity(0.81),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: Colors.black38),
+                              ),
+                              // 그래프 UI
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    margin : const EdgeInsets.fromLTRB(0, 0, 10,0),
+                                      child:  Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Text(getToday(),style: const TextStyle(color: Colors.white),),
+                                          const Text(' 기준', style: TextStyle(color: Colors.white),),
+                                        ],
+                                      )),
+                                  const LineChartSample2(),
 
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ],

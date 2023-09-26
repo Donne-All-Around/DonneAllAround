@@ -209,12 +209,11 @@ class _BankDetailPageState extends State<BankDetailPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                margin: const EdgeInsets.fromLTRB(10, 10,30, 10),
-                                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                                 width: 220,
                                 height: 30,
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
+                                    borderRadius: BorderRadius.circular(10),
                                     color: Colors.white,
                                     boxShadow: [
                                       BoxShadow(
@@ -226,7 +225,8 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                     ]),
                                 child: Text(
                                   getToday(),
-                                  style: const TextStyle(fontSize: 25),),
+                                  style: const TextStyle(fontSize: 22),
+                                textAlign: TextAlign.center,),
                               ),
 
                               IconButton(
