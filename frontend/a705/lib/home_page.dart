@@ -548,7 +548,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                       Text(
                                         '42,000원',
                                         style: TextStyle(
-                                            fontSize: 15,
+                                            fontSize: 17,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Row(
