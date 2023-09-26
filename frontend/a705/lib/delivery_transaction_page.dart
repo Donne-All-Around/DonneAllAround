@@ -227,11 +227,20 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                     ),
                   ],
                 ),
-                child: Row(
+                child: const Row(
                   children: [
-                    Text(
-                      DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko').format(appointmentDate),
-                      style: const TextStyle(fontSize: 16),
+                    Expanded(
+                      child: TextField(
+                          decoration: InputDecoration(
+                            hintText: '계좌번호를 입력하세요',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                            isDense: true,
+                          ),
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                      ),
                     ),
                   ],
                 ),
