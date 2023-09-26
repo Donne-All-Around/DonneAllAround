@@ -63,7 +63,8 @@ class DatabaseMethods {
     String chatRoomId,
     String messageId,
     Map<String, dynamic> messageInfoMap,
-    String selectOtherUser,
+    String otherRole,
+    String myRole,
     Map<String, dynamic> sellerInfoMap,
     Map<String, dynamic> buyerInfoMap,
   ) async {
@@ -73,7 +74,7 @@ class DatabaseMethods {
 
     // "userRole"
     DocumentReference userDocRef =
-        chatRoomDocRef.collection("userRole").doc(selectOtherUser);
+        chatRoomDocRef.collection("userRole").doc(otherRole);
     final snapshot = await userDocRef.get();
 
     // 처음 userRole 생성
@@ -100,11 +101,25 @@ class DatabaseMethods {
           .doc("seller")
           .set(setSellerInfoMap);
     }
+
+
       print(sellerInfoMap['userName']);
 
-      selectOtherUser == "seller"
+    otherRole == "seller"
           ? await userDocRef.update(sellerInfoMap)
           : await userDocRef.update(buyerInfoMap);
+      final updatedFiled = {
+        'isExit':false,
+      };
+    DocumentReference myDocRef =
+    chatRoomDocRef.collection("userRole").doc(myRole);
+
+    try {
+      await myDocRef.update(updatedFiled);
+      print('업데이트 성공');
+    } catch (e) {
+      print('업데이트 실패: $e');
+    }
 
     // user에 chatlist 저장
 
@@ -264,10 +279,10 @@ class DatabaseMethods {
       final collection = db.collection('user');
 
       // doc 가져오기
-      final docs = await collection.doc('098765').collection('chatroomList').get();
+      final docs = await collection.doc(myUserId).collection('chatroomList').get();
 
       // doc의 id를 배열에 저장
-      final myList = docs.docs.map((doc) => doc.id).toList();
+      myList = docs.docs.map((doc) => doc.id).toList();
 
       // id 출력
       print(myList);
@@ -277,5 +292,26 @@ class DatabaseMethods {
       print('Firestore 데이터 가져오기 오류: $e');
     }
     return myList;
+  }
+
+
+  // 나가기
+  setExit(String chatroomId, String myRole) async {
+
+    final documentReference = FirebaseFirestore.instance
+        .collection("chatrooms")
+        .doc(chatroomId)
+        .collection("userRole")
+        .doc(myRole);
+    // 업데이트할 필드와 값을 지정합니다.
+    final updatedField = {
+      'isExit' : true,
+    };
+    try {
+      await documentReference.update(updatedField);
+      print('업데이트 성공');
+    } catch (e) {
+      print('업데이트 실패: $e');
+    }
   }
 }

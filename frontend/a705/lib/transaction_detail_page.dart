@@ -241,16 +241,18 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
 
-                                      return const ChattingDetailPage(
+                                      return  ChattingDetailPage(
                                           transactionInfoMap :{
                                             "transactionId" : "board2",
                                             "transactionTitle" : "싸게싸게팔아요",
                                             "seller" : "신짱구",
                                             "sellerId" : "098765",
-                                            "country": "USD",
+                                            "countryCode": "USD",
                                             "transactionUrl" : "",
                                             "koreanWonAmount" : 50000,
                                             "foreignCurrencyAmount" : 5000,
+                                            "type": "DIRECT",
+                                            "status": "WAIT"
                                           }
                                       );
                                     },

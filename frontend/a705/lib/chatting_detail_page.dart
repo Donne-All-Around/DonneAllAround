@@ -7,36 +7,46 @@ import 'package:intl/intl.dart';
 import 'package:random_string/random_string.dart';
 
 class ChattingDetailPage extends StatefulWidget {
-  // const ChattingDetailPage({super.key, required Map<String, dynamic> transactionInfoMap});
   final Map<String, dynamic>? transactionInfoMap;
+  final Map<String, dynamic>? chatRoomDetailInfoMap;
 
   const ChattingDetailPage({
     Key? key,
     this.transactionInfoMap,
+    this.chatRoomDetailInfoMap,
   }) : super(key: key);
 
   @override
   State<ChattingDetailPage> createState() => _ChattingDetailPageState();
 }
 
-
+enum InfoType {
+  ChatRoomDetailInfo,
+  TransactionInfo,
+  None,
+}
 
 class _ChattingDetailPageState extends State<ChattingDetailPage> {
   ScrollController _scrollController = ScrollController();
   bool isVisible = false;
   TextEditingController messageController = new TextEditingController();
-
-  String? myUserName, // 내 닉네임
-      myUserId, // 내 아이디
-      myProfilePic, // 내 프로필
-      messageId, // 메시지 아이디
-      chatRoomId, // 채팅방 아이디
-      otherUserName, // 상대방 닉네임
-      seller, // 판매자 닉네임
-      sellerId, // 판매자 아이디
-      buyer, // 구매자 닉네임
-      buyerId, // 구매자 아이디
-      transactionId; // 거래글 아이디
+  String? messageId; // 메시지 아이디
+  String myUserName = "", // 내 닉네임
+      myUserId = "", // 내 아이디
+      myProfilePic = "", // 내 프로필
+      chatRoomId = "", // 채팅방 아이디
+      otherUserName = "", // 상대방 닉네임
+      seller = "", // 판매자 닉네임
+      sellerId = "", // 판매자 아이디
+      buyer = "", // 구매자 닉네임
+      buyerId = "", // 구매자 아이디
+      transactionId = "", // 거래글 아이디
+      transactionTitle = "", // 거래글 제목
+      countryCode = "", // 거래글 통화 국가
+      transactionUrl = "", // 거래글 썸네일
+      type = "", // 거래 방법
+      status = ""; // 거래 상태
+  int foreignCurrencyAmount=0, koreanWonAmount=0;
   String _appt = "약속 잡기";
   Stream? messageStream;
   int batchSize = 10; // 한 번에 가져올 메시지 수
@@ -44,7 +54,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   DocumentSnapshot? lastVisibleMessage; // 마지막으로 로드된 메시지를 추적하는 데 사용됩니다.
   bool reachedTop = false; // 스크롤이 맨 위에 도달했는지 여부
   bool? isSellerExit, isBuyerExit;
-
 
   // 채팅방 정보 가져오기
   getUserInfo() async {
@@ -54,45 +63,15 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     // 예시 끝
     setState(() {});
   }
-  getTransactionInfo() async {
-    seller = "쏘영이";
-    sellerId = "123456";
-    chatRoomId = "board1_쏘영이_이병건";
-    transactionId = "board1";
-
-    print('거래글 -> 채팅방: ${widget.transactionInfoMap}');
-    // 거래글 -> 채팅방
-    if(widget.transactionInfoMap != null){
-      // 새로 만들 시, 상대방은 seller 사용자는 buyer
-      seller = widget.transactionInfoMap?['seller'];
-      sellerId = widget.transactionInfoMap?['sellerId'];
-      buyer = myUserName;
-      buyerId = myUserId;
-      transactionId = widget.transactionInfoMap?['transactionId'];
-      chatRoomId = "${transactionId!}_${sellerId!}_${buyerId!}";
-      otherUserName = seller;
-      print(seller);
-
-      Map<String, dynamic> chatRoomListInfoMap = {
-        "sellerId" : sellerId,
-        "buyerId" : buyerId,
-      };
-
-      print("user에 chatlist update: ${transactionId}");
-      DatabaseMethods().setUserChatList(sellerId!, buyerId!, chatRoomId!, chatRoomListInfoMap);
-    }
-    // 채팅목록 -> 채팅방
-    else{
-      // 거래글 http api
-
-    }
-    setState(() {});
-  }
 
   // 로드
   ontheload() async {
     await getUserInfo(); // 내 정보 가져오기
-    await getTransactionInfo(); // 거래글 정보 가져오기
+    // transactionInfoMap이 있거나 chatRoomDetailInfoMap이 있는 경우, 초기화합니다.
+    if (widget.transactionInfoMap != null ||
+        widget.chatRoomDetailInfoMap != null) {
+      _initializeInfo(widget.transactionInfoMap, widget.chatRoomDetailInfoMap);
+    }
     await getAndSetMessages(); // 채팅 내역 가져오기
     setState(() {});
   }
@@ -102,6 +81,90 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   void initState() {
     super.initState();
     ontheload();
+  }
+
+  void _initializeInfo(
+    Map<String, dynamic>? transactionInfoMap,
+    Map<String, dynamic>? chatRoomDetailInfoMap,
+  ) {
+    var infoType = InfoType.None;
+    if (chatRoomDetailInfoMap != null) {
+      infoType = InfoType.ChatRoomDetailInfo;
+    } else if (transactionInfoMap != null) {
+      infoType = InfoType.TransactionInfo;
+    }
+
+    switch (infoType) {
+      case InfoType.ChatRoomDetailInfo:
+        // ChatRoomDetailInfo를 초기화합니다.
+        chatRoomId = widget.chatRoomDetailInfoMap?['chatroomId'] ?? "";
+        print("chatRoomId: $chatRoomId");
+        List<String> chatRoomInfoList = chatRoomId!.split("_");
+        // 각 부분을 출력합니다.
+        for (String part in chatRoomInfoList) {print(part);}
+
+        // 채팅 참여자 정보 설정하기
+        transactionId = chatRoomInfoList[0];
+        sellerId = chatRoomInfoList[1];
+        buyerId = chatRoomInfoList[2];
+        otherUserId = widget.chatRoomDetailInfoMap?['otherUserId'] ?? "";
+        otherUserName = widget.chatRoomDetailInfoMap?['otherUserName'] ?? "";
+        otherRole = widget.chatRoomDetailInfoMap?['otherRole'] ?? "";
+        myRole = widget.chatRoomDetailInfoMap?['myRole'] ?? "";
+
+        if(otherRole=="seller"){
+          seller = otherUserName;
+          buyer = myUserName;
+        }else if(otherRole=="buyer"){
+          seller = myUserName;
+          buyer = otherUserName;
+        }
+
+
+        // 거래글 정보 가져오기
+
+
+
+        break;
+
+      case InfoType.TransactionInfo:
+        // 거래글 정보 가져오기
+        // 새로 만들 시, 상대방은 seller 사용자는 buyer
+        transactionId = widget.transactionInfoMap?['transactionId'] ?? "";
+        transactionTitle = widget.transactionInfoMap?['transactionTitle'] ?? ""; // 기본값 또는 대체 문자열 설정
+        countryCode = widget.transactionInfoMap?['countryCode'] ?? "";
+        type = widget.transactionInfoMap?['type'] ?? "DIRECT";
+        status = widget.transactionInfoMap?['status'] ?? "WAIT";
+        transactionUrl = widget.transactionInfoMap?['transactionUrl'] ?? "";
+        koreanWonAmount = widget.transactionInfoMap?['koreanWonAmount'] ?? 0;
+        foreignCurrencyAmount =
+            widget.transactionInfoMap?['foreignCurrencyAmount'] ?? 0;
+
+        print(transactionTitle);
+
+        // 채팅 참여자 정보 설정하기
+        seller = widget.transactionInfoMap?['seller'];
+        sellerId = widget.transactionInfoMap?['sellerId'];
+        buyer = myUserName;
+        buyerId = myUserId;
+        chatRoomId = "${transactionId!}_${sellerId!}_${buyerId!}";
+        otherUserName = seller;
+        print(seller);
+
+        // user 정보에 새 채팅방 목록 추가
+        Map<String, dynamic> chatRoomListInfoMap = {
+          "sellerId": sellerId,
+          "buyerId": buyerId,
+        };
+        print("user에 chatlist update: ${transactionId}");
+        DatabaseMethods().setUserChatList(
+            sellerId!, buyerId!, chatRoomId!, chatRoomListInfoMap);
+        break;
+
+      case InfoType.None:
+        // 아무 작업도 수행하지 않습니다.
+        break;
+    }
   }
 
   // 채팅 메시지 타일
@@ -116,13 +179,13 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                   margin: EdgeInsets.only(left: 16.0),
                   child: showTs
                       ? Text(
-                    ts,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.grey,
-                    ),
-                  )
+                          ts,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.grey,
+                          ),
+                        )
                       : Text(""),
                 )
               : Row(
@@ -214,7 +277,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       if (snapshot.data.docs[index + 1]["sendBy"] !=
                           currentUserName) {
                         showProfile = true;
-                      }else if(snapshot.data.docs[index+1]["ts"] != currentTs){
+                      } else if (snapshot.data.docs[index + 1]["ts"] !=
+                          currentTs) {
                         showProfile = true;
                       }
                     } else {
@@ -227,12 +291,11 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         // 시간이 다르면 출력
                         if (snapshot.data.docs[index - 1]["ts"] != currentTs) {
                           showTs = true;
-
                         } // 같으면 출력 안 함
                       } else {
                         showTs = true;
                       }
-                    }else{
+                    } else {
                       showTs = true;
                     }
                     return chatMessageTile(
@@ -313,7 +376,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
        * 현재 접속한 user 비교 후, 상대방의 unread 갱신
        */
 
-      String selectOtherUser = otherUserName == seller ? "seller" : "buyer"; // 상대방 collection 찾기
+      String otherRole =
+          otherUserName == seller ? "seller" : "buyer"; // 상대방 collection 찾기
 
       Map<String, dynamic> sellerInfoMap = {
         "sellerId": sellerId, // 판매자 아이디
@@ -336,25 +400,18 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
       messageId ??= randomAlphaNumeric(10);
       // 마지막 메시지
       DatabaseMethods()
-          .addMessageUser(
-              chatRoomId!, messageId!, messageInfoMap, selectOtherUser!, sellerInfoMap, buyerInfoMap)
+          .addMessageUser(chatRoomId!, messageId!, messageInfoMap,
+          otherRole!, myRole!, sellerInfoMap, buyerInfoMap)
           .then((value) {
         Map<String, dynamic> lastMessageInfoMap = {
           "lastMessage": message,
           "lastMessageSendTs": formattedDate,
           "time": FieldValue.serverTimestamp(),
           "lastMessageSendBy": myUserName,
-          "transactionId" : transactionId,
-          "transactionUrl":"",
+          "transactionId": transactionId,
+          "transactionUrl": "",
         };
 
-        // Map<String, dynamic> chatRoomListInfoMap = {
-        //   "lastMessage": message,
-        //   "lastMessageSendTs": formattedDate,
-        //   "isExit": false,
-        //   "otherUserName": otherUserName,
-        //   "other": ,
-        // }
         print(lastMessageInfoMap);
         DatabaseMethods()
             .updateLastMessageSend(chatRoomId!, lastMessageInfoMap);
@@ -375,10 +432,9 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   getAndSetMessages() async {
     messageStream = await DatabaseMethods().getChatRoomMessages(chatRoomId);
     String myRole = myUserName == seller ? "seller" : "buyer";
-    DatabaseMethods().setRead(chatRoomId,myRole); // 읽음 처리
+    DatabaseMethods().setRead(chatRoomId, myRole); // 읽음 처리
     setState(() {});
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -450,7 +506,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                 fit: BoxFit.cover,
                               )),
                         ),
-                        const Flexible(
+                        Flexible(
                           flex: 1,
                           child: SizedBox(
                             height: 70,
@@ -458,8 +514,9 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '호주 달러 50달러 팔아요',
-                                  style: TextStyle(
+                                  // "",
+                                  transactionTitle,
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -467,13 +524,14 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                 Row(
                                   children: [
                                     CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          'assets/images/AUD.png'),
+                                      backgroundImage:
+                                          AssetImage('assets/images/AUD.png'),
                                       radius: 8,
                                     ),
                                     SizedBox(width: 5),
                                     Text(
-                                      '50 AUD',
+
+                                      "${NumberFormat.decimalPattern().format(foreignCurrencyAmount)} ${countryCode}",
                                       style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
@@ -485,7 +543,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(
-                                      '42,000원',
+                                      "${NumberFormat.decimalPattern().format(koreanWonAmount)}원",
                                       style: TextStyle(
                                           fontSize: 17,
                                           fontWeight: FontWeight.bold),
@@ -501,8 +559,10 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                     ),
                     GestureDetector(
                       onTap: () async {
-                        String appt = await Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => const AppointmentPage()));
+                        String appt = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const AppointmentPage()));
                         setState(() {
                           _appt = appt;
                         });
@@ -555,7 +615,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                         child: TextField(
-                          controller: messageController, // 메시지 전송 컨트롤러
+                          controller: messageController,
+                          // 메시지 전송 컨트롤러
                           onTap: () {
                             setState(() {
                               isVisible = false;
@@ -723,4 +784,3 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     ));
   }
 }
-
