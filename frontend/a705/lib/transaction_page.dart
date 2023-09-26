@@ -46,32 +46,32 @@ class _TransactionPageState extends State<TransactionPage> {
 
   String _addr = "장소 선택";
 
-  Future<Position> getCurrentLocation() async {
-    LocationPermission permission = await Geolocator.requestPermission();
-    Position position =
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    return position;
-  }
+  // Future<Position> getCurrentLocation() async {
+  //   LocationPermission permission = await Geolocator.requestPermission();
+  //   Position position =
+  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  //   return position;
+  // }
 
   @override
   void initState() {
     super.initState();
-    _getUserLocation();
+    // _getUserLocation();
   }
 
-  void _getUserLocation() async {
-    var position = await GeolocatorPlatform.instance.getCurrentPosition(
-        locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.bestForNavigation));
+  // void _getUserLocation() async {
+  //   var position = await GeolocatorPlatform.instance.getCurrentPosition(
+  //       locationSettings: const LocationSettings(
+  //           accuracy: LocationAccuracy.bestForNavigation));
+  //
+  //   setState(() {
+  //     currentPosition = LatLng(position.latitude, position.longitude);
+  //     print("currentPosition: ${currentPosition.longitude}");
+  //
+  //   });
+  // }
 
-    setState(() {
-      currentPosition = LatLng(position.latitude, position.longitude);
-      print("currentPosition: ${currentPosition.longitude}");
-
-    });
-  }
-
-  late LatLng currentPosition;
+  // late LatLng currentPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -426,8 +426,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       String addr = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                              // builder: (context) => ChooseLocationPage(currentPosition.latitude, currentPosition.longitude)));
-                              builder: (context) => ChooseLocationPage(currentPosition.latitude, currentPosition.longitude)));
+                              builder: (context) => const ChooseLocationPage(37.5013068, 127.0396597)));
                       setState(() {
                         _addr = addr;
                       });
@@ -437,7 +436,6 @@ class _TransactionPageState extends State<TransactionPage> {
                       height: _addr == "장소 선택" ? 50 : null,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        // border: Border.all(color: Colors.black),
                         color: const Color(0xFFF2F2F2),
                       ),
                       child: Row(

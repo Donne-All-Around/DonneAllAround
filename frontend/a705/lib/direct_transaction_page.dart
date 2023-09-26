@@ -19,30 +19,30 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
   String _addr = "장소 선택";
   String appt = "";
 
-  Future<Position> getCurrentLocation() async {
-    LocationPermission permission = await Geolocator.requestPermission();
-    Position position =
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    return position;
-  }
+  // Future<Position> getCurrentLocation() async {
+  //   LocationPermission permission = await Geolocator.requestPermission();
+  //   Position position =
+  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  //   return position;
+  // }
 
   @override
   void initState() {
     super.initState();
-    _getUserLocation();
+    // _getUserLocation();
   }
 
-  void _getUserLocation() async {
-    var position = await GeolocatorPlatform.instance.getCurrentPosition(
-        locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.bestForNavigation));
-
-    setState(() {
-      currentPosition = LatLng(position.latitude, position.longitude);
-    });
-  }
-
-  late LatLng currentPosition;
+  // void _getUserLocation() async {
+  //   var position = await GeolocatorPlatform.instance.getCurrentPosition(
+  //       locationSettings: const LocationSettings(
+  //           accuracy: LocationAccuracy.bestForNavigation));
+  //
+  //   setState(() {
+  //     currentPosition = LatLng(position.latitude, position.longitude);
+  //   });
+  // }
+  //
+  // late LatLng currentPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -244,7 +244,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
               String addr = await Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ChooseLocationPage(currentPosition.latitude, currentPosition.longitude)));
+                      builder: (context) => const ChooseLocationPage(37.5013068, 127.0396597)));
               setState(() {
                 _addr = addr;
               });

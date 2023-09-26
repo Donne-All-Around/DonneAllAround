@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _valueList = ['최신순', '낮은 가격순'];
+  final _valueList = ['최신순', '낮은 가격순', '단위 당 낮은 가격순'];
   var _selectedValue = '최신순';
   int _idx = 0;
 
@@ -371,7 +371,7 @@ class _HomePageState extends State<HomePage> {
                           return DropdownMenuItem(
                             value: value,
                             child: SizedBox(
-                              width: 100,
+                              width: 150,
                               child: Text(
                                 value,
                                 style: const TextStyle(fontSize: 17),
