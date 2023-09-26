@@ -639,7 +639,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                 margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                 width: double.infinity,
-                height: 160,
+                height: 170,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     color: Colors.white,
@@ -682,6 +682,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                         )
                       ],
                     ),
+                    const SizedBox(height: 10,),
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -692,21 +693,22 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                             SizedBox(height: 20),
                             Text(
                               '현찰 살 때',
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 16,
+                                  height: 1.532),
                             ),
                             Text(
                               '현찰 팔 때',
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 16,
+                                  height: 1.532),
                             ),
                             Text(
                               '송금 보낼 때',
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 16,
+                                  height: 1.532),
                             )
                           ],
                         ),
-                        SizedBox(
-                          width: 50,
-                        ),
+
                         Row(
                           children: [
                             Column(
@@ -723,19 +725,22 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                       '1,354.29원',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 16),
+                                          fontSize: 16,
+                                          height: 1.532),
                                     ),
                                     Text(
                                       '1,354.29원',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 16),
+                                          fontSize: 16,
+                                          height: 1.532),
                                     ),
                                     Text(
                                       '1,354.29원',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 16),
+                                          fontSize: 16,
+                                          height: 1.532),
                                     ),
                                   ],
                                 ),

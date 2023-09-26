@@ -1118,8 +1118,8 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
               Expanded(
                 child: Container(
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                   width: double.infinity,
-                  height: 50,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.white,
@@ -1134,31 +1134,24 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                   child: Column(
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(
-                                20, 10, 0, 0),
-                            width: 200,
-                            // color: Colors.red,
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage:
-                                  AssetImage('assets/images/${currency1[index]}.png'),
-                                  radius: 10,
-                                ),
-                                const SizedBox(width: 10),
-                                Text( _valueList1[index],
-                                  style: const TextStyle(fontSize: 16),),
-                              ],
-                            ),),
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                              child: const Text(
-                                '1,300.00 원',
-                                textAlign: TextAlign.end,
-                                style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),))
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundImage:
+                                AssetImage('assets/images/${currency1[index]}.png'),
+                                radius: 10,
+                              ),
+                              const SizedBox(width: 10),
+                              Text( _valueList1[index],
+                                style: const TextStyle(fontSize: 16),),
+                            ],
+                          ),
+                          const Text(
+                            '1,300.00 원',
+                            textAlign: TextAlign.end,
+                            style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),)
                         ],
                       ),
 
@@ -1271,6 +1264,7 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 10,),
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -1281,15 +1275,18 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                               SizedBox(height: 20),
                               Text(
                                 '현찰 살 때',
-                                style: TextStyle(fontSize: 16),
+                                style: TextStyle(fontSize: 16,
+                                    height: 1.532),
                               ),
                               Text(
                                 '현찰 팔 때',
-                                style: TextStyle(fontSize: 16),
+                                style: TextStyle(fontSize: 16,
+                                    height: 1.532),
                               ),
                               Text(
                                 '송금 보낼 때',
-                                style: TextStyle(fontSize: 16),
+                                style: TextStyle(fontSize: 16,
+                                    height: 1.532),
                               )
                             ],
                           ),
@@ -1312,19 +1309,22 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                                         '1,354.29원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 16),
+                                            fontSize: 16,
+                                            height: 1.532),
                                       ),
                                       Text(
                                         '1,354.29원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 16),
+                                            fontSize: 16,
+                                            height: 1.532),
                                       ),
                                       Text(
                                         '1,354.29원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 16),
+                                            fontSize: 16,
+                                            height: 1.532),
                                       ),
                                     ],
                                   ),
