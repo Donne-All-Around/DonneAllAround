@@ -39,7 +39,14 @@ class _BankDetailPageState extends State<BankDetailPage> {
     '중국(위안) CNY',
     '베트남(동) VND',
     '한국(원) KRW',
-    '홍콩(달러) HKD'
+    '홍콩(달러) HKD',
+    '캐나다(달러) CAD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '필리핀(페소) PHP',
+    '러시아(루블) RUB',
+    '싱가폴(달러) SGD',
+    '대만(달러) TWD',
   ];
   var _selectedValue1 = '미국(달러) USD';
   int idx1 = 0;
@@ -53,9 +60,16 @@ class _BankDetailPageState extends State<BankDetailPage> {
     'CNY',
     'VND',
     'KRW',
-    'HKD'
+    'HKD',
+    'CAD',
+    'CZK',
+    'NZD',
+    'PHP',
+    'RUB',
+    'SGD',
+    'TWD',
   ];
-  List<String> sign1 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$'];
+  List<String> sign1 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
   // 두번째 통화
   final _valueList2 = [
     '미국(달러) USD',
@@ -66,7 +80,14 @@ class _BankDetailPageState extends State<BankDetailPage> {
     '중국(위안) CNY',
     '베트남(동) VND',
     '한국(원) KRW',
-    '홍콩(달러) HKD'
+    '홍콩(달러) HKD',
+    '캐나다(달러) CAD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '필리핀(페소) PHP',
+    '러시아(루블) RUB',
+    '싱가폴(달러) SGD',
+    '대만(달러) TWD',
   ];
   var _selectedValue2 = '한국(원) KRW';
   int idx2 = 7;
@@ -80,9 +101,16 @@ class _BankDetailPageState extends State<BankDetailPage> {
     'CNY',
     'VND',
     'KRW',
-    'HKD'
+    'HKD',
+    'CAD',
+    'CZK',
+    'NZD',
+    'PHP',
+    'RUB',
+    'SGD',
+    'TWD',
   ];
-  List<String> sign2 = ['\$', '¥', '€', '£', '\$', '¥', '₫', '₩','\$'];
+  List<String> sign2 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
 
  // 수수료율
   final _percentList = ['현찰 살 때', '현찰 팔 때', '송금 보낼 때'];
@@ -606,7 +634,14 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
     '중국(위안) CNY',
     '베트남(동) VND',
     '한국(원) KRW',
-    '홍콩(달러) HKD'
+    '홍콩(달러) HKD',
+    '캐나다(달러) CAD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '필리핀(페소) PHP',
+    '러시아(루블) RUB',
+    '싱가폴(달러) SGD',
+    '대만(달러) TWD',
   ];
   var _selectedValue1 = '미국(달러) USD';
   int idx1 = 0;
@@ -620,7 +655,14 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
     'CNY',
     'VND',
     'KRW',
-    'HKD'
+    'HKD',
+    'CAD',
+    'CZK',
+    'NZD',
+    'PHP',
+    'RUB',
+    'SGD',
+    'TWD',
   ];
 
 

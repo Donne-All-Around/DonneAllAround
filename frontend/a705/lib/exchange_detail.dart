@@ -29,7 +29,14 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
     '중국(위안) CNY',
     '베트남(동) VND',
     '한국(원) KRW',
-    '홍콩(달러) HKD'
+    '홍콩(달러) HKD',
+    '캐나다(달러) CAD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '필리핀(페소) PHP',
+    '러시아(루블) RUB',
+    '싱가폴(달러) SGD',
+    '대만(달러) TWD',
   ];
   var _selectedValue = '미국(달러) USD';
 
@@ -42,7 +49,14 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
     'CNY',
     'VND',
     'KRW',
-    'HKD'
+    'HKD',
+    'CAD',
+    'CZK',
+    'NZD',
+    'PHP',
+    'RUB',
+    'SGD',
+    'TWD',
   ];
 
   String selectedButton = ''; // 선택된 버튼
@@ -113,7 +127,7 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                   Container(
                                     margin:
                                         const EdgeInsets.fromLTRB(10, 10, 0, 10),
-                                    width: 180,
+                                    width: 190,
                                     height: 55,
                                     // color: Colors.red,
                                     child: DropdownButtonHideUnderline(
@@ -131,7 +145,7 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                                     radius: 10,
                                                   ),
                                                   const SizedBox(
-                                                    width: 10,
+                                                    width: 7,
                                                   ),
                                             Text(value),
                                             ],

@@ -33,7 +33,14 @@ class _ExchangePageState extends State<ExchangePage> {
     '중국(위안) CNY',
     '베트남(동) VND',
     '한국(원) KRW',
-    '홍콩(달러) HKD'
+    '홍콩(달러) HKD',
+    '캐나다(달러) CAD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '필리핀(페소) PHP',
+    '러시아(루블) RUB',
+    '싱가폴(달러) SGD',
+    '대만(달러) TWD',
   ];
   var _selectedValue1 = '미국(달러) USD';
   int idx1 = 0;
@@ -47,9 +54,16 @@ class _ExchangePageState extends State<ExchangePage> {
     'CNY',
     'VND',
     'KRW',
-    'HKD'
+    'HKD',
+    'CAD',
+    'CZK',
+    'NZD',
+    'PHP',
+    'RUB',
+    'SGD',
+    'TWD',
   ];
-  List<String> sign1 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$'];
+  List<String> sign1 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
   
  // 두번째 통화
   final _valueList2 = [
@@ -61,7 +75,14 @@ class _ExchangePageState extends State<ExchangePage> {
     '중국(위안) CNY',
     '베트남(동) VND',
     '한국(원) KRW',
-    '홍콩(달러) HKD'
+    '홍콩(달러) HKD',
+    '캐나다(달러) CAD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '필리핀(페소) PHP',
+    '러시아(루블) RUB',
+    '싱가폴(달러) SGD',
+    '대만(달러) TWD',
   ];
   var _selectedValue2 = '한국(원) KRW';
   int idx2 = 7;
@@ -75,9 +96,16 @@ class _ExchangePageState extends State<ExchangePage> {
     'CNY',
     'VND',
     'KRW',
-    'HKD'
+    'HKD',
+    'CAD',
+    'CZK',
+    'NZD',
+    'PHP',
+    'RUB',
+    'SGD',
+    'TWD',
   ];
-  List<String> sign2 = ['\$', '¥', '€', '£', '\$', '¥', '₫', '₩','\$'];
+  List<String> sign2 =['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
 
   // 세번째 통화
   final _valueList3 = [
@@ -89,7 +117,14 @@ class _ExchangePageState extends State<ExchangePage> {
     '중국(위안) CNY',
     '베트남(동) VND',
     '한국(원) KRW',
-    '홍콩(달러) HKD'
+    '홍콩(달러) HKD',
+    '캐나다(달러) CAD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '필리핀(페소) PHP',
+    '러시아(루블) RUB',
+    '싱가폴(달러) SGD',
+    '대만(달러) TWD',
   ];
   var _selectedValue3 = '베트남(동) VND';
   int idx3 = 6;
@@ -103,9 +138,16 @@ class _ExchangePageState extends State<ExchangePage> {
     'CNY',
     'VND',
     'KRW',
-    'HKD'
+    'HKD',
+    'CAD',
+    'CZK',
+    'NZD',
+    'PHP',
+    'RUB',
+    'SGD',
+    'TWD',
   ];
-  List<String> sign3 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$'];
+  List<String> sign3 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
 
   // 네번째 통화
   final _valueList4 = [
@@ -117,7 +159,14 @@ class _ExchangePageState extends State<ExchangePage> {
     '중국(위안) CNY',
     '베트남(동) VND',
     '한국(원) KRW',
-    '홍콩(달러) HKD'
+    '홍콩(달러) HKD',
+    '캐나다(달러) CAD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '필리핀(페소) PHP',
+    '러시아(루블) RUB',
+    '싱가폴(달러) SGD',
+    '대만(달러) TWD',
   ];
   var _selectedValue4 = '한국(원) KRW';
   int idx4 = 7;
@@ -131,9 +180,16 @@ class _ExchangePageState extends State<ExchangePage> {
     'CNY',
     'VND',
     'KRW',
-    'HKD'
+    'HKD',
+    'CAD',
+    'CZK',
+    'NZD',
+    'PHP',
+    'RUB',
+    'SGD',
+    'TWD',
   ];
-  List<String> sign4 = ['\$', '¥', '€', '£', '\$', '¥', '₫', '₩','\$'];
+  List<String> sign4 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
 
 
   final _bankList = ['신한은행', '하나은행'];
@@ -1081,7 +1137,14 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
     '중국(위안) CNY',
     '베트남(동) VND',
     '한국(원) KRW',
-    '홍콩(달러) HKD'
+    '홍콩(달러) HKD',
+    '캐나다(달러) CAD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '필리핀(페소) PHP',
+    '러시아(루블) RUB',
+    '싱가폴(달러) SGD',
+    '대만(달러) TWD',
   ];
   int idx1 = 0;
 
@@ -1094,7 +1157,15 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
     'CNY',
     'VND',
     'KRW',
-    'HKD'
+    'HKD',
+    'CAD',
+    'CZK',
+    'NZD',
+    'PHP',
+    'RUB',
+    'SGD',
+    'TWD',
+
   ];
 
 
