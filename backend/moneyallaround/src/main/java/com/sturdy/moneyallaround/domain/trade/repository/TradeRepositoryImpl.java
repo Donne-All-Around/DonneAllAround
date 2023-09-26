@@ -16,6 +16,7 @@ import java.util.List;
 
 import static com.sturdy.moneyallaround.domain.trade.entity.QTrade.trade;
 import static com.sturdy.moneyallaround.domain.trade.entity.QTradeLike.tradeLike;
+import static com.sturdy.moneyallaround.domain.member.entity.QMember.member;
 
 @RequiredArgsConstructor
 public class TradeRepositoryImpl implements TradeRepositoryCustom {
@@ -24,15 +25,17 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
     @Override
     public Slice<Trade> findAll(TradeListRequestDto tradeListRequestDto, Pageable pageable) {
         List<Trade> result = queryFactory
-                .selectFrom(trade)
+                .select(trade)
+                .from(trade)
+                .leftJoin(trade.seller, member)
+                .fetchJoin()
                 .where(
+                        // 수정 필요 : 탈퇴한 사용자의 거래 글은 안 보이도록
                         trade.isDeleted.eq(false),
                         trade.status.in(TradeStatus.WAIT, TradeStatus.PROGRESS),
                         trade.countryCode.eq(tradeListRequestDto.countryCode()),
                         eqPreferredTradeLocation(tradeListRequestDto.preferredTradeCountry(), tradeListRequestDto.preferredTradeCity(), tradeListRequestDto.preferredTradeDistrict(), tradeListRequestDto.preferredTradeTown()),
-                        ltLastTradeId(tradeListRequestDto.lastTradeId()),
-                        gtLastTradeKoreanWon(tradeListRequestDto.lastTradeKoreanWon()),
-                        gtLastTradeKoreanWonPerForeignCurrency(tradeListRequestDto.lastTradeForeignCurrencyPerKoreanWon())
+                        ltLastTradeId(tradeListRequestDto.lastTradeId(), pageable)
                 )
                 .limit(pageable.getPageSize() + 1)
                 .orderBy(tradeSort(pageable), trade.createTime.desc())
@@ -48,7 +51,7 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
                 .where(
                         trade.seller.eq(seller),
                         trade.status.eq(TradeStatus.COMPLETE),
-                        ltLastTradeId(lastTradeId)
+                        ltLastTradeId(lastTradeId, pageable)
                 )
                 .orderBy(trade.createTime.desc())
                 .limit(pageable.getPageSize() + 1)
@@ -64,7 +67,7 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
                 .where(
                         trade.seller.eq(seller),
                         trade.status.ne(TradeStatus.COMPLETE),
-                        ltLastTradeId(lastTradeId)
+                        ltLastTradeId(lastTradeId, pageable)
                 )
                 .orderBy(trade.createTime.desc())
                 .limit(pageable.getPageSize() + 1)
@@ -80,7 +83,7 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
                 .where(
                         trade.buyer.eq(buyer),
                         trade.status.eq(TradeStatus.COMPLETE),
-                        ltLastTradeId(lastTradeId)
+                        ltLastTradeId(lastTradeId, pageable)
                 )
                 .orderBy(trade.createTime.desc())
                 .limit(pageable.getPageSize() + 1)
@@ -92,11 +95,11 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
     @Override
     public Slice<Trade> findLikeTradeByMember(Member member, Long lastTradeId, Pageable pageable) {
         List<Trade> result = queryFactory
-                .selectFrom(trade)
-                .join(tradeLike.trade, trade)
+                .select(trade)
+                .from(tradeLike)
                 .where(
                         tradeLike.member.eq(member),
-                        ltLastTradeId(lastTradeId)
+                        ltLastTradeId(lastTradeId, pageable)
                 )
                 .orderBy(trade.createTime.desc())
                 .limit(pageable.getPageSize() + 1)
@@ -110,7 +113,7 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
         List<Trade> result = queryFactory
                 .selectFrom(trade)
                 .where(
-                        ltLastTradeId(lastTradeId),
+                        ltLastTradeId(lastTradeId, pageable),
                         trade.title.contains(keyword)
                                 .or(trade.description.contains(keyword))
                 )
@@ -130,16 +133,48 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
         return Expressions.allOf(countryExpression, cityExpression, districtExpression, townExpression);
     }
 
-    private BooleanExpression ltLastTradeId(Long lastTradeId) {
+    private BooleanExpression ltLastTradeId(Long lastTradeId, Pageable pageable) {
+        for (Sort.Order order : pageable.getSort()) {
+            switch (order.getProperty()) {
+                case "createTime" -> {
+                    return lastTradeId == null ? null : trade.id.lt(lastTradeId);
+                }
+                case "koreanWonAmount" -> {
+                    if (lastTradeId == null) {
+                        return null;
+                    }
+
+                    Integer lastTradeKoreanWon = queryFactory
+                            .select(trade.koreanWonAmount)
+                            .from(trade)
+                            .where(
+                                    trade.id.eq(lastTradeId)
+                            )
+                            .fetchOne();
+
+                    return trade.koreanWonAmount.gt(lastTradeKoreanWon)
+                            .or(trade.koreanWonAmount.eq(lastTradeKoreanWon).and(trade.id.lt(lastTradeId)));
+                }
+                case "koreanWonPerForeignCurrency" -> {
+                    if (lastTradeId == null) {
+                        return null;
+                    }
+
+                    Double lastTradeKoreanWonPerForeignCurrency = queryFactory
+                            .select(trade.koreanWonPerForeignCurrency)
+                            .from(trade)
+                            .where(
+                                    trade.id.eq(lastTradeId)
+                            )
+                            .fetchOne();
+
+                    return trade.koreanWonPerForeignCurrency.gt(lastTradeKoreanWonPerForeignCurrency)
+                            .or(trade.koreanWonPerForeignCurrency.eq(lastTradeKoreanWonPerForeignCurrency).and(trade.id.lt(lastTradeId)));
+                }
+            }
+        }
+
         return lastTradeId == null ? null : trade.id.lt(lastTradeId);
-    }
-
-    private BooleanExpression gtLastTradeKoreanWon(Double lastTradeKoreanWon) {
-        return lastTradeKoreanWon == null ? null : trade.koreanWonAmount.gt(lastTradeKoreanWon);
-    }
-
-    private BooleanExpression gtLastTradeKoreanWonPerForeignCurrency(Double lastTradeKoreanWonPerForeignCurrency) {
-        return lastTradeKoreanWonPerForeignCurrency == null ? null : trade.koreanWonPerForeignCurrency.gt(lastTradeKoreanWonPerForeignCurrency);
     }
 
     private OrderSpecifier<?> tradeSort(Pageable pageable) {
@@ -151,7 +186,7 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
                 case "koreanWonAmount" -> {
                     return new OrderSpecifier<>(Order.ASC, trade.koreanWonAmount);
                 }
-                case "foreignCurrencyPerKoreanWon" -> {
+                case "koreanWonPerForeignCurrency" -> {
                     return new OrderSpecifier<>(Order.ASC, trade.koreanWonPerForeignCurrency);
                 }
             }

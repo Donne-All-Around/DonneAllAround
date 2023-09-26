@@ -23,10 +23,10 @@ public class TradeReviewRepositoryImpl implements TradeReviewRepositoryCustom {
     public Slice<TradeReview> findSellReviewByReviewee(Member reviewee, Long lastTradeReviewId, Pageable pageable) {
         List<TradeReview> result = queryFactory
                 .selectFrom(tradeReview)
-                .join(tradeReview.trade, trade)
                 .where(
                         tradeReview.reviewee.eq(reviewee),
                         tradeReview.trade.seller.eq(reviewee),
+                        tradeReview.comment.isNotNull(),
                         ltLastTradeReviewId(lastTradeReviewId)
                 )
                 .limit(pageable.getPageSize() + 1)
@@ -44,6 +44,7 @@ public class TradeReviewRepositoryImpl implements TradeReviewRepositoryCustom {
                 .where(
                         tradeReview.reviewee.eq(reviewee),
                         tradeReview.trade.buyer.eq(reviewee),
+                        tradeReview.comment.isNotNull(),
                         ltLastTradeReviewId(lastTradeReviewId)
                 )
                 .limit(pageable.getPageSize() + 1)
@@ -54,7 +55,7 @@ public class TradeReviewRepositoryImpl implements TradeReviewRepositoryCustom {
     }
 
     private BooleanExpression ltLastTradeReviewId(Long lastTradeReviewId) {
-        return lastTradeReviewId == 0 ? null : tradeReview.id.lt(lastTradeReviewId);
+        return lastTradeReviewId == null ? null : tradeReview.id.lt(lastTradeReviewId);
     }
 
     private Slice<TradeReview> checkLastPage(List<TradeReview> result, Pageable pageable) {

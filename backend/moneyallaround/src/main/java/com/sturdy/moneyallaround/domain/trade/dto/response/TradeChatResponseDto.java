@@ -21,6 +21,7 @@ public record TradeChatResponseDto(@NotNull Long id,
                                    Long buyerId,
                                    LocalDateTime directTradeTime,
                                    String directTradeLocationDetail,
+                                   String sellerAccountBankCode,
                                    String sellerAccountNumber,
                                    String deliveryRecipientName,
                                    String deliveryRecipientTel,
@@ -40,9 +41,10 @@ public record TradeChatResponseDto(@NotNull Long id,
                 .koreanWonAmount(trade.getKoreanWonAmount())
                 .status(trade.getStatus())
                 .type(trade.getType())
-                .buyerId(trade.getBuyer().getId())
+                .buyerId(trade.getBuyer() == null ? null : trade.getBuyer().getId())
                 .directTradeTime(trade.getDirectTradeTime())
                 .directTradeLocationDetail(trade.getDirectTradeLocationDetail())
+                .sellerAccountBankCode(trade.getSellerAccountBankCode())
                 .sellerAccountNumber(trade.getSellerAccountNumber())
                 .deliveryRecipientName(trade.getDeliveryRecipientName())
                 .deliveryRecipientTel(trade.getDeliveryRecipientTel())

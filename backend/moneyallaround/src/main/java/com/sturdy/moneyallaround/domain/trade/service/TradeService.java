@@ -56,7 +56,7 @@ public class TradeService {
     @Transactional
     public Trade createTrade(TradeRequestDto tradeRequestDto, Long memberId) {
         Trade trade =  tradeRepository.save(tradeRequestDto.toTrade(memberService.findById(memberId)));
-        tradeRequestDto.imageUrlList().forEach(imageUrl -> trade.putImage(new TradeImage(imageUrl, trade)));
+        trade.addImages(tradeRequestDto.imageUrlList().stream().map(imageUrl -> new TradeImage(imageUrl, trade)).toList());
         //createKeywordNotificationByTrade(trade);
         return findTrade(trade.getId());
     }
@@ -66,8 +66,9 @@ public class TradeService {
     public Trade updateTrade(Long tradeId, TradeRequestDto tradeRequestDto) {
         tradeRepository.findById(tradeId)
                 .ifPresentOrElse(trade -> {
-                            trade.clearImageList();
-                            tradeRequestDto.imageUrlList().forEach(imageUrl -> trade.getImageList().add(new TradeImage(imageUrl, trade)));
+                            tradeImageService.deleteTradeImages(trade.getImageList());
+                            trade.getImageList().clear();
+                            trade.addImages(tradeRequestDto.imageUrlList().stream().map(imageUrl -> new TradeImage(imageUrl, trade)).toList());
                             trade.update(tradeRequestDto.title(), tradeRequestDto.description(), tradeRequestDto.thumbnailImageUrl(), tradeRequestDto.countryCode(), tradeRequestDto.foreignCurrencyAmount(), tradeRequestDto.koreanWonAmount(), tradeRequestDto.latitude(), tradeRequestDto.longitude(), tradeRequestDto.preferredTradeCountry(), tradeRequestDto.preferredTradeCity(), tradeRequestDto.preferredTradeDistrict(), tradeRequestDto.preferredTradeTown());
                         },
                         () -> { throw new EntityNotFoundException(); });
@@ -80,7 +81,8 @@ public class TradeService {
     public void deleteTrade(Long tradeId) {
         tradeRepository.findById(tradeId)
                 .ifPresentOrElse(trade -> {
-                            tradeImageService.deleteTradeImageByTradeId(tradeId);
+                            tradeImageService.deleteTradeImages(trade.getImageList());
+                            trade.getImageList().clear();
                             trade.delete();
                         },
                         () -> { throw new EntityNotFoundException(); });
@@ -90,7 +92,7 @@ public class TradeService {
     @Transactional
     public Trade makeDirectPromise(Long tradeId, DirectTradeCreateRequestDto directTradeCreateRequestDto) {
         tradeRepository.findById(tradeId)
-                .ifPresentOrElse(trade -> trade.makeDirectPromise(memberService.findById(directTradeCreateRequestDto.buyerId()), directTradeCreateRequestDto.directTradeTime(), directTradeCreateRequestDto.directTradeLocationDetail()),
+                .ifPresentOrElse(trade -> trade.makeDirectPromise(memberService.findById(directTradeCreateRequestDto.buyerId()), directTradeCreateRequestDto.getDirectTradeTime(), directTradeCreateRequestDto.directTradeLocationDetail()),
                         () -> { throw new EntityNotFoundException(); });
 
         return findTrade(tradeId);
@@ -100,7 +102,7 @@ public class TradeService {
     @Transactional
     public Trade updateDirectPromise(Long tradeId, DirectTradeUpdateRequestDto directTradeUpdateRequestDto) {
         tradeRepository.findById(tradeId)
-                .ifPresentOrElse(trade -> trade.updateDirectPromise(directTradeUpdateRequestDto.directTradeTime(), directTradeUpdateRequestDto.directTradeLocationDetail()),
+                .ifPresentOrElse(trade -> trade.updateDirectPromise(directTradeUpdateRequestDto.getDirectTradeTime(), directTradeUpdateRequestDto.directTradeLocationDetail()),
                         () -> { throw new EntityNotFoundException(); });
 
         return findTrade(tradeId);
@@ -115,8 +117,8 @@ public class TradeService {
 
     // 택배거래 - 판매자 계좌 정보 입력
     @Transactional
-    public Trade updateSellerAccountNumber(Long tradeId, SellerAccountNumberRequestDto sellerAccountNumberRequestDto) {
-        findTrade(tradeId).updateSellerAccountNumber(sellerAccountNumberRequestDto.sellerAccountNumber());
+    public Trade updateSellerAccountNumber(Long tradeId, AccountNumberRequestDto accountNumberRequestDto) {
+        findTrade(tradeId).updateSellerAccountNumber(accountNumberRequestDto.sellerAccountBankCode(), accountNumberRequestDto.sellerAccountNumber());
         return findTrade(tradeId);
     }
 

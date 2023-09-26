@@ -31,13 +31,6 @@ public class TradeController {
     private final TradeLikeService tradeLikeService;
     private final TradeReviewService tradeReviewService;
 
-    /*
-        거래 글 목록 (최신순 / 낮은 가격순 / 낮은 가격순(단위))
-        - 거래 통화
-        - 거래 장소 (국가 / 시 / 구 / 동)
-        - 마지막 거래 번호 / 마지막 거래 가격 / 마지막 거래 가격 단위
-        - pageable (개수 / 기준 / 순서)
-     */
     @PostMapping("/list")
     public ApiResponse<Map<String, Object>> tradeList(
             @RequestBody @Valid TradeListRequestDto tradeListRequestDto,
@@ -50,7 +43,7 @@ public class TradeController {
     }
 
     @GetMapping("/history/sell/complete")
-    public ApiResponse<Map<String, Object>> completeTradeSellHistoryList(@RequestParam Long lastTradeId, @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
+    public ApiResponse<Map<String, Object>> completeTradeSellHistoryList(@RequestParam(required = false) Long lastTradeId, @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
         Long sellerId = 1L;
         Slice<Trade> slices = tradeService.findCompleteTradeSellHistory(sellerId, lastTradeId, pageable);
         Map<String, Object> response = new HashMap<>();
@@ -60,7 +53,7 @@ public class TradeController {
     }
 
     @GetMapping("/history/sell/sale")
-    public ApiResponse<Map<String, Object>> saleTradeSellHistoryList(@RequestParam Long lastTradeId, @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
+    public ApiResponse<Map<String, Object>> saleTradeSellHistoryList(@RequestParam(required = false) Long lastTradeId, @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
         Long sellerId = 1L;
         Slice<Trade> slices = tradeService.findSaleTradeSellHistory(sellerId, lastTradeId, pageable);
         Map<String, Object> response = new HashMap<>();
@@ -70,7 +63,7 @@ public class TradeController {
     }
 
     @GetMapping("/history/buy")
-    public ApiResponse<Map<String, Object>> tradeBuyHistoryList(@RequestParam Long lastTradeId, @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
+    public ApiResponse<Map<String, Object>> tradeBuyHistoryList(@RequestParam(required = false) Long lastTradeId, @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
         Long buyerId = 1L;
         Slice<Trade> slices = tradeService.findTradeBuyHistory(buyerId, lastTradeId, pageable);
         Map<String, Object> response = new HashMap<>();
@@ -80,7 +73,7 @@ public class TradeController {
     }
 
     @GetMapping("/like")
-    public ApiResponse<Map<String, Object>> tradeLikeList(@RequestParam Long lastTradeId, @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
+    public ApiResponse<Map<String, Object>> tradeLikeList(@RequestParam(required = false) Long lastTradeId, @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
         Long memberId = 1L;
         Slice<Trade> slices = tradeService.findLikeTrade(memberId, lastTradeId, pageable);
         Map<String, Object> response = new HashMap<>();
@@ -128,8 +121,8 @@ public class TradeController {
     }
 
     @PutMapping("/promise/delivery/{tradeId}")
-    public ApiResponse<TradeChatResponseDto> makeDeliveryPromise(@PathVariable Long tradeId, @RequestBody DeliveryTradeRequestDto directTradeCreateRequestDto) {
-        return ApiResponse.success("택배거래 약속 잡기 성공", TradeChatResponseDto.from(tradeService.makeDeliveryPromise(tradeId, directTradeCreateRequestDto)));
+    public ApiResponse<TradeChatResponseDto> makeDeliveryPromise(@PathVariable Long tradeId, @RequestBody DeliveryTradeRequestDto deliveryTradeRequestDto) {
+        return ApiResponse.success("택배거래 약속 잡기 성공", TradeChatResponseDto.from(tradeService.makeDeliveryPromise(tradeId, deliveryTradeRequestDto)));
     }
 
     @PutMapping("/promise/direct/{tradeId}/edit")
@@ -137,19 +130,19 @@ public class TradeController {
         return ApiResponse.success("직거래 약속 수정 성공", TradeChatResponseDto.from(tradeService.updateDirectPromise(tradeId, directTradeUpdateRequestDto)));
     }
 
-    @PutMapping("/promise/delivery/{tradeId}/seller/account")
-    public ApiResponse<TradeChatResponseDto> updateSellerAccountNumber(@PathVariable Long tradeId, @RequestBody SellerAccountNumberRequestDto sellerAccountNumberRequestDto) {
-        return ApiResponse.success("직거래 약속 수정 성공", TradeChatResponseDto.from(tradeService.updateSellerAccountNumber(tradeId, sellerAccountNumberRequestDto)));
+    @PutMapping("/promise/delivery/{tradeId}/account")
+    public ApiResponse<TradeChatResponseDto> updateSellerAccountNumber(@PathVariable Long tradeId, @RequestBody AccountNumberRequestDto accountNumberRequestDto) {
+        return ApiResponse.success("택배거래 판매자 계좌번호 수정 성공", TradeChatResponseDto.from(tradeService.updateSellerAccountNumber(tradeId, accountNumberRequestDto)));
     }
 
-    @PutMapping("/promise/delivery/{tradeId}/buyer/address")
+    @PutMapping("/promise/delivery/{tradeId}/address")
     public ApiResponse<TradeChatResponseDto> updateDeliveryInfo(@PathVariable Long tradeId, @RequestBody DeliveryInfoRequestDto deliveryInfoRequestDto) {
-        return ApiResponse.success("직거래 약속 수정 성공", TradeChatResponseDto.from(tradeService.updateDeliveryInfo(tradeId, deliveryInfoRequestDto)));
+        return ApiResponse.success("택배거래 구매자 배송지 수정 성공", TradeChatResponseDto.from(tradeService.updateDeliveryInfo(tradeId, deliveryInfoRequestDto)));
     }
 
-    @PutMapping("/promise/delivery/{tradeId}/seller/tracking")
+    @PutMapping("/promise/delivery/{tradeId}/tracking")
     public ApiResponse<TradeChatResponseDto> updateTrackingNumber(@PathVariable Long tradeId, @RequestBody TrackingNumberRequestDto trackingNumberRequestDto) {
-        return ApiResponse.success("직거래 약속 수정 성공", TradeChatResponseDto.from(tradeService.updateTrackingNumber(tradeId, trackingNumberRequestDto)));
+        return ApiResponse.success("택배거래 송장번호 수정 성공", TradeChatResponseDto.from(tradeService.updateTrackingNumber(tradeId, trackingNumberRequestDto)));
     }
 
     @PutMapping("/promise/cancel/{tradeId}")
@@ -169,7 +162,7 @@ public class TradeController {
         return ApiResponse.success("관심 거래 등록 성공", null);
     }
 
-    @DeleteMapping("/{tradeId}/like")
+    @DeleteMapping("/{tradeId}/unlike")
     public ApiResponse<TradeDetailResponseDto> tradeUnlike(@PathVariable Long tradeId) {
         Long memberId = 1L;
         tradeLikeService.unlike(tradeId, memberId);
@@ -178,7 +171,7 @@ public class TradeController {
 
     @GetMapping("/search")
     public ApiResponse<Map<String, Object>> search(@RequestParam String keyword,
-                                                   @RequestParam Long lastTradeId,
+                                                   @RequestParam(required = false) Long lastTradeId,
                                                    @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Slice<Trade> slices = tradeService.search(keyword, lastTradeId, pageable);

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Getter
@@ -64,12 +65,15 @@ public class Trade extends BaseEntity {
     private Boolean isDeleted;
 
     // 직거래 일시
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "datetime")
     private LocalDateTime directTradeTime;
 
     // 직거래 장소
     @Column(nullable = true)
     private String directTradeLocationDetail;
+
+    @Column(nullable = true)
+    private String sellerAccountBankCode;
 
     // 판매자 계좌번호
     @Column(nullable = true)
@@ -173,7 +177,8 @@ public class Trade extends BaseEntity {
         this.directTradeLocationDetail = directTradeLocationDetail;
     }
 
-    public void updateSellerAccountNumber(String sellerAccountNumber) {
+    public void updateSellerAccountNumber(String sellerAccountBankCode, String sellerAccountNumber) {
+        this.sellerAccountBankCode = sellerAccountBankCode;
         this.sellerAccountNumber = sellerAccountNumber;
     }
 
@@ -195,6 +200,7 @@ public class Trade extends BaseEntity {
         buyer = null;
         directTradeTime = null;
         directTradeLocationDetail = null;
+        sellerAccountBankCode = null;
         sellerAccountNumber = null;
         deliveryRecipientName = null;
         deliveryRecipientTel = null;
@@ -208,8 +214,8 @@ public class Trade extends BaseEntity {
         status = TradeStatus.COMPLETE;
     }
 
-    public void putImage(TradeImage tradeImage) {
-        this.imageList.add(tradeImage);
+    public void addImages(List<TradeImage> tradeImages) {
+        this.imageList.addAll(tradeImages);
     }
 
     public void clearImageList() {

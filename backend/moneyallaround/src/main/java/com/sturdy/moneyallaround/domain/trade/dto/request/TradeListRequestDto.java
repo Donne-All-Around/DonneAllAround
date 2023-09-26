@@ -7,7 +7,5 @@ public record TradeListRequestDto(@NotNull String countryCode,
                                   String preferredTradeCity,
                                   String preferredTradeDistrict,
                                   String preferredTradeTown,
-                                  Long lastTradeId,
-                                  Double lastTradeKoreanWon,
-                                  Double lastTradeForeignCurrencyPerKoreanWon) {
+                                  Long lastTradeId) {
 }

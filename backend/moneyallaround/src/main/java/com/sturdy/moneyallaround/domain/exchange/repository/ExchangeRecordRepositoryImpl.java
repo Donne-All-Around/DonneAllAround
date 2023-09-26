@@ -34,7 +34,7 @@ public class ExchangeRecordRepositoryImpl implements ExchangeRecordRepositoryCus
     }
 
     private BooleanExpression ltLastExchangeRecordId(Long lastExchangeRecordId) {
-        if (lastExchangeRecordId == 0) {
+        if (lastExchangeRecordId == null) {
             return null;
         }
 

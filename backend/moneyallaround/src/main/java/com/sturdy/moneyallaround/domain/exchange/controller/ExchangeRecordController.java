@@ -13,7 +13,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +24,7 @@ public class ExchangeRecordController {
     private final ExchangeRecordService exchangeRecordService;
 
     @GetMapping("/list")
-    public ApiResponse<Map<String, Object>> exchangeRecordList(@RequestParam Long lastExchangeRecordId, @PageableDefault(size = 20, sort = "exchangeDate", direction = Sort.Direction.DESC)Pageable pageable) {
+    public ApiResponse<Map<String, Object>> exchangeRecordList(@RequestParam(required = false) Long lastExchangeRecordId, @PageableDefault(size = 20, sort = "exchangeDate", direction = Sort.Direction.DESC)Pageable pageable) {
         Long memberId = 1L;
         Slice<ExchangeRecord> slices = exchangeRecordService.findByMember(memberId, lastExchangeRecordId, pageable);
         Map<String, Object> response = new HashMap<>();

@@ -17,7 +17,7 @@ public class TradeLike extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trade_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "trade_id", nullable = false)
     private Trade trade;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,11 +1,11 @@
 package com.sturdy.moneyallaround.domain.trade.dto.request;
 
-import com.sturdy.moneyallaround.domain.trade.entity.TradeType;
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-public record DirectTradeUpdateRequestDto(@NotNull TradeType type,
-                                          LocalDateTime directTradeTime,
+public record DirectTradeUpdateRequestDto(String directTradeTime,
                                           String directTradeLocationDetail) {
+    public LocalDateTime getDirectTradeTime() {
+        return LocalDateTime.parse(directTradeTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
 }

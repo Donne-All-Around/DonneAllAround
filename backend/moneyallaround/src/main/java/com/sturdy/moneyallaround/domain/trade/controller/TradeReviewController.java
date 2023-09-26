@@ -31,28 +31,28 @@ public class TradeReviewController {
     }
 
     @GetMapping("/list/sell")
-    public ApiResponse<Map<String, Object>> tradeSellReviewList(@RequestParam Long lastTradeReviewId, @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
-        Long revieweeId = 1L;
+    public ApiResponse<Map<String, Object>> tradeSellReviewList(@RequestParam(required = false) Long lastTradeReviewId, @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
+        Long revieweeId = 2L;
         Slice<TradeReview> slices = tradeReviewService.findSellReview(revieweeId, lastTradeReviewId, pageable);
         Map<String, Object> response = new HashMap<>();
         response.put("tradeReviewList", slices.stream().map(TradeReviewResponseDto::from).toList());
         response.put("last", slices.isLast());
-        return ApiResponse.success("나의 후기 목록 조회 성공", response);
+        return ApiResponse.success("나의 판매 후기 목록 조회 성공", response);
     }
 
     @GetMapping("/list/buy")
-    public ApiResponse<Map<String, Object>> tradeBuyReviewList(@RequestParam Long lastTradeReviewId, @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
-        Long revieweeId = 1L;
+    public ApiResponse<Map<String, Object>> tradeBuyReviewList(@RequestParam(required = false) Long lastTradeReviewId, @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
+        Long revieweeId = 2L;
         Slice<TradeReview> slices = tradeReviewService.findBuyReview(revieweeId, lastTradeReviewId, pageable);
         Map<String, Object> response = new HashMap<>();
         response.put("tradeReviewList", slices.stream().map(TradeReviewResponseDto::from).toList());
         response.put("last", slices.isLast());
-        return ApiResponse.success("나의 후기 목록 조회 성공", response);
+        return ApiResponse.success("나의 구매 후기 목록 조회 성공", response);
     }
 
     @GetMapping("/score")
     public ApiResponse<Map<String, Integer>> tradeReviewScoreList() {
-        Long revieweeId = 1L;
-        return ApiResponse.success("나의 후기 항목별 개수 조회 성공", tradeReviewService.countScore(revieweeId));
+        Long revieweeId = 2L;
+        return ApiResponse.success("나의 평가 항목별 개수 조회 성공", tradeReviewService.countScore(revieweeId));
     }
 }
