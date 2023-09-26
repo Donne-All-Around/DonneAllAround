@@ -36,20 +36,20 @@ public class MemberController {
         return ApiResponse.success(memberService.checkNickname(request));
     }
 
-    @Operation(summary = "회원가입", description = "전화번호 인증을 통해 회원가입 한다.")
-    @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 실패"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "사용자 없음"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
-    })
+//    @Operation(summary = "회원가입", description = "전화번호 인증을 통해 회원가입 한다.")
+//    @ApiResponses({
+//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
+//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 실패"),
+//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "사용자 없음"),
+//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
+//    })
+//
 
-
-    @PostMapping("/signup")
-    public ApiResponse signUp(@RequestBody SignUpRequest request) {
-        log.info("회원가입 시작");
-        return ApiResponse.success(memberService.registNewMember(request));
-    }
+//    @PostMapping("/signup")
+//    public ApiResponse signUp(@RequestBody SignUpRequest request) {
+//        log.info("회원가입 시작");
+//        return ApiResponse.success(memberService.registNewMember(request));
+//    }
 
 
 //    @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정한다.")
