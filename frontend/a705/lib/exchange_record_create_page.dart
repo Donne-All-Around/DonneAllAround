@@ -154,7 +154,7 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
                                   children: [
                                     CircleAvatar(
                                       backgroundImage: AssetImage(
-                                          'assets/images/${currency[_valueList.indexOf(value)]}.png'),
+                                          'assets/images/flag/${currency[_valueList.indexOf(value)]}.png'),
                                       radius: 10,
                                     ),
                                     const SizedBox(width: 5),
@@ -231,7 +231,7 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
                         SizedBox(width: 10),
                         CircleAvatar(
                           backgroundImage:
-                          AssetImage('assets/images/KRW.png'),
+                          AssetImage('assets/images/flag/KRW.png'),
                           radius: 10,
                         ),
                         SizedBox(width: 5),

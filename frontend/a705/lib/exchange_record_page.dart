@@ -269,7 +269,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                         SizedBox(width: 10),
                                         CircleAvatar(
                                           backgroundImage:
-                                          AssetImage('assets/images/KRW.png'),
+                                          AssetImage('assets/images/flag/KRW.png'),
                                           radius: 16,
                                         ),
                                       ]

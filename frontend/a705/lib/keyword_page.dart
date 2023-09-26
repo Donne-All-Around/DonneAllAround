@@ -28,52 +28,52 @@ class KeywordPageState extends State<KeywordPage> {
     Keyword(
       countryCurrency: '호주(달러) AUD',
       location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/AUD.png',
+      flagImageUrl: 'assets/images/flag/AUD.png',
     ),
     Keyword(
       countryCurrency: '호주(달러) AUD',
       location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/AUD.png',
+      flagImageUrl: 'assets/images/flag/AUD.png',
     ),
     Keyword(
       countryCurrency: '호주(달러) AUD',
       location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/AUD.png',
+      flagImageUrl: 'assets/images/flag/AUD.png',
     ),
     Keyword(
       countryCurrency: '호주(달러) AUD',
       location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/AUD.png',
+      flagImageUrl: 'assets/images/flag/AUD.png',
     ),
     Keyword(
       countryCurrency: '호주(달러) AUD',
       location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/AUD.png',
+      flagImageUrl: 'assets/images/flag/AUD.png',
     ),
     Keyword(
       countryCurrency: '호주(달러) AUD',
       location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/AUD.png',
+      flagImageUrl: 'assets/images/flag/AUD.png',
     ),
     Keyword(
       countryCurrency: '호주(달러) AUD',
       location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/AUD.png',
+      flagImageUrl: 'assets/images/flag/AUD.png',
     ),
     Keyword(
       countryCurrency: '호주(달러) AUD',
       location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/AUD.png',
+      flagImageUrl: 'assets/images/flag/AUD.png',
     ),
     Keyword(
       countryCurrency: '호주(달러) AUD',
       location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/AUD.png',
+      flagImageUrl: 'assets/images/flag/AUD.png',
     ),
     Keyword(
       countryCurrency: '호주(달러) AUD',
       location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/AUD.png',
+      flagImageUrl: 'assets/images/flag/AUD.png',
     ),
   ];
 
