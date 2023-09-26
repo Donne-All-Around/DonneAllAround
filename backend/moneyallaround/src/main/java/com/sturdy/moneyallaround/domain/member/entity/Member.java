@@ -5,6 +5,8 @@ import com.sturdy.moneyallaround.domain.member.dto.request.UpdateProfileRequest;
 import com.sturdy.moneyallaround.domain.member.dto.request.UpdateTelRequest;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,9 +34,11 @@ public class Member implements UserDetails {
     private String imageUrl;
 
     @Column(name = "point")
+    @ColumnDefault("0")
     private int point;
 
     @Column(name = "rating")
+    @ColumnDefault("500")
     private int rating;
 
     @Column(name = "phonenumber")
@@ -85,6 +89,7 @@ public class Member implements UserDetails {
     public String getPassword() {
         return tel;
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

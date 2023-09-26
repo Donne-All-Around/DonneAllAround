@@ -51,7 +51,7 @@ public class MemberController {
         return ApiResponse.success(memberService.registNewMember(request));
     }
 
-
+//로그인
 //    @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정한다.")
 //    @ApiResponses({
 //            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
