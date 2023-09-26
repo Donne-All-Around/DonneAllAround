@@ -308,46 +308,48 @@ class _ExchangePageState extends State<ExchangePage> {
                           ),
                         Row(
                           children: [
-                            Container(
-                              margin: const EdgeInsets.fromLTRB(20, 0, 0, 10),
-                              width: 150,
-                              height: 20,
-                              child: Row(
-                                children: [
-                                  ElevatedButton(
-                                      onPressed: (){
-                                        setState(() {
-                                          selectedButton = '직접';
-                                          _isDouble = false;
-                                          _iscalculate = false;
-                                          _isdoublecalculate = false;
-                                        });
-                                      },
-                                    style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                        backgroundColor: selectedButton == '직접' ? Colors.green : Colors.grey,
-                                    ),
-
-                                      child: const Text('직접',),),
-                                  const SizedBox(width: 5),
-                                  ElevatedButton(
-                                      onPressed:(){
-                                        setState(() {
-                                          selectedButton = '이중';
-                                          _isDouble = true;
-                                          _iscalculate = false;
-                                          // Navigator.push(
-                                          //       context,
-                                          //       MaterialPageRoute(builder: (context) => const DoubleCurrencyPage()),
-                                          //     );
-                                        });
-                                      },
+                            Expanded(
+                              child: Container(
+                                margin: const EdgeInsets.fromLTRB(20, 0, 10, 10),
+                                width: 150,
+                                height: 20,
+                                child: Row(
+                                  children: [
+                                    ElevatedButton(
+                                        onPressed: (){
+                                          setState(() {
+                                            selectedButton = '직접';
+                                            _isDouble = false;
+                                            _iscalculate = false;
+                                            _isdoublecalculate = false;
+                                          });
+                                        },
                                       style: ElevatedButton.styleFrom(
                                         elevation: 0,
-                                        backgroundColor: selectedButton == '이중' ? Colors.red : Colors.grey,
+                                          backgroundColor: selectedButton == '직접' ? Colors.green : Colors.grey,
                                       ),
-                                      child: const Text('이중') ),
-                                ],
+
+                                        child: const Text('직접',),),
+                                    const SizedBox(width: 5),
+                                    ElevatedButton(
+                                        onPressed:(){
+                                          setState(() {
+                                            selectedButton = '이중';
+                                            _isDouble = true;
+                                            _iscalculate = false;
+                                            // Navigator.push(
+                                            //       context,
+                                            //       MaterialPageRoute(builder: (context) => const DoubleCurrencyPage()),
+                                            //     );
+                                          });
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          elevation: 0,
+                                          backgroundColor: selectedButton == '이중' ? Colors.red : Colors.grey,
+                                        ),
+                                        child: const Text('이중') ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -922,7 +924,7 @@ class _ExchangePageState extends State<ExchangePage> {
                      children: [
                        Expanded(
                          child: Container(
-                           margin: const EdgeInsets.fromLTRB(30, 10, 30, 0),
+                           margin: const EdgeInsets.fromLTRB(30, 10, 30, 20),
                            width: double.infinity,
                            height: 120,
                            child: getCalculateView(
