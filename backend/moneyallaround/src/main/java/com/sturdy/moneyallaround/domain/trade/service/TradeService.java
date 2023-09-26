@@ -20,7 +20,6 @@ public class TradeService {
     private final TradeRepository tradeRepository;
     private final MemberService memberService;
     private final TradeImageService tradeImageService;
-    private final KeywordNotificationService keywordNotificationService;
 
     // 완료되지 않은 거래 목록 조회
     public Slice<Trade> findAll(TradeListRequestDto tradeListRequestDto, Pageable pageable) {
@@ -57,7 +56,6 @@ public class TradeService {
     public Trade createTrade(TradeRequestDto tradeRequestDto, Long memberId) {
         Trade trade =  tradeRepository.save(tradeRequestDto.toTrade(memberService.findById(memberId)));
         trade.addImages(tradeRequestDto.imageUrlList().stream().map(imageUrl -> new TradeImage(imageUrl, trade)).toList());
-        createKeywordNotificationByTrade(trade);
         return findTrade(trade.getId());
     }
 
@@ -150,13 +148,12 @@ public class TradeService {
         return findTrade(tradeId);
     }
 
-    // 새로 등록된 거래 글 기반 키워드 알림 생성
-    public void createKeywordNotificationByTrade(Trade trade) {
-        keywordNotificationService.createKeywordNotification(trade);
-    }
-
     // 거래 글 검색
     public Slice<Trade> search(String keyword, Long lastTradeId, Pageable pageable) {
         return tradeRepository.findByKeyword(keyword, lastTradeId, pageable);
+    }
+
+    public Slice<Trade> findNotification(Long memberId, Long lastTradeId, Pageable pageable) {
+        return tradeRepository.findNotificationTrade(memberService.findById(memberId), lastTradeId, pageable);
     }
 }

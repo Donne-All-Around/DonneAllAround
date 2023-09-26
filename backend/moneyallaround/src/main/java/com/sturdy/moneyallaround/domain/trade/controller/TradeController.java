@@ -1,6 +1,7 @@
 package com.sturdy.moneyallaround.domain.trade.controller;
 
 import com.sturdy.moneyallaround.common.api.ApiResponse;
+import com.sturdy.moneyallaround.domain.keyword.service.KeywordNotificationService;
 import com.sturdy.moneyallaround.domain.trade.dto.request.*;
 import com.sturdy.moneyallaround.domain.trade.dto.response.TradeChatResponseDto;
 import com.sturdy.moneyallaround.domain.trade.dto.response.TradeDetailResponseDto;
@@ -30,6 +31,7 @@ public class TradeController {
     private final TradeService tradeService;
     private final TradeLikeService tradeLikeService;
     private final TradeReviewService tradeReviewService;
+    private final KeywordNotificationService keywordNotificationService;
 
     @PostMapping("/list")
     public ApiResponse<Map<String, Object>> tradeList(
@@ -110,6 +112,7 @@ public class TradeController {
             @RequestParam(required = false) Long memberId,
             @RequestBody TradeRequestDto tradeRequestDto) {
         Trade trade = tradeService.createTrade(tradeRequestDto, memberId);
+        keywordNotificationService.createKeywordNotification(trade);
         return ApiResponse.success("거래 글 작성 성공", TradeDetailResponseDto.from(trade, tradeLikeService.existTradeLike(trade.getId(), memberId)));
     }
 
@@ -217,5 +220,25 @@ public class TradeController {
         response.put("tradeList", slices.stream().map(TradeSimpleResponseDto::from).toList());
         response.put("last", slices.isLast());
         return ApiResponse.success("거래 목록 검색 성공", response);
+    }
+
+    @GetMapping("/notification")
+    public ApiResponse<Map<String, Object>> notificationList(
+            @RequestParam(required = false) Long memberId,
+            @RequestParam(required = false) Long lastTradeId,
+            @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC) Pageable pageable) {
+        Slice<Trade> slices = tradeService.findNotification(memberId, lastTradeId, pageable);
+        Map<String, Object> response = new HashMap<>();
+        response.put("tradeList", slices.stream().map(TradeSimpleResponseDto::from).toList());
+        response.put("last", slices.isLast());
+        return ApiResponse.success("키워드 알림 거래 목록 조회 성공", response);
+    }
+
+    @DeleteMapping("/notification/{notificationId}")
+    public ApiResponse<Object> deleteNotification(
+            @RequestParam(required = false) Long memberId,
+            @PathVariable Long notificationId) {
+        keywordNotificationService.deleteKeywordNotification(notificationId);
+        return ApiResponse.success("키워드 알림 거래 삭제 성공", null);
     }
 }

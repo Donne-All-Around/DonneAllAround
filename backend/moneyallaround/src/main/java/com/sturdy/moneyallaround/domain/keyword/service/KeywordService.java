@@ -33,7 +33,7 @@ public class KeywordService {
     }
 
     public Boolean existKeyword(KeywordRequestDto keywordRequestDto, Long memberId) {
-        return keywordRepository.existsByCountryCodeAndPreferredTradeCityAndPreferredTradeCityAndPreferredTradeDistrictAndPreferredTradeTownAndMember(
+        return keywordRepository.existsByCountryCodeAndPreferredTradeCountryAndPreferredTradeCityAndPreferredTradeDistrictAndPreferredTradeTownAndMember(
                 keywordRequestDto.countryCode(),
                 keywordRequestDto.preferredTradeCountry(),
                 keywordRequestDto.preferredTradeCity(),

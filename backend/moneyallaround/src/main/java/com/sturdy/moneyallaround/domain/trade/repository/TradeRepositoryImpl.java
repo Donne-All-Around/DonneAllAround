@@ -17,6 +17,7 @@ import java.util.List;
 import static com.sturdy.moneyallaround.domain.trade.entity.QTrade.trade;
 import static com.sturdy.moneyallaround.domain.trade.entity.QTradeLike.tradeLike;
 import static com.sturdy.moneyallaround.domain.member.entity.QMember.member;
+import static com.sturdy.moneyallaround.domain.keyword.entity.QKeywordNotification.keywordNotification;
 
 @RequiredArgsConstructor
 public class TradeRepositoryImpl implements TradeRepositoryCustom {
@@ -119,6 +120,22 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
                 )
                 .orderBy(trade.createTime.desc())
                 .limit(pageable.getPageSize())
+                .fetch();
+
+        return checkLastPage(result, pageable);
+    }
+
+    @Override
+    public Slice<Trade> findNotificationTrade(Member member, Long lastTradeId, Pageable pageable) {
+        List<Trade> result = queryFactory
+                .select(trade)
+                .from(keywordNotification)
+                .where(
+                        keywordNotification.member.eq(member),
+                        ltLastTradeId(lastTradeId, pageable)
+                )
+                .orderBy(trade.createTime.desc())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
 
         return checkLastPage(result, pageable);

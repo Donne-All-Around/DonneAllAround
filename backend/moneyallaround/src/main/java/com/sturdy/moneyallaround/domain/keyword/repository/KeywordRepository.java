@@ -10,5 +10,5 @@ import java.util.List;
 public interface KeywordRepository extends JpaRepository<Keyword, Long>, KeywordRepositoryCustom {
     void deleteById(@NotNull Long id);
     List<Keyword> findByMemberOrderByCreateTimeDesc(Member member);
-    Boolean existsByCountryCodeAndPreferredTradeCityAndPreferredTradeCityAndPreferredTradeDistrictAndPreferredTradeTownAndMember(String countryCode, String preferredTradeCountry, String preferredTradeCity, String preferredTradeDistrict, String preferredTradeTown, Member member);
+    Boolean existsByCountryCodeAndPreferredTradeCountryAndPreferredTradeCityAndPreferredTradeDistrictAndPreferredTradeTownAndMember(String countryCode, String preferredTradeCountry, String preferredTradeCity, String preferredTradeDistrict, String preferredTradeTown, Member member);
 }
