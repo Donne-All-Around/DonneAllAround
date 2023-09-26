@@ -125,6 +125,7 @@ class _CalculatePageState extends State<CalculatePage> {
                         child: Column(
                           children: [
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
                                   margin: const EdgeInsets.fromLTRB(10, 10, 20, 10),
@@ -165,7 +166,7 @@ class _CalculatePageState extends State<CalculatePage> {
                                 ),
                                 const SizedBox(width: 10,),
                                 Container(
-                                  margin:const EdgeInsets.fromLTRB(50, 10, 10, 10),
+                                  margin:const EdgeInsets.fromLTRB(0, 10, 10, 10),
                                   child: const CircleAvatar(
                                     backgroundImage: AssetImage(
                                       'assets/images/USD.png'
@@ -211,7 +212,7 @@ class _CalculatePageState extends State<CalculatePage> {
                               children: [
                                 Container(
                                   margin: const EdgeInsets.fromLTRB(10, 10, 0, 10),
-                                  width: 90,
+                                  width: 110,
                                   height: 30,
                                   // color: Colors.red,
                                   child: ElevatedButton(
@@ -432,10 +433,11 @@ class _CalculatePageState extends State<CalculatePage> {
                               ],
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
                                   margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
-                                  width: 180,
+                                  width: 150,
                                   height: 50,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
@@ -456,8 +458,8 @@ class _CalculatePageState extends State<CalculatePage> {
                                             return  DropdownMenuItem(
                                               value: value,
                                               child: Container(
-                                                margin: const EdgeInsets.fromLTRB(50, 0, 0, 0),
-                                                child: Text(value),
+                                                margin: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                                child: Text(value, textAlign: TextAlign.center,),
                                               ),
 
                                             );
@@ -476,7 +478,7 @@ class _CalculatePageState extends State<CalculatePage> {
                                 Container(
                                   margin: const EdgeInsets.fromLTRB(15, 0, 10, 5),
                                   padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
-                                  width: 110,
+                                  width: 100,
                                   height: 50,
                                   // color: Colors.red,
                                   decoration: BoxDecoration(
@@ -627,7 +629,8 @@ class _CalculatePageState extends State<CalculatePage> {
                                     },
                                     child:  Text(
                                       "${date2?.year.toString()}.${date2?.month.toString().padLeft(2, '0')}.${date2?.day.toString().padLeft(2, '0')}",
-                                      style: const TextStyle(fontSize: 24),),
+                                      style: const TextStyle(fontSize: 18),
+                                    textAlign: TextAlign.center,),
                                   ),
                                 ),
                               ),
@@ -696,7 +699,8 @@ class _CalculatePageState extends State<CalculatePage> {
                                     },
                                     child:  Text(
                                       "${date3?.year.toString()}.${date3?.month.toString().padLeft(2, '0')}.${date3?.day.toString().padLeft(2, '0')}",
-                                      style: const TextStyle(fontSize: 24),),
+                                      style: const TextStyle(fontSize: 18),
+                                    textAlign: TextAlign.center,),
                                   ),
                                   ),
                               ),
