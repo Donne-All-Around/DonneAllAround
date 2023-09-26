@@ -10,8 +10,30 @@ class ExchangeRecordCreatePage extends StatefulWidget {
 }
 
 class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
-  final _valueList = ['첫 번째', '두 번째', '세 번째'];
-  var _selectedValue = '첫 번째';
+  final _valueList = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '중국(위안) CNY',
+    '베트남(동) VND',
+    '홍콩(달러) HKD'
+  ];
+  var _selectedValue = '미국(달러) USD';
+  int idx = 0;
+
+  List<String> currency = [
+    'USD',
+    'JPY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CNY',
+    'VND',
+    'HKD'
+  ];
+  List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫', '\$'];
 
   final _banks = ['하나은행', '우리은행', '국민은행', '농협'];
   String _selectedBank = '하나은행';
@@ -111,7 +133,7 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
                   ),
                   const SizedBox(height: 5),
                   Container(
-                    height: 60,
+                    height: 50,
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
@@ -122,62 +144,68 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
                     child: Row(
                       children: [
                         const SizedBox(width: 10),
-                        DropdownButton(
-                          value: _selectedValue,
-                          items: _valueList.map((value) {
-                            return DropdownMenuItem(
-                              value: value,
-                              child: Row(
-                                children: [
-                                  const CircleAvatar(
-                                    backgroundImage: AssetImage(
-                                        'assets/images/australia.png'),
-                                    radius: 10,
-                                  ),
-                                 const SizedBox(width: 5),
-                                  Text(value),
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedValue = value!;
-                            });
-                          },
+                        DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                            value: _selectedValue,
+                            items: _valueList.map((value) {
+                              return DropdownMenuItem(
+                                value: value,
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundImage: AssetImage(
+                                          'assets/images/${currency[_valueList.indexOf(value)]}.png'),
+                                      radius: 10,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Text(value),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedValue = value!;
+                                idx = _valueList.indexOf(value);
+                              });
+                            },
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  TextField(
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
+                  SizedBox(
+                    height: 50,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        enabledBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                          borderSide:
+                          BorderSide(color: Color(0xFFF2F2F2), width: 3),
                         ),
-                        borderSide:
-                        BorderSide(color: Color(0xFFF2F2F2), width: 3),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
+                        focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                          borderSide:
+                          BorderSide(color: Color(0xFFF2F2F2), width: 3),
                         ),
-                        borderSide:
-                        BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                        suffixText: ' ${sign[idx]}',
                       ),
-                      suffixText: ' \$',
-                    ),
-                    cursorColor: Colors.black87,
-                    textAlign: TextAlign.end,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      cursorColor: Colors.black87,
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 15),
@@ -203,7 +231,7 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
                         SizedBox(width: 10),
                         CircleAvatar(
                           backgroundImage:
-                          AssetImage('assets/images/korea.png'),
+                          AssetImage('assets/images/KRW.png'),
                           radius: 10,
                         ),
                         SizedBox(width: 5),

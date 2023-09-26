@@ -247,171 +247,173 @@ class _CalculatePageState extends State<CalculatePage> {
                                                     // 환전기록
                                                     Row(
                                                       children: [
-                                                        Container(
-                                                            margin: const EdgeInsets.all(20.0),
-                                                            padding: const EdgeInsets.all(0.0),
-                                                            decoration: BoxDecoration(
-                                                              color: Colors.white,
-                                                              borderRadius: BorderRadius.circular(10.0),
-                                                            ),
-                                                            child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  const Text(
-                                                                      '2022년 9월',
-                                                                      style: TextStyle(
-                                                                        fontWeight: FontWeight.bold,
-                                                                        fontSize: 17,
-                                                                      )
-                                                                  ),
-                                                                  const SizedBox(height: 4),
-                                                                  Container(
-                                                                      width: 350,
-                                                                      height: 150,
-                                                                      decoration: BoxDecoration(
-                                                                        borderRadius: BorderRadius.circular(18.0),
-                                                                        color: const Color(0xFFF2F2F2),
-                                                                      ),
-                                                                      child: Column(
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            Container(
-                                                                                margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                                                                                child: Row(
-                                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                    children: [
-                                                                                      const Text(
-                                                                                        '2022년 9월 20일 수요일',
-                                                                                        style: TextStyle(
-                                                                                          fontWeight: FontWeight.bold,
-                                                                                        ),
-                                                                                      ),
-                                                                                      IconButton(
-                                                                                          icon: const Icon(
-                                                                                            Icons.more_horiz,
-                                                                                            color: Colors.black,
-                                                                                          ),
-                                                                                          onPressed: () {
-                                                                                            showDialog(
-                                                                                                context: context,
-                                                                                                builder: (BuildContext context) {
-                                                                                                  return const CustomModalWidget();
-                                                                                                }
-                                                                                            );
-                                                                                          }
-                                                                                      )
-                                                                                    ]
-                                                                                )
-                                                                            ),
-                                                                            const SizedBox(height: 10),
-                                                                            GestureDetector(
-                                                                              onTap: (){
-
-                                                                              },
-                                                                              child: Container(
-                                                                                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                                                                                  child: const Row(
+                                                        Expanded(
+                                                          child: Container(
+                                                              margin: const EdgeInsets.all(20.0),
+                                                              padding: const EdgeInsets.all(0.0),
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.white,
+                                                                borderRadius: BorderRadius.circular(10.0),
+                                                              ),
+                                                              child: Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: [
+                                                                    const Text(
+                                                                        '2022년 9월',
+                                                                        style: TextStyle(
+                                                                          fontWeight: FontWeight.bold,
+                                                                          fontSize: 17,
+                                                                        )
+                                                                    ),
+                                                                    const SizedBox(height: 4),
+                                                                    Container(
+                                                                        width: double.infinity,
+                                                                        height: 150,
+                                                                        decoration: BoxDecoration(
+                                                                          borderRadius: BorderRadius.circular(18.0),
+                                                                          color: const Color(0xFFF2F2F2),
+                                                                        ),
+                                                                        child: Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Container(
+                                                                                  margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                                                                                  child: Row(
                                                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                       children: [
-                                                                                        Column(
-                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                            children: [
-                                                                                              Text(
-                                                                                                  '1331.66',
-                                                                                                  style: TextStyle(
-                                                                                                    fontWeight: FontWeight.bold,
-                                                                                                    fontSize: 30,
-                                                                                                  )
-                                                                                              ),
-                                                                                              SizedBox(height:5),
-                                                                                              Row(
-                                                                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                                                                  children: [
-                                                                                                    Text(
-                                                                                                        '신한은행',
-                                                                                                        style: TextStyle(
-                                                                                                          fontSize: 17,
-                                                                                                        )
-                                                                                                    ),
-                                                                                                    Text(
-                                                                                                        '우대율30%',
-                                                                                                        style: TextStyle(
-                                                                                                          fontSize: 13,
-                                                                                                        )
-                                                                                                    )
-                                                                                                  ]
-                                                                                              )
-                                                                                            ]
+                                                                                        const Text(
+                                                                                          '2022년 9월 20일 수요일',
+                                                                                          style: TextStyle(
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                          ),
                                                                                         ),
-                                                                                        Column(
-                                                                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                                                                            children: [
-                                                                                              Row(
-                                                                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                  children: [
-                                                                                                    Text(
-                                                                                                        '740',
-                                                                                                        style: TextStyle(
-                                                                                                          fontSize: 20,
-                                                                                                          fontWeight: FontWeight.bold,
-                                                                                                          color: Color(0xFF0984E3),
-                                                                                                        )
-                                                                                                    ),
-                                                                                                    Text(
-                                                                                                        ' USD',
-                                                                                                        style: TextStyle(
-                                                                                                            fontSize: 20,
-                                                                                                            fontWeight: FontWeight.bold,
-                                                                                                            color: Color(0xFF0984E3)
-                                                                                                        )
-                                                                                                    ),
-                                                                                                    SizedBox(width: 10),
-                                                                                                    CircleAvatar(
-                                                                                                      backgroundImage:
-                                                                                                      AssetImage('assets/images/USD.png'),
-                                                                                                      radius: 16,
-                                                                                                    ),
-                                                                                                  ]
-                                                                                              ),
-                                                                                              SizedBox(height:6),
-                                                                                              Row(
-                                                                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                                                                  children: [
-                                                                                                    Text(
-                                                                                                        '992,147',
-                                                                                                        style: TextStyle(
-                                                                                                          fontSize: 20,
-                                                                                                          fontWeight: FontWeight.bold,
-                                                                                                          color: Color(0xFFFF5656),
-                                                                                                        )
-                                                                                                    ),
-                                                                                                    Text(
-                                                                                                        ' KRW',
-                                                                                                        style: TextStyle(
-                                                                                                          fontSize: 20,
-                                                                                                          fontWeight: FontWeight.bold,
-                                                                                                          color: Color(0xFFFF5656),
-                                                                                                        )
-                                                                                                    ),
-                                                                                                    SizedBox(width: 10),
-                                                                                                    CircleAvatar(
-                                                                                                      backgroundImage:
-                                                                                                      AssetImage('assets/images/KRW.png'),
-                                                                                                      radius: 16,
-                                                                                                    ),
-                                                                                                  ]
-                                                                                              )
-                                                                                            ]
+                                                                                        IconButton(
+                                                                                            icon: const Icon(
+                                                                                              Icons.more_horiz,
+                                                                                              color: Colors.black,
+                                                                                            ),
+                                                                                            onPressed: () {
+                                                                                              showDialog(
+                                                                                                  context: context,
+                                                                                                  builder: (BuildContext context) {
+                                                                                                    return const CustomModalWidget();
+                                                                                                  }
+                                                                                              );
+                                                                                            }
                                                                                         )
                                                                                       ]
                                                                                   )
                                                                               ),
-                                                                            )
-                                                                          ]
-                                                                      )
-                                                                  )
-                                                                ]
-                                                            )
+                                                                              const SizedBox(height: 10),
+                                                                              GestureDetector(
+                                                                                onTap: (){
+
+                                                                                },
+                                                                                child: Container(
+                                                                                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                                                                                    child: const Row(
+                                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                        children: [
+                                                                                          Column(
+                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                              children: [
+                                                                                                Text(
+                                                                                                    '1331.66',
+                                                                                                    style: TextStyle(
+                                                                                                      fontWeight: FontWeight.bold,
+                                                                                                      fontSize: 30,
+                                                                                                    )
+                                                                                                ),
+                                                                                                SizedBox(height:5),
+                                                                                                Row(
+                                                                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                                                                    children: [
+                                                                                                      Text(
+                                                                                                          '신한은행',
+                                                                                                          style: TextStyle(
+                                                                                                            fontSize: 17,
+                                                                                                          )
+                                                                                                      ),
+                                                                                                      Text(
+                                                                                                          '우대율30%',
+                                                                                                          style: TextStyle(
+                                                                                                            fontSize: 13,
+                                                                                                          )
+                                                                                                      )
+                                                                                                    ]
+                                                                                                )
+                                                                                              ]
+                                                                                          ),
+                                                                                          Column(
+                                                                                              crossAxisAlignment: CrossAxisAlignment.end,
+                                                                                              children: [
+                                                                                                Row(
+                                                                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                    children: [
+                                                                                                      Text(
+                                                                                                          '740',
+                                                                                                          style: TextStyle(
+                                                                                                            fontSize: 20,
+                                                                                                            fontWeight: FontWeight.bold,
+                                                                                                            color: Color(0xFF0984E3),
+                                                                                                          )
+                                                                                                      ),
+                                                                                                      Text(
+                                                                                                          ' USD',
+                                                                                                          style: TextStyle(
+                                                                                                              fontSize: 20,
+                                                                                                              fontWeight: FontWeight.bold,
+                                                                                                              color: Color(0xFF0984E3)
+                                                                                                          )
+                                                                                                      ),
+                                                                                                      SizedBox(width: 10),
+                                                                                                      CircleAvatar(
+                                                                                                        backgroundImage:
+                                                                                                        AssetImage('assets/images/USD.png'),
+                                                                                                        radius: 16,
+                                                                                                      ),
+                                                                                                    ]
+                                                                                                ),
+                                                                                                SizedBox(height:6),
+                                                                                                Row(
+                                                                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                                                                    children: [
+                                                                                                      Text(
+                                                                                                          '992,147',
+                                                                                                          style: TextStyle(
+                                                                                                            fontSize: 20,
+                                                                                                            fontWeight: FontWeight.bold,
+                                                                                                            color: Color(0xFFFF5656),
+                                                                                                          )
+                                                                                                      ),
+                                                                                                      Text(
+                                                                                                          ' KRW',
+                                                                                                          style: TextStyle(
+                                                                                                            fontSize: 20,
+                                                                                                            fontWeight: FontWeight.bold,
+                                                                                                            color: Color(0xFFFF5656),
+                                                                                                          )
+                                                                                                      ),
+                                                                                                      SizedBox(width: 10),
+                                                                                                      CircleAvatar(
+                                                                                                        backgroundImage:
+                                                                                                        AssetImage('assets/images/KRW.png'),
+                                                                                                        radius: 16,
+                                                                                                      ),
+                                                                                                    ]
+                                                                                                )
+                                                                                              ]
+                                                                                          )
+                                                                                        ]
+                                                                                    )
+                                                                                ),
+                                                                              )
+                                                                            ]
+                                                                        )
+                                                                    )
+                                                                  ]
+                                                              )
+                                                          ),
                                                         )
                                                       ],
                                                     ),
@@ -424,7 +426,7 @@ class _CalculatePageState extends State<CalculatePage> {
                                     style: ElevatedButton.styleFrom(
                                       elevation: 0,
                                       backgroundColor: Colors.green,
-                                    ), child: const Text('환전기록'),
+                                    ), child: const Text('환전기록', style: TextStyle(fontSize: 14),),
                                   ),
                                 ),
                               ],
