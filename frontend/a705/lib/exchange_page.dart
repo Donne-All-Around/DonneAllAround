@@ -1235,6 +1235,7 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                 },
                 child: Container(
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                   width: double.infinity,
                   height: 160,
                   decoration: BoxDecoration(
@@ -1250,137 +1251,123 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                       ]),
                   child: Column(
                     children: [
+                      const SizedBox(height: 5),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(
-                                20, 10, 0, 0),
-                            width: 200,
-                            // color: Colors.red,
-                            child: Row(
-                              children: [
-                                // CircleAvatar(
-                                //   backgroundImage:
-                                //   AssetImage('assets/images/${currency1[index]}.png'),
-                                //   radius: 10,
-                                // ),
-                                const SizedBox(width: 10),
-                                Text( _valueList1[index],
-                                  style: const TextStyle(fontSize: 16),),
-                              ],
-                            ),),
+                          Row(
+                            children: [
+                              // CircleAvatar(
+                              //   backgroundImage: AssetImage(
+                              //       'assets/images/${currency1[index]}.png'),
+                              //   radius: 10,
+                              // ),
+                              const SizedBox(width: 5),
+                              Text(
+                                _valueList1[index],
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(
-                                0, 10, 40, 10),
-                            child: const Text(
-                              '상세 환율              수수료',
-                              style: TextStyle(color: Colors.grey),),
-                          )
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(
-                                20, 0, 20, 10),
-                            // color: Colors.red,
-                            child: const Column(
-                              crossAxisAlignment: CrossAxisAlignment
-                                  .start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text('현찰 살 때'),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text('현찰 팔 때'),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text('송금 보낼 때'),
-                                  ],
-                                )
-                              ],
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 20),
+                              Text(
+                                '현찰 살 때',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              Text(
+                                '현찰 팔 때',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              Text(
+                                '송금 보낼 때',
+                                style: TextStyle(fontSize: 16),
+                              )
+                            ],
                           ),
-                          const SizedBox(width: 50,),
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(
-                                10, 0, 30, 10),
-                            // color: Colors.red,
-                            child: const Column(
-                              crossAxisAlignment: CrossAxisAlignment
-                                  .start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text('1,354.29원',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text('1,354.29원',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text('1,354.29원',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),),
-                                  ],
-                                )
-                              ],
-                            ),
+                          SizedBox(
+                            width: 50,
                           ),
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(
-                                10, 0, 0, 10),
-                            // color: Colors.red,
-                            child: const Column(
-                              crossAxisAlignment: CrossAxisAlignment
-                                  .start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text('1.75%', style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text('1.75%', style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Text('1.75%', style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),),
-                                  ],
-                                )
-                              ],
-                            ),
+                          Row(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '상세 환율',
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        '1,354.29원',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16),
+                                      ),
+                                      Text(
+                                        '1,354.29원',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16),
+                                      ),
+                                      Text(
+                                        '1,354.29원',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 20),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '수수료',
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        '1.75%',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                            height: 1.532),
+                                      ),
+                                      Text(
+                                        '1.75%',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                            height: 1.532),
+                                      ),
+                                      Text(
+                                        '1.75%',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                            height: 1.532),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 10,),
                         ],
                       ),
                     ],
