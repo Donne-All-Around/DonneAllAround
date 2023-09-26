@@ -1134,13 +1134,11 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                   child: Column(
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
                             margin: const EdgeInsets.fromLTRB(
                                 20, 10, 0, 0),
-                            width: 200,
-                            // color: Colors.red,
                             child: Row(
                               children: [
                                 CircleAvatar(
@@ -1154,11 +1152,11 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                               ],
                             ),),
                           Container(
-                            margin: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                            margin: const EdgeInsets.fromLTRB(0, 10, 20, 0),
                               child: const Text(
                                 '1,300.00 원',
                                 textAlign: TextAlign.end,
-                                style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),))
+                                style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),))
                         ],
                       ),
 
