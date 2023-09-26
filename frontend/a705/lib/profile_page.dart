@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'trade_like_page.dart';
+import 'sell_record_page.dart';
+import 'buy_record_page.dart';
 import 'withdrawal_page.dart';
-import 'exchange_record_page.dart';
 import 'keyword_page.dart';
+import 'exchange_record_page.dart';
+import 'review_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -192,9 +196,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 10.0),
                   InkWell(
-                    //onTap: () {
-                  //    Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
-                  //  },
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => TradeLikePage()));
+                    },
                     child: Container(
                       height: 35.0,
                       child: const Row(
@@ -216,9 +222,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   InkWell(
-                    // onTap: (){
-                    //  Navigator.push
-                    // },
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SellRecordPage()));
+                      },
                     child: Container(
                       height: 35.0,
                       child: const Row(
@@ -241,9 +249,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     )
                   ),
                   InkWell(
-                  //   onTap: (){
-                  //    Navigator.push
-                  //  },
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => BuyRecordPage()));
+                      },
                     child: Container(
                       height:35.0,
                       child: const Row (
@@ -266,9 +276,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     )
                   ),
                   InkWell(
-                  //   onTap: (){
-                  //    Navigator.push
-                  //  },
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ReviewPage()));
+                    },
                     child: Container(
                       height: 35.0,
                       child: const Row(
@@ -354,7 +366,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               margin: const EdgeInsets.all(10.0),
               padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
-              height: 140,
+              height: 105,
               width: 360,
               child:  Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -398,30 +410,30 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                  InkWell(
+                  // InkWell(
                   //  onTap: () {
                   //    Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
                   //  },
-                    child: Container(
-                      height: 35.0,
-                      child: const Row(
-                        children: [
-                          Icon(
-                            Icons.monetization_on,
-                          ),
-                          SizedBox(width: 8.0),
-                          Text(
-                            "환율",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontFamily: "Inter",
-                              fontSize: 15.0,
-                              )
-                          )
-                        ]
-                      ),
-                    ),
-                  )
+                  //   child: Container(
+                  //     height: 35.0,
+                  //     child: const Row(
+                  //       children: [
+                  //         Icon(
+                  //           Icons.monetization_on,
+                  //         ),
+                  //         SizedBox(width: 8.0),
+                  //         Text(
+                  //           "환율",
+                  //           style: TextStyle(
+                  //             color: Colors.black,
+                  //             fontFamily: "Inter",
+                  //             fontSize: 15.0,
+                  //             )
+                  //         )
+                  //       ]
+                  //     ),
+                  //   ),
+                  // )
                 ]
               )
             ),
@@ -483,53 +495,62 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ),
                                   ),
-                                  const Padding(
-                                    padding: EdgeInsets.fromLTRB(16.0, 0, 16.0, 8.0),
-                                    child: Text(
-                                      '다시 로그인 하실 때',
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontFamily: 'Inter',
-                                      )
-                                    )
-                                  ),
-                                  const Padding(
-                                    padding: EdgeInsets.fromLTRB(16.0, 0, 16.0, 8.0),
-                                    child: Text(
-                                      '전화번호 인증이 필요합니다.',
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontFamily: 'Inter',
-                                      )
-                                    )
-                                  ),
-                                  const Padding(
-                                    padding: EdgeInsets.fromLTRB(16.0, 0, 16.0, 8.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          '정말 ',
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontFamily: 'Inter',
-                                          )
-                                        ),
-                                        Text(
-                                          '로그아웃',
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontFamily: 'Inter',
-                                            color: Colors.red,
-                                          )
-                                        ),
-                                        Text(
-                                          ' 하시겠습니까?',
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                            fontFamily: 'Inter',
-                                          )
+                                  const Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(48.0, 0, 16.0, 8.0),
+                                      child: Text(
+                                        '다시 로그인 하실 때',
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          fontFamily: 'Inter',
                                         )
-                                      ]
+                                      ),
+                                    )
+                                  ),
+                                  const Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(48.0, 0, 16.0, 8.0),
+                                      child: Text(
+                                        '전화번호 인증이 필요합니다.',
+                                        style: TextStyle(
+                                         fontSize: 16.0,
+                                         fontFamily: 'Inter',
+                                        )
+                                      )
+                                    )
+                                  ),
+                                  const Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(48.0, 0, 16.0, 8.0),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            '정말 ',
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontFamily: 'Inter',
+                                            )
+                                          ),
+                                          Text(
+                                            '로그아웃',
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontFamily: 'Inter',
+                                              color: Colors.red,
+                                            )
+                                          ),
+                                          Text(
+                                            ' 하시겠습니까?',
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              fontFamily: 'Inter',
+                                            )
+                                          )
+                                        ]
+                                      )
                                     )
                                   ),
                                   Padding(
