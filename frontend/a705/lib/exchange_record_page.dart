@@ -178,13 +178,13 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                               ]
                             )
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Container(
-                            margin: EdgeInsets.symmetric(horizontal: 16),
+                            margin: const EdgeInsets.symmetric(horizontal: 16),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Column(
+                                const Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
@@ -220,7 +220,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Text(
+                                        const Text(
                                           '740',
                                           style: TextStyle(
                                             fontSize: 20,
@@ -228,7 +228,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                             color: Color(0xFF0984E3),
                                           )
                                         ),
-                                        Text(
+                                        const Text(
                                           ' USD',
                                           style: TextStyle(
                                             fontSize: 20,
@@ -239,15 +239,15 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                         Container(
                                           width: 30,
                                           height: 30,
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             color: Color(0xFF0984E3),
                                             shape: BoxShape.circle,
                                           )
                                         )
                                       ]
                                     ),
-                                    SizedBox(height:6),
-                                    Row(
+                                    const SizedBox(height:6),
+                                    const Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         Text(
@@ -269,7 +269,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                         SizedBox(width: 10),
                                         CircleAvatar(
                                           backgroundImage:
-                                          AssetImage('assets/images/korea.png'),
+                                          AssetImage('assets/images/KRW.png'),
                                           radius: 16,
                                         ),
                                       ]
