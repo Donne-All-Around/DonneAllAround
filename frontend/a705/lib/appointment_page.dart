@@ -193,7 +193,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                             Text(
                               '택배거래를 진행하게 되면,',
                               style: TextStyle(
-                                  color: Colors.black54, fontSize: 17),
+                                  color: Colors.black54, fontSize: 17, height: 1.5),
                             ),
                           ],
                         ),
@@ -202,7 +202,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                             Text(
                               '배송 후 구매자에게 ',
                               style: TextStyle(
-                                  color: Colors.black54, fontSize: 17),
+                                  color: Colors.black54, fontSize: 17, height: 1.5),
                             ),
                           ],
                         ),
@@ -211,12 +211,12 @@ class _AppointmentPageState extends State<AppointmentPage> {
                             Text(
                               '수령 확인',
                               style: TextStyle(
-                                  fontSize: 17, fontWeight: FontWeight.bold),
+                                  fontSize: 17, fontWeight: FontWeight.bold, height: 1.5),
                             ),
                             Text(
                               '을 받아야 합니다.',
                               style: TextStyle(
-                                  color: Colors.black54, fontSize: 17),
+                                  color: Colors.black54, fontSize: 17, height: 1.5),
                             ),
                           ],
                         ),
@@ -225,12 +225,12 @@ class _AppointmentPageState extends State<AppointmentPage> {
                             Text(
                               '수령확인이 완료된 시점',
                               style: TextStyle(
-                                  fontSize: 17, fontWeight: FontWeight.bold),
+                                  fontSize: 17, fontWeight: FontWeight.bold, height: 1.5),
                             ),
                             Text(
                               '에',
                               style: TextStyle(
-                                  color: Colors.black54, fontSize: 17),
+                                  color: Colors.black54, fontSize: 17, height: 1.5),
                             ),
                           ],
                         ),
@@ -239,12 +239,12 @@ class _AppointmentPageState extends State<AppointmentPage> {
                             Text(
                               '송금',
                               style: TextStyle(
-                                  fontSize: 17, fontWeight: FontWeight.bold),
+                                  fontSize: 17, fontWeight: FontWeight.bold, height: 1.5),
                             ),
                             Text(
                               '이 이루어집니다.',
                               style: TextStyle(
-                                  color: Colors.black54, fontSize: 17),
+                                  color: Colors.black54, fontSize: 17, height: 1.5),
                             ),
                           ],
                         ),
@@ -254,7 +254,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                             Text(
                               '단, 수령확인을 하지 않아도',
                               style: TextStyle(
-                                  color: Colors.black54, fontSize: 17, fontWeight: FontWeight.bold),
+                                  color: Colors.black54, fontSize: 17, fontWeight: FontWeight.bold, height: 1.5),
                             ),
                           ],
                         ),
@@ -263,22 +263,22 @@ class _AppointmentPageState extends State<AppointmentPage> {
                             Text(
                               '7일 후',
                               style: TextStyle(
-                                  fontSize: 17, fontWeight: FontWeight.bold),
+                                  fontSize: 17, fontWeight: FontWeight.bold, height: 1.5),
                             ),
                             Text(
                               '에는 ',
                               style: TextStyle(
-                                  color: Colors.black54, fontSize: 17, fontWeight: FontWeight.bold),
+                                  color: Colors.black54, fontSize: 17, fontWeight: FontWeight.bold, height: 1.5),
                             ),
                             Text(
                               '반드시 송금',
                               style: TextStyle(
-                                  fontSize: 17, fontWeight: FontWeight.bold),
+                                  fontSize: 17, fontWeight: FontWeight.bold, height: 1.5),
                             ),
                             Text(
                               '이 이루어집니다.',
                               style: TextStyle(
-                                  color: Colors.black54, fontSize: 17, fontWeight: FontWeight.bold),
+                                  color: Colors.black54, fontSize: 17, fontWeight: FontWeight.bold, height: 1.5),
                             ),
                           ],
                         ),

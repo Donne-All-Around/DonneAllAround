@@ -493,7 +493,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                               const Text(
                                 '호주 달러 50달러 팔아요',
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -524,7 +524,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                   Text(
                                     '50 AUD',
                                     style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.blueAccent),
                                   ),
@@ -548,7 +548,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                       Text(
                                         '42,000원',
                                         style: TextStyle(
-                                            fontSize: 17,
+                                            fontSize: 15,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Row(
