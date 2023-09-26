@@ -127,7 +127,7 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                                 children: [
                                                   CircleAvatar(
                                                     backgroundImage: AssetImage(
-                                                        'assets/images/${currency[_valueList.indexOf(value)]}.png'),
+                                                        'assets/images/flag/${currency[_valueList.indexOf(value)]}.png'),
                                                     radius: 10,
                                                   ),
                                                   const SizedBox(

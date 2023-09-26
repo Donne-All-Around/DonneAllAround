@@ -398,7 +398,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                                     children: [
                                                       CircleAvatar(
                                                         backgroundImage: AssetImage(
-                                                            'assets/images/${currency1[_valueList1.indexOf(value)]}.png'),
+                                                            'assets/images/flag/${currency1[_valueList1.indexOf(value)]}.png'),
                                                         radius: 10,
                                                       ),
                                                       const SizedBox(
@@ -495,7 +495,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                                   children: [
                                                     CircleAvatar(
                                                       backgroundImage: AssetImage(
-                                                          'assets/images/${currency2[_valueList2.indexOf(value)]}.png'),
+                                                          'assets/images/flag/${currency2[_valueList2.indexOf(value)]}.png'),
                                                       radius: 10,
                                                     ),
                                                     const SizedBox(
@@ -592,7 +592,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                                     children: [
                                                       CircleAvatar(
                                                         backgroundImage: AssetImage(
-                                                            'assets/images/${currency3[_valueList3.indexOf(value)]}.png'),
+                                                            'assets/images/flag/${currency3[_valueList3.indexOf(value)]}.png'),
                                                         radius: 10,
                                                       ),
                                                       const SizedBox(
@@ -689,7 +689,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                                     children: [
                                                       CircleAvatar(
                                                         backgroundImage: AssetImage(
-                                                            'assets/images/${currency4[_valueList4.indexOf(value)]}.png'),
+                                                            'assets/images/flag/${currency4[_valueList4.indexOf(value)]}.png'),
                                                         radius: 10,
                                                       ),
                                                       const SizedBox(
@@ -1140,7 +1140,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                             children: [
                               CircleAvatar(
                                 backgroundImage:
-                                AssetImage('assets/images/${currency1[index]}.png'),
+                                AssetImage('assets/images/flag/${currency1[index]}.png'),
                                 radius: 10,
                               ),
                               const SizedBox(width: 10),

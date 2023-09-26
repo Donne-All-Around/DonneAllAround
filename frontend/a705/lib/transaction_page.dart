@@ -252,7 +252,7 @@ class _TransactionPageState extends State<TransactionPage> {
                                   children: [
                                     CircleAvatar(
                                       backgroundImage: AssetImage(
-                                          'assets/images/${currency[_valueList.indexOf(value)]}.png'),
+                                          'assets/images/flag/${currency[_valueList.indexOf(value)]}.png'),
                                       radius: 10,
                                     ),
                                     const SizedBox(width: 5),
@@ -336,7 +336,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         SizedBox(width: 10),
                         CircleAvatar(
                           backgroundImage:
-                          AssetImage('assets/images/KRW.png'),
+                          AssetImage('assets/images/flag/KRW.png'),
                           radius: 10,
                         ),
                         SizedBox(width: 5),

@@ -16,9 +16,9 @@ class _BankDetailPageState extends State<BankDetailPage> {
   var _selectedValue = '신한은행';
 
   Map<String, Map<String, String>> bankInfo = {
-    '신한은행': {'imagePath': 'assets/images/USD.png', 'currencyName': '신한은행'},
+    '신한은행': {'imagePath': 'assets/images/flag/USD.png', 'currencyName': '신한은행'},
     '하나은행': {
-      'imagePath': 'assets/images/AUD.png',
+      'imagePath': 'assets/images/flag/AUD.png',
       'currencyName': '하나은행'
     },
   };
@@ -304,7 +304,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                         decoration: BoxDecoration(
                                           borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
                                           border: Border.all(color: Colors.transparent),
-                                          color:   Color(0xFFF7F7F7),
+                                          color:   const Color(0xFFF7F7F7),
                                         ),
                                         child: DropdownButtonHideUnderline(
                                           child: DropdownButton(
@@ -317,7 +317,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                                     children: [
                                                       CircleAvatar(
                                                         backgroundImage: AssetImage(
-                                                            'assets/images/${currency1[_valueList1.indexOf(value)]}.png'),
+                                                            'assets/images/flag/${currency1[_valueList1.indexOf(value)]}.png'),
                                                         radius: 10,
                                                       ),
                                                       const SizedBox(
@@ -411,7 +411,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                                     children: [
                                                       CircleAvatar(
                                                         backgroundImage: AssetImage(
-                                                            'assets/images/${currency2[_valueList2.indexOf(value)]}.png'),
+                                                            'assets/images/flag/${currency2[_valueList2.indexOf(value)]}.png'),
                                                         radius: 10,
                                                       ),
                                                       const SizedBox(
@@ -661,7 +661,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                           children: [
                             CircleAvatar(
                               backgroundImage: AssetImage(
-                                  'assets/images/${currency1[index]}.png'),
+                                  'assets/images/flag/${currency1[index]}.png'),
                               radius: 10,
                             ),
                             const SizedBox(width: 5),

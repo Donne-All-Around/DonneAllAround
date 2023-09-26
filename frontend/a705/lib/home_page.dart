@@ -183,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       CircleAvatar(
                         backgroundImage:
-                            AssetImage('assets/images/${currency[_idx]}.png'),
+                            AssetImage('assets/images/flag/${currency[_idx]}.png'),
                         radius: 10,
                       ),
                       const SizedBox(width: 5),
@@ -286,7 +286,7 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     CircleAvatar(
                                       backgroundImage: AssetImage(
-                                          'assets/images/${currency[_idx]}.png'),
+                                          'assets/images/flag/${currency[_idx]}.png'),
                                       radius: 15,
                                     ),
                                     const SizedBox(width: 5),
@@ -517,7 +517,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                 children: [
                                   CircleAvatar(
                                     backgroundImage:
-                                        AssetImage('assets/images/AUD.png'),
+                                        AssetImage('assets/images/flag/AUD.png'),
                                     radius: 8,
                                   ),
                                   SizedBox(width: 5),
@@ -647,7 +647,7 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
                     const SizedBox(width: 20),
                     CircleAvatar(
                       backgroundImage:
-                          AssetImage('assets/images/${currency[index]}.png'),
+                          AssetImage('assets/images/flag/${currency[index]}.png'),
                       radius: 10,
                     ),
                     const SizedBox(width: 10),

@@ -142,7 +142,7 @@ class _TransactionInfoPageState extends State<TransactionInfoPage> {
                                           children: [
                                             CircleAvatar(
                                               backgroundImage: AssetImage(
-                                                  'assets/images/AUD.png'),
+                                                  'assets/images/flag/AUD.png'),
                                               radius: 8,
                                             ),
                                             SizedBox(width: 5),
