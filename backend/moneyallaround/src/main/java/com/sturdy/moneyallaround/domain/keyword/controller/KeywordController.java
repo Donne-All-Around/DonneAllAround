@@ -18,9 +18,9 @@ public class KeywordController {
     private final KeywordService keywordService;
 
     @PostMapping
-    public ApiResponse<Object> createKeyword(@RequestBody KeywordRequestDto keywordRequestDto) {
-        Long memberId = 1L;
-
+    public ApiResponse<Object> createKeyword(
+            @RequestParam(required = false) Long memberId,
+            @RequestBody KeywordRequestDto keywordRequestDto) {
         if (keywordService.existKeyword(keywordRequestDto, memberId)) {
             return ApiResponse.fail("이미 존재하는 키워드");
         }
@@ -30,14 +30,17 @@ public class KeywordController {
     }
 
     @DeleteMapping("/{keywordId}")
-    public ApiResponse<Object> deleteKeyword(@PathVariable Long keywordId) {
+    public ApiResponse<Object> deleteKeyword(
+            @RequestParam(required = false) Long memberId,
+            @PathVariable Long keywordId) {
         keywordService.deleteKeyword(keywordId);
         return ApiResponse.success("키워드 삭제 성공", null);
     }
 
     @GetMapping
-    public ApiResponse<List<KeywordResponseDto>> keywordList() {
-        Long memberId = 1L;
+    public ApiResponse<List<KeywordResponseDto>> keywordList(
+            @RequestParam(required = false) Long memberId
+    ) {
         return ApiResponse.success("키워드 목록 조회 성공", keywordService.findAll(memberId).stream().map(KeywordResponseDto::from).toList());
     }
 }

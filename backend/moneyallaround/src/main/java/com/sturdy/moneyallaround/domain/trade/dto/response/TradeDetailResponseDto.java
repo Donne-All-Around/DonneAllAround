@@ -28,7 +28,7 @@ public record TradeDetailResponseDto(@NotNull Long id,
                                      @NotNull Long sellerId,
                                      @NotNull String sellerNickname,
                                      @NotNull String sellerImageUrl,
-                                     @NotNull Integer sellerPoint,
+                                     @NotNull Integer sellerRating,
                                      @NotNull Boolean isLike,
                                      @NotNull LocalDateTime createTime) {
     public static TradeDetailResponseDto from(Trade trade, Boolean isLike) {
@@ -51,7 +51,7 @@ public record TradeDetailResponseDto(@NotNull Long id,
                 .sellerId(trade.getSeller().getId())
                 .sellerNickname(trade.getSeller().getNickname())
                 .sellerImageUrl(trade.getSeller().getImageUrl())
-                .sellerPoint(trade.getSeller().getPoint())
+                .sellerRating(trade.getSeller().getRating())
                 .isLike(isLike)
                 .createTime(trade.getCreateTime())
                 .build();

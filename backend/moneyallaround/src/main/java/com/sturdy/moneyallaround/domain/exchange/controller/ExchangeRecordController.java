@@ -24,8 +24,10 @@ public class ExchangeRecordController {
     private final ExchangeRecordService exchangeRecordService;
 
     @GetMapping("/list")
-    public ApiResponse<Map<String, Object>> exchangeRecordList(@RequestParam(required = false) Long lastExchangeRecordId, @PageableDefault(size = 20, sort = "exchangeDate", direction = Sort.Direction.DESC)Pageable pageable) {
-        Long memberId = 1L;
+    public ApiResponse<Map<String, Object>> exchangeRecordList(
+            @RequestParam(required = false) Long memberId,
+            @RequestParam(required = false) Long lastExchangeRecordId,
+            @PageableDefault(size = 20, sort = "exchangeDate", direction = Sort.Direction.DESC)Pageable pageable) {
         Slice<ExchangeRecord> slices = exchangeRecordService.findByMember(memberId, lastExchangeRecordId, pageable);
         Map<String, Object> response = new HashMap<>();
         response.put("exchageRecordList", slices.stream().map(ExchangeRecordResponseDto::from).toList());
@@ -34,19 +36,25 @@ public class ExchangeRecordController {
     }
 
     @PostMapping
-    public ApiResponse<ExchangeRecordResponseDto> createExchangeRecord(@RequestBody ExchangeRecordRequestDto exchangeRecordRequestDto) {
-        Long memberId = 1L;
+    public ApiResponse<ExchangeRecordResponseDto> createExchangeRecord(
+            @RequestParam(required = false) Long memberId,
+            @RequestBody ExchangeRecordRequestDto exchangeRecordRequestDto) {
         return ApiResponse.success("환전 기록 작성 성공", ExchangeRecordResponseDto.from(exchangeRecordService.createExchangeRecord(exchangeRecordRequestDto, memberId)));
     }
 
     @DeleteMapping("/{exchangeRecordId}")
-    public ApiResponse<Object> deleteExchangeRecord(@PathVariable Long exchangeRecordId) {
+    public ApiResponse<Object> deleteExchangeRecord(
+            @RequestParam(required = false) Long memberId,
+            @PathVariable Long exchangeRecordId) {
         exchangeRecordService.deleteExchangeRecord(exchangeRecordId);
         return ApiResponse.success("환전 기록 삭제 성공", null);
     }
 
     @PutMapping("/{exchangeRecordId}")
-    public ApiResponse<ExchangeRecordResponseDto> updateExchangeRecord(@PathVariable Long exchangeRecordId, @RequestBody ExchangeRecordRequestDto exchangeRecordRequestDto) {
+    public ApiResponse<ExchangeRecordResponseDto> updateExchangeRecord(
+            @RequestParam(required = false) Long memberId,
+            @PathVariable Long exchangeRecordId,
+            @RequestBody ExchangeRecordRequestDto exchangeRecordRequestDto) {
         return ApiResponse.success("환전 기록 수정 성공", ExchangeRecordResponseDto.from(exchangeRecordService.updateExchangeRecord(exchangeRecordRequestDto, exchangeRecordId)));
     }
 }

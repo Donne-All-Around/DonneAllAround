@@ -57,7 +57,7 @@ public class TradeService {
     public Trade createTrade(TradeRequestDto tradeRequestDto, Long memberId) {
         Trade trade =  tradeRepository.save(tradeRequestDto.toTrade(memberService.findById(memberId)));
         trade.addImages(tradeRequestDto.imageUrlList().stream().map(imageUrl -> new TradeImage(imageUrl, trade)).toList());
-        //createKeywordNotificationByTrade(trade);
+        createKeywordNotificationByTrade(trade);
         return findTrade(trade.getId());
     }
 
