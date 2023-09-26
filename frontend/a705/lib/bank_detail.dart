@@ -206,9 +206,10 @@ class _BankDetailPageState extends State<BankDetailPage> {
                           ),
                           const SizedBox(height: 5),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                margin: const EdgeInsets.fromLTRB(10, 0,30, 10),
+                                margin: const EdgeInsets.fromLTRB(10, 10,30, 10),
                                 padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                                 width: 220,
                                 height: 30,
@@ -462,10 +463,11 @@ class _BankDetailPageState extends State<BankDetailPage> {
                           ),
                           const SizedBox(height: 10,),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
                                 margin: const EdgeInsets.fromLTRB(10, 0, 20, 0),
-                                width: 180,
+                                width: 150,
                                 height: 50,
                                 // color: Colors.red,
                                 decoration: BoxDecoration(
@@ -507,7 +509,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                               Container(
                                 margin: const EdgeInsets.fromLTRB(15, 0, 10, 0),
                                 padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
-                                width: 110,
+                                width: 100,
                                 height: 50,
                                 // color: Colors.red,
                                 decoration: BoxDecoration(
@@ -651,12 +653,12 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                 child: Column(
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
                             margin: const EdgeInsets.fromLTRB(
                                 20, 10, 0, 0),
-                            width: 200,
+                            width: 180,
                             // color: Colors.red,
                             child: Row(
                               children: [
@@ -671,10 +673,11 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                               ],
                             ),),
                         Container(
+                          margin: const EdgeInsets.fromLTRB(0, 10, 10, 5),
                             child: const Text(
                               '1,300.00 원',
                               textAlign: TextAlign.end,
-                              style: TextStyle(fontSize: 20, color: Colors.red),))
+                              style: TextStyle(fontSize: 16, color: Colors.red),))
                       ],
                     ),
                     Row(
@@ -717,7 +720,6 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                             ],
                           ),
                         ),
-                        const SizedBox(width: 50,),
                         Container(
                           margin: const EdgeInsets.fromLTRB(
                               10, 0, 30, 10),
@@ -755,11 +757,11 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                         ),
                         Container(
                           margin: const EdgeInsets.fromLTRB(
-                              10, 0, 0, 10),
-                          // color: Colors.red,
+                              10, 0, 30, 10),
+                          color: Colors.red,
                           child: const Column(
                             crossAxisAlignment: CrossAxisAlignment
-                                .start,
+                                .end,
                             children: [
                               Row(
                                 children: [
@@ -798,5 +800,4 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
     );
   }
 }
-
 

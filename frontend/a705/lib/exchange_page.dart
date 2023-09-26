@@ -222,6 +222,7 @@ class _ExchangePageState extends State<ExchangePage> {
                     child:Column(
                       children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
                               margin: const EdgeInsets.fromLTRB(10, 20,10, 10),
@@ -745,10 +746,11 @@ class _ExchangePageState extends State<ExchangePage> {
                           ),
                         if (_isDouble)
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              margin: const EdgeInsets.fromLTRB(10, 10, 20, 10),
-                              width: 180,
+                              margin: const EdgeInsets.fromLTRB(10, 10, 0, 10),
+                              width: 160,
                               height: 50,
                               // color: Colors.red,
                               decoration: BoxDecoration(
@@ -789,9 +791,9 @@ class _ExchangePageState extends State<ExchangePage> {
                               ),
                             ),
                             Container(
-                              margin: const EdgeInsets.fromLTRB(15, 0, 10, 0),
+                              margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                               padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
-                              width: 110,
+                              width: 100,
                               height: 50,
                               // color: Colors.red,
                               decoration: BoxDecoration(
@@ -833,9 +835,10 @@ class _ExchangePageState extends State<ExchangePage> {
                         ),
                         if (_isDouble == false)
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Container(
-                            margin: const EdgeInsets.fromLTRB(270, 10, 10, 0),
+                            margin: const EdgeInsets.fromLTRB(0, 10, 10, 0),
                             width: 70,
                             height: 50,
                             // color: const Color(0xFFFFD954),
@@ -861,9 +864,10 @@ class _ExchangePageState extends State<ExchangePage> {
                       ),
                         if (_isDouble)
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Container(
-                                margin: const EdgeInsets.fromLTRB(270, 10, 10, 0),
+                                margin: const EdgeInsets.fromLTRB(0, 10, 10, 0),
                                 width: 70,
                                 height: 50,
                                 // color: const Color(0xFFFFD954),
@@ -1041,7 +1045,7 @@ class _ExchangePageState extends State<ExchangePage> {
                margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
                child: const Text(
                  "2,300 원",
-                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 30),
+                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
                ),
              ),
              Container(
