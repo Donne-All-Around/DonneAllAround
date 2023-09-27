@@ -199,11 +199,7 @@ packages:
     source: hosted
     version: "2.0.2"
   flutter_inappwebview:
-<<<<<<< HEAD
     dependency: "direct main"
-=======
-    dependency: transitive
->>>>>>> fef4a1db94e79ce83585ed91f29e8e6ce7a3e221
     description:
       name: flutter_inappwebview
       sha256: f73505c792cf083d5566e1a94002311be497d984b5607f25be36d685cf6361cf

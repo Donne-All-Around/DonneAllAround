@@ -52,16 +52,9 @@ dependencies:
   carousel_slider: ^4.2.1
   multiple_images_picker: ^1.0.1
   address_search_field: ^5.0.3
-<<<<<<< HEAD
   daum_postcode_search: ^0.0.2
   flutter_inappwebview: ^5.7.2+3
-=======
   fl_chart: ^0.63.0
-<<<<<<< HEAD
-=======
-
->>>>>>> fef4a1db94e79ce83585ed91f29e8e6ce7a3e221
->>>>>>> b3af545b6dc282b07ccdb1d98ea80547cb28df72
   kpostal: ^0.5.1
 
 dev_dependencies:

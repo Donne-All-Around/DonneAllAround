@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-import 'package:a705/choose_address_page.dart';
-import 'package:bottom_picker/bottom_picker.dart';
-=======
->>>>>>> fef4a1db94e79ce83585ed91f29e8e6ce7a3e221
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:kpostal/kpostal.dart';
 
 class DeliveryTransactionPage extends StatefulWidget {
@@ -262,13 +256,6 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                 ],
               ),
               GestureDetector(
-<<<<<<< HEAD
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ChooseAddressPage()));
-=======
                 onTap: () async {
                   await Navigator.push(
                       context,
@@ -289,7 +276,6 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                     _addr = "($postCode) ";
                     _addr += address;
                   });
->>>>>>> fef4a1db94e79ce83585ed91f29e8e6ce7a3e221
                 },
                 child: Container(
                   margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
