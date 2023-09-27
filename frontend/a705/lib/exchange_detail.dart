@@ -271,7 +271,7 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                              g    Container(
+                                 Container(
                                     margin : const EdgeInsets.fromLTRB(0, 0, 10,0),
                                       child:  Row(
                                         mainAxisAlignment: MainAxisAlignment.end,
@@ -719,4 +719,120 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
   }
 
+}
+
+
+
+List<String> country = [
+  '미국(달러)',
+  '일본(엔)',
+  '유럽(유로)',
+  '영국(파운드)',
+  '호주(달러)',
+  '중국(위안)',
+  '베트남(동)',
+  '한국(원)',
+  '홍콩(달러)',
+  '캐나다(달러)',
+  '체코(코루나)',
+  '뉴질랜드(달러)',
+  '필리핀(페소)',
+  '러시아(루블)',
+  '싱가폴(달러)',
+  '대만(달러)',
+];
+List<String> currency = [
+  'USD',
+  'JPY',
+  'EUR',
+  'GBP',
+  'AUD',
+  'CNY',
+  'VND',
+  'KRW',
+  'HKD',
+  'CAD',
+  'CZK',
+  'NZD',
+  'PHP',
+  'RUB',
+  'SGD',
+  'TWD',
+];
+List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
+
+List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
+
+class CountryListViewBuilder extends StatefulWidget {
+  const CountryListViewBuilder({super.key});
+
+  @override
+  State<CountryListViewBuilder> createState() => _CountryListViewBuilderState();
+}
+
+class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
+  int idx = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: country.length,
+      itemBuilder: (BuildContext context, int index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              idx = index;
+            });
+            Navigator.pop(context, idx);
+          },
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+            height: 50,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+              color: Color(0xFFFFD954),
+            ),
+            child: Row(
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(width: 20),
+                    CircleAvatar(
+                      backgroundImage:
+                      AssetImage('assets/images/flag/${currency[index]}.png'),
+                      radius: 10,
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        country[index],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        currency[index],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 20),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }

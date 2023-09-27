@@ -622,7 +622,7 @@ List<String> currency = [
 ];
 List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
 
-List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1];
+List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
 
 class CountryListViewBuilder extends StatefulWidget {
   const CountryListViewBuilder({super.key});
