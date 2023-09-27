@@ -23,90 +23,11 @@ class _ExchangePageState extends State<ExchangePage> {
   
   String selectedButton = '직접'; // 선택된 버튼
 
- // 첫번째 통화
-  final _valueList1 = [
-    '미국(달러) USD',
-    '일본(엔) JPY',
-    '유럽(유로) EUR',
-    '영국(파운드) GBP',
-    '호주(달러) AUD',
-    '중국(위안) CNY',
-    '베트남(동) VND',
-    '한국(원) KRW',
-    '홍콩(달러) HKD',
-    '캐나다(달러) CAD',
-    '체코(코루나) CZK',
-    '뉴질랜드(달러) NZD',
-    '필리핀(페소) PHP',
-    '러시아(루블) RUB',
-    '싱가폴(달러) SGD',
-    '대만(달러) TWD',
-  ];
-  var _selectedValue1 = '미국(달러) USD';
-  int idx1 = 0;
   int _idx = 0;
+  int _idx2 = 7;
+  int _idx3 = 4;
+  int _idx4 = 7;
 
-  List<String> currency1 = [
-    'USD',
-    'JPY',
-    'EUR',
-    'GBP',
-    'AUD',
-    'CNY',
-    'VND',
-    'KRW',
-    'HKD',
-    'CAD',
-    'CZK',
-    'NZD',
-    'PHP',
-    'RUB',
-    'SGD',
-    'TWD',
-  ];
-  List<String> sign1 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
-  
- // 두번째 통화
-  final _valueList2 = [
-    '미국(달러) USD',
-    '일본(엔) JPY',
-    '유럽(유로) EUR',
-    '영국(파운드) GBP',
-    '호주(달러) AUD',
-    '중국(위안) CNY',
-    '베트남(동) VND',
-    '한국(원) KRW',
-    '홍콩(달러) HKD',
-    '캐나다(달러) CAD',
-    '체코(코루나) CZK',
-    '뉴질랜드(달러) NZD',
-    '필리핀(페소) PHP',
-    '러시아(루블) RUB',
-    '싱가폴(달러) SGD',
-    '대만(달러) TWD',
-  ];
-  var _selectedValue2 = '한국(원) KRW';
-  int idx2 = 7;
-
-  List<String> currency2 = [
-    'USD',
-    'JPY',
-    'EUR',
-    'GBP',
-    'AUD',
-    'CNY',
-    'VND',
-    'KRW',
-    'HKD',
-    'CAD',
-    'CZK',
-    'NZD',
-    'PHP',
-    'RUB',
-    'SGD',
-    'TWD',
-  ];
-  List<String> sign2 =['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
 
   // 세번째 통화
   final _valueList3 = [
@@ -477,7 +398,11 @@ class _ExchangePageState extends State<ExchangePage> {
                                         },
                                         child: Container(
                                           padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                          color: const Color(0xFFF7F7F7),
+                                          width:
+                                          MediaQuery.of(context).size.width / 2 - 28,
                                           child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               CircleAvatar(
                                                 backgroundImage:
@@ -544,102 +469,141 @@ class _ExchangePageState extends State<ExchangePage> {
                             ],
                           ),
                         if (_isDouble == false)
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                                width: double.infinity,
-                                height: 60,
-                                // color: Colors.red,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.1),
-                                        spreadRadius: 1,
-                                        blurRadius: 3,
-                                        offset: const Offset(0, 0),
-                                      ),
-                                    ]),
-                                child:  Row(
-                                  children: [
-                                    Container(
-                                      height: 60,
-                                      width: MediaQuery.of(context).size.width / 2 - 5,
-                                      padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
-                                        // border: Border.all(color: Colors.transparent),
-                                        color: Color(0xFFF7F7F7),
-                                      ),
-                                      child: DropdownButtonHideUnderline(
-                                        child: DropdownButton(
-                                          value: _selectedValue2,
-                                          items: _valueList2.map(
-                                                (value) {
-                                              return DropdownMenuItem(
-                                                value: value,
-                                                child: Row(
-                                                  children: [
-                                                    CircleAvatar(
-                                                      backgroundImage: AssetImage(
-                                                          'assets/images/flag/${currency2[_valueList2.indexOf(value)]}.png'),
-                                                      radius: 10,
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Text(value),
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                          ).toList(),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _selectedValue2 = value!;
-                                              idx2 = _valueList2.indexOf(value);
-                                            });
-                                          },
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                  width: double.infinity,
+                                  height: 60,
+                                  // color: Colors.red,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          spreadRadius: 1,
+                                          blurRadius: 3,
+                                          offset: const Offset(0, 0),
                                         ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width / 2 - 72,
-                                      margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                      // color: Colors.red,
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
-                                        border: Border.all(color: Colors.transparent),
-                                      ),
-                                      child: TextField(
-                                        keyboardType: TextInputType.number,
-                                        // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                        controller: _moneyController2,
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: Colors.white,
-                                          border: InputBorder.none,
-                                          enabledBorder: const UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.transparent)
+                                      ]),
+                                  // 드롭다운
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () async {
+                                          int idx2 = await showModalBottomSheet(
+                                              context: context,
+                                              isScrollControlled: true,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              builder: (BuildContext context) {
+                                                return Container(
+                                                    height: MediaQuery.of(context).size.height / 5 * 4,
+                                                    color: Colors.transparent,
+                                                    child: Container(
+                                                      padding:
+                                                      const EdgeInsets.fromLTRB(30, 20, 30, 20),
+                                                      height:
+                                                      MediaQuery.of(context).size.height / 5 * 4,
+                                                      child: const Column(
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          SizedBox(height: 10),
+                                                          Text(
+                                                            '통화 선택',
+                                                            style: TextStyle(
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 20),
+                                                          ),
+                                                          SizedBox(height: 10),
+                                                          Expanded(child: CountryListViewBuilder2()),
+                                                        ],
+                                                      ),
+                                                    ));
+                                              });
+                                          setState(() {
+                                            _idx2 = idx2;
+                                            _moneyController2.text = (1 * unit2[_idx2]).toString();
+                                          });
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                          color: const Color(0xFFF7F7F7),
+                                          width:
+                                          MediaQuery.of(context).size.width / 2 - 28,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundImage:
+                                                AssetImage('assets/images/flag/${currency2[_idx2]}.png'),
+                                                radius: 15,
+                                              ),
+                                              const SizedBox(width: 5),
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    country[_idx2],
+                                                    style:
+                                                    const TextStyle(fontSize: 15),
+                                                  ),
+                                                  Text(
+                                                    currency[_idx2],
+                                                    style:
+                                                    const TextStyle(fontSize: 15),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(width: 5),
+                                              const Icon(
+                                                Icons.keyboard_arrow_down_rounded,
+                                                color: Colors.black,
+                                              )
+                                            ],
                                           ),
-                                          suffixText: ' ${sign2[idx2]}',
-                                        ),
-                                        textAlign: TextAlign.end,
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      Container(
+                                        width:  MediaQuery.of(context).size.width / 2 - 72,
+                                        margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
+                                          border: Border.all(color: Colors.transparent),
+                                        ),
+                                        child: TextField(
+                                          keyboardType: TextInputType.number,
+                                          // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                          controller: _moneyController2,
+                                          decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                            border: InputBorder.none,
+                                            enabledBorder: const UnderlineInputBorder(
+                                                borderSide: BorderSide(color: Colors.transparent)
+                                            ),
+                                            suffixText: ' ${sign2[_idx2]}',
+                                          ),
+                                          textAlign: TextAlign.end,
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),if (_isDouble)
+                            ],
+                          ),
+                        if (_isDouble)
                           Row(
                             children: [
                               Expanded(
@@ -1567,6 +1531,351 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
                     CircleAvatar(
                       backgroundImage:
                       AssetImage('assets/images/flag/${currency[index]}.png'),
+                      radius: 10,
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        country[index],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        currency[index],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 20),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+
+List<String> country2 = [
+  '미국(달러)',
+  '일본(엔)',
+  '유럽(유로)',
+  '영국(파운드)',
+  '호주(달러)',
+  '중국(위안)',
+  '베트남(동)',
+  '한국(원)',
+  '홍콩(달러)',
+  '캐나다(달러)',
+  '체코(코루나)',
+  '뉴질랜드(달러)',
+  '필리핀(페소)',
+  '러시아(루블)',
+  '싱가폴(달러)',
+  '대만(달러)',
+];
+List<String> currency2 = [
+  'USD',
+  'JPY',
+  'EUR',
+  'GBP',
+  'AUD',
+  'CNY',
+  'VND',
+  'KRW',
+  'HKD',
+  'CAD',
+  'CZK',
+  'NZD',
+  'PHP',
+  'RUB',
+  'SGD',
+  'TWD',
+];
+List<String> sign2 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
+
+List<int> unit2 = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
+
+class CountryListViewBuilder2 extends StatefulWidget {
+  const CountryListViewBuilder2({super.key});
+
+  @override
+  State<CountryListViewBuilder2> createState() => _CountryListViewBuilderState2();
+}
+
+class _CountryListViewBuilderState2 extends State<CountryListViewBuilder2> {
+  int idx2 = 7;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: country.length,
+      itemBuilder: (BuildContext context, int index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              idx2 = index;
+            });
+            Navigator.pop(context, idx2);
+          },
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+            height: 50,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+              color: Color(0xFFFFD954),
+            ),
+            child: Row(
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(width: 20),
+                    CircleAvatar(
+                      backgroundImage:
+                      AssetImage('assets/images/flag/${currency2[index]}.png'),
+                      radius: 10,
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        country[index],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        currency[index],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 20),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+
+List<String> country3 = [
+  '미국(달러)',
+  '일본(엔)',
+  '유럽(유로)',
+  '영국(파운드)',
+  '호주(달러)',
+  '중국(위안)',
+  '베트남(동)',
+  '한국(원)',
+  '홍콩(달러)',
+  '캐나다(달러)',
+  '체코(코루나)',
+  '뉴질랜드(달러)',
+  '필리핀(페소)',
+  '러시아(루블)',
+  '싱가폴(달러)',
+  '대만(달러)',
+];
+List<String> currency3 = [
+  'USD',
+  'JPY',
+  'EUR',
+  'GBP',
+  'AUD',
+  'CNY',
+  'VND',
+  'KRW',
+  'HKD',
+  'CAD',
+  'CZK',
+  'NZD',
+  'PHP',
+  'RUB',
+  'SGD',
+  'TWD',
+];
+List<String> sign3 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
+
+List<int> unit3 = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
+
+class CountryListViewBuilder3 extends StatefulWidget {
+  const CountryListViewBuilder3({super.key});
+
+  @override
+  State<CountryListViewBuilder3> createState() => _CountryListViewBuilderState3();
+}
+
+class _CountryListViewBuilderState3 extends State<CountryListViewBuilder3> {
+  int idx3 = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: country.length,
+      itemBuilder: (BuildContext context, int index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              idx3 = index;
+            });
+            Navigator.pop(context, idx3);
+          },
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+            height: 50,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+              color: Color(0xFFFFD954),
+            ),
+            child: Row(
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(width: 20),
+                    CircleAvatar(
+                      backgroundImage:
+                      AssetImage('assets/images/flag/${currency3[index]}.png'),
+                      radius: 10,
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        country[index],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        currency[index],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 20),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+
+List<String> country4 = [
+  '미국(달러)',
+  '일본(엔)',
+  '유럽(유로)',
+  '영국(파운드)',
+  '호주(달러)',
+  '중국(위안)',
+  '베트남(동)',
+  '한국(원)',
+  '홍콩(달러)',
+  '캐나다(달러)',
+  '체코(코루나)',
+  '뉴질랜드(달러)',
+  '필리핀(페소)',
+  '러시아(루블)',
+  '싱가폴(달러)',
+  '대만(달러)',
+];
+List<String> currency4 = [
+  'USD',
+  'JPY',
+  'EUR',
+  'GBP',
+  'AUD',
+  'CNY',
+  'VND',
+  'KRW',
+  'HKD',
+  'CAD',
+  'CZK',
+  'NZD',
+  'PHP',
+  'RUB',
+  'SGD',
+  'TWD',
+];
+List<String> sign4 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
+
+List<int> unit4 = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
+
+class CountryListViewBuilder4 extends StatefulWidget {
+  const CountryListViewBuilder4({super.key});
+
+  @override
+  State<CountryListViewBuilder4> createState() => _CountryListViewBuilderState4();
+}
+
+class _CountryListViewBuilderState4 extends State<CountryListViewBuilder4> {
+  int idx4 = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: country.length,
+      itemBuilder: (BuildContext context, int index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              idx4 = index;
+            });
+            Navigator.pop(context, idx4);
+          },
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+            height: 50,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+              color: Color(0xFFFFD954),
+            ),
+            child: Row(
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(width: 20),
+                    CircleAvatar(
+                      backgroundImage:
+                      AssetImage('assets/images/flag/${currency4[index]}.png'),
                       radius: 10,
                     ),
                     const SizedBox(width: 10),

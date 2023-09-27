@@ -273,7 +273,7 @@ class _HomePageState extends State<HomePage> {
                                 padding:
                                     const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                 width:
-                                    MediaQuery.of(context).size.width / 2 - 38,
+                                    MediaQuery.of(context).size.width / 2 - 28,
                                 height: kMinInteractiveDimension,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
@@ -337,7 +337,7 @@ class _HomePageState extends State<HomePage> {
                                 padding:
                                     const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                 width:
-                                    MediaQuery.of(context).size.width / 2 - 38,
+                                    MediaQuery.of(context).size.width / 2 - 48,
                                 height: kMinInteractiveDimension,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
