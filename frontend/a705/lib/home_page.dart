@@ -1,8 +1,11 @@
+import 'package:a705/providers/trade_providers.dart';
 import 'package:a705/transaction_detail_page.dart';
 import 'package:a705/transaction_page.dart';
 import 'package:a705/notification_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'models/TradeDto.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -16,6 +19,16 @@ class _HomePageState extends State<HomePage> {
   final _valueList = ['최신순', '낮은 가격순', '단위 당 낮은 가격순'];
   var _selectedValue = '최신순';
   int _idx = 0;
+
+  TradeProviders tradeProvider = TradeProviders();
+  List<TradeDto> trade = [];
+
+  int size = -1;
+
+  Future initTrade() async {
+    trade = await tradeProvider.getLatestTrade("USD", 1, "KOREA", "SEOUL", "KANGNAM", "YEOKSAM");
+    size = trade.length;
+  }
 
   @override
   Widget build(BuildContext context) {
