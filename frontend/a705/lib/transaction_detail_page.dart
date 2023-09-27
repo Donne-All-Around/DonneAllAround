@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:a705/chatting_detail_page.dart';
+import 'package:a705/chatting_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -15,6 +16,9 @@ class TransactionDetailPage extends StatefulWidget {
 
 class _TransactionDetailPageState extends State<TransactionDetailPage> {
   bool isLiked = false;
+  Map<String, dynamic> boardInfoMap = {
+
+  };
 
   @override
   void initState() {
@@ -236,7 +240,21 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                 onTap: () {
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
-                                      return const ChattingDetailPage();
+
+                                      return  ChattingDetailPage(
+                                          transactionInfoMap :{
+                                            "transactionId" : "board2",
+                                            "transactionTitle" : "싸게싸게팔아요",
+                                            "seller" : "신짱구",
+                                            "sellerId" : "098765",
+                                            "countryCode": "USD",
+                                            "transactionUrl" : "",
+                                            "koreanWonAmount" : 50000,
+                                            "foreignCurrencyAmount" : 5000,
+                                            "type": "DIRECT",
+                                            "status": "WAIT"
+                                          }
+                                      );
                                     },
                                   ));
                                 },
