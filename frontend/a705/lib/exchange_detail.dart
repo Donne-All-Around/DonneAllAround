@@ -271,7 +271,7 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Container(
+                              g    Container(
                                     margin : const EdgeInsets.fromLTRB(0, 0, 10,0),
                                       child:  Row(
                                         mainAxisAlignment: MainAxisAlignment.end,
