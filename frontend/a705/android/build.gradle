@@ -9,6 +9,7 @@ buildscript {
         implementation "androidx.activity:activity:1.6.0-alpha05"
         classpath 'com.android.tools.build:gradle:7.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.3.15'
     }
 }
 

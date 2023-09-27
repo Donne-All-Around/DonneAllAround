@@ -1,9 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:a705/Login/start_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // 바인딩
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
