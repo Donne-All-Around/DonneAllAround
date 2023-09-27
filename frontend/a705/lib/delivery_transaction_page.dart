@@ -1,3 +1,4 @@
+import 'package:a705/choose_address_page.dart';
 import 'package:bottom_picker/bottom_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -220,14 +221,11 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                 ],
               ),
               GestureDetector(
-                onTap: () async {
-                  String addr = await Navigator.push(
+                onTap: () {
+                  Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ChooseLocationPage(currentPosition.latitude, currentPosition.longitude)));
-                  setState(() {
-                    _addr = addr;
-                  });
+                          builder: (context) => const ChooseAddressPage()));
                 },
                 child: Container(
                   margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
