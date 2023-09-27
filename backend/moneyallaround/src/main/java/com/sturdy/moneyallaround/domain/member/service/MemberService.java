@@ -4,10 +4,7 @@ import com.sturdy.moneyallaround.Exception.message.ExceptionMessage;
 import com.sturdy.moneyallaround.Exception.model.UserAuthException;
 import com.sturdy.moneyallaround.Exception.model.UserException;
 import com.sturdy.moneyallaround.config.security.jwt.JwtTokenProvider;
-import com.sturdy.moneyallaround.domain.member.dto.request.CheckNicknameRequest;
-import com.sturdy.moneyallaround.domain.member.dto.request.CheckTelnumberRequest;
-import com.sturdy.moneyallaround.domain.member.dto.request.SignUpRequest;
-import com.sturdy.moneyallaround.domain.member.dto.request.UpdateProfileRequest;
+import com.sturdy.moneyallaround.domain.member.dto.request.*;
 import com.sturdy.moneyallaround.domain.member.dto.response.*;
 import com.sturdy.moneyallaround.domain.member.entity.Member;
 import com.sturdy.moneyallaround.domain.member.repository.MemberRepository;
@@ -15,6 +12,7 @@ import com.sturdy.moneyallaround.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -51,12 +49,11 @@ public class MemberService implements UserDetailsService {
     }
 
     //로그인
-//    @Transactional
-//    public LogInResponse logIn(LogInRequest request) {
-//
-//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken();
-//        log.info("authenticationToken = {}", authenticationToken);
-//    }
+    @Transactional
+    public LogInResponse logIn(LogInRequest request) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.tel());
+        log.info("authenticationToken = {}", authenticationToken);
+    }
 
 //    @Transactional
 //    public LogInResponse signIn(LogInRequest request) {

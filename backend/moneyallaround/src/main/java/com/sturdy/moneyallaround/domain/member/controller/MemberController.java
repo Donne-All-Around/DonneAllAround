@@ -2,7 +2,9 @@ package com.sturdy.moneyallaround.domain.member.controller;
 
 import com.sturdy.moneyallaround.common.ApiResponse;
 import com.sturdy.moneyallaround.domain.member.dto.request.CheckNicknameRequest;
+import com.sturdy.moneyallaround.domain.member.dto.request.LogInRequest;
 import com.sturdy.moneyallaround.domain.member.dto.request.SignUpRequest;
+import com.sturdy.moneyallaround.domain.member.dto.response.LogInResponse;
 import com.sturdy.moneyallaround.domain.member.service.MemberService;
 import com.sturdy.moneyallaround.domain.member.service.RefreshTokenService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,19 +53,19 @@ public class MemberController {
         return ApiResponse.success(memberService.registNewMember(request));
     }
 
-//로그인
-//    @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정한다.")
-//    @ApiResponses({
-//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
-//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 실패"),
-//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "사용자 없음"),
-//            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
-//    })
-//    @PutMapping("/update")
-//    public ApiResponse updateMember (@RequestBody UpdateProfileRequest request){
-//        Long memberId =
-//        return ApiResponse.success(memberService.updateProfile(request, memberId));
-//    }
+
+    @Operation(summary = "로그인", description = "전화번호 인증을 통해 로그인한다")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 실패"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "사용자 없음"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @PostMapping("/member/login")
+    public ApiResponse logIn(@RequestBody LogInRequest request){
+        log.info("로그인 시작");
+        LogInResponse logInResponse = memberService.logIn(request);
+    }
 
 
 //    @Operation(summary = "로그아웃", description = "로그아웃")
