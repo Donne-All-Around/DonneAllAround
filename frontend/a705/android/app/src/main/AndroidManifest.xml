@@ -11,8 +11,8 @@
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:networkSecurityConfig="@xml/network_security_config"
-        android:label="a705">
+        android:label="a705"
+        android:networkSecurityConfig="@xml/network_security_config">
         <!-- TODO: Add your Google Maps API key here -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -20,6 +20,7 @@
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:enableOnBackInvokedCallback="true"
             android:exported="true"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"

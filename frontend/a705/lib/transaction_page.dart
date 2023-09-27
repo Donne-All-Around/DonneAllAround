@@ -60,7 +60,24 @@ class _TransactionPageState extends State<TransactionPage> {
     'TWD',
   ];
 
-  List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
+  List<String> sign = [
+    '\$',
+    '¥',
+    '€',
+    '£',
+    '\$',
+    '¥',
+    '₫',
+    '₩',
+    '\$',
+    '\$',
+    'Kč',
+    '\$',
+    '₱',
+    '₽',
+    '\$',
+    '\$'
+  ];
 
   List<File> selectedImages = [];
   final picker = ImagePicker();
@@ -76,7 +93,7 @@ class _TransactionPageState extends State<TransactionPage> {
 
   TradeDto uploadTrade = TradeDto(
     id: 0,
-    seller: 0,
+    sellerId: 0,
     title: "",
     description: "",
     thumbnailImageUrl: "",
@@ -84,18 +101,20 @@ class _TransactionPageState extends State<TransactionPage> {
     countryCode: "USD",
     foreignCurrencyAmount: 0,
     koreanWonAmount: 0,
-    locationLatitude: 0,
-    locationLongitude: 0,
+    latitude: 0,
+    longitude: 0,
     preferredTradeCountry: "",
     preferredTradeCity: "",
     preferredTradeDistrict: "",
     preferredTradeTown: "",
-    type: "",
-    isShow: 0,
-    directTradeTime: "",
-    directTradeLocationDetail: "",
-    buyer: 0,
-    isDeliveryReceived: 0,
+    tradeLikeCount: 0,
+    sellerNickname: "",
+    sellerImgUrl: "",
+    sellerPoint: 0,
+    isLike: false,
+    createTime: "",
+    koreanWonPerForeignCurrency: 0,
+    imageUrlList: [],
   );
 
   final _titleEditController = TextEditingController();
@@ -238,11 +257,13 @@ class _TransactionPageState extends State<TransactionPage> {
                         hintText: '글 제목',
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Colors.transparent),
+                          borderSide:
+                              const BorderSide(color: Colors.transparent),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Colors.transparent),
+                          borderSide:
+                              const BorderSide(color: Colors.transparent),
                         ),
                       ),
                       cursorColor: Colors.black87,
@@ -364,7 +385,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         SizedBox(width: 10),
                         CircleAvatar(
                           backgroundImage:
-                          AssetImage('assets/images/flag/KRW.png'),
+                              AssetImage('assets/images/flag/KRW.png'),
                           radius: 10,
                         ),
                         SizedBox(width: 5),
@@ -492,30 +513,37 @@ class _TransactionPageState extends State<TransactionPage> {
                       if (!mounted) return;
                       Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => const MainPage()),
+                          MaterialPageRoute(
+                              builder: (context) => const MainPage()),
                           (route) => false);
                       uploadTrade = TradeDto(
                         id: uploadTrade.id,
-                        seller: uploadTrade.seller,
+                        sellerId: uploadTrade.sellerId,
                         title: _titleEditController.text,
                         description: _contentEditController.text,
                         thumbnailImageUrl: uploadTrade.thumbnailImageUrl,
                         status: uploadTrade.status,
                         countryCode: uploadTrade.countryCode,
-                        foreignCurrencyAmount: int.parse(_currencyEditController.text),
+                        foreignCurrencyAmount:
+                            int.parse(_currencyEditController.text),
                         koreanWonAmount: int.parse(_krwEditController.text),
-                        locationLatitude: uploadTrade.locationLatitude,
-                        locationLongitude: uploadTrade.locationLongitude,
-                        preferredTradeCountry: uploadTrade.preferredTradeCountry,
+                        latitude: uploadTrade.latitude,
+                        longitude: uploadTrade.longitude,
+                        preferredTradeCountry:
+                            uploadTrade.preferredTradeCountry,
                         preferredTradeCity: uploadTrade.preferredTradeCity,
-                        preferredTradeDistrict: uploadTrade.preferredTradeDistrict,
+                        preferredTradeDistrict:
+                            uploadTrade.preferredTradeDistrict,
                         preferredTradeTown: uploadTrade.preferredTradeTown,
-                        type: uploadTrade.type,
-                        isShow: uploadTrade.isShow,
-                        directTradeTime: uploadTrade.directTradeTime,
-                        directTradeLocationDetail: uploadTrade.directTradeLocationDetail,
-                        buyer: uploadTrade.buyer,
-                        isDeliveryReceived: uploadTrade.isDeliveryReceived,
+                        tradeLikeCount: uploadTrade.tradeLikeCount,
+                        sellerNickname: uploadTrade.sellerNickname,
+                        sellerImgUrl: uploadTrade.sellerImgUrl,
+                        sellerPoint: uploadTrade.sellerPoint,
+                        isLike: uploadTrade.isLike,
+                        createTime: uploadTrade.createTime,
+                        koreanWonPerForeignCurrency:
+                            uploadTrade.koreanWonPerForeignCurrency,
+                        imageUrlList: uploadTrade.imageUrlList,
                       );
                       await tradeProvider.postTrade(uploadTrade);
                     },
