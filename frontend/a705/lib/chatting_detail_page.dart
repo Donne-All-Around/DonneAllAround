@@ -1,6 +1,8 @@
 import 'package:a705/chatting_page.dart';
+import 'package:a705/dto/TransactionInfo.dart';
 import 'package:a705/service/database.dart';
 import 'package:a705/appointment_page.dart';
+import 'package:a705/service/spring_api.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -46,7 +48,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
       transactionUrl = "", // 거래글 썸네일
       type = "", // 거래 방법
       status = ""; // 거래 상태
-  int foreignCurrencyAmount=0, koreanWonAmount=0;
+  int foreignCurrencyAmount = 0, koreanWonAmount = 0;
   String _appt = "약속 잡기";
   Stream? messageStream;
   int batchSize = 10; // 한 번에 가져올 메시지 수
@@ -70,7 +72,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     // transactionInfoMap이 있거나 chatRoomDetailInfoMap이 있는 경우, 초기화합니다.
     if (widget.transactionInfoMap != null ||
         widget.chatRoomDetailInfoMap != null) {
-      _initializeInfo(widget.transactionInfoMap, widget.chatRoomDetailInfoMap);
+      await _initializeInfo(
+          widget.transactionInfoMap, widget.chatRoomDetailInfoMap);
     }
     await getAndSetMessages(); // 채팅 내역 가져오기
     setState(() {});
@@ -83,10 +86,10 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     ontheload();
   }
 
-  void _initializeInfo(
+  Future<void> _initializeInfo(
     Map<String, dynamic>? transactionInfoMap,
     Map<String, dynamic>? chatRoomDetailInfoMap,
-  ) {
+  ) async {
     var infoType = InfoType.None;
     if (chatRoomDetailInfoMap != null) {
       infoType = InfoType.ChatRoomDetailInfo;
@@ -100,8 +103,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         chatRoomId = widget.chatRoomDetailInfoMap?['chatroomId'] ?? "";
         print("chatRoomId: $chatRoomId");
         List<String> chatRoomInfoList = chatRoomId!.split("_");
-        // 각 부분을 출력합니다.
-        for (String part in chatRoomInfoList) {print(part);}
 
         // 채팅 참여자 정보 설정하기
         transactionId = chatRoomInfoList[0];
@@ -112,44 +113,52 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         otherRole = widget.chatRoomDetailInfoMap?['otherRole'] ?? "";
         myRole = widget.chatRoomDetailInfoMap?['myRole'] ?? "";
 
-        if(otherRole=="seller"){
+        if (otherRole == "seller") {
           seller = otherUserName;
           buyer = myUserName;
-        }else if(otherRole=="buyer"){
+        } else if (otherRole == "buyer") {
           seller = myUserName;
           buyer = otherUserName;
         }
 
-
         // 거래글 정보 가져오기
-
-
-
+        Map<String, dynamic> data =
+            await SpringApi().getChatTransactionInfo("12");
+        Trade trade = Trade.fromJson(data);
+        transactionId = trade.id.toString();
+        transactionTitle = trade.title;
+        countryCode = trade.countryCode;
+        type = trade.type;
+        status = trade.status;
+        transactionUrl = trade.thumbnailImage;
+        koreanWonAmount = trade.koreanWonAmount;
+        foreignCurrencyAmount = trade.foreignCurrencyAmount;
         break;
 
       case InfoType.TransactionInfo:
         // 거래글 정보 가져오기
         // 새로 만들 시, 상대방은 seller 사용자는 buyer
-        transactionId = widget.transactionInfoMap?['transactionId'] ?? "";
-        transactionTitle = widget.transactionInfoMap?['transactionTitle'] ?? ""; // 기본값 또는 대체 문자열 설정
-        countryCode = widget.transactionInfoMap?['countryCode'] ?? "";
-        type = widget.transactionInfoMap?['type'] ?? "DIRECT";
-        status = widget.transactionInfoMap?['status'] ?? "WAIT";
-        transactionUrl = widget.transactionInfoMap?['transactionUrl'] ?? "";
-        koreanWonAmount = widget.transactionInfoMap?['koreanWonAmount'] ?? 0;
-        foreignCurrencyAmount =
-            widget.transactionInfoMap?['foreignCurrencyAmount'] ?? 0;
-
-        print(transactionTitle);
+        Map<String, dynamic> data =
+            await SpringApi().getChatTransactionInfo("12");
+        Trade trade = Trade.fromJson(data);
+        transactionId = trade.id.toString();
+        transactionTitle = trade.title;
+        countryCode = trade.countryCode;
+        type = trade.type;
+        status = trade.status;
+        transactionUrl = trade.thumbnailImage;
+        koreanWonAmount = trade.koreanWonAmount;
+        foreignCurrencyAmount = trade.foreignCurrencyAmount;
+        // transactionId = widget.transactionInfoMap?['transactionId'] ?? "";
+        print("transactionId : $transactionId");
 
         // 채팅 참여자 정보 설정하기
         seller = widget.transactionInfoMap?['seller'];
-        sellerId = widget.transactionInfoMap?['sellerId'];
+        sellerId = trade.sellerId.toString();
         buyer = myUserName;
         buyerId = myUserId;
         chatRoomId = "${transactionId!}_${sellerId!}_${buyerId!}";
         otherUserName = seller;
-        print(seller);
 
         // user 정보에 새 채팅방 목록 추가
         Map<String, dynamic> chatRoomListInfoMap = {
@@ -400,8 +409,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
       messageId ??= randomAlphaNumeric(10);
       // 마지막 메시지
       DatabaseMethods()
-          .addMessageUser(chatRoomId!, messageId!, messageInfoMap,
-          otherRole!, myRole!, sellerInfoMap, buyerInfoMap)
+          .addMessageUser(chatRoomId!, messageId!, messageInfoMap, otherRole!,
+              myRole!, sellerInfoMap, buyerInfoMap)
           .then((value) {
         Map<String, dynamic> lastMessageInfoMap = {
           "lastMessage": message,
@@ -412,7 +421,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
           "transactionUrl": "",
         };
 
-        print(lastMessageInfoMap);
         DatabaseMethods()
             .updateLastMessageSend(chatRoomId!, lastMessageInfoMap);
         if (sendClicked) {
@@ -530,7 +538,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                     ),
                                     SizedBox(width: 5),
                                     Text(
-
                                       "${NumberFormat.decimalPattern().format(foreignCurrencyAmount)} ${countryCode}",
                                       style: TextStyle(
                                           fontSize: 16,

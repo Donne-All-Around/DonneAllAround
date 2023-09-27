@@ -26,38 +26,6 @@ class DatabaseMethods {
         .get();
   }
 
-  // 채팅방 생성
-  // createChatRoom(
-  //     String chatRoomId,
-  //     String myUserName,
-  //     String otherUserName,
-  //     Map<String, dynamic> chatRoomInfoMap,
-  //     Map<String, dynamic> chatRoomListInfoMap) async {
-  //   // 채팅방 정보 얻기
-  //   final snapshot = await FirebaseFirestore.instance
-  //       .collection("chatrooms")
-  //       .doc(chatRoomId)
-  //       .get();
-  //   if (snapshot.exists) {
-  //     // 채팅방 이미 존재
-  //     return true;
-  //   } else {
-  //     // 채팅방 없음
-  //     // chatrooms에 채팅방 생성
-  //     await FirebaseFirestore.instance
-  //         .collection("chatrooms")
-  //         .doc(chatRoomId)
-  //         .set(chatRoomInfoMap);
-  //     // user에 채팅방 리스트 생성
-  //     await FirebaseFirestore.instance
-  //         .collection("users")
-  //         .doc(myUserName)
-  //         .collection("chatroomList")
-  //         .doc(boardId)
-  //         .set(chatRoomListInfoMap);
-  //   }
-  // }
-
   // 채팅 메시지 추가 + 유저 정보 추가
   Future addMessageUser(
     String chatRoomId,
@@ -102,17 +70,16 @@ class DatabaseMethods {
           .set(setSellerInfoMap);
     }
 
-
-      print(sellerInfoMap['userName']);
+    print(sellerInfoMap['userName']);
 
     otherRole == "seller"
-          ? await userDocRef.update(sellerInfoMap)
-          : await userDocRef.update(buyerInfoMap);
-      final updatedFiled = {
-        'isExit':false,
-      };
+        ? await userDocRef.update(sellerInfoMap)
+        : await userDocRef.update(buyerInfoMap);
+    final updatedFiled = {
+      'isExit': false,
+    };
     DocumentReference myDocRef =
-    chatRoomDocRef.collection("userRole").doc(myRole);
+        chatRoomDocRef.collection("userRole").doc(myRole);
 
     try {
       await myDocRef.update(updatedFiled);
@@ -188,7 +155,7 @@ class DatabaseMethods {
     if (ds.exists) {
       // 'fieldName' 필드의 값을 가져옵니다.
       unReadCnt = ds.get('unRead');
-      print(unReadCnt);
+      // print(unReadCnt);
     } else {
       print('존재하지 않습니다.');
     }
@@ -209,15 +176,15 @@ class DatabaseMethods {
   Future<Map<String, dynamic>> getChatList(List<String> myList) async {
     Map<String, dynamic> chatList = {};
     try {
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('chatrooms')
-          .get();
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('chatrooms').get();
 
       for (int i = 0; i < snapshot.docs.length; i++) {
         DocumentSnapshot doc = snapshot.docs[i];
-        if (myList.contains(doc.id)) { // 내 채팅목록만 가져오기
+        if (myList.contains(doc.id)) {
+          // 내 채팅목록만 가져오기
           Object? listData = doc.data();
-          print(listData);
+          // print(listData);
           DocumentReference seller =
               doc.reference.collection("userRole").doc("seller");
           DocumentReference buyer =
@@ -230,16 +197,13 @@ class DatabaseMethods {
           Object? sellerData = sellerDs.data();
           Object? buyerData = buyerDs.data();
 
-          print(sellerData);
-          print(buyerData);
-
           // chatList에 데이터를 추가합니다.
           chatList[doc.id] = {
             "list": listData,
             "seller": sellerData,
             "buyer": buyerData,
           };
-          print(chatList);
+          // print(chatList);
         }
       }
       return chatList;
@@ -250,24 +214,25 @@ class DatabaseMethods {
   }
 
   // users에 chatlist 추가
-  setUserChatList(String sellerId, String buyerId, String transactionId, Map<String, dynamic> chatRoomListInfoMap) async {
+  setUserChatList(String sellerId, String buyerId, String transactionId,
+      Map<String, dynamic> chatRoomListInfoMap) async {
     await FirebaseFirestore.instance
-            .collection("user")
-            .doc(sellerId)
-            .collection("chatroomList")
-            .doc(transactionId)
-            .set(chatRoomListInfoMap);
+        .collection("user")
+        .doc(sellerId)
+        .collection("chatroomList")
+        .doc(transactionId)
+        .set(chatRoomListInfoMap);
     await FirebaseFirestore.instance
-            .collection("user")
-            .doc(buyerId)
-            .collection("chatroomList")
-            .doc(transactionId)
-            .set(chatRoomListInfoMap);
-
+        .collection("user")
+        .doc(buyerId)
+        .collection("chatroomList")
+        .doc(transactionId)
+        .set(chatRoomListInfoMap);
   }
+
   // users에서 채팅목록 조회
   Future<List<String>> getUserChatList(String myUserId) async {
-   List<String> myList = [];
+    List<String> myList = [];
     try {
       // Firebase 초기화
       await Firebase.initializeApp();
@@ -279,33 +244,29 @@ class DatabaseMethods {
       final collection = db.collection('user');
 
       // doc 가져오기
-      final docs = await collection.doc(myUserId).collection('chatroomList').get();
+      final docs =
+          await collection.doc(myUserId).collection('chatroomList').get();
 
       // doc의 id를 배열에 저장
       myList = docs.docs.map((doc) => doc.id).toList();
 
-      // id 출력
-      print(myList);
       return myList;
-
-    }catch(e){
+    } catch (e) {
       print('Firestore 데이터 가져오기 오류: $e');
     }
     return myList;
   }
 
-
   // 나가기
   setExit(String chatroomId, String myRole) async {
-
     final documentReference = FirebaseFirestore.instance
         .collection("chatrooms")
         .doc(chatroomId)
         .collection("userRole")
         .doc(myRole);
-    // 업데이트할 필드와 값을 지정합니다.
+
     final updatedField = {
-      'isExit' : true,
+      'isExit': true,
     };
     try {
       await documentReference.update(updatedField);
@@ -313,5 +274,28 @@ class DatabaseMethods {
     } catch (e) {
       print('업데이트 실패: $e');
     }
+  }
+
+  // 거래 약속잡기 정보 저장
+  setTradeInfo(String tradeId) {
+    Map<String, dynamic> tradeInfo = {
+      "type": "DIRECT",
+      "directTradeTime": "2023년 10월 4일 10:00AM",
+      "directTradeLocationDetail": "역삼역 2번 출구",
+      "sellerAccountBankCode": "우리은행",
+      "sellerAccountNumber": "1234-5678-91011",
+      "deliveryRecipientName": "이병건",
+      "deliveryRecipientTel": "010-1234-5678",
+      "deliveryAddressZipCode": "12345",
+      "deliveryAddressDetail": "101동 1004호",
+      "deliveryAddress": "서울시 강남구 대치동",
+      "trackingNumber": "12345678",
+      "buyerId": "abcdef",
+      "sellerId": "3",
+    };
+
+    FirebaseFirestore.instance.collection("trade").doc(tradeId).set(tradeInfo);
+
+
   }
 }

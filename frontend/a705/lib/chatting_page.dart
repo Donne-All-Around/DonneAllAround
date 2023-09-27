@@ -323,8 +323,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
     super.initState();
     getUserInfo();
     getAndSetChatrooms();
-    print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-    SpringApi().getTransactionInfo("12");
+
   }
 
   getUserInfo() async {
@@ -350,7 +349,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
   getAndSetChatrooms() async {
     print('myUserId : ${myUserId}');
     List<String> myList = await DatabaseMethods().getUserChatList(myUserId!);
-    print('myList : ${myList}');
+    // print('myList : ${myList}');
     chatroom = await DatabaseMethods().getChatList(myList);
 
     setState(() {}); // 데이터를 가져온 후 화면을 업데이트합니다.
@@ -364,7 +363,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
         final key = chatroom.keys.elementAt(index);
         print("Key: $key");
         final item = chatroom[key];
-        print("item: $item");
+        // print("item: $item");
 
         // 상대방 이름 판별
         myRole = myUserName == item['seller']['userName'] ? 'seller' : 'buyer';
