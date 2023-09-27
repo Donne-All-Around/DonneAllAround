@@ -28,92 +28,6 @@ class _ExchangePageState extends State<ExchangePage> {
   int _idx3 = 4;
   int _idx4 = 7;
 
-
-  // 세번째 통화
-  final _valueList3 = [
-    '미국(달러) USD',
-    '일본(엔) JPY',
-    '유럽(유로) EUR',
-    '영국(파운드) GBP',
-    '호주(달러) AUD',
-    '중국(위안) CNY',
-    '베트남(동) VND',
-    '한국(원) KRW',
-    '홍콩(달러) HKD',
-    '캐나다(달러) CAD',
-    '체코(코루나) CZK',
-    '뉴질랜드(달러) NZD',
-    '필리핀(페소) PHP',
-    '러시아(루블) RUB',
-    '싱가폴(달러) SGD',
-    '대만(달러) TWD',
-  ];
-  var _selectedValue3 = '베트남(동) VND';
-  int idx3 = 6;
-
-  List<String> currency3 = [
-    'USD',
-    'JPY',
-    'EUR',
-    'GBP',
-    'AUD',
-    'CNY',
-    'VND',
-    'KRW',
-    'HKD',
-    'CAD',
-    'CZK',
-    'NZD',
-    'PHP',
-    'RUB',
-    'SGD',
-    'TWD',
-  ];
-  List<String> sign3 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
-
-  // 네번째 통화
-  final _valueList4 = [
-    '미국(달러) USD',
-    '일본(엔) JPY',
-    '유럽(유로) EUR',
-    '영국(파운드) GBP',
-    '호주(달러) AUD',
-    '중국(위안) CNY',
-    '베트남(동) VND',
-    '한국(원) KRW',
-    '홍콩(달러) HKD',
-    '캐나다(달러) CAD',
-    '체코(코루나) CZK',
-    '뉴질랜드(달러) NZD',
-    '필리핀(페소) PHP',
-    '러시아(루블) RUB',
-    '싱가폴(달러) SGD',
-    '대만(달러) TWD',
-  ];
-  var _selectedValue4 = '한국(원) KRW';
-  int idx4 = 7;
-
-  List<String> currency4 = [
-    'USD',
-    'JPY',
-    'EUR',
-    'GBP',
-    'AUD',
-    'CNY',
-    'VND',
-    'KRW',
-    'HKD',
-    'CAD',
-    'CZK',
-    'NZD',
-    'PHP',
-    'RUB',
-    'SGD',
-    'TWD',
-  ];
-  List<String> sign4 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
-
-
   final _bankList = ['신한은행', '하나은행'];
   var _selectedValue5 = '신한은행';
   Map<String, Map<String, String>> bankInfo = {
@@ -625,52 +539,89 @@ class _ExchangePageState extends State<ExchangePage> {
                                       ]),
                                   // 드롭다운
                                   child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Container(
-                                        height: 60,
-                                        width: MediaQuery.of(context).size.width / 2 - 5,
-                                        padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
-                                          border: Border.all(color: Colors.transparent),
-                                          color:  const Color(0xFFF7F7F7),
-                                        ),
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton(
-                                            value: _selectedValue3,
-                                            items: _valueList3.map(
-                                                  (value) {
-                                                return DropdownMenuItem(
-                                                  value: value,
-                                                  child: Row(
-                                                    children: [
-                                                      CircleAvatar(
-                                                        backgroundImage: AssetImage(
-                                                            'assets/images/flag/${currency3[_valueList3.indexOf(value)]}.png'),
-                                                        radius: 10,
+                                      GestureDetector(
+                                        onTap: () async {
+                                          int idx3 = await showModalBottomSheet(
+                                              context: context,
+                                              isScrollControlled: true,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              builder: (BuildContext context) {
+                                                return Container(
+                                                    height: MediaQuery.of(context).size.height / 5 * 4,
+                                                    color: Colors.transparent,
+                                                    child: Container(
+                                                      padding:
+                                                      const EdgeInsets.fromLTRB(30, 20, 30, 20),
+                                                      height:
+                                                      MediaQuery.of(context).size.height / 5 * 4,
+                                                      child: const Column(
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          SizedBox(height: 10),
+                                                          Text(
+                                                            '통화 선택',
+                                                            style: TextStyle(
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 20),
+                                                          ),
+                                                          SizedBox(height: 10),
+                                                          Expanded(child: CountryListViewBuilder3()),
+                                                        ],
                                                       ),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Text(value),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                            ).toList(),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _selectedValue3 = value!;
-                                                idx3 = _valueList3.indexOf(value);
+                                                    ));
                                               });
-                                            },
+                                          setState(() {
+                                            _idx3 = idx3;
+                                            _moneyController3.text = (1 * unit3[_idx3]).toString();
+                                          });
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                          color: const Color(0xFFF7F7F7),
+                                          width:
+                                          MediaQuery.of(context).size.width / 2 - 28,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundImage:
+                                                AssetImage('assets/images/flag/${currency3[_idx3]}.png'),
+                                                radius: 15,
+                                              ),
+                                              const SizedBox(width: 5),
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    country[_idx3],
+                                                    style:
+                                                    const TextStyle(fontSize: 15),
+                                                  ),
+                                                  Text(
+                                                    currency[_idx3],
+                                                    style:
+                                                    const TextStyle(fontSize: 15),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(width: 5),
+                                              const Icon(
+                                                Icons.keyboard_arrow_down_rounded,
+                                                color: Colors.black,
+                                              )
+                                            ],
                                           ),
                                         ),
                                       ),
                                       Container(
                                         width:  MediaQuery.of(context).size.width / 2 - 72,
-                                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                        // color: Colors.red,
+                                        margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                                         decoration: BoxDecoration(
                                           borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
                                           border: Border.all(color: Colors.transparent),
@@ -686,7 +637,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                             enabledBorder: const UnderlineInputBorder(
                                                 borderSide: BorderSide(color: Colors.transparent)
                                             ),
-                                            suffixText: ' ${sign3[idx3]}',
+                                            suffixText: ' ${sign3[_idx3]}',
                                           ),
                                           textAlign: TextAlign.end,
                                           style: const TextStyle(
@@ -721,53 +672,91 @@ class _ExchangePageState extends State<ExchangePage> {
                                           offset: const Offset(0, 0),
                                         ),
                                       ]),
-                                  child:  Row(
+                                  // 드롭다운
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Container(
-                                        height: 60,
-                                        width: MediaQuery.of(context).size.width / 2 - 5,
-                                        padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
-                                          border: Border.all(color: Colors.transparent),
-                                          color:  const Color(0xFFF7F7F7),
-                                        ),
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton(
-                                            value: _selectedValue4,
-                                            items: _valueList4.map(
-                                                  (value) {
-                                                return DropdownMenuItem(
-                                                  value: value,
-                                                  child: Row(
-                                                    children: [
-                                                      CircleAvatar(
-                                                        backgroundImage: AssetImage(
-                                                            'assets/images/flag/${currency4[_valueList4.indexOf(value)]}.png'),
-                                                        radius: 10,
+                                      GestureDetector(
+                                        onTap: () async {
+                                          int idx4 = await showModalBottomSheet(
+                                              context: context,
+                                              isScrollControlled: true,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              builder: (BuildContext context) {
+                                                return Container(
+                                                    height: MediaQuery.of(context).size.height / 5 * 4,
+                                                    color: Colors.transparent,
+                                                    child: Container(
+                                                      padding:
+                                                      const EdgeInsets.fromLTRB(30, 20, 30, 20),
+                                                      height:
+                                                      MediaQuery.of(context).size.height / 5 * 4,
+                                                      child: const Column(
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          SizedBox(height: 10),
+                                                          Text(
+                                                            '통화 선택',
+                                                            style: TextStyle(
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 20),
+                                                          ),
+                                                          SizedBox(height: 10),
+                                                          Expanded(child: CountryListViewBuilder4()),
+                                                        ],
                                                       ),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Text(value),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                            ).toList(),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _selectedValue4 = value!;
-                                                idx4 = _valueList4.indexOf(value);
+                                                    ));
                                               });
-                                            },
+                                          setState(() {
+                                            _idx4 = idx4;
+                                            _moneyController4.text = (1 * unit4[_idx4]).toString();
+                                          });
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                          color: const Color(0xFFF7F7F7),
+                                          width:
+                                          MediaQuery.of(context).size.width / 2 - 28,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundImage:
+                                                AssetImage('assets/images/flag/${currency4[_idx4]}.png'),
+                                                radius: 15,
+                                              ),
+                                              const SizedBox(width: 5),
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    country[_idx4],
+                                                    style:
+                                                    const TextStyle(fontSize: 15),
+                                                  ),
+                                                  Text(
+                                                    currency[_idx4],
+                                                    style:
+                                                    const TextStyle(fontSize: 15),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(width: 5),
+                                              const Icon(
+                                                Icons.keyboard_arrow_down_rounded,
+                                                color: Colors.black,
+                                              )
+                                            ],
                                           ),
                                         ),
                                       ),
                                       Container(
                                         width:  MediaQuery.of(context).size.width / 2 - 72,
-                                        margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                        // color: Colors.red,
+                                        margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                                         decoration: BoxDecoration(
                                           borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
                                           border: Border.all(color: Colors.transparent),
@@ -783,11 +772,11 @@ class _ExchangePageState extends State<ExchangePage> {
                                             enabledBorder: const UnderlineInputBorder(
                                                 borderSide: BorderSide(color: Colors.transparent)
                                             ),
-                                            suffixText: ' ${sign4[idx4]}',
+                                            suffixText: ' ${sign4[_idx4]}',
                                           ),
                                           textAlign: TextAlign.end,
                                           style: const TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
