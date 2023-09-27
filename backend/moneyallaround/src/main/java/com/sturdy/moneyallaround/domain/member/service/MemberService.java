@@ -192,12 +192,11 @@ public class MemberService implements UserDetailsService {
 
 
     //UserDetailService
-    //우리가 지금 유저 이름이 없는데 닉네임을 넣으면 findBynickname 이랑 같은거 아닌가?
-    // 일단 넣었는데 틀리면 바꿀게
+    //우리가 지금 유저 이름이 없어서 Tel 넣었어
     @Override
-    public UserDetails loadUserByUsername(String nickname) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String tel) throws UsernameNotFoundException {
         System.out.println("유저 찾기");
-        return memberRepository.findByNickname(nickname)
+        return memberRepository.findByTel(tel)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
     }
 }

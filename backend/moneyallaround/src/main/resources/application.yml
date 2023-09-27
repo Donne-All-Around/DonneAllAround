@@ -18,6 +18,8 @@ spring:
     password: ssafy
 
 #Jwt secret Key
+jwt:
+  secret: o79wfnSC9mNCkN6xKfAinMH4Zh9WZCnby/zNpPa9Yi2FiXy+cbqZUho6/gWNWVWj
 
 data:
   redis:

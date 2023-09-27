@@ -30,7 +30,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
     })
 
-    @PostMapping("/checkNickname")
+    @PostMapping("/api/member/check/nickname")
     public ApiResponse checkNickname(@RequestBody CheckNicknameRequest request){
         log.info("닉네임 전송 시작");
         return ApiResponse.success(memberService.checkNickname(request));
@@ -45,7 +45,7 @@ public class MemberController {
     })
 
 
-    @PostMapping("/signup")
+    @PostMapping("/api/member/join")
     public ApiResponse signUp(@RequestBody SignUpRequest request) {
         log.info("회원가입 시작");
         return ApiResponse.success(memberService.registNewMember(request));

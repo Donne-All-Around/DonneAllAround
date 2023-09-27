@@ -21,12 +21,27 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/",
-            "/swagger-resources"
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            "/v3/api-docs/**",
+            "/api/public/**",
+            "/api/public/authenticate",
+            "/actuator/*",
+            "/swagger-ui/**",
+            "/api-docs/**",
+            "/swagger*/**",
+            "/swagger-ui/index.html",
+            "/api/solution/detect",
+            "/api/member/**"
     };
 
     private static final String[] USER_LIST = {
             "/api/member/login",
-            "/api/member/update",
+            "/api/member/edit",
             "/api/member/logout",
             "/api/member/delete"
     };

@@ -3,16 +3,23 @@ package com.sturdy.moneyallaround.config.security.jwt;
 
 import com.sturdy.moneyallaround.Exception.message.ExceptionMessage;
 import com.sturdy.moneyallaround.Exception.model.TokenCheckFailException;
+import com.sturdy.moneyallaround.Exception.model.TokenNotFoundException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -22,13 +29,17 @@ public class JwtTokenProvider {
 
     private final Key key;
     //토큰 생성 및 유효성 검사에 사용되는 시크릿 키 초기화 역할
-    public JwtTokenProvider(@Value("1ntpYfNvwBU9ay1hz10ESI6esspQmbN3") String secretKey) {
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
+    /**
+     * AccessToken : 4시간
+     * RefreshToken : 14일
+     */
 
-
+    // 유저 전화번호를 가지고 AccessToken, RefreshToken 을 생성하는 메서드
 
     public TokenInfo generateToken(Authentication authentication) {
         String accessToken = createAccessToken(authentication);
@@ -49,16 +60,6 @@ public class JwtTokenProvider {
                 .build();
     }
 
-    private String createRefreshToken() {
-        long now = (new Date()).getTime();
-        return (
-                Jwts.builder()
-                        .setExpiration(new Date(now + 60*60*24*14*1000))
-                        .signWith(key, SignatureAlgorithm.HS256)
-                        .compact()
-                );
-    }
-
 
     private String createAccessToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
@@ -67,7 +68,7 @@ public class JwtTokenProvider {
 
         long now = (new Date()).getTime();
         //access token 생성
-        Date accessTokenExpiresIn = new Date(now + 60*60*24*1000);
+        Date accessTokenExpiresIn = new Date(now + 60*60*4*1000);
 
         return (
                 Jwts.builder()
@@ -78,6 +79,16 @@ public class JwtTokenProvider {
                         .compact()
                 );
 
+    }
+
+    private String createRefreshToken() {
+        long now = (new Date()).getTime();
+        return (
+                Jwts.builder()
+                        .setExpiration(new Date(now + 60*60*24*14*1000))
+                        .signWith(key, SignatureAlgorithm.HS256)
+                        .compact()
+        );
     }
 
     //토큰 유효한지 아닌지 검사하시오
@@ -111,6 +122,32 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
+    public Authentication getAuthentication(String accessToken) {
+        // 토큰 복호화
+        Claims claims = parseClaims(accessToken);
 
+        if (claims.get("auth") == null) {
+            throw new TokenNotFoundException(ExceptionMessage.TOKEN_NOT_FOUND);
+        }
+        // 클레임에서 권한 정보 가져오기
+        Collection<? extends GrantedAuthority> authorities =
+                Arrays.stream(claims.get("auth").toString().split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .toList();
+
+        // UserDetails 객체를 만들어서 Authentication 리턴
+        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+    }
+
+
+    //accessToken에서 클레임 추출
+    private Claims parseClaims(String accessToken) {
+        try {
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
+    }
 
 }
