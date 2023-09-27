@@ -121,7 +121,7 @@ class SellRecordPageState extends State<SellRecordPage> {
 
 }
 
-List<String> transactions = ['문요환', '별의 커비', '뽀로로'];
+List<String> transactions = ['옹골찬', '문요환', '별의 커비', '뽀로로'];
 class ListViewBuilder extends StatefulWidget {
   const ListViewBuilder({super.key});
 
