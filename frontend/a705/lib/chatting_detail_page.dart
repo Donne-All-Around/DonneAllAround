@@ -4,6 +4,7 @@ import 'package:a705/service/database.dart';
 import 'package:a705/appointment_page.dart';
 import 'package:a705/service/spring_api.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:a705/transaction_info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:random_string/random_string.dart';
@@ -530,32 +531,49 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                   ),
                                 ),
                                 Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    CircleAvatar(
-                                      backgroundImage:
-                                          AssetImage('assets/images/AUD.png'),
-                                      radius: 8,
+                                    Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundImage: AssetImage(
+                                                  'assets/images/flag/AUD.png'),
+                                              radius: 8,
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              '${NumberFormat.decimalPattern().format(foreignCurrencyAmount)} ${countryCode}',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.blueAccent),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 15),
+                                      ],
                                     ),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      "${NumberFormat.decimalPattern().format(foreignCurrencyAmount)} ${countryCode}",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blueAccent),
+                                    Column(
+                                      children: [
+                                        SizedBox(height: 15),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              '${NumberFormat.decimalPattern().format(koreanWonAmount)}원',
+                                              style: TextStyle(
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(width: 20),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      "${NumberFormat.decimalPattern().format(koreanWonAmount)}원",
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(width: 20),
                                   ],
                                 ),
                               ],
@@ -575,8 +593,9 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         });
                       },
                       child: Container(
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                         margin: const EdgeInsets.fromLTRB(20, 0, 20, 15),
-                        height: 35,
+                        height: _appt == "약속 잡기" ? 40 : null,
                         width: double.infinity,
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(
@@ -605,7 +624,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                 color: const Color(0xFFFFD954),
                 child: Row(
                   children: [
-                    const SizedBox(width: 10),
                     IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () {
@@ -620,7 +638,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                     Flexible(
                       flex: 2,
                       child: Container(
-                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                         child: TextField(
                           controller: messageController,
                           // 메시지 전송 컨트롤러
@@ -664,7 +682,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       padding: EdgeInsets.zero,
                       constraints: BoxConstraints(),
                     ),
-                    const SizedBox(width: 10),
                   ],
                 ),
               ),
@@ -726,30 +743,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                   ),
                                 ],
                               ),
-                              child: const Icon(Icons.edit_calendar_outlined),
-                            ),
-                            const SizedBox(height: 5),
-                            const Text('약속'),
-                          ],
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFD954),
-                                borderRadius: BorderRadius.circular(100),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    spreadRadius: 2,
-                                    blurRadius: 3,
-                                    offset: const Offset(0, 0),
-                                  ),
-                                ],
-                              ),
                               child: const Icon(
                                   Icons.account_balance_wallet_outlined),
                             ),
@@ -757,29 +750,41 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                             const Text('송금'),
                           ],
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFD954),
-                                borderRadius: BorderRadius.circular(100),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    spreadRadius: 2,
-                                    blurRadius: 3,
-                                    offset: const Offset(0, 0),
-                                  ),
-                                ],
+                        GestureDetector(
+                          onTap: () async {
+                            String appt = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const TransactionInfoPage()));
+                            setState(() {
+                              // _appt = appt;
+                            });
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFFD954),
+                                  borderRadius: BorderRadius.circular(100),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      spreadRadius: 2,
+                                      blurRadius: 3,
+                                      offset: const Offset(0, 0),
+                                    ),
+                                  ],
+                                ),
+                                child: const Icon(Icons.email_outlined),
                               ),
-                              child: const Icon(Icons.email_outlined),
-                            ),
-                            const SizedBox(height: 5),
-                            const Text('배송정보'),
-                          ],
+                              const SizedBox(height: 5),
+                              const Text('거래 정보'),
+                            ],
+                          ),
                         ),
                       ],
                     ),

@@ -1,5 +1,7 @@
 import 'package:bottom_picker/bottom_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
 import 'package:a705/choose_location_page.dart';
@@ -16,6 +18,31 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
   var appointmentDate = DateTime.now();
   String _addr = "장소 선택";
   String appt = "";
+
+  // Future<Position> getCurrentLocation() async {
+  //   LocationPermission permission = await Geolocator.requestPermission();
+  //   Position position =
+  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  //   return position;
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    // _getUserLocation();
+  }
+
+  // void _getUserLocation() async {
+  //   var position = await GeolocatorPlatform.instance.getCurrentPosition(
+  //       locationSettings: const LocationSettings(
+  //           accuracy: LocationAccuracy.bestForNavigation));
+  //
+  //   setState(() {
+  //     currentPosition = LatLng(position.latitude, position.longitude);
+  //   });
+  // }
+  //
+  // late LatLng currentPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +70,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
           IconButton(
               onPressed: () {
                 setState(() {
-                  appt += DateFormat('yy년 MM월 dd일 HH시 mm분').format(appointmentDate);
+                  appt += DateFormat('yy.MM.dd a hh:mm', 'ko').format(appointmentDate);
                   appt += " ";
                   appt += _addr;
                 });
@@ -108,32 +135,47 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                               ),
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                CircleAvatar(
-                                  backgroundImage:
-                                      AssetImage('assets/images/AUD.png'),
-                                  radius: 8,
+                                Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage: AssetImage(
+                                              'assets/images/flag/AUD.png'),
+                                          radius: 8,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          '50 AUD',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blueAccent),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 15),
+                                  ],
                                 ),
-                                SizedBox(width: 5),
-                                Text(
-                                  '50 AUD',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blueAccent),
+                                Column(
+                                  children: [
+                                    SizedBox(height: 15),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          '42,000원',
+                                          style: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(width: 20),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  '42,000원',
-                                  style: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(width: 20),
                               ],
                             ),
                           ],
@@ -162,8 +204,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
             },
             child: Container(
               margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              height: 50,
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -180,7 +221,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
               child: Row(
                 children: [
                   Text(
-                    DateFormat('yy년 MM월 dd일 HH시 mm분').format(appointmentDate),
+                    DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko').format(appointmentDate),
                     style: const TextStyle(fontSize: 16),
                   ),
                 ],
@@ -203,15 +244,14 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
               String addr = await Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const ChooseLocationPage()));
+                      builder: (context) => const ChooseLocationPage(37.5013068, 127.0396597)));
               setState(() {
                 _addr = addr;
               });
             },
             child: Container(
               margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              height: 50,
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -228,10 +268,12 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    _addr,
-                    style: const TextStyle(
-                      fontSize: 15,
+                  Expanded(
+                    child: Text(
+                      _addr,
+                      style: const TextStyle(
+                        fontSize: 15,
+                      ),
                     ),
                   ),
                   const Icon(Icons.chevron_right_rounded),

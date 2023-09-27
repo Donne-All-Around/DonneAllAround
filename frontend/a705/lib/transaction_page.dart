@@ -4,8 +4,9 @@ import 'package:a705/choose_location_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:intl/intl.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});
@@ -23,7 +24,15 @@ class _TransactionPageState extends State<TransactionPage> {
     '호주(달러) AUD',
     '중국(위안) CNY',
     '베트남(동) VND',
-    '홍콩(달러) HKD'
+    '한국(원) KRW',
+    '홍콩(달러) HKD',
+    '캐나다(달러) CAD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '필리핀(페소) PHP',
+    '러시아(루블) RUB',
+    '싱가폴(달러) SGD',
+    '대만(달러) TWD',
   ];
   var _selectedValue = '미국(달러) USD';
   int idx = 0;
@@ -36,14 +45,49 @@ class _TransactionPageState extends State<TransactionPage> {
     'AUD',
     'CNY',
     'VND',
-    'HKD'
+    'KRW',
+    'HKD',
+    'CAD',
+    'CZK',
+    'NZD',
+    'PHP',
+    'RUB',
+    'SGD',
+    'TWD',
   ];
-  List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫', '\$'];
+  List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
 
   List<File> selectedImages = [];
   final picker = ImagePicker();
 
   String _addr = "장소 선택";
+
+  // Future<Position> getCurrentLocation() async {
+  //   LocationPermission permission = await Geolocator.requestPermission();
+  //   Position position =
+  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  //   return position;
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    // _getUserLocation();
+  }
+
+  // void _getUserLocation() async {
+  //   var position = await GeolocatorPlatform.instance.getCurrentPosition(
+  //       locationSettings: const LocationSettings(
+  //           accuracy: LocationAccuracy.bestForNavigation));
+  //
+  //   setState(() {
+  //     currentPosition = LatLng(position.latitude, position.longitude);
+  //     print("currentPosition: ${currentPosition.longitude}");
+  //
+  //   });
+  // }
+
+  // late LatLng currentPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +268,7 @@ class _TransactionPageState extends State<TransactionPage> {
                                   children: [
                                     CircleAvatar(
                                       backgroundImage: AssetImage(
-                                          'assets/images/${currency[_valueList.indexOf(value)]}.png'),
+                                          'assets/images/flag/${currency[_valueList.indexOf(value)]}.png'),
                                       radius: 10,
                                     ),
                                     const SizedBox(width: 5),
@@ -308,7 +352,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         SizedBox(width: 10),
                         CircleAvatar(
                           backgroundImage:
-                          AssetImage('assets/images/KRW.png'),
+                          AssetImage('assets/images/flag/KRW.png'),
                           radius: 10,
                         ),
                         SizedBox(width: 5),
@@ -398,27 +442,28 @@ class _TransactionPageState extends State<TransactionPage> {
                       String addr = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const ChooseLocationPage()));
+                              builder: (context) => const ChooseLocationPage(37.5013068, 127.0396597)));
                       setState(() {
                         _addr = addr;
                       });
                     },
                     child: Container(
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      height: 50,
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      height: _addr == "장소 선택" ? 50 : null,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        // border: Border.all(color: Colors.black),
                         color: const Color(0xFFF2F2F2),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            _addr,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              color: Color(0xFF757575),
+                          Expanded(
+                            child: Text(
+                              _addr,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                color: Color(0xFF757575),
+                              ),
                             ),
                           ),
                           const Icon(Icons.chevron_right_rounded),

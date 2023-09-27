@@ -98,6 +98,7 @@ class _LoginPageState extends State<LoginPage> {
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Scaffold(
+          resizeToAvoidBottomInset : false,
           backgroundColor: Colors.white,
           appBar: AppBar(
             backgroundColor: Colors.white,
@@ -114,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           body: SingleChildScrollView(
             child: Container(
-              margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+              margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
               child: Column(
                 children: [
                   // const SizedBox(
@@ -168,6 +169,7 @@ class _LoginPageState extends State<LoginPage> {
                           // borderSide: BorderSide(color: Colors.black),
                         ),
                         hintText: '휴대폰 번호 ( - 없이 숫자만 입력)',
+                        hintStyle: const TextStyle(fontSize: 14),
                         labelStyle: const TextStyle(
                           fontSize: 20,
                           // textAlign: TextAlign.center,
@@ -280,14 +282,14 @@ class _LoginPageState extends State<LoginPage> {
                               // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
 
                               // 뒤에 페이지들 스택 존재.
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(builder: (context) => const MainPage()),
-                              // );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const MainPage()),
+                              );
                               // 뒤에 페이지들 스택 없앰.
-                                Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(builder:(context) => const MainPage()),
-                                        (Route<dynamic> route) => false);
+                              //   Navigator.of(context).pushAndRemoveUntil(
+                              //   MaterialPageRoute(builder:(context) => const MainPage()),
+                              //           (Route<dynamic> route) => false);
                             }
                           },
                           child: Container(

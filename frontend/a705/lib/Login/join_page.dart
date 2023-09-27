@@ -45,7 +45,7 @@ class _JoinPageState extends State<JoinPage> {
           ),
           body: SingleChildScrollView(
             child: Container(
-              margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+              margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
               child: Column(
                 children: [
               // 멘트
@@ -203,13 +203,13 @@ class _JoinPageState extends State<JoinPage> {
                             }),
                         const SizedBox(width: 10,),
                         const Text(
-                          '위치 정보 이용 동의',
+                          '위치 정보 이용약관 동의',
                           style: TextStyle(
                               fontSize: 15,
                               // fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(width: 80,),
+                        const SizedBox(width: 50,),
                         IconButton(
                           icon: const Icon(
                             Icons.arrow_forward_ios_sharp,

@@ -95,7 +95,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                           Text(
                             '옹골찬',
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
+                                fontWeight: FontWeight.bold, fontSize: 17),
                           ),
                         ],
                       ),
@@ -182,7 +182,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                     color: Colors.black26),
                 Container(
                     padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    height: 80,
+                    height: 75,
                     width: MediaQuery.of(context).size.width,
                     color: Colors.white,
                     child: Row(
@@ -215,7 +215,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                       SizedBox(width: 10),
                                       CircleAvatar(
                                         backgroundImage:
-                                            AssetImage('assets/images/AUD.png'),
+                                            AssetImage('assets/images/flag/AUD.png'),
                                         radius: 8,
                                       ),
                                       SizedBox(width: 5),

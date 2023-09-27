@@ -42,6 +42,8 @@ dependencies:
   awesome_bottom_bar: ^1.2.4
   chat_bubbles: ^1.5.0
   intl: ^0.18.1
+  flutter_localizations:
+    sdk: flutter
   google_maps_flutter: ^2.5.0
   geolocator: ^10.0.1
   location: ^5.0.3
@@ -53,6 +55,9 @@ dependencies:
   bottom_picker: ^2.1.0
   carousel_slider: ^4.2.1
   multiple_images_picker: ^1.0.1
+  address_search_field: ^5.0.3
+  fl_chart: ^0.63.0
+  kpostal: ^0.5.1
 
 dev_dependencies:
   flutter_test:
@@ -87,16 +92,37 @@ flutter:
      - assets/images/wagon_don.png
      - assets/images/profile.jpg
      - assets/images/ausdollar.jpg
-     - assets/images/AUD.png
-     - assets/images/JPY.png
-     - assets/images/EUR.png
-     - assets/images/GBP.png
-     - assets/images/CNY.png
-     - assets/images/VND.png
-     - assets/images/HKD.png
-     - assets/images/USD.png
-     - assets/images/KRW.png
+     - assets/images/flag/AUD.png
+     - assets/images/flag/JPY.png
+     - assets/images/flag/EUR.png
+     - assets/images/flag/GBP.png
+     - assets/images/flag/CNY.png
+     - assets/images/flag/VND.png
+     - assets/images/flag/HKD.png
+     - assets/images/flag/USD.png
+     - assets/images/flag/KRW.png
+     - assets/images/flag/CAD.png
+     - assets/images/flag/CZK.png
+     - assets/images/flag/NZD.png
+     - assets/images/flag/PHP.png
+     - assets/images/flag/RUB.png
+     - assets/images/flag/SGD.png
+     - assets/images/flag/TWD.png
      - assets/images/marker.png
+     - assets/images/banklogo/003.png
+     - assets/images/banklogo/004.png
+     - assets/images/banklogo/007.png
+     - assets/images/banklogo/011.png
+     - assets/images/banklogo/020.png
+     - assets/images/banklogo/023.png
+     - assets/images/banklogo/027.png
+     - assets/images/banklogo/031.png
+     - assets/images/banklogo/032.png
+     - assets/images/banklogo/034.png
+     - assets/images/banklogo/045.png
+     - assets/images/banklogo/048.png
+     - assets/images/banklogo/081.png
+     - assets/images/banklogo/088.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

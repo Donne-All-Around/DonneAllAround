@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _valueList = ['최신순', '낮은 가격순'];
+  final _valueList = ['최신순', '낮은 가격순', '단위 당 낮은 가격순'];
   var _selectedValue = '최신순';
   int _idx = 0;
 
@@ -183,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       CircleAvatar(
                         backgroundImage:
-                            AssetImage('assets/images/${currency[_idx]}.png'),
+                            AssetImage('assets/images/flag/${currency[_idx]}.png'),
                         radius: 10,
                       ),
                       const SizedBox(width: 5),
@@ -273,7 +273,7 @@ class _HomePageState extends State<HomePage> {
                                 padding:
                                     const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                 width:
-                                    MediaQuery.of(context).size.width / 2 - 5,
+                                    MediaQuery.of(context).size.width / 2 - 38,
                                 height: kMinInteractiveDimension,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
@@ -286,8 +286,8 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     CircleAvatar(
                                       backgroundImage: AssetImage(
-                                          'assets/images/${currency[_idx]}.png'),
-                                      radius: 8,
+                                          'assets/images/flag/${currency[_idx]}.png'),
+                                      radius: 15,
                                     ),
                                     const SizedBox(width: 5),
                                     Expanded(
@@ -295,10 +295,21 @@ class _HomePageState extends State<HomePage> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
-                                            '${country[_idx]} ${currency[_idx]}',
-                                            style:
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                country[_idx],
+                                                style:
+                                                    const TextStyle(fontSize: 15),
+                                              ),
+                                              Text(
+                                                currency[_idx],
+                                                style:
                                                 const TextStyle(fontSize: 15),
+                                              ),
+                                            ],
                                           ),
                                           Row(
                                             children: [
@@ -326,7 +337,7 @@ class _HomePageState extends State<HomePage> {
                                 padding:
                                     const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                 width:
-                                    MediaQuery.of(context).size.width / 2 - 72,
+                                    MediaQuery.of(context).size.width / 2 - 38,
                                 height: kMinInteractiveDimension,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
@@ -360,7 +371,7 @@ class _HomePageState extends State<HomePage> {
                           return DropdownMenuItem(
                             value: value,
                             child: SizedBox(
-                              width: 100,
+                              width: 150,
                               child: Text(
                                 value,
                                 style: const TextStyle(fontSize: 17),
@@ -482,7 +493,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                               const Text(
                                 '호주 달러 50달러 팔아요',
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -506,14 +517,14 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                 children: [
                                   CircleAvatar(
                                     backgroundImage:
-                                        AssetImage('assets/images/AUD.png'),
+                                        AssetImage('assets/images/flag/AUD.png'),
                                     radius: 8,
                                   ),
                                   SizedBox(width: 5),
                                   Text(
                                     '50 AUD',
                                     style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.blueAccent),
                                   ),
@@ -581,7 +592,15 @@ List<String> country = [
   '호주(달러)',
   '중국(위안)',
   '베트남(동)',
-  '홍콩(달러)'
+  '한국(원)',
+  '홍콩(달러)',
+  '캐나다(달러)',
+  '체코(코루나)',
+  '뉴질랜드(달러)',
+  '필리핀(페소)',
+  '러시아(루블)',
+  '싱가폴(달러)',
+  '대만(달러)',
 ];
 List<String> currency = [
   'USD',
@@ -591,9 +610,17 @@ List<String> currency = [
   'AUD',
   'CNY',
   'VND',
-  'HKD'
+  'KRW',
+  'HKD',
+  'CAD',
+  'CZK',
+  'NZD',
+  'PHP',
+  'RUB',
+  'SGD',
+  'TWD',
 ];
-List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫', '\$'];
+List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
 
 List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1];
 
@@ -636,7 +663,7 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
                     const SizedBox(width: 20),
                     CircleAvatar(
                       backgroundImage:
-                          AssetImage('assets/images/${currency[index]}.png'),
+                          AssetImage('assets/images/flag/${currency[index]}.png'),
                       radius: 10,
                     ),
                     const SizedBox(width: 10),
