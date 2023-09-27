@@ -196,7 +196,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       CircleAvatar(
                         backgroundImage:
-                            AssetImage('assets/images/${currency[_idx]}.png'),
+                            AssetImage('assets/images/flag/${currency[_idx]}.png'),
                         radius: 10,
                       ),
                       const SizedBox(width: 5),
@@ -299,7 +299,7 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     CircleAvatar(
                                       backgroundImage: AssetImage(
-                                          'assets/images/${currency[_idx]}.png'),
+                                          'assets/images/flag/${currency[_idx]}.png'),
                                       radius: 15,
                                     ),
                                     const SizedBox(width: 5),
@@ -530,7 +530,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                 children: [
                                   CircleAvatar(
                                     backgroundImage:
-                                        AssetImage('assets/images/AUD.png'),
+                                        AssetImage('assets/images/flag/AUD.png'),
                                     radius: 8,
                                   ),
                                   SizedBox(width: 5),
@@ -605,7 +605,15 @@ List<String> country = [
   '호주(달러)',
   '중국(위안)',
   '베트남(동)',
-  '홍콩(달러)'
+  '한국(원)',
+  '홍콩(달러)',
+  '캐나다(달러)',
+  '체코(코루나)',
+  '뉴질랜드(달러)',
+  '필리핀(페소)',
+  '러시아(루블)',
+  '싱가폴(달러)',
+  '대만(달러)',
 ];
 List<String> currency = [
   'USD',
@@ -615,9 +623,17 @@ List<String> currency = [
   'AUD',
   'CNY',
   'VND',
-  'HKD'
+  'KRW',
+  'HKD',
+  'CAD',
+  'CZK',
+  'NZD',
+  'PHP',
+  'RUB',
+  'SGD',
+  'TWD',
 ];
-List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫', '\$'];
+List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
 
 List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1];
 
@@ -660,7 +676,7 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
                     const SizedBox(width: 20),
                     CircleAvatar(
                       backgroundImage:
-                          AssetImage('assets/images/${currency[index]}.png'),
+                          AssetImage('assets/images/flag/${currency[index]}.png'),
                       radius: 10,
                     ),
                     const SizedBox(width: 10),

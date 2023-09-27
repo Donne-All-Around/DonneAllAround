@@ -6,6 +6,8 @@ import 'package:a705/providers/trade_providers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'models/TradeDto.dart';
@@ -26,7 +28,15 @@ class _TransactionPageState extends State<TransactionPage> {
     '호주(달러) AUD',
     '중국(위안) CNY',
     '베트남(동) VND',
-    '홍콩(달러) HKD'
+    '한국(원) KRW',
+    '홍콩(달러) HKD',
+    '캐나다(달러) CAD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '필리핀(페소) PHP',
+    '러시아(루블) RUB',
+    '싱가폴(달러) SGD',
+    '대만(달러) TWD',
   ];
   var _selectedValue = '미국(달러) USD';
   int idx = 0;
@@ -39,10 +49,18 @@ class _TransactionPageState extends State<TransactionPage> {
     'AUD',
     'CNY',
     'VND',
-    'HKD'
+    'KRW',
+    'HKD',
+    'CAD',
+    'CZK',
+    'NZD',
+    'PHP',
+    'RUB',
+    'SGD',
+    'TWD',
   ];
 
-  List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫', '\$'];
+  List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
 
   List<File> selectedImages = [];
   final picker = ImagePicker();
@@ -220,13 +238,11 @@ class _TransactionPageState extends State<TransactionPage> {
                         hintText: '글 제목',
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(color: Colors.transparent),
+                          borderSide: const BorderSide(color: Colors.transparent),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide:
-                              const BorderSide(color: Colors.transparent),
+                          borderSide: const BorderSide(color: Colors.transparent),
                         ),
                       ),
                       cursorColor: Colors.black87,
@@ -263,7 +279,7 @@ class _TransactionPageState extends State<TransactionPage> {
                                   children: [
                                     CircleAvatar(
                                       backgroundImage: AssetImage(
-                                          'assets/images/${currency[_valueList.indexOf(value)]}.png'),
+                                          'assets/images/flag/${currency[_valueList.indexOf(value)]}.png'),
                                       radius: 10,
                                     ),
                                     const SizedBox(width: 5),
@@ -347,7 +363,8 @@ class _TransactionPageState extends State<TransactionPage> {
                       children: [
                         SizedBox(width: 10),
                         CircleAvatar(
-                          backgroundImage: AssetImage('assets/images/KRW.png'),
+                          backgroundImage:
+                          AssetImage('assets/images/flag/KRW.png'),
                           radius: 10,
                         ),
                         SizedBox(width: 5),

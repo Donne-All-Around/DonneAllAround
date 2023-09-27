@@ -16,9 +16,9 @@ class _BankDetailPageState extends State<BankDetailPage> {
   var _selectedValue = '신한은행';
 
   Map<String, Map<String, String>> bankInfo = {
-    '신한은행': {'imagePath': 'assets/images/USD.png', 'currencyName': '신한은행'},
+    '신한은행': {'imagePath': 'assets/images/flag/USD.png', 'currencyName': '신한은행'},
     '하나은행': {
-      'imagePath': 'assets/images/AUD.png',
+      'imagePath': 'assets/images/flag/AUD.png',
       'currencyName': '하나은행'
     },
   };
@@ -39,7 +39,14 @@ class _BankDetailPageState extends State<BankDetailPage> {
     '중국(위안) CNY',
     '베트남(동) VND',
     '한국(원) KRW',
-    '홍콩(달러) HKD'
+    '홍콩(달러) HKD',
+    '캐나다(달러) CAD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '필리핀(페소) PHP',
+    '러시아(루블) RUB',
+    '싱가폴(달러) SGD',
+    '대만(달러) TWD',
   ];
   var _selectedValue1 = '미국(달러) USD';
   int idx1 = 0;
@@ -53,9 +60,16 @@ class _BankDetailPageState extends State<BankDetailPage> {
     'CNY',
     'VND',
     'KRW',
-    'HKD'
+    'HKD',
+    'CAD',
+    'CZK',
+    'NZD',
+    'PHP',
+    'RUB',
+    'SGD',
+    'TWD',
   ];
-  List<String> sign1 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$'];
+  List<String> sign1 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
   // 두번째 통화
   final _valueList2 = [
     '미국(달러) USD',
@@ -66,7 +80,14 @@ class _BankDetailPageState extends State<BankDetailPage> {
     '중국(위안) CNY',
     '베트남(동) VND',
     '한국(원) KRW',
-    '홍콩(달러) HKD'
+    '홍콩(달러) HKD',
+    '캐나다(달러) CAD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '필리핀(페소) PHP',
+    '러시아(루블) RUB',
+    '싱가폴(달러) SGD',
+    '대만(달러) TWD',
   ];
   var _selectedValue2 = '한국(원) KRW';
   int idx2 = 7;
@@ -80,9 +101,16 @@ class _BankDetailPageState extends State<BankDetailPage> {
     'CNY',
     'VND',
     'KRW',
-    'HKD'
+    'HKD',
+    'CAD',
+    'CZK',
+    'NZD',
+    'PHP',
+    'RUB',
+    'SGD',
+    'TWD',
   ];
-  List<String> sign2 = ['\$', '¥', '€', '£', '\$', '¥', '₫', '₩','\$'];
+  List<String> sign2 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
 
  // 수수료율
   final _percentList = ['현찰 살 때', '현찰 팔 때', '송금 보낼 때'];
@@ -304,7 +332,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                         decoration: BoxDecoration(
                                           borderRadius: const BorderRadius.only(topLeft: Radius.circular(20),bottomLeft: Radius.circular(20)),
                                           border: Border.all(color: Colors.transparent),
-                                          color:   Color(0xFFF7F7F7),
+                                          color:   const Color(0xFFF7F7F7),
                                         ),
                                         child: DropdownButtonHideUnderline(
                                           child: DropdownButton(
@@ -317,7 +345,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                                     children: [
                                                       CircleAvatar(
                                                         backgroundImage: AssetImage(
-                                                            'assets/images/${currency1[_valueList1.indexOf(value)]}.png'),
+                                                            'assets/images/flag/${currency1[_valueList1.indexOf(value)]}.png'),
                                                         radius: 10,
                                                       ),
                                                       const SizedBox(
@@ -411,7 +439,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                                     children: [
                                                       CircleAvatar(
                                                         backgroundImage: AssetImage(
-                                                            'assets/images/${currency2[_valueList2.indexOf(value)]}.png'),
+                                                            'assets/images/flag/${currency2[_valueList2.indexOf(value)]}.png'),
                                                         radius: 10,
                                                       ),
                                                       const SizedBox(
@@ -606,7 +634,14 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
     '중국(위안) CNY',
     '베트남(동) VND',
     '한국(원) KRW',
-    '홍콩(달러) HKD'
+    '홍콩(달러) HKD',
+    '캐나다(달러) CAD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '필리핀(페소) PHP',
+    '러시아(루블) RUB',
+    '싱가폴(달러) SGD',
+    '대만(달러) TWD',
   ];
   var _selectedValue1 = '미국(달러) USD';
   int idx1 = 0;
@@ -620,7 +655,14 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
     'CNY',
     'VND',
     'KRW',
-    'HKD'
+    'HKD',
+    'CAD',
+    'CZK',
+    'NZD',
+    'PHP',
+    'RUB',
+    'SGD',
+    'TWD',
   ];
 
 
@@ -661,7 +703,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                           children: [
                             CircleAvatar(
                               backgroundImage: AssetImage(
-                                  'assets/images/${currency1[index]}.png'),
+                                  'assets/images/flag/${currency1[index]}.png'),
                               radius: 10,
                             ),
                             const SizedBox(width: 5),
