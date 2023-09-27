@@ -1,8 +1,11 @@
+import 'package:a705/providers/trade_providers.dart';
 import 'package:a705/transaction_detail_page.dart';
 import 'package:a705/transaction_page.dart';
 import 'package:a705/notification_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'models/TradeDto.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -13,9 +16,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _valueList = ['최신순', '낮은 가격순'];
+  final _valueList = ['최신순', '낮은 가격순', '단위 당 낮은 가격순'];
   var _selectedValue = '최신순';
   int _idx = 0;
+
+  TradeProviders tradeProvider = TradeProviders();
+  List<TradeDto> trade = [];
+
+  int size = -1;
+
+  Future initTrade() async {
+    trade = await tradeProvider.getLatestTrade("USD", 1, "KOREA", "SEOUL", "KANGNAM", "YEOKSAM");
+    size = trade.length;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -273,7 +286,7 @@ class _HomePageState extends State<HomePage> {
                                 padding:
                                     const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                 width:
-                                    MediaQuery.of(context).size.width / 2 - 5,
+                                    MediaQuery.of(context).size.width / 2 - 38,
                                 height: kMinInteractiveDimension,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
@@ -287,7 +300,7 @@ class _HomePageState extends State<HomePage> {
                                     CircleAvatar(
                                       backgroundImage: AssetImage(
                                           'assets/images/${currency[_idx]}.png'),
-                                      radius: 8,
+                                      radius: 15,
                                     ),
                                     const SizedBox(width: 5),
                                     Expanded(
@@ -295,10 +308,21 @@ class _HomePageState extends State<HomePage> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
-                                            '${country[_idx]} ${currency[_idx]}',
-                                            style:
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                country[_idx],
+                                                style:
+                                                    const TextStyle(fontSize: 15),
+                                              ),
+                                              Text(
+                                                currency[_idx],
+                                                style:
                                                 const TextStyle(fontSize: 15),
+                                              ),
+                                            ],
                                           ),
                                           Row(
                                             children: [
@@ -326,7 +350,7 @@ class _HomePageState extends State<HomePage> {
                                 padding:
                                     const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                 width:
-                                    MediaQuery.of(context).size.width / 2 - 72,
+                                    MediaQuery.of(context).size.width / 2 - 38,
                                 height: kMinInteractiveDimension,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
@@ -360,7 +384,7 @@ class _HomePageState extends State<HomePage> {
                           return DropdownMenuItem(
                             value: value,
                             child: SizedBox(
-                              width: 100,
+                              width: 150,
                               child: Text(
                                 value,
                                 style: const TextStyle(fontSize: 17),
@@ -482,7 +506,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                               const Text(
                                 '호주 달러 50달러 팔아요',
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -513,7 +537,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                   Text(
                                     '50 AUD',
                                     style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.blueAccent),
                                   ),

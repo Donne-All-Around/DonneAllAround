@@ -52,8 +52,13 @@ dependencies:
   carousel_slider: ^4.2.1
   multiple_images_picker: ^1.0.1
   address_search_field: ^5.0.3
+<<<<<<< HEAD
   daum_postcode_search: ^0.0.2
   flutter_inappwebview: ^5.7.2+3
+=======
+  fl_chart: ^0.63.0
+
+>>>>>>> fef4a1db94e79ce83585ed91f29e8e6ce7a3e221
   kpostal: ^0.5.1
 
 dev_dependencies:
@@ -99,6 +104,20 @@ flutter:
      - assets/images/USD.png
      - assets/images/KRW.png
      - assets/images/marker.png
+     - assets/images/banklogo/003.png
+     - assets/images/banklogo/004.png
+     - assets/images/banklogo/007.png
+     - assets/images/banklogo/011.png
+     - assets/images/banklogo/020.png
+     - assets/images/banklogo/023.png
+     - assets/images/banklogo/027.png
+     - assets/images/banklogo/031.png
+     - assets/images/banklogo/032.png
+     - assets/images/banklogo/034.png
+     - assets/images/banklogo/045.png
+     - assets/images/banklogo/048.png
+     - assets/images/banklogo/081.png
+     - assets/images/banklogo/088.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

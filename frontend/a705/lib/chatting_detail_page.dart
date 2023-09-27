@@ -100,34 +100,50 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                   ),
                                 ),
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          'assets/images/AUD.png'),
-                                      radius: 8,
+                                    Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundImage: AssetImage(
+                                                  'assets/images/AUD.png'),
+                                              radius: 8,
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              '50 AUD',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.blueAccent),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 15),
+                                      ],
                                     ),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      '50 AUD',
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blueAccent),
+                                    Column(
+                                      children: [
+                                        SizedBox(height: 15),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              '42,000원',
+                                              style: TextStyle(
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(width: 20),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      '42,000원',
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(width: 20),
-                                  ],
-                                ),
+
                               ],
                             ),
                           ),
@@ -170,7 +186,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                 color: const Color(0xFFFFD954),
                 child: Row(
                   children: [
-                    const SizedBox(width: 10),
                     IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () {
@@ -185,7 +200,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                     Flexible(
                       flex: 2,
                       child: Container(
-                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                         child: TextField(
                           onTap: () {
                             setState(() {
@@ -225,7 +240,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       padding: EdgeInsets.zero,
                       constraints: BoxConstraints(),
                     ),
-                    const SizedBox(width: 10),
                   ],
                 ),
               ),
@@ -299,7 +313,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                             String appt = await Navigator.push(context, MaterialPageRoute(
                                 builder: (context) => const TransactionInfoPage()));
                             setState(() {
-                              _appt = appt;
+                              // _appt = appt;
                             });
                           },
                           child: Column(

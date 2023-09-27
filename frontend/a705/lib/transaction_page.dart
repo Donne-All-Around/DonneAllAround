@@ -1,13 +1,14 @@
 import 'dart:io';
 
 import 'package:a705/choose_location_page.dart';
+import 'package:a705/main_page.dart';
+import 'package:a705/providers/trade_providers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:intl/intl.dart';
+
+import 'models/TradeDto.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});
@@ -40,6 +41,7 @@ class _TransactionPageState extends State<TransactionPage> {
     'VND',
     'HKD'
   ];
+
   List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫', '\$'];
 
   List<File> selectedImages = [];
@@ -47,30 +49,41 @@ class _TransactionPageState extends State<TransactionPage> {
 
   String _addr = "장소 선택";
 
-  Future<Position> getCurrentLocation() async {
-    LocationPermission permission = await Geolocator.requestPermission();
-    Position position =
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    return position;
-  }
-
   @override
   void initState() {
     super.initState();
-    _getUserLocation();
   }
 
-  void _getUserLocation() async {
-    var position = await GeolocatorPlatform.instance.getCurrentPosition(
-        locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.bestForNavigation));
+  TradeProviders tradeProvider = TradeProviders();
 
-    setState(() {
-      currentPosition = LatLng(position.latitude, position.longitude);
-    });
-  }
+  TradeDto uploadTrade = TradeDto(
+    id: 0,
+    seller: 0,
+    title: "",
+    description: "",
+    thumbnailImageUrl: "",
+    status: "",
+    countryCode: "USD",
+    foreignCurrencyAmount: 0,
+    koreanWonAmount: 0,
+    locationLatitude: 0,
+    locationLongitude: 0,
+    preferredTradeCountry: "",
+    preferredTradeCity: "",
+    preferredTradeDistrict: "",
+    preferredTradeTown: "",
+    type: "",
+    isShow: 0,
+    directTradeTime: "",
+    directTradeLocationDetail: "",
+    buyer: 0,
+    isDeliveryReceived: 0,
+  );
 
-  late LatLng currentPosition;
+  final _titleEditController = TextEditingController();
+  final _currencyEditController = TextEditingController();
+  final _krwEditController = TextEditingController();
+  final _contentEditController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -133,53 +146,49 @@ class _TransactionPageState extends State<TransactionPage> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: SizedBox(
-                          width: double.infinity, // To show images in particular area only
+                          width: double.infinity,
+                          // To show images in particular area only
                           height: 80,
                           child: selectedImages
-                              .isEmpty // If no images is selected
-                              ? const Center(
-                              child: Text('사진을 선택하세요'))
-                          // If at least 1 images is selected
+                                  .isEmpty // If no images is selected
+                              ? const Center(child: Text('사진을 선택하세요'))
+                              // If at least 1 images is selected
                               : GridView.builder(
-                            scrollDirection: Axis.horizontal,
-                            physics: const ScrollPhysics(),
-                            itemCount: selectedImages.length,
-                            gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 1,
-                              childAspectRatio: 1 / 1,
-                              mainAxisSpacing: 10,
-                              // Horizontally only 3 images will show
-                            ),
-                            itemBuilder:
-                                (BuildContext context, int index) {
-                              return Container(
-                                height: 70,
-                                width: 70,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
+                                  scrollDirection: Axis.horizontal,
+                                  physics: const ScrollPhysics(),
+                                  itemCount: selectedImages.length,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 1,
+                                    childAspectRatio: 1 / 1,
+                                    mainAxisSpacing: 10,
+                                    // Horizontally only 3 images will show
+                                  ),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Container(
+                                      height: 70,
+                                      width: 70,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: kIsWeb
+                                              ? Image.network(
+                                                  selectedImages[index].path,
+                                                  width: 80,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : Image.file(
+                                                  selectedImages[index],
+                                                  width: 80,
+                                                  fit: BoxFit.cover,
+                                                )),
+                                    );
+                                  },
                                 ),
-                                child: ClipRRect(
-                                    borderRadius:
-                                    BorderRadius.circular(10),
-                                    child: kIsWeb
-                                        ? Image.network(
-                                      selectedImages[index].path,
-                                      width: 80,
-                                      fit: BoxFit.cover,
-                                    )
-                                        : Image.file(
-                                      selectedImages[index],
-                                      width: 80,
-                                      fit: BoxFit.cover,
-                                    )),
-                              );
-
-                              // If you are making the web app then you have to
-                              // use image provider as network image or in
-                              // android or iOS it will as file only
-                            },
-                          ),
                         ),
                       ),
                     ],
@@ -202,6 +211,7 @@ class _TransactionPageState extends State<TransactionPage> {
                   SizedBox(
                     height: 50,
                     child: TextField(
+                      controller: _titleEditController,
                       style: const TextStyle(height: 1.4),
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -210,11 +220,13 @@ class _TransactionPageState extends State<TransactionPage> {
                         hintText: '글 제목',
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Colors.transparent),
+                          borderSide:
+                              const BorderSide(color: Colors.transparent),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Colors.transparent),
+                          borderSide:
+                              const BorderSide(color: Colors.transparent),
                         ),
                       ),
                       cursorColor: Colors.black87,
@@ -274,6 +286,7 @@ class _TransactionPageState extends State<TransactionPage> {
                   SizedBox(
                     height: 50,
                     child: TextField(
+                      controller: _currencyEditController,
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
@@ -285,7 +298,7 @@ class _TransactionPageState extends State<TransactionPage> {
                             bottomRight: Radius.circular(10),
                           ),
                           borderSide:
-                          BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                              BorderSide(color: Color(0xFFF2F2F2), width: 3),
                         ),
                         focusedBorder: const OutlineInputBorder(
                           borderRadius: BorderRadius.only(
@@ -293,7 +306,7 @@ class _TransactionPageState extends State<TransactionPage> {
                             bottomRight: Radius.circular(10),
                           ),
                           borderSide:
-                          BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                              BorderSide(color: Color(0xFFF2F2F2), width: 3),
                         ),
                         suffixText: ' ${sign[idx]}',
                       ),
@@ -334,8 +347,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       children: [
                         SizedBox(width: 10),
                         CircleAvatar(
-                          backgroundImage:
-                          AssetImage('assets/images/KRW.png'),
+                          backgroundImage: AssetImage('assets/images/KRW.png'),
                           radius: 10,
                         ),
                         SizedBox(width: 5),
@@ -351,6 +363,7 @@ class _TransactionPageState extends State<TransactionPage> {
                   SizedBox(
                     height: 50,
                     child: TextField(
+                      controller: _krwEditController,
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
@@ -364,7 +377,7 @@ class _TransactionPageState extends State<TransactionPage> {
                             bottomRight: Radius.circular(10),
                           ),
                           borderSide:
-                          BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                              BorderSide(color: Color(0xFFF2F2F2), width: 3),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.only(
@@ -372,7 +385,7 @@ class _TransactionPageState extends State<TransactionPage> {
                             bottomRight: Radius.circular(10),
                           ),
                           borderSide:
-                          BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                              BorderSide(color: Color(0xFFF2F2F2), width: 3),
                         ),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         suffixText: ' ₩',
@@ -395,6 +408,7 @@ class _TransactionPageState extends State<TransactionPage> {
                   ),
                   const SizedBox(height: 5),
                   TextField(
+                    controller: _contentEditController,
                     maxLines: 4,
                     decoration: InputDecoration(
                       hintText: '설명을 입력하세요',
@@ -425,7 +439,8 @@ class _TransactionPageState extends State<TransactionPage> {
                       String addr = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ChooseLocationPage(currentPosition.latitude, currentPosition.longitude)));
+                              builder: (context) => const ChooseLocationPage(
+                                  37.5013068, 127.0396597)));
                       setState(() {
                         _addr = addr;
                       });
@@ -435,7 +450,6 @@ class _TransactionPageState extends State<TransactionPage> {
                       height: _addr == "장소 선택" ? 50 : null,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        // border: Border.all(color: Colors.black),
                         color: const Color(0xFFF2F2F2),
                       ),
                       child: Row(
@@ -456,21 +470,54 @@ class _TransactionPageState extends State<TransactionPage> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  Container(
-                    height: 50,
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
+                  GestureDetector(
+                    onTap: () async {
+                      if (!mounted) return;
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => const MainPage()),
+                          (route) => false);
+                      uploadTrade = TradeDto(
+                        id: uploadTrade.id,
+                        seller: uploadTrade.seller,
+                        title: _titleEditController.text,
+                        description: _contentEditController.text,
+                        thumbnailImageUrl: uploadTrade.thumbnailImageUrl,
+                        status: uploadTrade.status,
+                        countryCode: uploadTrade.countryCode,
+                        foreignCurrencyAmount: int.parse(_currencyEditController.text),
+                        koreanWonAmount: int.parse(_krwEditController.text),
+                        locationLatitude: uploadTrade.locationLatitude,
+                        locationLongitude: uploadTrade.locationLongitude,
+                        preferredTradeCountry: uploadTrade.preferredTradeCountry,
+                        preferredTradeCity: uploadTrade.preferredTradeCity,
+                        preferredTradeDistrict: uploadTrade.preferredTradeDistrict,
+                        preferredTradeTown: uploadTrade.preferredTradeTown,
+                        type: uploadTrade.type,
+                        isShow: uploadTrade.isShow,
+                        directTradeTime: uploadTrade.directTradeTime,
+                        directTradeLocationDetail: uploadTrade.directTradeLocationDetail,
+                        buyer: uploadTrade.buyer,
+                        isDeliveryReceived: uploadTrade.isDeliveryReceived,
+                      );
+                      await tradeProvider.postTrade(uploadTrade);
+                    },
+                    child: Container(
+                      height: 50,
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                        color: Color(0xFFFFD954),
                       ),
-                      color: Color(0xFFFFD954),
+                      child: const Center(
+                          child: Text(
+                        '작성 완료',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      )),
                     ),
-                    child: const Center(
-                        child: Text(
-                          '작성 완료',
-                          style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        )),
                   ),
                 ],
               ),
