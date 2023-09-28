@@ -11,16 +11,8 @@
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-<<<<<<< HEAD
         android:label="a705"
         android:networkSecurityConfig="@xml/network_security_config">
-=======
-<<<<<<< HEAD
-=======
-        android:networkSecurityConfig="@xml/network_security_config"
->>>>>>> fef4a1db94e79ce83585ed91f29e8e6ce7a3e221
-        android:label="a705">
->>>>>>> b3af545b6dc282b07ccdb1d98ea80547cb28df72
         <!-- TODO: Add your Google Maps API key here -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"

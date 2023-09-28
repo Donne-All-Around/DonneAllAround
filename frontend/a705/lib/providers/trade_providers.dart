@@ -32,11 +32,11 @@ class TradeProviders {
       }),
     );
     if (response.statusCode == 200) {
-      print(response.statusCode);
+      // print(response.statusCode);
       // List<dynamic> body = json.decode(response.body)['data']['tradeList']; // 한글 깨짐
       List<dynamic> body = json.decode(utf8.decode(response.bodyBytes))['data']['tradeList'];
       trade = body.map((trades) => TradeDto.fromJson(trades)).toList();
-      print(trade);
+      // print(trade);
     } else {
       print(response.statusCode);
       print(response.body);
@@ -68,7 +68,7 @@ class TradeProviders {
     );
     if (response.statusCode == 200) {
       // print(response.body);
-      List<dynamic> body = json.decode(response.body);
+      List<dynamic> body = json.decode(utf8.decode(response.bodyBytes))['data']['tradeList'];
       trade = body.map((trades) => TradeDto.fromJson(trades)).toList();
       // print(trade);
     }
@@ -103,7 +103,7 @@ class TradeProviders {
     );
     if (response.statusCode == 200) {
       // print(response.body);
-      List<dynamic> body = json.decode(response.body);
+      List<dynamic> body = json.decode(utf8.decode(response.bodyBytes))['data']['tradeList'];
       trade = body.map((trades) => TradeDto.fromJson(trades)).toList();
       // print(trade);
     }
@@ -127,7 +127,6 @@ class TradeProviders {
       trade = body.map((trades) => TradeDto.fromJson(trades)).toList();
       // print(trade);
     }
-
     return trade;
   }
 
@@ -141,29 +140,12 @@ class TradeProviders {
     );
     if (response.statusCode == 200) {
       // print(response.body);
-      // print(TradeDto.fromJson(json.decode(response.body)['data']));
-      return TradeDto.fromJson(json.decode(response.body)['data']);
+      return TradeDto.fromJson(json.decode(utf8.decode(response.bodyBytes))['data']);
     } else {
+      print(response.statusCode);
       throw Exception("Error");
     }
   }
-
-  // Future<TradeDto> getTradeDetail(int tradeId) async{
-  //   final response = await http.get(
-  //     Uri.parse('$url/api/trade/detail/$tradeId'),
-  //     headers: <String, String>{
-  //       'Content-Type': 'applcation/json',
-  //     },);
-  //   var _text = utf8.decode(response.bodyBytes);
-  //   var dataObjsJson = jsonDecode(_text)['data'] as List;
-  //   final List<TradeDto> parsedResponse = dataObjsJson.map((dataJson)=>TradeDto.fromJson(dataJson)).toList();
-  //   print(parsedResponse);
-  //   if (response.statusCode == 200) {
-  //     // print(response.body);
-  //     print(parsedResponse);
-  //     return TradeDto.fromJson(json.decode(response.body));
-  //   }
-  // }
 
   // 거래 글 생성
   Future<String> postTrade(TradeDto tradeDto) async {

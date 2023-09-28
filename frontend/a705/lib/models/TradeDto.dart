@@ -68,7 +68,7 @@ class TradeDto {
       preferredTradeDistrict: json['preferredTradeDistrict'],
       preferredTradeTown: json['preferredTradeTown'],
       imageUrlList: json['imageUrlList'] ?? [],
-      tradeLikeCount: json['tradeLikeCount'],
+      tradeLikeCount: json['tradeLikeCount'] ?? 0,
       sellerNickname: json['sellerNickname'] ?? "옹골찬",
       sellerImgUrl: json['sellerImgUrl'] ?? "4444.png",
       sellerPoint: json['sellerPoint'] ?? 1,

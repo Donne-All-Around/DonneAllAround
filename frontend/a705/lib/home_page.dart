@@ -29,6 +29,9 @@ class _HomePageState extends State<HomePage> {
         currency[_idx], 6, "KOREA", "SEOUL", "KANGNAM", "YEOKSAM");
     size = trade.length;
     print("size: $size");
+    setState(() {
+
+    });
   }
 
   Future getLatestTrade() async {
@@ -65,8 +68,6 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(width: 15),
               GestureDetector(
                 onTap: () {
-                  // tradeProvider.getLatestTrade("USD", 3, "KOREA", "SEOUL", "KANGNAM", "YEOKSAM");
-                  print(trade);
                   showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
@@ -213,6 +214,7 @@ class _HomePageState extends State<HomePage> {
                   setState(() {
                     _idx = idx;
                   });
+
                 },
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -419,10 +421,25 @@ class _HomePageState extends State<HomePage> {
                             ),
                           );
                         }).toList(),
-                        onChanged: (value) {
+                        onChanged: (value) async {
                           setState(() {
                             _selectedValue = value!;
                           });
+                          if(value == "최신순") {
+                            // trade = await tradeProvider.getLatestTrade(currency[_idx], 0, "", "", "", "");
+                            trade = await tradeProvider.getLatestTrade(currency[_idx], 6, "KOREA", "SEOUL", "KANGNAM", "YEOKSAM");
+                            setState(() {});
+                          }
+                          if(value == "낮은 가격순") {
+                            // trade = await tradeProvider.getLowestTrade(currency[_idx], 0, "", "", "", "");
+                            trade = await tradeProvider.getLowestTrade(currency[_idx], 6, "KOREA", "SEOUL", "KANGNAM", "YEOKSAM");
+                            setState(() {});
+                          }
+                          if(value == "단위 당 낮은 가격순") {
+                            // trade = await tradeProvider.getLowestRateTrade(currency[_idx], 0, "", "", "", "");
+                            trade = await tradeProvider.getLowestRateTrade(currency[_idx], 6, "KOREA", "SEOUL", "KANGNAM", "YEOKSAM");
+                            setState(() {});
+                          }
                         },
                       ),
                     ),
@@ -439,7 +456,7 @@ class _HomePageState extends State<HomePage> {
                             onTap: () {
                               Navigator.push(context, MaterialPageRoute(
                                 builder: (context) {
-                                  return const TransactionDetailPage();
+                                  return TransactionDetailPage(trade[index].id);
                                 },
                               ));
                             },

@@ -72,7 +72,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
             onTap: () {
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {
-                  return const TransactionDetailPage();
+                  return const TransactionDetailPage(1);
                 },
               ));
             },
