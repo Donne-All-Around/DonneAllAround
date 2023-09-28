@@ -1,5 +1,6 @@
 import 'package:a705/bank_detail.dart';
 import 'package:a705/exchange_detail.dart';
+import 'package:a705/providers/exchange_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
@@ -1117,7 +1118,6 @@ class ListViewBuilder extends StatefulWidget {
 class _ListViewBuilderState extends State<ListViewBuilder> {
   final _valueList1 = [
     '미국(달러) USD',
-    '한국(원) KRW',
     '일본(엔) JPY',
     '중국(위안) CNY',
     '유럽(유로) EUR',
@@ -1138,26 +1138,44 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
   int idx1 = 0;
 
   List<String> currency1 = [
-    'USD',
-    'KRW',
-    'JPY',
-    'CNY',
-    'EUR',
-    'GBP',
-    'AUD',
-    'CAD',
-    'HKD',
-    'PHP',
-    'VND',
-    'TWD',
-    'SGD',
-    'CZK',
-    'NZD',
-    'RUB',
+    'USDKRW',
+    'USDJPY',
+    'USDCNY',
+    'USDEUR',
+    'USDGBP',
+    'USDAUD',
+    'USDCAD',
+    'USDHKD',
+    'USDPHP',
+    'USDVND',
+    'USDTWD',
+    'USDSGD',
+    'USDCZK',
+    'USDNZD',
+    'USDRUB',
 
   ];
 
-  
+  late Map<String, double> exchangeRates; // 환율 데이터를 저장할 변수
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchExchangeRates(); // 환율 데이터를 가져오는 함수 호출
+  }
+
+  Future<void> _fetchExchangeRates() async {
+    try {
+      final exchangeProvider = ExchangeRateProvider();
+      final response = await exchangeProvider.fetchCurrencyData();
+      setState(() {
+        exchangeRates = Map<String, double>.from(response.quotes.toJson());// 환율 데이터를 저장
+      });
+    } catch (e) {
+      print('Error fetching exchange rates: $e');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -1167,6 +1185,12 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
       shrinkWrap: true,
       itemCount: _valueList1.length,
       itemBuilder: (context, index) {
+        final exchangeRate = exchangeRates[currency1[index]];
+        String formattedRate = 'N/A'; // 초기값 설정
+
+        if (exchangeRate != null) {
+          formattedRate = exchangeRate.toStringAsFixed(2); // 환율 데이터가 있는 경우에만 값 설정
+        }
         return GestureDetector(
           onTap: (){
             Navigator.push(
@@ -1210,7 +1234,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                             ],
                           ),
                           const Text(
-                            '1,300.00 원',
+                            '$formattedRate',
                             textAlign: TextAlign.end,
                             style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),)
                         ],

@@ -93,22 +93,22 @@ flutter:
      - assets/images/wagon_don.png
      - assets/images/profile.jpg
      - assets/images/ausdollar.jpg
-     - assets/images/flag/AUD.png
-     - assets/images/flag/JPY.png
-     - assets/images/flag/EUR.png
-     - assets/images/flag/GBP.png
-     - assets/images/flag/CNY.png
-     - assets/images/flag/VND.png
-     - assets/images/flag/HKD.png
-     - assets/images/flag/USD.png
-     - assets/images/flag/KRW.png
-     - assets/images/flag/CAD.png
-     - assets/images/flag/CZK.png
-     - assets/images/flag/NZD.png
-     - assets/images/flag/PHP.png
-     - assets/images/flag/RUB.png
-     - assets/images/flag/SGD.png
-     - assets/images/flag/TWD.png
+     - assets/images/flag/USDAUD.png
+     - assets/images/flag/USDJPY.png
+     - assets/images/flag/USDEUR.png
+     - assets/images/flag/USDGBP.png
+     - assets/images/flag/USDCNY.png
+     - assets/images/flag/USDVND.png
+     - assets/images/flag/USDHKD.png
+     - assets/images/flag/USDUSD.png
+     - assets/images/flag/USDKRW.png
+     - assets/images/flag/USDCAD.png
+     - assets/images/flag/USDCZK.png
+     - assets/images/flag/USDNZD.png
+     - assets/images/flag/USDPHP.png
+     - assets/images/flag/USDRUB.png
+     - assets/images/flag/USDSGD.png
+     - assets/images/flag/USDTWD.png
      - assets/images/marker.png
      - assets/images/banklogo/003.png
      - assets/images/banklogo/004.png

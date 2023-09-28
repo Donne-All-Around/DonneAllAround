@@ -215,7 +215,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                       SizedBox(width: 10),
                                       CircleAvatar(
                                         backgroundImage:
-                                            AssetImage('assets/images/flag/AUD.png'),
+                                            AssetImage('assets/images/flag/USDAUD.png'),
                                         radius: 8,
                                       ),
                                       SizedBox(width: 5),

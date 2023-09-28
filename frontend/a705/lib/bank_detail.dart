@@ -21,7 +21,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
   Map<String, Map<String, String>> bankInfo = {
     '신한은행': {'imagePath': 'assets/images/flag/USD.png', 'currencyName': '신한은행'},
     '하나은행': {
-      'imagePath': 'assets/images/flag/AUD.png',
+      'imagePath': 'assets/images/flag/USDAUD.png',
       'currencyName': '하나은행'
     },
   };

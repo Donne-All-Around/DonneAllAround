@@ -517,7 +517,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                 children: [
                                   CircleAvatar(
                                     backgroundImage:
-                                        AssetImage('assets/images/flag/AUD.png'),
+                                        AssetImage('assets/images/flag/USDAUD.png'),
                                     radius: 8,
                                   ),
                                   SizedBox(width: 5),

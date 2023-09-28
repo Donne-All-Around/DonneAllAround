@@ -143,7 +143,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                                       children: [
                                         CircleAvatar(
                                           backgroundImage: AssetImage(
-                                              'assets/images/flag/AUD.png'),
+                                              'assets/images/flag/USDAUD.png'),
                                           radius: 8,
                                         ),
                                         SizedBox(width: 5),
