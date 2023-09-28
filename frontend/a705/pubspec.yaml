@@ -100,8 +100,8 @@ flutter:
      - assets/images/flag/USDCNY.png
      - assets/images/flag/USDVND.png
      - assets/images/flag/USDHKD.png
-     - assets/images/flag/USDUSD.png
      - assets/images/flag/USDKRW.png
+     - assets/images/flag/KRW.png
      - assets/images/flag/USDCAD.png
      - assets/images/flag/USDCZK.png
      - assets/images/flag/USDNZD.png

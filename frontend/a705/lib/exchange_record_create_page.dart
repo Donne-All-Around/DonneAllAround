@@ -231,7 +231,7 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
                         SizedBox(width: 10),
                         CircleAvatar(
                           backgroundImage:
-                          AssetImage('assets/images/flag/USDKRW.png'),
+                          AssetImage('assets/images/flag/KRW.png'),
                           radius: 10,
                         ),
                         SizedBox(width: 5),

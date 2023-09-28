@@ -1156,12 +1156,12 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
 
   ];
 
-  late Map<String, double> exchangeRates; // 환율 데이터를 저장할 변수
+  Map<String, double>? exchangeRates; // 환율 데이터를 저장할 변수
 
   @override
   void initState() {
     super.initState();
-    _fetchExchangeRates(); // 환율 데이터를 가져오는 함수 호출
+    _fetchExchangeRates();
   }
 
   Future<void> _fetchExchangeRates() async {
@@ -1169,7 +1169,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
       final exchangeProvider = ExchangeRateProvider();
       final response = await exchangeProvider.fetchCurrencyData();
       setState(() {
-        exchangeRates = Map<String, double>.from(response.quotes.toJson());// 환율 데이터를 저장
+        exchangeRates = Map<String, double>.from(response.quotes.toJson());
       });
     } catch (e) {
       print('Error fetching exchange rates: $e');
@@ -1185,12 +1185,15 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
       shrinkWrap: true,
       itemCount: _valueList1.length,
       itemBuilder: (context, index) {
-        final exchangeRate = exchangeRates[currency1[index]];
         String formattedRate = 'N/A'; // 초기값 설정
 
-        if (exchangeRate != null) {
-          formattedRate = exchangeRate.toStringAsFixed(2); // 환율 데이터가 있는 경우에만 값 설정
+        if (exchangeRates != null) {
+          final exchangeRate = exchangeRates?[currency1[index]];
+          if (exchangeRate != null) {
+            formattedRate = exchangeRate.toStringAsFixed(2); // 환율 데이터가 있는 경우에만 값 설정
+          }
         }
+
         return GestureDetector(
           onTap: (){
             Navigator.push(
@@ -1233,10 +1236,10 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                 style: const TextStyle(fontSize: 16),),
                             ],
                           ),
-                          const Text(
-                            '$formattedRate',
+                           Text(
+                            '${formattedRate} 원',
                             textAlign: TextAlign.end,
-                            style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),)
+                            style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),)
                         ],
                       ),
 
