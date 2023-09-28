@@ -31,56 +31,58 @@ class ExchangeRateResponse {
 class ExchangeRates {
   double usdKrw;
   double usdJpy;
-  double usdAud;
-  double usdCad;
   double usdCny;
-  double usdCzk;
   double usdEur;
   double usdGbp;
+  double usdAud;
+  double usdCad;
   double usdHkd;
-  double usdNzd;
   double usdPhp;
-  double usdRub;
-  double usdSgd;
-  double usdTwd;
   double usdVnd;
+  double usdTwd;
+  double usdSgd;
+  double usdCzk;
+  double usdNzd;
+  double usdRub;
 
 
   ExchangeRates({
     required this.usdKrw,
     required this.usdJpy,
-    required this.usdAud,
-    required this.usdCad,
     required this.usdCny,
-    required this.usdCzk,
     required this.usdEur,
     required this.usdGbp,
+    required this.usdAud,
+    required this.usdCad,
     required this.usdHkd,
-    required this.usdNzd,
     required this.usdPhp,
-    required this.usdRub,
-    required this.usdSgd,
-    required this.usdTwd,
     required this.usdVnd,
+    required this.usdTwd,
+    required this.usdSgd,
+    required this.usdCzk,
+    required this.usdNzd,
+    required this.usdRub,
+
   });
 
   factory ExchangeRates.fromJson(Map<String, dynamic> json) {
     return ExchangeRates(
       usdKrw: json['USDKRW'],
       usdJpy: json['USDJPY'],
-      usdAud: json['USDAUD'],
-      usdCad: json['USDCAD'],
       usdCny: json['USDCNY'],
-      usdCzk: json['USDCZK'],
       usdEur: json['USDEUR'],
       usdGbp: json['USDGBP'],
+      usdAud: json['USDAUD'],
+      usdCad: json['USDCAD'],
       usdHkd: json['USDHKD'],
-      usdNzd: json['USDNZD'],
       usdPhp: json['USDPHP'],
-      usdRub: json['USDRUB'],
-      usdSgd: json['USDSGD'],
-      usdTwd: json['USDTWD'],
       usdVnd: json['USDVND'],
+      usdTwd: json['USDTWD'],
+      usdSgd: json['USDSGD'],
+      usdCzk: json['USDCZK'],
+      usdNzd: json['USDNZD'],
+      usdRub: json['USDRUB'],
+
     );
   }
 
@@ -88,19 +90,21 @@ class ExchangeRates {
     return {
       'USDKRW' : usdKrw,
       'USDJPY' : usdJpy,
-      'USDAUD' : usdAud,
-      'USDCAD' : usdCad,
       'USDCNY' : usdCny,
-      'USDCZK' : usdCzk,
       'USDEUR' : usdEur,
       'USDGBP' : usdGbp,
+      'USDAUD' : usdAud,
+      'USDCAD' : usdCad,
       'USDHKD' : usdHkd,
-      'USDNZD' : usdNzd,
       'USDPHP' : usdPhp,
-      'USDRUB' : usdRub,
-      'USDSGD' : usdSgd,
-      'USDTWD' : usdTwd,
       'USDVND' : usdVnd,
+      'USDTWD' : usdTwd,
+      'USDSGD' : usdSgd,
+      'USDCZK' : usdCzk,
+      'USDNZD' : usdNzd,
+      'USDRUB' : usdRub,
+
+
     };
   }
 

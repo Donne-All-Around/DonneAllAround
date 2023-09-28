@@ -24,9 +24,9 @@ class _ExchangePageState extends State<ExchangePage> {
   String selectedButton = '직접'; // 선택된 버튼
 
   int _idx = 0;
-  int _idx2 = 7;
+  int _idx2 = 2;
   int _idx3 = 4;
-  int _idx4 = 7;
+  int _idx4 = 2;
 
   final _bankList = ['신한은행', '하나은행'];
   var _selectedValue5 = '신한은행';
@@ -1117,44 +1117,47 @@ class ListViewBuilder extends StatefulWidget {
 class _ListViewBuilderState extends State<ListViewBuilder> {
   final _valueList1 = [
     '미국(달러) USD',
+    '한국(원) KRW',
     '일본(엔) JPY',
+    '중국(위안) CNY',
     '유럽(유로) EUR',
     '영국(파운드) GBP',
     '호주(달러) AUD',
-    '중국(위안) CNY',
-    '베트남(동) VND',
-    '한국(원) KRW',
-    '홍콩(달러) HKD',
     '캐나다(달러) CAD',
+    '홍콩(달러) HKD',
+    '필리핀(페소) PHP',
+    '베트남(동) VND',
+    '대만(달러) TWD',
+    '싱가폴(달러) SGD',
     '체코(코루나) CZK',
     '뉴질랜드(달러) NZD',
-    '필리핀(페소) PHP',
     '러시아(루블) RUB',
-    '싱가폴(달러) SGD',
-    '대만(달러) TWD',
+
+
   ];
   int idx1 = 0;
 
   List<String> currency1 = [
     'USD',
+    'KRW',
     'JPY',
+    'CNY',
     'EUR',
     'GBP',
     'AUD',
-    'CNY',
-    'VND',
-    'KRW',
-    'HKD',
     'CAD',
+    'HKD',
+    'PHP',
+    'VND',
+    'TWD',
+    'SGD',
     'CZK',
     'NZD',
-    'PHP',
     'RUB',
-    'SGD',
-    'TWD',
 
   ];
 
+  
 
   @override
   Widget build(BuildContext context) {
@@ -1442,41 +1445,41 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
 
 List<String> country = [
   '미국(달러)',
+  '한국(원)',
   '일본(엔)',
-  '유럽(유로)',
+  '중국(위안)',
+  '유럽(유로) ',
   '영국(파운드)',
   '호주(달러)',
-  '중국(위안)',
-  '베트남(동)',
-  '한국(원)',
-  '홍콩(달러)',
   '캐나다(달러)',
+  '홍콩(달러)',
+  '필리핀(페소)',
+  '베트남(동)',
+  '대만(달러)',
+  '싱가폴(달러)',
   '체코(코루나)',
   '뉴질랜드(달러)',
-  '필리핀(페소)',
   '러시아(루블)',
-  '싱가폴(달러)',
-  '대만(달러)',
 ];
 List<String> currency = [
   'USD',
+  'KRW',
   'JPY',
+  'CNY',
   'EUR',
   'GBP',
   'AUD',
-  'CNY',
-  'VND',
-  'KRW',
-  'HKD',
   'CAD',
+  'HKD',
+  'PHP',
+  'VND',
+  'TWD',
+  'SGD',
   'CZK',
   'NZD',
-  'PHP',
   'RUB',
-  'SGD',
-  'TWD',
 ];
-List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
+List<String> sign = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
 
 List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
 
@@ -1557,41 +1560,41 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
 
 List<String> country2 = [
   '미국(달러)',
+  '한국(원)',
   '일본(엔)',
-  '유럽(유로)',
+  '중국(위안)',
+  '유럽(유로) ',
   '영국(파운드)',
   '호주(달러)',
-  '중국(위안)',
-  '베트남(동)',
-  '한국(원)',
-  '홍콩(달러)',
   '캐나다(달러)',
+  '홍콩(달러)',
+  '필리핀(페소)',
+  '베트남(동)',
+  '대만(달러)',
+  '싱가폴(달러)',
   '체코(코루나)',
   '뉴질랜드(달러)',
-  '필리핀(페소)',
   '러시아(루블)',
-  '싱가폴(달러)',
-  '대만(달러)',
 ];
 List<String> currency2 = [
   'USD',
+  'KRW',
   'JPY',
+  'CNY',
   'EUR',
   'GBP',
   'AUD',
-  'CNY',
-  'VND',
-  'KRW',
-  'HKD',
   'CAD',
+  'HKD',
+  'PHP',
+  'VND',
+  'TWD',
+  'SGD',
   'CZK',
   'NZD',
-  'PHP',
   'RUB',
-  'SGD',
-  'TWD',
 ];
-List<String> sign2 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
+List<String> sign2 = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
 
 List<int> unit2 = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
 
@@ -1672,41 +1675,41 @@ class _CountryListViewBuilderState2 extends State<CountryListViewBuilder2> {
 
 List<String> country3 = [
   '미국(달러)',
+  '한국(원)',
   '일본(엔)',
-  '유럽(유로)',
+  '중국(위안)',
+  '유럽(유로) ',
   '영국(파운드)',
   '호주(달러)',
-  '중국(위안)',
-  '베트남(동)',
-  '한국(원)',
-  '홍콩(달러)',
   '캐나다(달러)',
+  '홍콩(달러)',
+  '필리핀(페소)',
+  '베트남(동)',
+  '대만(달러)',
+  '싱가폴(달러)',
   '체코(코루나)',
   '뉴질랜드(달러)',
-  '필리핀(페소)',
   '러시아(루블)',
-  '싱가폴(달러)',
-  '대만(달러)',
 ];
 List<String> currency3 = [
   'USD',
+  'KRW',
   'JPY',
+  'CNY',
   'EUR',
   'GBP',
   'AUD',
-  'CNY',
-  'VND',
-  'KRW',
-  'HKD',
   'CAD',
+  'HKD',
+  'PHP',
+  'VND',
+  'TWD',
+  'SGD',
   'CZK',
   'NZD',
-  'PHP',
   'RUB',
-  'SGD',
-  'TWD',
 ];
-List<String> sign3 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
+List<String> sign3 = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
 
 List<int> unit3 = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
 
@@ -1787,41 +1790,41 @@ class _CountryListViewBuilderState3 extends State<CountryListViewBuilder3> {
 
 List<String> country4 = [
   '미국(달러)',
+  '한국(원)',
   '일본(엔)',
-  '유럽(유로)',
+  '중국(위안)',
+  '유럽(유로) ',
   '영국(파운드)',
   '호주(달러)',
-  '중국(위안)',
-  '베트남(동)',
-  '한국(원)',
-  '홍콩(달러)',
   '캐나다(달러)',
+  '홍콩(달러)',
+  '필리핀(페소)',
+  '베트남(동)',
+  '대만(달러)',
+  '싱가폴(달러)',
   '체코(코루나)',
   '뉴질랜드(달러)',
-  '필리핀(페소)',
   '러시아(루블)',
-  '싱가폴(달러)',
-  '대만(달러)',
 ];
 List<String> currency4 = [
   'USD',
+  'KRW',
   'JPY',
+  'CNY',
   'EUR',
   'GBP',
   'AUD',
-  'CNY',
-  'VND',
-  'KRW',
-  'HKD',
   'CAD',
+  'HKD',
+  'PHP',
+  'VND',
+  'TWD',
+  'SGD',
   'CZK',
   'NZD',
-  'PHP',
   'RUB',
-  'SGD',
-  'TWD',
 ];
-List<String> sign4 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
+List<String> sign4 = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
 
 List<int> unit4 = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
 
