@@ -68,6 +68,40 @@ class ExchangeRates {
     return ExchangeRates(
       usdKrw: json['USDKRW'],
       usdJpy: json['USDJPY'],
+      usdAud: json['USDAUD'],
+      usdCad: json['USDCAD'],
+      usdCny: json['USDCNY'],
+      usdCzk: json['USDCZK'],
+      usdEur: json['USDEUR'],
+      usdGbp: json['USDGBP'],
+      usdHkd: json['USDHKD'],
+      usdNzd: json['USDNZD'],
+      usdPhp: json['USDPHP'],
+      usdRub: json['USDRUB'],
+      usdSgd: json['USDSGD'],
+      usdTwd: json['USDTWD'],
+      usdVnd: json['USDVND'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'USDKRW' : usdKrw,
+      'USDJPY' : usdJpy,
+      'USDAUD' : usdAud,
+      'USDCAD' : usdCad,
+      'USDCNY' : usdCny,
+      'USDCZK' : usdCzk,
+      'USDEUR' : usdEur,
+      'USDGBP' : usdGbp,
+      'USDHKD' : usdHkd,
+      'USDNZD' : usdNzd,
+      'USDPHP' : usdPhp,
+      'USDRUB' : usdRub,
+      'USDSGD' : usdSgd,
+      'USDTWD' : usdTwd,
+      'USDVND' : usdVnd,
+    };
+  }
+
 }
