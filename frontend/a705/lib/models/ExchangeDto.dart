@@ -67,21 +67,21 @@ class ExchangeRates {
 
   factory ExchangeRates.fromJson(Map<String, dynamic> json) {
     return ExchangeRates(
-      usdKrw: json['USDKRW'],
-      usdJpy: json['USDJPY'],
-      usdCny: json['USDCNY'],
-      usdEur: json['USDEUR'],
-      usdGbp: json['USDGBP'],
-      usdAud: json['USDAUD'],
-      usdCad: json['USDCAD'],
-      usdHkd: json['USDHKD'],
-      usdPhp: json['USDPHP'],
-      usdVnd: json['USDVND'],
-      usdTwd: json['USDTWD'],
-      usdSgd: json['USDSGD'],
-      usdCzk: json['USDCZK'],
-      usdNzd: json['USDNZD'],
-      usdRub: json['USDRUB'],
+      usdKrw: json['USDKRW'].toDouble(),
+      usdJpy: json['USDJPY'].toDouble(),
+      usdCny: json['USDCNY'].toDouble(),
+      usdEur: json['USDEUR'].toDouble(),
+      usdGbp: json['USDGBP'].toDouble(),
+      usdAud: json['USDAUD'].toDouble(),
+      usdCad: json['USDCAD'].toDouble(),
+      usdHkd: json['USDHKD'].toDouble(),
+      usdPhp: json['USDPHP'].toDouble(),
+      usdVnd: json['USDVND'].toDouble(),
+      usdTwd: json['USDTWD'].toDouble(),
+      usdSgd: json['USDSGD'].toDouble(),
+      usdCzk: json['USDCZK'].toDouble(),
+      usdNzd: json['USDNZD'].toDouble(),
+      usdRub: json['USDRUB'].toDouble(),
 
     );
   }

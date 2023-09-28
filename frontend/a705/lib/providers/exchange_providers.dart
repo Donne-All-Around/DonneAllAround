@@ -25,7 +25,7 @@ class ExchangeRateProvider {
   }
 }
 
-void main() {
-  final exchangeProvider = ExchangeRateProvider();
-  exchangeProvider.fetchCurrencyData(); // API 데이터 가져오기
-}
+// void main() async {
+//   final exchangeProvider = ExchangeRateProvider();
+//   exchangeProvider.fetchCurrencyData(); // API 데이터 가져오기
+// }

@@ -1168,10 +1168,36 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
     try {
       final exchangeProvider = ExchangeRateProvider();
       final response = await exchangeProvider.fetchCurrencyData();
-      setState(() {
-        exchangeRates = Map<String, double>.from(response.quotes.toJson());
-      });
+      // API 응답 데이터 파싱
+      final exchangeResponse = response;
+      if (exchangeResponse.success) {
+        setState(() {
+          // 성공적으로 데이터를 받아왔을 때만 exchangeRates 업데이트
+          exchangeRates = {
+            'USDKRW': exchangeResponse.quotes.usdKrw,
+            'USDJPY': exchangeResponse.quotes.usdJpy,
+            'USDCNY': exchangeResponse.quotes.usdCny,
+            'USDEUR': exchangeResponse.quotes.usdEur,
+            'USDGBP': exchangeResponse.quotes.usdGbp,
+            'USDAUD': exchangeResponse.quotes.usdAud,
+            'USDCAD': exchangeResponse.quotes.usdCad,
+            'USDHKD': exchangeResponse.quotes.usdHkd,
+            'USDPHP': exchangeResponse.quotes.usdPhp,
+            'USDVND': exchangeResponse.quotes.usdVnd,
+            'USDTWD': exchangeResponse.quotes.usdTwd,
+            'USDSGD': exchangeResponse.quotes.usdSgd,
+            'USDCZK': exchangeResponse.quotes.usdCzk,
+            'USDNZD': exchangeResponse.quotes.usdNzd,
+            'USDRUB': exchangeResponse.quotes.usdRub,
+
+          };
+        });
+      } else {
+        // API 요청은 성공했지만, 응답이 실패한 경우에 대한 처리
+        print('API 요청 성공, 응답 실패: ${exchangeResponse.terms}');
+      }
     } catch (e) {
+      // API 요청 중 오류 발생
       print('Error fetching exchange rates: $e');
     }
   }
