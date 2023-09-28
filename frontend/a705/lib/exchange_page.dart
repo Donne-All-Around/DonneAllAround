@@ -14,6 +14,108 @@ class ExchangePage extends StatefulWidget {
 }
 
 class _ExchangePageState extends State<ExchangePage> {
+  final _valueList1 = [
+    '미국(달러) USD',
+    '일본(엔) JPY',
+    '중국(위안) CNY',
+    '유럽(유로) EUR',
+    '영국(파운드) GBP',
+    '호주(달러) AUD',
+    '캐나다(달러) CAD',
+    '홍콩(달러) HKD',
+    '필리핀(페소) PHP',
+    '베트남(동) VND',
+    '대만(달러) TWD',
+    '싱가폴(달러) SGD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '러시아(루블) RUB',
+
+
+  ];
+  int idx1 = 0;
+
+  List<String> currency1 = [
+    'USDKRW',
+    'USDJPY',
+    'USDCNY',
+    'USDEUR',
+    'USDGBP',
+    'USDAUD',
+    'USDCAD',
+    'USDHKD',
+    'USDPHP',
+    'USDVND',
+    'USDTWD',
+    'USDSGD',
+    'USDCZK',
+    'USDNZD',
+    'USDRUB',
+
+  ];
+
+  Map<String, double>? exchangeRates; // 환율 데이터를 저장할 변수
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchExchangeRates();
+  }
+
+  Future<void> _fetchExchangeRates() async {
+    try {
+      final exchangeProvider = ExchangeRateProvider();
+      final response = await exchangeProvider.fetchCurrencyData();
+      // API 응답 데이터 파싱
+      final exchangeResponse = response;
+      if (exchangeResponse.success) {
+        setState(() {
+          // 성공적으로 데이터를 받아왔을 때만 exchangeRates 업데이트
+          exchangeRates = {
+            'USDKRW': exchangeResponse.quotes.usdKrw,
+            'USDJPY': exchangeResponse.quotes.usdJpy,
+            'USDCNY': exchangeResponse.quotes.usdCny,
+            'USDEUR': exchangeResponse.quotes.usdEur,
+            'USDGBP': exchangeResponse.quotes.usdGbp,
+            'USDAUD': exchangeResponse.quotes.usdAud,
+            'USDCAD': exchangeResponse.quotes.usdCad,
+            'USDHKD': exchangeResponse.quotes.usdHkd,
+            'USDPHP': exchangeResponse.quotes.usdPhp,
+            'USDVND': exchangeResponse.quotes.usdVnd,
+            'USDTWD': exchangeResponse.quotes.usdTwd,
+            'USDSGD': exchangeResponse.quotes.usdSgd,
+            'USDCZK': exchangeResponse.quotes.usdCzk,
+            'USDNZD': exchangeResponse.quotes.usdNzd,
+            'USDRUB': exchangeResponse.quotes.usdRub,
+
+          };
+        });
+      } else {
+        // API 요청은 성공했지만, 응답이 실패한 경우에 대한 처리
+        print('API 요청 성공, 응답 실패: ${exchangeResponse.terms}');
+      }
+    } catch (e) {
+      // API 요청 중 오류 발생
+      print('Error fetching exchange rates: $e');
+    }
+  }
+
+  double? calculateRate(String baseCurrency, String targetCurrency) {
+    if (exchangeRates != null &&
+        exchangeRates!.containsKey(baseCurrency) &&
+        exchangeRates!.containsKey(targetCurrency)) {
+      final baseRate = exchangeRates![baseCurrency];
+      final targetRate = exchangeRates![targetCurrency];
+
+      if (targetCurrency == 'USDJPY' || targetCurrency == 'USDVND') {
+        return baseRate! / targetRate! * 100;
+      } else {
+        return baseRate! / targetRate!;
+      }
+    }
+    return null;
+  }
+
 
   String getToday() {
     DateTime now = DateTime.now();
@@ -985,8 +1087,96 @@ class _ExchangePageState extends State<ExchangePage> {
 
                  //국가별 실시간 환율
                   if (_isDouble == false && _iscalculate == false)
-                    const ListViewBuilder(),
+                    // const ListViewBuilder(),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: ListView.builder(
+                            primary: false,
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: _valueList1.length,
+                            itemBuilder: (context, index) {
+                              String formattedRate = 'N/A'; // 초기값 설정
 
+                              if (exchangeRates != null) {
+                                if (currency1[index] == 'USDKRW') {
+                                  // 한국 원(KRW)은 그대로 표시
+                                  final exchangeRate = exchangeRates![currency1[index]];
+                                  if (exchangeRate != null) {
+                                    formattedRate = exchangeRate.toStringAsFixed(2);
+                                  }
+                                } else {
+                                  // 다른 국가의 환율 계산
+                                  final rate = calculateRate('USDKRW', currency1[index]);
+                                  if (rate != null) {
+                                    formattedRate = rate.toStringAsFixed(2);
+                                  }
+                                }
+                              }
+
+
+                              return GestureDetector(
+                                onTap: (){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const ExchangeDetailPage()),
+                                  );
+                                },
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(15),
+                                            color: Colors.white,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black.withOpacity(0.1),
+                                                spreadRadius: 1,
+                                                blurRadius: 3,
+                                                offset: const Offset(0, 0),
+                                              ),
+                                            ]),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    CircleAvatar(
+                                                      backgroundImage:
+                                                      AssetImage('assets/images/flag/${currency1[index]}.png'),
+                                                      radius: 10,
+                                                    ),
+                                                    const SizedBox(width: 10),
+                                                    Text( _valueList1[index],
+                                                      style: const TextStyle(fontSize: 16),),
+                                                  ],
+                                                ),
+                                                Text(
+                                                  '$formattedRate 원',
+                                                  textAlign: TextAlign.end,
+                                                  style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),)
+                                              ],
+                                            ),
+
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                          ),
+                    ],
+                  ),
                   if (_iscalculate)
                     const BankViewBuilder(),
                   ],
@@ -1107,204 +1297,204 @@ class _ExchangePageState extends State<ExchangePage> {
  );
   
 }
-
-class ListViewBuilder extends StatefulWidget {
-  const ListViewBuilder({super.key});
-
-  @override
-  State<ListViewBuilder> createState() => _ListViewBuilderState();
-}
-
-class _ListViewBuilderState extends State<ListViewBuilder> {
-  final _valueList1 = [
-    '미국(달러) USD',
-    '일본(엔) JPY',
-    '중국(위안) CNY',
-    '유럽(유로) EUR',
-    '영국(파운드) GBP',
-    '호주(달러) AUD',
-    '캐나다(달러) CAD',
-    '홍콩(달러) HKD',
-    '필리핀(페소) PHP',
-    '베트남(동) VND',
-    '대만(달러) TWD',
-    '싱가폴(달러) SGD',
-    '체코(코루나) CZK',
-    '뉴질랜드(달러) NZD',
-    '러시아(루블) RUB',
-
-
-  ];
-  int idx1 = 0;
-
-  List<String> currency1 = [
-    'USDKRW',
-    'USDJPY',
-    'USDCNY',
-    'USDEUR',
-    'USDGBP',
-    'USDAUD',
-    'USDCAD',
-    'USDHKD',
-    'USDPHP',
-    'USDVND',
-    'USDTWD',
-    'USDSGD',
-    'USDCZK',
-    'USDNZD',
-    'USDRUB',
-
-  ];
-
-  Map<String, double>? exchangeRates; // 환율 데이터를 저장할 변수
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchExchangeRates();
-  }
-
-  Future<void> _fetchExchangeRates() async {
-    try {
-      final exchangeProvider = ExchangeRateProvider();
-      final response = await exchangeProvider.fetchCurrencyData();
-      // API 응답 데이터 파싱
-      final exchangeResponse = response;
-      if (exchangeResponse.success) {
-        setState(() {
-          // 성공적으로 데이터를 받아왔을 때만 exchangeRates 업데이트
-          exchangeRates = {
-            'USDKRW': exchangeResponse.quotes.usdKrw,
-            'USDJPY': exchangeResponse.quotes.usdJpy,
-            'USDCNY': exchangeResponse.quotes.usdCny,
-            'USDEUR': exchangeResponse.quotes.usdEur,
-            'USDGBP': exchangeResponse.quotes.usdGbp,
-            'USDAUD': exchangeResponse.quotes.usdAud,
-            'USDCAD': exchangeResponse.quotes.usdCad,
-            'USDHKD': exchangeResponse.quotes.usdHkd,
-            'USDPHP': exchangeResponse.quotes.usdPhp,
-            'USDVND': exchangeResponse.quotes.usdVnd,
-            'USDTWD': exchangeResponse.quotes.usdTwd,
-            'USDSGD': exchangeResponse.quotes.usdSgd,
-            'USDCZK': exchangeResponse.quotes.usdCzk,
-            'USDNZD': exchangeResponse.quotes.usdNzd,
-            'USDRUB': exchangeResponse.quotes.usdRub,
-
-          };
-        });
-      } else {
-        // API 요청은 성공했지만, 응답이 실패한 경우에 대한 처리
-        print('API 요청 성공, 응답 실패: ${exchangeResponse.terms}');
-      }
-    } catch (e) {
-      // API 요청 중 오류 발생
-      print('Error fetching exchange rates: $e');
-    }
-  }
-
-  double? calculateRate(String baseCurrency, String targetCurrency) {
-    if (exchangeRates != null &&
-        exchangeRates!.containsKey(baseCurrency) &&
-        exchangeRates!.containsKey(targetCurrency)) {
-      final baseRate = exchangeRates![baseCurrency];
-      final targetRate = exchangeRates![targetCurrency];
-
-      if (targetCurrency == 'USDJPY' || targetCurrency == 'USDVND') {
-        return baseRate! / targetRate! * 100;
-      } else {
-        return baseRate! / targetRate!;
-      }
-    }
-    return null;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return  ListView.builder(
-      primary: false,
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      itemCount: _valueList1.length,
-      itemBuilder: (context, index) {
-        String formattedRate = 'N/A'; // 초기값 설정
-
-        if (exchangeRates != null) {
-          if (currency1[index] == 'USDKRW') {
-            // 한국 원(KRW)은 그대로 표시
-            final exchangeRate = exchangeRates![currency1[index]];
-            if (exchangeRate != null) {
-              formattedRate = exchangeRate.toStringAsFixed(2);
-            }
-          } else {
-            // 다른 국가의 환율 계산
-            final rate = calculateRate('USDKRW', currency1[index]);
-            if (rate != null) {
-              formattedRate = rate.toStringAsFixed(2);
-            }
-          }
-        }
-
-
-        return GestureDetector(
-          onTap: (){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ExchangeDetailPage()),
-            );
-          },
-          child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          spreadRadius: 1,
-                          blurRadius: 3,
-                          offset: const Offset(0, 0),
-                        ),
-                      ]),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundImage:
-                                AssetImage('assets/images/flag/${currency1[index]}.png'),
-                                radius: 10,
-                              ),
-                              const SizedBox(width: 10),
-                              Text( _valueList1[index],
-                                style: const TextStyle(fontSize: 16),),
-                            ],
-                          ),
-                           Text(
-                            '$formattedRate 원',
-                            textAlign: TextAlign.end,
-                            style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),)
-                        ],
-                      ),
-
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
+//
+// class ListViewBuilder extends StatefulWidget {
+//   const ListViewBuilder({super.key});
+//
+//   @override
+//   State<ListViewBuilder> createState() => _ListViewBuilderState();
+// }
+//
+// class _ListViewBuilderState extends State<ListViewBuilder> {
+//   final _valueList1 = [
+//     '미국(달러) USD',
+//     '일본(엔) JPY',
+//     '중국(위안) CNY',
+//     '유럽(유로) EUR',
+//     '영국(파운드) GBP',
+//     '호주(달러) AUD',
+//     '캐나다(달러) CAD',
+//     '홍콩(달러) HKD',
+//     '필리핀(페소) PHP',
+//     '베트남(동) VND',
+//     '대만(달러) TWD',
+//     '싱가폴(달러) SGD',
+//     '체코(코루나) CZK',
+//     '뉴질랜드(달러) NZD',
+//     '러시아(루블) RUB',
+//
+//
+//   ];
+//   int idx1 = 0;
+//
+//   List<String> currency1 = [
+//     'USDKRW',
+//     'USDJPY',
+//     'USDCNY',
+//     'USDEUR',
+//     'USDGBP',
+//     'USDAUD',
+//     'USDCAD',
+//     'USDHKD',
+//     'USDPHP',
+//     'USDVND',
+//     'USDTWD',
+//     'USDSGD',
+//     'USDCZK',
+//     'USDNZD',
+//     'USDRUB',
+//
+//   ];
+//
+//   Map<String, double>? exchangeRates; // 환율 데이터를 저장할 변수
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _fetchExchangeRates();
+//   }
+//
+//   Future<void> _fetchExchangeRates() async {
+//     try {
+//       final exchangeProvider = ExchangeRateProvider();
+//       final response = await exchangeProvider.fetchCurrencyData();
+//       // API 응답 데이터 파싱
+//       final exchangeResponse = response;
+//       if (exchangeResponse.success) {
+//         setState(() {
+//           // 성공적으로 데이터를 받아왔을 때만 exchangeRates 업데이트
+//           exchangeRates = {
+//             'USDKRW': exchangeResponse.quotes.usdKrw,
+//             'USDJPY': exchangeResponse.quotes.usdJpy,
+//             'USDCNY': exchangeResponse.quotes.usdCny,
+//             'USDEUR': exchangeResponse.quotes.usdEur,
+//             'USDGBP': exchangeResponse.quotes.usdGbp,
+//             'USDAUD': exchangeResponse.quotes.usdAud,
+//             'USDCAD': exchangeResponse.quotes.usdCad,
+//             'USDHKD': exchangeResponse.quotes.usdHkd,
+//             'USDPHP': exchangeResponse.quotes.usdPhp,
+//             'USDVND': exchangeResponse.quotes.usdVnd,
+//             'USDTWD': exchangeResponse.quotes.usdTwd,
+//             'USDSGD': exchangeResponse.quotes.usdSgd,
+//             'USDCZK': exchangeResponse.quotes.usdCzk,
+//             'USDNZD': exchangeResponse.quotes.usdNzd,
+//             'USDRUB': exchangeResponse.quotes.usdRub,
+//
+//           };
+//         });
+//       } else {
+//         // API 요청은 성공했지만, 응답이 실패한 경우에 대한 처리
+//         print('API 요청 성공, 응답 실패: ${exchangeResponse.terms}');
+//       }
+//     } catch (e) {
+//       // API 요청 중 오류 발생
+//       print('Error fetching exchange rates: $e');
+//     }
+//   }
+//
+//   double? calculateRate(String baseCurrency, String targetCurrency) {
+//     if (exchangeRates != null &&
+//         exchangeRates!.containsKey(baseCurrency) &&
+//         exchangeRates!.containsKey(targetCurrency)) {
+//       final baseRate = exchangeRates![baseCurrency];
+//       final targetRate = exchangeRates![targetCurrency];
+//
+//       if (targetCurrency == 'USDJPY' || targetCurrency == 'USDVND') {
+//         return baseRate! / targetRate! * 100;
+//       } else {
+//         return baseRate! / targetRate!;
+//       }
+//     }
+//     return null;
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return  ListView.builder(
+//       primary: false,
+//       scrollDirection: Axis.vertical,
+//       shrinkWrap: true,
+//       itemCount: _valueList1.length,
+//       itemBuilder: (context, index) {
+//         String formattedRate = 'N/A'; // 초기값 설정
+//
+//         if (exchangeRates != null) {
+//           if (currency1[index] == 'USDKRW') {
+//             // 한국 원(KRW)은 그대로 표시
+//             final exchangeRate = exchangeRates![currency1[index]];
+//             if (exchangeRate != null) {
+//               formattedRate = exchangeRate.toStringAsFixed(2);
+//             }
+//           } else {
+//             // 다른 국가의 환율 계산
+//             final rate = calculateRate('USDKRW', currency1[index]);
+//             if (rate != null) {
+//               formattedRate = rate.toStringAsFixed(2);
+//             }
+//           }
+//         }
+//
+//
+//         return GestureDetector(
+//           onTap: (){
+//             Navigator.push(
+//               context,
+//               MaterialPageRoute(builder: (context) => const ExchangeDetailPage()),
+//             );
+//           },
+//           child: Row(
+//             children: [
+//               Expanded(
+//                 child: Container(
+//                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+//                   padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+//                   width: double.infinity,
+//                   decoration: BoxDecoration(
+//                       borderRadius: BorderRadius.circular(15),
+//                       color: Colors.white,
+//                       boxShadow: [
+//                         BoxShadow(
+//                           color: Colors.black.withOpacity(0.1),
+//                           spreadRadius: 1,
+//                           blurRadius: 3,
+//                           offset: const Offset(0, 0),
+//                         ),
+//                       ]),
+//                   child: Column(
+//                     children: [
+//                       Row(
+//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                         children: [
+//                           Row(
+//                             children: [
+//                               CircleAvatar(
+//                                 backgroundImage:
+//                                 AssetImage('assets/images/flag/${currency1[index]}.png'),
+//                                 radius: 10,
+//                               ),
+//                               const SizedBox(width: 10),
+//                               Text( _valueList1[index],
+//                                 style: const TextStyle(fontSize: 16),),
+//                             ],
+//                           ),
+//                            Text(
+//                             '$formattedRate 원',
+//                             textAlign: TextAlign.end,
+//                             style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),)
+//                         ],
+//                       ),
+//
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
 
 // 계산기 눌렀을 때, 은행별 리스트 => 은행 목록과 사진으로 바꿔야 함!!
 class BankViewBuilder extends StatefulWidget {
