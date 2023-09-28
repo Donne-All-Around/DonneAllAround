@@ -1202,6 +1202,21 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
     }
   }
 
+  double? calculateRate(String baseCurrency, String targetCurrency) {
+    if (exchangeRates != null &&
+        exchangeRates!.containsKey(baseCurrency) &&
+        exchangeRates!.containsKey(targetCurrency)) {
+      final baseRate = exchangeRates![baseCurrency];
+      final targetRate = exchangeRates![targetCurrency];
+
+      if (targetCurrency == 'USDJPY' || targetCurrency == 'USDVND') {
+        return baseRate! / targetRate! * 100;
+      } else {
+        return baseRate! / targetRate!;
+      }
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1214,11 +1229,21 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
         String formattedRate = 'N/A'; // 초기값 설정
 
         if (exchangeRates != null) {
-          final exchangeRate = exchangeRates?[currency1[index]];
-          if (exchangeRate != null) {
-            formattedRate = exchangeRate.toStringAsFixed(2); // 환율 데이터가 있는 경우에만 값 설정
+          if (currency1[index] == 'USDKRW') {
+            // 한국 원(KRW)은 그대로 표시
+            final exchangeRate = exchangeRates![currency1[index]];
+            if (exchangeRate != null) {
+              formattedRate = exchangeRate.toStringAsFixed(2);
+            }
+          } else {
+            // 다른 국가의 환율 계산
+            final rate = calculateRate('USDKRW', currency1[index]);
+            if (rate != null) {
+              formattedRate = rate.toStringAsFixed(2);
+            }
           }
         }
+
 
         return GestureDetector(
           onTap: (){
@@ -1263,7 +1288,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                             ],
                           ),
                            Text(
-                            '${formattedRate} 원',
+                            '$formattedRate 원',
                             textAlign: TextAlign.end,
                             style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),)
                         ],
