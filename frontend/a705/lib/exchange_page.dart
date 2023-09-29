@@ -61,6 +61,7 @@ class _ExchangePageState extends State<ExchangePage> {
     _fetchExchangeRates();
   }
 
+
   Future<void> _fetchExchangeRates() async {
     try {
       final exchangeProvider = ExchangeRateProvider();
@@ -115,6 +116,8 @@ class _ExchangePageState extends State<ExchangePage> {
     return null;
   }
 
+
+
   List<String> currency = [
     'USD',
     'KRW',
@@ -142,6 +145,16 @@ class _ExchangePageState extends State<ExchangePage> {
   int idx3 = 3;
   int idx4 = 4;
 
+  void calculateExchangeRate() {
+    // 환율 계산 로직을 수행하고 결과를 업데이트
+    double? rate = calculateRate(currency1[idx1], currency1[idx2]);
+    setState(() {
+      // UI 업데이트를 수행
+      _moneyController2.text = '${_moneyController1.text.isNotEmpty
+          ? (double.parse(_moneyController1.text.replaceAll(',', '')) * rate!).toStringAsFixed(2)
+          : '0.00'} ${sign[idx2]}';
+    });
+  }
   String getToday() {
     DateTime now = DateTime.now();
     DateFormat formatter = DateFormat('yyyy.MM.dd HH:mm');
@@ -169,6 +182,7 @@ class _ExchangePageState extends State<ExchangePage> {
    bool _isDouble = false;
    bool _isdoublecalculate  = false;
    bool _iscalculate = false;
+
 
 
   @override
@@ -625,6 +639,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                                 borderSide: BorderSide(color: Colors.transparent)
                                             ),
                                             suffixText: '${sign[idx2]}',
+                                            // suffixText: rate != null ? ' 1 USD = ${rate.toStringAsFixed(2)} ${sign[idx2]}' : '',
                                           ),
                                           textAlign: TextAlign.end,
                                           style: const TextStyle(
