@@ -1,20 +1,21 @@
 import 'dart:async';
+import 'package:a705/models/address.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class ChooseLocationPage extends StatefulWidget {
+class ChooseLocationPage2 extends StatefulWidget {
   final double lat;
   final double lng;
 
-  const ChooseLocationPage(this.lat, this.lng, {super.key});
+  const ChooseLocationPage2(this.lat, this.lng, {super.key});
 
   @override
-  State<ChooseLocationPage> createState() => _ChooseLocationPageState();
+  State<ChooseLocationPage2> createState() => _ChooseLocationPage2State();
 }
 
-class _ChooseLocationPageState extends State<ChooseLocationPage> {
+class _ChooseLocationPage2State extends State<ChooseLocationPage2> {
   late LatLng currentPosition = LatLng(widget.lat, widget.lng);
 
   final Completer<GoogleMapController> _controller = Completer();
@@ -32,7 +33,8 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
     LatLngBounds visibleRegion = await controller.getVisibleRegion();
     LatLng centerLatLng = LatLng(
       (visibleRegion.northeast.latitude + visibleRegion.southwest.latitude) / 2,
-      (visibleRegion.northeast.longitude + visibleRegion.southwest.longitude) / 2,
+      (visibleRegion.northeast.longitude + visibleRegion.southwest.longitude) /
+          2,
     );
 
     return centerLatLng;
@@ -44,7 +46,7 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
   final myController = TextEditingController();
 
   String addr = "";
-  String _text = "";
+  Address address = Address(country: "", city: "", district: "", town: "");
 
   @override
   void initState() {
@@ -103,91 +105,7 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      builder: (BuildContext context) {
-                        return Container(
-                            height: MediaQuery.of(context).size.height / 5 * 4,
-                            color: Colors.transparent,
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.fromLTRB(30, 20, 30, 20),
-                              height:
-                                  MediaQuery.of(context).size.height / 5 * 4,
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    children: [
-                                      const SizedBox(height: 10),
-                                      const Text(
-                                        '상세 주소 입력',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      TextField(
-                                        controller: myController,
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: Colors.white,
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            borderSide: const BorderSide(
-                                                color: Colors.black87),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            borderSide: const BorderSide(
-                                                color: Colors.black87),
-                                          ),
-                                        ),
-                                        cursorColor: Colors.black87,
-                                        onChanged: (text) {
-                                          _text = text;
-                                        },
-                                      ),
-                                      const SizedBox(height: 20),
-                                      GestureDetector(
-                                        onTap: () {
-                                          addr += " ";
-                                          addr += _text;
-                                          Navigator.pop(context, addr);
-                                          Navigator.pop(context, addr);
-                                        },
-                                        child: Container(
-                                          height: 50,
-                                          width: double.infinity,
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(10),
-                                            ),
-                                            color: Color(0xFFFFD954),
-                                          ),
-                                          child: const Center(
-                                              child: Text(
-                                            '거래 장소 등록',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold),
-                                          )),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ));
-                      });
-                  // Navigator.pop(context, addr);
+                  Navigator.pop(context, address);
                 },
               ),
             ],
@@ -310,6 +228,10 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
                   // print('hashCode: ${placemark.reversed.last.hashCode}');
 
                   setState(() {
+                    address = Address(country: placemark.reversed.last.country!,
+                    city: placemark.reversed.last.administrativeArea!,
+                    district: placemark.reversed.last.subLocality!,
+                    town: placemark.reversed.last.thoroughfare!);
                     addr =
                         "${placemark.reversed.last.subLocality} ${placemark.reversed.last.thoroughfare}";
                   });

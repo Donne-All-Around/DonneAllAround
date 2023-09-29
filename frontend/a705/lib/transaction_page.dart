@@ -2,14 +2,14 @@ import 'dart:io';
 
 import 'package:a705/choose_location_page.dart';
 import 'package:a705/main_page.dart';
+import 'package:a705/models/address.dart';
 import 'package:a705/providers/trade_providers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'choose_location_page2.dart';
 import 'models/TradeDto.dart';
 
 class TransactionPage extends StatefulWidget {
@@ -40,6 +40,7 @@ class _TransactionPageState extends State<TransactionPage> {
   ];
   var _selectedValue = '미국(달러) USD';
   int idx = 0;
+  int _currency = 0;
 
   List<String> currency = [
     'USD',
@@ -83,10 +84,12 @@ class _TransactionPageState extends State<TransactionPage> {
   final picker = ImagePicker();
 
   String _addr = "장소 선택";
+  Address _address = Address(country: "", city: "", district: "", town: "");
 
   @override
   void initState() {
     super.initState();
+    // checkPermission();
   }
 
   TradeProviders tradeProvider = TradeProviders();
@@ -121,6 +124,59 @@ class _TransactionPageState extends State<TransactionPage> {
   final _currencyEditController = TextEditingController();
   final _krwEditController = TextEditingController();
   final _contentEditController = TextEditingController();
+
+  // List<AssetPathEntity>? _paths;
+  // List<Album> _albums = [];
+  // late List<AssetEntity> _images;
+  // int _currentPage = 0;
+  // late Album _currentAlbum;
+  //
+  // Future<void> checkPermission() async {
+  //   final PermissionState ps = await PhotoManager.requestPermissionExtend();
+  //   if (ps.isAuth) {
+  //     await getAlbum();
+  //   } else {
+  //     await PhotoManager.openSetting();
+  //   }
+  // }
+  //
+  // Future<void> getAlbum() async {
+  //   _paths = await PhotoManager.getAssetPathList(
+  //     type: RequestType.image,
+  //   );
+  //
+  //   _albums = _paths!.map((e) {
+  //     return Album(
+  //       id: e.id,
+  //       name: e.isAll ? '모든 사진' : e.name,
+  //     );
+  //   }).toList();
+  //
+  //   await getPhotos(_albums[0], albumChange: true);
+  // }
+  //
+  // Future<void> getPhotos(
+  //   Album album, {
+  //   bool albumChange = false,
+  // }) async {
+  //   _currentAlbum = album;
+  //   albumChange ? _currentPage = 0 : _currentPage++;
+  //
+  //   final loadImages = await _paths!
+  //       .singleWhere((AssetPathEntity e) => e.id == album.id)
+  //       .getAssetListPaged(
+  //         page: _currentPage,
+  //         size: 20,
+  //       );
+
+  //   setState(() {
+  //     if (albumChange) {
+  //       _images = loadImages;
+  //     } else {
+  //       _images.addAll(loadImages);
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -353,14 +409,12 @@ class _TransactionPageState extends State<TransactionPage> {
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
+                      onChanged: (text) {
+                        setState(() {
+                          _currency = int.parse(_currencyEditController.text);
+                        });
+                      },
                     ),
-                  ),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text("거래 가격 "),
-                      Text("100,000~120,000원"),
-                    ],
                   ),
                   const SizedBox(height: 15),
                   const Text(
@@ -436,6 +490,13 @@ class _TransactionPageState extends State<TransactionPage> {
                       ),
                     ),
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Text("거래 가격 "),
+                      Text("${_currency * 100}원"),
+                    ],
+                  ),
                   const SizedBox(height: 15),
                   const Text(
                     '설명',
@@ -474,13 +535,14 @@ class _TransactionPageState extends State<TransactionPage> {
                   const SizedBox(height: 5),
                   GestureDetector(
                     onTap: () async {
-                      String addr = await Navigator.push(
+                      Address address = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const ChooseLocationPage(
+                              builder: (context) => const ChooseLocationPage2(
                                   37.5013068, 127.0396597)));
                       setState(() {
-                        _addr = addr;
+                        _addr = "${address.district} ${address.town}";
+                        _address = address;
                       });
                     },
                     child: Container(
@@ -529,12 +591,10 @@ class _TransactionPageState extends State<TransactionPage> {
                         koreanWonAmount: int.parse(_krwEditController.text),
                         latitude: uploadTrade.latitude,
                         longitude: uploadTrade.longitude,
-                        preferredTradeCountry:
-                            uploadTrade.preferredTradeCountry,
-                        preferredTradeCity: uploadTrade.preferredTradeCity,
-                        preferredTradeDistrict:
-                            uploadTrade.preferredTradeDistrict,
-                        preferredTradeTown: uploadTrade.preferredTradeTown,
+                        preferredTradeCountry: _address.country,
+                        preferredTradeCity: _address.city,
+                        preferredTradeDistrict: _address.district,
+                        preferredTradeTown: _address.town,
                         tradeLikeCount: uploadTrade.tradeLikeCount,
                         sellerNickname: uploadTrade.sellerNickname,
                         sellerImgUrl: uploadTrade.sellerImgUrl,
