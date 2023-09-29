@@ -443,8 +443,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               CircleAvatar(
-                                                backgroundImage:
-                                                AssetImage('assets/images/flag/USD${currency[idx1]}.png'),
+                                                backgroundImage: AssetImage('assets/images/flag/${currency[idx1] == 'KRW' ? 'KRW' : currency[idx1] == 'USD' ? 'USDKRW' : 'USD${currency[idx1]}'}.png'),
                                                 radius: 15,
                                               ),
                                               const SizedBox(width: 5),
@@ -559,7 +558,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                                                 fontSize: 20),
                                                           ),
                                                           SizedBox(height: 10),
-                                                          Expanded(child: CountryListViewBuilder2()),
+                                                          Expanded(child: CountryListViewBuilder()),
                                                         ],
                                                       ),
                                                     ));
@@ -578,8 +577,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               CircleAvatar(
-                                                backgroundImage:
-                                                AssetImage('assets/images/flag/USD${currency[idx2]}.png'),
+                                                backgroundImage: AssetImage('assets/images/flag/${currency[idx2] == 'KRW' ? 'KRW' : currency[idx2] == 'USD' ? 'USDKRW' : 'USD${currency[idx2]}'}.png'),
                                                 radius: 15,
                                               ),
                                               const SizedBox(width: 5),
@@ -713,8 +711,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               CircleAvatar(
-                                                backgroundImage:
-                                                AssetImage('assets/images/flag/USD${currency[idx3]}.png'),
+                                                backgroundImage: AssetImage('assets/images/flag/${currency[idx3] == 'KRW' ? 'KRW' : currency[idx3] == 'USD' ? 'USDKRW' : 'USD${currency[idx3]}'}.png'),
                                                 radius: 15,
                                               ),
                                               const SizedBox(width: 5),
@@ -848,8 +845,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               CircleAvatar(
-                                                backgroundImage:
-                                                AssetImage('assets/images/flag/USD${currency[idx4]}.png'),
+                                                backgroundImage: AssetImage('assets/images/flag/${currency[idx4] == 'KRW' ? 'KRW' : currency[idx4] == 'USD' ? 'USDKRW' : 'USD${currency[idx4]}'}.png'),
                                                 radius: 15,
                                               ),
                                               const SizedBox(width: 5),
@@ -1122,7 +1118,7 @@ class _ExchangePageState extends State<ExchangePage> {
 
                               if (exchangeRates != null) {
                                 if (currency1[index] == 'USDKRW') {
-                                  // 한국 원(KRW)은 그대로 표시
+                                  // 미국 달러(USD)은 그대로 표시
                                   final exchangeRate = exchangeRates![currency1[index]];
                                   if (exchangeRate != null) {
                                     formattedRate = exchangeRate.toStringAsFixed(2);
@@ -1612,8 +1608,7 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
                   children: [
                     const SizedBox(width: 20),
                     CircleAvatar(
-                      backgroundImage:
-                      AssetImage('assets/images/flag/USD${currency[index] == 'USD' ? 'USD${currency[index]}' : '$currency[index]}.png'),
+                      backgroundImage: AssetImage('assets/images/flag/${currency[index] == 'KRW' ? 'KRW' : currency[index] == 'USD' ? 'USDKRW' : 'USD${currency[index]}'}.png'),
                       radius: 10,
                     ),
                     const SizedBox(width: 10),
