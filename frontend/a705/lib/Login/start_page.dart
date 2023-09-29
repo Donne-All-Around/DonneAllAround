@@ -1,3 +1,4 @@
+import 'package:a705/Login/prelogin_page.dart';
 import 'package:flutter/material.dart'; //기본 import
 import 'package:a705/Login/login_page.dart'; // login_page import
 import 'package:a705/Login/join_page.dart'; // join_page import
@@ -38,7 +39,7 @@ class StartPage extends StatelessWidget {
                   onTap: (){
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                      MaterialPageRoute(builder: (context) => const PreLoginPage()),
                     );
                   },
                   child: Container(
