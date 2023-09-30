@@ -22,7 +22,6 @@ class _PreLoginPageState extends State<PreLoginPage> {
         child: GestureDetector(
           onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
           child: Scaffold(
-            resizeToAvoidBottomInset: false,
             backgroundColor: Colors.white,
             appBar: AppBar(
               backgroundColor: Colors.white,
@@ -37,51 +36,54 @@ class _PreLoginPageState extends State<PreLoginPage> {
               ),
               elevation: 0,
             ),
-            body: Container(
-              margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+            body: SingleChildScrollView(
               child: Form(
                 key: _key,
-                child: Column(
-                  children: [
-                    const Row(
-                      children: [
-                        Text(
-                          '휴대폰 번호로',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30,
+                child: Container(
+                  margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                  child: Column(
+                    children: [
+                      const Row(
+                        children: [
+                          Text(
+                            '휴대폰 번호로',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 30,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const Row(
-                      children: [
-                        Text(
-                          '로그인 해주세요!',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30,
+                        ],
+                      ),
+                      const Row(
+                        children: [
+                          Text(
+                            '로그인 해주세요!',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 30,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20,),
-                    Row(
-                      children: [
-                        phoneNumberInput(),
-
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                      const SizedBox(height: 20,),
+                      Column(
+                        children: [
+                          phoneNumberInput(),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
+
             ),
 
           ),
 
-        ));
+        )
+    );
   }
 
 
@@ -103,7 +105,7 @@ class _PreLoginPageState extends State<PreLoginPage> {
           // borderSide: BorderSide(color: Colors.black),
         ),
         hintText: '휴대폰 번호 ( - 없이 숫자만 입력)',
-        hintStyle: const TextStyle(fontSize: 14),
+        hintStyle: const TextStyle(fontSize: 13),
         labelStyle: const TextStyle(
           fontSize: 20,
           // textAlign: TextAlign.center,
@@ -140,5 +142,4 @@ class _PreLoginPageState extends State<PreLoginPage> {
       ),
     );
   }
-
 }
