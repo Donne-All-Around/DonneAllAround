@@ -1,3 +1,4 @@
+import 'dart:async'; // 타이머
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../main_page.dart';
@@ -12,14 +13,48 @@ class PreLoginPage extends StatefulWidget {
 
 class _PreLoginPageState extends State<PreLoginPage> {
 
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController optCodeController = TextEditingController();
+  TextEditingController phoneController = TextEditingController(); // 전화번호 입력값
+  TextEditingController optCodeController = TextEditingController(); // 코드 입력값
+  FirebaseAuth auth = FirebaseAuth.instance; // firebase 연동
+  String verificationIDReceived = ""; // 인증 값
+  bool otpCodeVisible = false; // 코드 보낸 거 확인 값
+  int _remainingTime = 180; // 3분을 초 단위로 표현
+  late Timer _timer;
 
-  FirebaseAuth auth = FirebaseAuth.instance;
+  void startTimer() {
+    const oneSecond = Duration(seconds: 1);
+    _timer = Timer.periodic(oneSecond, (timer) {
+      setState(() {
+        if (_remainingTime > 0) {
+          _remainingTime--;
+        } else {
+          _timer.cancel(); // 타이머 중지
+        }
+      });
+    });
+  }
 
-  String verificationIDReceived = "";
+  String formatRemainingTime(int seconds) {  // 타이머 형식
+    final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
+    final remainingSeconds = (seconds % 60).toString().padLeft(2, '0');
+    return '$minutes:$remainingSeconds';
+  }
 
-  bool otpCodeVisible = false;
+  bool isPhoneNumberValid(String phoneNumber) {
+    // 전화번호의 길이가 11자리여야 유효.
+    return phoneNumber.length == 11;
+  }
+
+  bool isOptCodeValid(String optCode) {
+    // 코드의 길이가 6자리여야 유효.
+    return optCode.length == 6;
+  }
+
+  @override
+  void dispose(){ // 컨트롤러 객체가 제거 될 때 변수에 할당 된 메모리를 해제
+    _timer.cancel(); // 페이지가 dispose될 때 타이머 종료
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,36 +78,111 @@ class _PreLoginPageState extends State<PreLoginPage> {
             ),
             body: SingleChildScrollView(
               child: Container(
-                margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                margin: const EdgeInsets.fromLTRB(40, 10, 40, 10),
                   child: Column(
                     children: [
+                      const Row(
+                        children: [
+                          Text(
+                            '휴대폰 번호로',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 30,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Row(
+                        children: [
+                          Text(
+                            '로그인 해주세요!',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 30,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20,),
                       TextField(
                         controller: phoneController,
-                        decoration: const InputDecoration(
-
-                        ),
                         keyboardType: TextInputType.phone,
+                        decoration:  InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            // borderSide: BorderSide(color: Colors.black),
+                          ),
+                          hintText: '휴대폰 번호 ( - 없이 숫자만 입력)',
+                          hintStyle: const TextStyle(fontSize: 14),
+                          labelStyle: const TextStyle(
+                            fontSize: 20,
+                            // textAlign: TextAlign.center,
+                          ),
+                          // contentPadding: EdgeInsets.all(20.0),
+                        ),
                       ),
                       const SizedBox(height: 10,),
                       ElevatedButton(onPressed: (){
-                        verifyNumber();
+                        if (isPhoneNumberValid(phoneController.text)) {
+                          verifyNumber();
+                        } else {}
                       },
-                          child: Text(otpCodeVisible == true ? "인증문자 재발송" : "인증문자 받기")),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[300],
+                            elevation: 0,
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            height: 60,
+                            width: double.infinity,
+                            child: Text(otpCodeVisible == true ? "인증문자 재발송" : "인증문자 받기",
+                            style: const TextStyle(color: Colors.black, fontSize: 25,fontWeight: FontWeight.bold,),
+                            textAlign: TextAlign.center,),
+                          ),),
+                      const SizedBox(height: 20,),
                       Visibility(
                         visible: otpCodeVisible,
                         child: TextField(
                           controller: optCodeController,
-                          decoration: const InputDecoration(
-
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              // borderSide: BorderSide(color: Colors.black),
+                            ),
+                            hintText: '인증번호 6자리 입력',
+                            hintStyle: const TextStyle(fontSize: 14),
+                            suffixText: formatRemainingTime(_remainingTime),
+                            labelStyle: const TextStyle(
+                              fontSize: 20,
+                              // textAlign: TextAlign.center,
+                            ),
+                            // contentPadding: EdgeInsets.all(20.0),
                           ),
                         ),
                       ),
+                      const SizedBox(height: 10,),
                       Visibility(
                         visible: otpCodeVisible,
                         child: ElevatedButton(onPressed: (){
-                          verifyCode();
+                          if (isOptCodeValid(optCodeController.text)) {
+                            verifyCode();
+                          } else {}
                         },
-                            child: const Text('시작하기')),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFFFD954),
+                              elevation: 0,
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              height: 60,
+                              width: double.infinity,
+                              child: const Text("시작하기",
+                                style: TextStyle(color: Colors.black, fontSize: 25,fontWeight: FontWeight.bold,),
+                                textAlign: TextAlign.center,),
+                            ),),
                       ),
                     ],
                   )
@@ -86,9 +196,11 @@ class _PreLoginPageState extends State<PreLoginPage> {
     );
   }
 
+  // 전화번호 입력 후 firebase로 코드 보내는 기능
   void verifyNumber(){
+    String totalPhoneNumber = "+82${phoneController.text.substring(1)}";
     auth.verifyPhoneNumber(
-        phoneNumber: phoneController.text,
+        phoneNumber: totalPhoneNumber,
     verificationCompleted: (PhoneAuthCredential credential) async{
       await auth.signInWithCredential(credential).then((value){
         print('로그인 성공');
@@ -109,6 +221,7 @@ class _PreLoginPageState extends State<PreLoginPage> {
     );
   }
 
+  // OTP 값 확인하고 메인페이지 가는 기능
   void verifyCode() async {
 
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
