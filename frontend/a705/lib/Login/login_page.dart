@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
 
   bool _isValid(){
     final phoneNumber = _phoneNumberController.text.replaceAll('-', '');
-    final isValid = phoneNumber.length == 11;  // 하이픈을 제거하고 11자리인지 확인
+    final isValid = phoneNumber.length == 8;  // 하이픈을 제거하고 11자리인지 확인
     setState(() {
       _isButtonEnabled = isValid; // 버튼 활성화 상태 업데이트
     });
@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
       if(_phoneNumberController.text.length == 11) {
         String phoneNumber = _phoneNumberController.text;
         String cleanPhoneNumeber = phoneNumber.replaceAll('-', '');
-        String phoneNumberCode = "+82$cleanPhoneNumeber";
+        String phoneNumberCode = "+8210$cleanPhoneNumeber";
         FirebaseAuth auth = FirebaseAuth.instance;
         await auth.verifyPhoneNumber(
           phoneNumber: phoneNumberCode,
@@ -186,8 +186,8 @@ class _LoginPageState extends State<LoginPage> {
                       keyboardType: TextInputType.number, // 키보드 숫자로 나타남
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly, //숫자만!
-                        NumberFormatter(), // 자동하이픈
-                        LengthLimitingTextInputFormatter(13),
+                        // NumberFormatter(), // 자동하이픈
+                        LengthLimitingTextInputFormatter(9),
                         //13자리만 입력받도록 하이픈 2개+숫자 11개
                       ],
                       style: const TextStyle(
@@ -285,7 +285,7 @@ class _LoginPageState extends State<LoginPage> {
                             keyboardType: TextInputType.number, // 키보드 숫자로 나타남
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly, //숫자만!
-                              LengthLimitingTextInputFormatter(5),
+                              LengthLimitingTextInputFormatter(6),
                               // 5자리 숫자만 입력받도록
                             ],
                             style: const TextStyle(
