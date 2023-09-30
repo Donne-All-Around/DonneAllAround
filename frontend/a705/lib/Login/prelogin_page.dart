@@ -160,30 +160,36 @@ class _PreLoginPageState extends State<PreLoginPage> {
     return ElevatedButton(
         onPressed: () async {
           if (_key.currentState!.validate()) {
-            FirebaseAuth auth = FirebaseAuth.instance;
-            await auth.verifyPhoneNumber(
-              phoneNumber: _phoneController.text,
-                verificationCompleted: (PhoneAuthCredential credential) async {
-
-                await auth
-                    .signInWithCredential(credential)
-                    .then((value) => Navigator.push(context, MaterialPageRoute(builder: (context) => const MainPage())));
-                },
-                verificationFailed: (FirebaseAuthException e) {
-                if (e.code == 'invalid-phone-number') {
-                  print('유효하지 않은 번호임');
-                }
-                },
-                codeSent: (String verificationId, forceResendingToken) async {
-                String smsCode = _smsCodeController.text;
-                setState(() {
-                  _buttonText = '인증문자 재발송';
-                  _verificationId = verificationId;
-                });
-                },
-                codeAutoRetrievalTimeout: (verificationId){
-                print('시간초과');
-                });
+            try {
+              FirebaseAuth auth = FirebaseAuth.instance;
+              await auth.verifyPhoneNumber(
+                  phoneNumber: "+8210"+_phoneController.text,
+                  verificationCompleted: (
+                      PhoneAuthCredential credential) async {
+                    await auth
+                        .signInWithCredential(credential)
+                        .then((value) =>
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const MainPage())));
+                  },
+                  verificationFailed: (FirebaseAuthException e) {
+                    if (e.code == 'invalid-phone-number') {
+                      print('유효하지 않은 번호임');
+                    }
+                  },
+                  codeSent: (String verificationId, forceResendingToken) async {
+                    String smsCode = _smsCodeController.text;
+                    setState(() {
+                      _buttonText = '인증문자 재발송';
+                      _verificationId = verificationId;
+                    });
+                  },
+                  codeAutoRetrievalTimeout: (verificationId) {
+                    print('시간초과');
+                  });
+            } catch (e) {
+              print('전화번호 인증 오류 발생: $e');
+            }
           }
         },
       style: ElevatedButton.styleFrom(
