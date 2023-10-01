@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../main_page.dart';
 import '../providers/member_providers.dart';
+import '../service/shared_pref.dart';
 
 class PreLoginPage extends StatefulWidget {
   const PreLoginPage({super.key});
@@ -24,6 +25,7 @@ class _PreLoginPageState extends State<PreLoginPage> {
   late Timer _timer;
   bool _isButtonEnabled = false; // 인증문자 받기 버튼 활성화 상태를 저장
   bool _isStartEnabled = false; // 시작하기 버튼 활성화 상태 저장 하는 변수
+  UserProvider userProvider = UserProvider();
 
   void startTimer() {
     const oneSecond = Duration(seconds: 1);
@@ -252,14 +254,34 @@ class _PreLoginPageState extends State<PreLoginPage> {
 
   // OTP 값 확인하고 메인페이지 가는 기능
   void verifyCode() async {
-
+    try {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId:verificationIDReceived, smsCode: optCodeController.text );
 
-    await auth.signInWithCredential(credential).then((value){
-      print("로그인 성공!");
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const MainPage()));
-    });
+    // await auth.signInWithCredential(credential).then((value){
+    //   print("로그인 성공!");
+    //   Navigator.push(context, MaterialPageRoute(builder: (context) => const MainPage()));
+    // });
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+    // Firebase 인증 토큰 얻기
+    String? firebaseToken = await userCredential.user!.getIdToken();
+
+    // Firebase 토큰을 백엔드 서버로 전송하여 JWT 토큰을 가져옴
+    String? jwtToken = await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!);
+
+    print("로그인 성공!");
+    if (jwtToken != null) {
+      // JWT 토큰을 사용하여 로그인 또는 기타 인증 및 권한 부여 작업 수행
+      // 이 부분에서 백엔드 서버로부터 받은 JWT 토큰을 사용하여 사용자 인증을 수행하세요.
+      await SharedPreferenceHelper().saveJwtToken(jwtToken);
+      // 백엔드로부터 JWT 토큰을 받았으므로 사용자를 인증하고 메인 페이지로 이동합니다.
+      // 여기서는 사용자 확인 함수를 호출하고, 해당 함수 내에서 사용자 인증 및 페이지 이동 작업을 수행하도록 했습니다.
+      checkUserExistenceAndNavigate();
+    }
+    } catch (e) {
+    print("로그인 실패: $e");
+    }
+
   }
 
   // 백엔드에서 사용자가 존재하는지 확인하는 함수
