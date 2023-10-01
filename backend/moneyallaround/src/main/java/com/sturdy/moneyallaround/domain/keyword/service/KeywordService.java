@@ -43,7 +43,7 @@ public class KeywordService {
         );
     }
 
-    public List<Keyword> findByTrade(String countryCode, String preferredTradeCountry, String preferredTradeCity, String preferredTradeDistrict, String preferredTradeTown) {
-        return keywordRepository.findByCountryCodeAndPreferredTradeLocation(countryCode, preferredTradeCountry, preferredTradeCity, preferredTradeDistrict, preferredTradeTown);
+    public List<Keyword> findByTrade(Trade trade) {
+        return keywordRepository.findByCountryCodeAndPreferredTradeLocation(trade);
     }
 }

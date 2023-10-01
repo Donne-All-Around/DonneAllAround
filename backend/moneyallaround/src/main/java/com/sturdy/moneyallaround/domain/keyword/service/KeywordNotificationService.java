@@ -3,7 +3,6 @@ package com.sturdy.moneyallaround.domain.keyword.service;
 import com.sturdy.moneyallaround.domain.keyword.entity.KeywordNotification;
 import com.sturdy.moneyallaround.domain.keyword.repository.KeywordNotificationRepository;
 import com.sturdy.moneyallaround.domain.trade.entity.Trade;
-import com.sturdy.moneyallaround.domain.trade.service.TradeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +16,7 @@ public class KeywordNotificationService {
 
     @Transactional
     public void createKeywordNotification(Trade trade) {
-        keywordNotificationRepository.saveAll(keywordService.findByTrade(trade.getCountryCode(), trade.getPreferredTradeCountry(), trade.getPreferredTradeCity(), trade.getPreferredTradeDistrict(), trade.getPreferredTradeTown())
+        keywordNotificationRepository.saveAll(keywordService.findByTrade(trade)
                 .stream().map(keyword -> new KeywordNotification(trade, keyword.getMember())).toList());
     }
 

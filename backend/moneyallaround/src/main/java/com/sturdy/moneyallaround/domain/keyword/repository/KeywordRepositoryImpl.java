@@ -2,6 +2,7 @@ package com.sturdy.moneyallaround.domain.keyword.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sturdy.moneyallaround.domain.keyword.entity.Keyword;
+import com.sturdy.moneyallaround.domain.trade.entity.Trade;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -13,15 +14,16 @@ public class KeywordRepositoryImpl implements KeywordRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Keyword> findByCountryCodeAndPreferredTradeLocation(String countryCode, String preferredTradeCountry, String preferredTradeCity, String preferredTradeDistrict, String preferredTradeTown) {
+    public List<Keyword> findByCountryCodeAndPreferredTradeLocation(Trade trade) {
         return queryFactory
                 .selectFrom(keyword)
                 .where(
-                        keyword.countryCode.eq(countryCode),
-                        keyword.preferredTradeCountry.eq(preferredTradeCountry),
-                        keyword.preferredTradeCity.eq(preferredTradeCity),
-                        keyword.preferredTradeDistrict.eq(preferredTradeDistrict),
-                        keyword.preferredTradeTown.eq(preferredTradeTown)
+                        keyword.member.ne(trade.getSeller()),
+                        keyword.countryCode.eq(trade.getCountryCode()),
+                        keyword.preferredTradeCountry.eq(trade.getPreferredTradeCountry()),
+                        keyword.preferredTradeCity.eq(trade.getPreferredTradeCity()),
+                        keyword.preferredTradeDistrict.eq(trade.getPreferredTradeDistrict()),
+                        keyword.preferredTradeTown.eq(trade.getPreferredTradeTown())
                 )
                 .fetch();
     }

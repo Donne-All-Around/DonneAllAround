@@ -1,6 +1,5 @@
 package com.sturdy.moneyallaround.domain.trade.service;
 
-import com.sturdy.moneyallaround.domain.keyword.service.KeywordNotificationService;
 import com.sturdy.moneyallaround.domain.member.service.MemberService;
 import com.sturdy.moneyallaround.domain.trade.dto.request.*;
 import com.sturdy.moneyallaround.domain.trade.entity.Trade;
