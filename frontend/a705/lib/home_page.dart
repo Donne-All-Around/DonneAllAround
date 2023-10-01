@@ -1,3 +1,4 @@
+import 'package:a705/providers/trade_providers.dart';
 import 'package:a705/transaction_detail_page.dart';
 import 'package:a705/transaction_page.dart';
 import 'package:a705/notification_page.dart';

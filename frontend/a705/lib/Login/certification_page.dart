@@ -6,6 +6,8 @@ import 'dart:async';
 import 'package:a705/providers/member_providers.dart';
 import 'package:a705/main_page.dart';
 
+import '../service/shared_pref.dart';
+
 class CertificationPage extends StatefulWidget {
   const CertificationPage({super.key});
 
@@ -281,7 +283,7 @@ class _CertificationPageState extends State<CertificationPage> {
       if (jwtToken != null) {
         // JWT 토큰을 사용하여 로그인 또는 기타 인증 및 권한 부여 작업 수행
         // 이 부분에서 백엔드 서버로부터 받은 JWT 토큰을 사용하여 사용자 인증을 수행하세요.
-
+        await SharedPreferenceHelper().saveJwtToken(jwtToken);
         // 백엔드로부터 JWT 토큰을 받았으므로 사용자를 인증하고 메인 페이지로 이동합니다.
         // 여기서는 사용자 확인 함수를 호출하고, 해당 함수 내에서 사용자 인증 및 페이지 이동 작업을 수행하도록 했습니다.
         checkUserExistenceAndNavigate();

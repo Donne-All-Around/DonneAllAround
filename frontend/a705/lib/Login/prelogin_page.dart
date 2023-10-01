@@ -1,7 +1,9 @@
 import 'dart:async'; // 타이머
+import 'package:a705/Login/join_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../main_page.dart';
+import '../providers/member_providers.dart';
 
 class PreLoginPage extends StatefulWidget {
   const PreLoginPage({super.key});
@@ -253,9 +255,47 @@ class _PreLoginPageState extends State<PreLoginPage> {
 
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId:verificationIDReceived, smsCode: optCodeController.text );
+
     await auth.signInWithCredential(credential).then((value){
       print("로그인 성공!");
       Navigator.push(context, MaterialPageRoute(builder: (context) => const MainPage()));
     });
+  }
+
+  // 백엔드에서 사용자가 존재하는지 확인하는 함수
+  Future<void> checkUserExistenceAndNavigate() async {
+    final phoneNumber = phoneController.text; // 사용자가 입력한 전화번호
+    final userExists = await UserProvider().checkUserExists(phoneNumber);
+    // final userProvider = UserProvider();
+    if (userExists) {
+      // 이미 등록된 사용자인 경우
+      print('가라 메인페이지');
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MainPage()));
+    } else {
+      // await userProvider.registerUser(phoneNumber: phoneNumber, nickname: "", profileImg: "");
+      // 백엔드에 등록되지 않은 사용자인 경우
+      print('뉴멤버 환영');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('회원 가입을 해주세요!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const JoinPage()));
+                  // 기존 사용자 처리 로직 추가
+                },
+                child: Text('회원가입하러 이동'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }
