@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:a705/providers/member_providers.dart';
-
 import 'package:a705/main_page.dart';
 
 class CertificationPage extends StatefulWidget {
@@ -25,6 +24,8 @@ class _CertificationPageState extends State<CertificationPage> {
   late Timer _timer;
   bool _isButtonEnabled = false; // 인증문자 받기 버튼 활성화 상태를 저장
   bool _isStartEnabled = false; // 시작하기 버튼 활성화 상태 저장 하는 변수
+  UserProvider userProvider = UserProvider();
+
 
   void startTimer() {
     const oneSecond = Duration(seconds: 1);
@@ -272,12 +273,19 @@ class _CertificationPageState extends State<CertificationPage> {
       // Firebase 인증 토큰 얻기
       String? firebaseToken = await userCredential.user!.getIdToken();
 
-      // 이제 firebaseToken을 백엔드 서버로 전송하거나 필요한 작업을 수행할 수 있습니다.
+      // Firebase 토큰을 백엔드 서버로 전송하여 JWT 토큰을 가져옴
+      String? jwtToken = await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!);
 
       print("로그인 성공!");
       // Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileSettingPage()));
-      // 인증 코드 확인 후 사용자 확인 함수 호출
-      checkUserExistenceAndNavigate();
+      if (jwtToken != null) {
+        // JWT 토큰을 사용하여 로그인 또는 기타 인증 및 권한 부여 작업 수행
+        // 이 부분에서 백엔드 서버로부터 받은 JWT 토큰을 사용하여 사용자 인증을 수행하세요.
+
+        // 백엔드로부터 JWT 토큰을 받았으므로 사용자를 인증하고 메인 페이지로 이동합니다.
+        // 여기서는 사용자 확인 함수를 호출하고, 해당 함수 내에서 사용자 인증 및 페이지 이동 작업을 수행하도록 했습니다.
+        checkUserExistenceAndNavigate();
+      }
 
    } catch (e) {
       print("로그인 실패: $e");
@@ -314,6 +322,7 @@ class _CertificationPageState extends State<CertificationPage> {
     } else {
       // await userProvider.registerUser(phoneNumber: phoneNumber, nickname: "", profileImg: "");
       // 백엔드에 등록되지 않은 사용자인 경우
+      print('뉴멤버 환영');
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ProfileSettingPage(phoneNumber: phoneController.text)),

@@ -61,6 +61,7 @@ dependencies:
   flutter_provider: ^2.1.0
   provider: ^6.0.5
   firebase_storage: ^11.2.7
+  uuid: ^4.1.0
 
 dev_dependencies:
   flutter_test:

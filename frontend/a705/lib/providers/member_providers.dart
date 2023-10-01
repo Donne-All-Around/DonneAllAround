@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 import '../models/MemberDto.dart'; // MemberDto 클래스를 가져옵니다.
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 
 class UserProvider extends ChangeNotifier {
   MemberDto? _user; // 사용자 데이터를 저장
@@ -85,32 +88,45 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  Future<String?> uploadImage(String imagePath) async {
-    final dio = Dio();
-    final apiUrl = "https://example.com/upload/image";
+  Future<String?> uploadImage(File imageFile) async {
+    try {
+      final String fileExtension = imageFile.path.split('.').last; // 파일 확장자 추출
+      final Reference storageReference = FirebaseStorage.instance
+          .ref()
+          .child('profile_images/${Uuid().v1()}.$fileExtension'); // 이미지 파일명을 고유하게 생성
+
+      final UploadTask uploadTask = storageReference.putFile(imageFile);
+      await uploadTask.whenComplete(() => null);
+
+      final imageUrl = await storageReference.getDownloadURL();
+      return imageUrl;
+    } catch (e) {
+      print('Error uploading image to Firebase Storage: $e');
+      return null;
+    }
+  }
+
+  Future<String?> getJwtTokenFromFirebaseToken(String firebaseToken) async {
+    final url = "$baseUrl/api/member/verifyFirebaseToken";
 
     try {
-      // FormData를 사용하여 이미지 파일의 경로를 요청에 추가
-      final formData = FormData.fromMap({
-        "image": await MultipartFile.fromFile(
-          imagePath,
-          filename: "image.jpg",
-        ),
-      });
-
-      // 이미지 업로드를 위한 POST 요청 보내기
-      final response = await dio.post(apiUrl, data: formData);
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'firebaseToken': firebaseToken}),
+      );
 
       if (response.statusCode == 200) {
-        final imageUrl = response.data['imageUrl']; // 서버에서 반환된 이미지 URL
-        return imageUrl;
+        final responseData = jsonDecode(response.body);
+        final jwtToken = responseData['jwtToken'];
+        return jwtToken;
       } else {
-        // 업로드 실패 시, null 반환
-        return null;
+        throw Exception('Firebase 토큰으로부터 JWT 토큰을 가져오지 못했습니다');
       }
     } catch (e) {
-      // 오류 발생 시, null 반환
-      print('Error uploading image: $e');
+      print('Firebase 토큰으로부터 JWT 토큰을 가져오는 중 오류 발생: $e');
       return null;
     }
   }

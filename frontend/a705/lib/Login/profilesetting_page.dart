@@ -24,6 +24,12 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
 
   final UserProvider _userProvider = UserProvider();
 
+  bool isNicknameValid(String nickname) {
+    // 정규표현식을 사용하여 닉네임 유효성 검사
+    final RegExp regex = RegExp(r'^[a-zA-Z가-힣0-9]{1,8}$');
+    return regex.hasMatch(nickname);
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -126,7 +132,8 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                 const SizedBox(height:30,),
                 // 닉네임 & 중복체크
                 Container(
-                  height: 50,
+                  margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                  height: 70,
                   child: Row(
                     children: [
                       Flexible(
@@ -151,6 +158,11 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                                     : Colors.red, // 빨간색으로 변경
                                 fontSize: 12,
                               ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                // 에러 상태에서의 입력 칸 스타일 설정
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.red), // 에러 색상 설정
+                              ),
                             ),
                           ),
                         ),
@@ -168,7 +180,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                             elevation: 0,
                           ),
                             onPressed: (){
-                              _checkNicknameAvailability;
+                              _checkNicknameAvailability();
                             },
                             child: const Text('중복 체크',
                               style: TextStyle(
@@ -183,19 +195,19 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                 // 시작하기 버튼
                 GestureDetector(
                   onTap: (){
-                    _registerUser();
-                    // if (_isNext()) {
-                      // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
+                    if (_errorText == '사용 가능한 닉네임입니다.') {
+                      _registerUser();
 
-                    //// 메인페이지에서 뒤로 가기 가능.
+                      //// 메인페이지에서 뒤로 가기 가능.
                       // Navigator.push(
                       //   context,
                       //   MaterialPageRoute(builder: (context) => const MainPage()),
                       // );
-                    // 메인페이지 가면 뒤로가기 안됨 ( 기존 스택들 제거)
-                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>
-                    const MainPage()), (Route<dynamic> route) => false);
-                    },
+                      // 메인페이지 가면 뒤로가기 안됨 ( 기존 스택들 제거)
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) =>
+                          const MainPage()), (Route<dynamic> route) => false);
+                    }},
                   // },
                   child: Container(
                     height: 50,
@@ -204,7 +216,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                       borderRadius: BorderRadius.circular(10),
                       // border: Border.all(
                       // ),
-                      color: const Color(0xFFFFD954),
+                      color: _errorText == '사용 가능한 닉네임입니다.' ? const Color(0xFFFFD954) : Colors.grey[300],
                       // color: _isNext() ?  const Color(0xFFFFD954) : Colors.grey[300], // 버튼 색상 변경
                     ),
                     child:  const Center(
@@ -318,7 +330,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
 
     if (_pickedFile != null) {
       // profileImgUrl = await uploadImage(_pickedFile!);
-      profileImg = await _userProvider.uploadImage(_pickedFile!.path);
+      profileImg = await _userProvider.uploadImage(_pickedFile!.path as File);
     }
 
     // 사용자 등록 요청 보내기
@@ -340,7 +352,13 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
   Future<void> _checkNicknameAvailability() async {
     String nickname = _nicknameController.text;
 
-    // TODO: 서버에서 닉네임 중복 체크 로직 구현
+    if (!isNicknameValid(nickname)) {
+      setState(() {
+        _errorText = '영문자,한글로 8글자 이내 가능';
+      });
+      return;
+    }
+
     bool isNicknameAvailable = await _userProvider.checkNicknameExists(nickname);
 
     if (isNicknameAvailable) {
