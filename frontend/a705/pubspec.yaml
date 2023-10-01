@@ -56,6 +56,8 @@ dependencies:
   carousel_slider: ^4.2.1
   multiple_images_picker: ^1.0.1
   address_search_field: ^5.0.3
+  daum_postcode_search: ^0.0.2
+  flutter_inappwebview: ^5.7.2+3
   fl_chart: ^0.63.0
   kpostal: ^0.5.1
   flutter_provider: ^2.1.0
