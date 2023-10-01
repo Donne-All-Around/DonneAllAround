@@ -16,3 +16,6 @@ spring:
     url: jdbc:mariadb://localhost:3306/donnearound?useUnicode=true
     username: ssafy
     password: ssafy
+
+fcm:
+  service-account-file: firebase/donnearound-firebase-adminsdk-access-key.json #비밀 키 경로
