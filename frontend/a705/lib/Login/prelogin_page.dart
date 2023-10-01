@@ -20,6 +20,8 @@ class _PreLoginPageState extends State<PreLoginPage> {
   bool otpCodeVisible = false; // 코드 보낸 거 확인 값
   int _remainingTime = 180; // 3분을 초 단위로 표현
   late Timer _timer;
+  bool _isButtonEnabled = false; // 인증문자 받기 버튼 활성화 상태를 저장
+  bool _isStartEnabled = false; // 시작하기 버튼 활성화 상태 저장 하는 변수
 
   void startTimer() {
     const oneSecond = Duration(seconds: 1);
@@ -29,6 +31,7 @@ class _PreLoginPageState extends State<PreLoginPage> {
           _remainingTime--;
         } else {
           _timer.cancel(); // 타이머 중지
+          _isStartEnabled = false;
         }
       });
     });
@@ -42,17 +45,27 @@ class _PreLoginPageState extends State<PreLoginPage> {
 
   bool isPhoneNumberValid(String phoneNumber) {
     // 전화번호의 길이가 11자리여야 유효.
-    return phoneNumber.length == 11;
+    final numberValid = phoneNumber.length == 11;
+    setState(() {
+      _isButtonEnabled = numberValid;
+    });
+    return numberValid;
   }
 
   bool isOptCodeValid(String optCode) {
     // 코드의 길이가 6자리여야 유효.
-    return optCode.length == 6;
+    final optValid = optCode.length == 6;
+    setState(() {
+      _isStartEnabled = optValid;
+    });
+    return optValid;
   }
 
   @override
   void dispose(){ // 컨트롤러 객체가 제거 될 때 변수에 할당 된 메모리를 해제
     _timer.cancel(); // 페이지가 dispose될 때 타이머 종료
+    phoneController.dispose();
+    optCodeController.dispose();
     super.dispose();
   }
 
@@ -122,15 +135,20 @@ class _PreLoginPageState extends State<PreLoginPage> {
                           ),
                           // contentPadding: EdgeInsets.all(20.0),
                         ),
+                        onChanged: (text){
+                          setState(() {
+                            _isButtonEnabled = true;
+                          });
+                        },
                       ),
                       const SizedBox(height: 10,),
-                      ElevatedButton(onPressed: (){
+                      OutlinedButton(onPressed: (){
                         if (isPhoneNumberValid(phoneController.text)) {
                           verifyNumber();
                         } else {}
                       },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[300],
+                            backgroundColor:_isButtonEnabled ? Colors.white : Colors.grey[300],
                             elevation: 0,
                           ),
                           child: Container(
@@ -138,13 +156,14 @@ class _PreLoginPageState extends State<PreLoginPage> {
                             height: 60,
                             width: double.infinity,
                             child: Text(otpCodeVisible == true ? "인증문자 재발송" : "인증문자 받기",
-                            style: const TextStyle(color: Colors.black, fontSize: 25,fontWeight: FontWeight.bold,),
+                            style:  TextStyle(color:  _isButtonEnabled ? Colors.black : Colors.grey, fontSize: 25,fontWeight: FontWeight.bold,),
                             textAlign: TextAlign.center,),
                           ),),
                       const SizedBox(height: 20,),
                       Visibility(
                         visible: otpCodeVisible,
                         child: TextField(
+                          autofocus:otpCodeVisible,
                           controller: optCodeController,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
@@ -155,12 +174,18 @@ class _PreLoginPageState extends State<PreLoginPage> {
                             hintText: '인증번호 6자리 입력',
                             hintStyle: const TextStyle(fontSize: 14),
                             suffixText: formatRemainingTime(_remainingTime),
+                            suffixStyle: const TextStyle(color: Colors.red),
                             labelStyle: const TextStyle(
                               fontSize: 20,
                               // textAlign: TextAlign.center,
                             ),
                             // contentPadding: EdgeInsets.all(20.0),
                           ),
+                          onChanged: (text){
+                            setState(() {
+                              _isStartEnabled = true;
+                            });
+                          },
                         ),
                       ),
                       const SizedBox(height: 10,),
@@ -172,7 +197,7 @@ class _PreLoginPageState extends State<PreLoginPage> {
                           } else {}
                         },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFFFD954),
+                              backgroundColor: _isStartEnabled ?  const Color(0xFFFFD954) : Colors.grey[300],
                               elevation: 0,
                             ),
                             child: Container(
@@ -211,6 +236,8 @@ class _PreLoginPageState extends State<PreLoginPage> {
       codeSent: (String verificationID, int? resendToken){
           verificationIDReceived = verificationID;
           otpCodeVisible = true;
+          _remainingTime = 180;
+          startTimer();
           setState(() {
             
           });
