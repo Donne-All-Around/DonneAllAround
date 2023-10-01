@@ -1,7 +1,11 @@
 import 'package:a705/Login/profilesetting_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
+import 'package:a705/providers/member_providers.dart';
+
+import 'package:a705/main_page.dart';
 
 class CertificationPage extends StatefulWidget {
   const CertificationPage({super.key});
@@ -12,58 +16,16 @@ class CertificationPage extends StatefulWidget {
 
 class _CertificationPageState extends State<CertificationPage> {
 
-  final _phoneNumberController = TextEditingController(); // 전화번호 컨트롤러
-  bool _isButtonEnabled = false; // 인증문자 받기 버튼 활성화 상태를 저장 하는 변수
-  final _certificationController = TextEditingController(); // 인증번호 컨트롤러
-  bool _isStartEnabled = false; // 시작하기 버튼 활성화 상태 저장 하는 변수
-  // final GlobalKey certiKey = GlobalKey(); // 해당 위젯으로 스크롤 하기 위한 키 생성
-  bool _isInputVisible = false; // 입력창의 가시성 상태 저장 변수
+  TextEditingController phoneController = TextEditingController(); // 전화번호 입력값
+  TextEditingController optCodeController = TextEditingController(); // 코드 입력값
+  FirebaseAuth auth = FirebaseAuth.instance; // firebase 연동
+  String verificationIDReceived = ""; // 인증 값
+  bool otpCodeVisible = false; // 코드 보낸 거 확인 값
   int _remainingTime = 180; // 3분을 초 단위로 표현
   late Timer _timer;
-  final FocusNode _certificationFocus = FocusNode(); // 자동 포커스 주기 위해
-  var _buttonText = '인증문자 받기';
+  bool _isButtonEnabled = false; // 인증문자 받기 버튼 활성화 상태를 저장
+  bool _isStartEnabled = false; // 시작하기 버튼 활성화 상태 저장 하는 변수
 
-  bool _isValid(){
-    final phoneNumber = _phoneNumberController.text.replaceAll('-', '');
-    final isValid = phoneNumber.length == 11;  // 하이픈을 제거하고 11자리인지 확인
-    setState(() {
-      _isButtonEnabled = isValid; // 버튼 활성화 상태 업데이트
-    });
-    return isValid;
-  }
-
-  void _text() {
-    if (_isValid()) {
-      // 버튼을 누르면 타이머를 시작합니다.
-      startTimer();
-      // TODO: 인증문자 보내는 기능 구현
-      // 인증번호를 받은 후에 버튼 비활성화
-      // setState(() {  // 인증번호 받기 버튼 비활성화
-      //   _isButtonEnabled = false;
-      // });
-    }
-  }
-  bool _isStart() {
-    final certification = _certificationController.text;
-    final isStart = certification.length == 5;
-    setState(() {
-      _isStartEnabled = isStart;
-    });
-    return isStart;
-  }
-
-  void _showInput() {
-    setState(() {
-      _isInputVisible = true;
-    });
-    _certificationFocus.requestFocus(); // 자동 커서
-  }
-
-  // @override
-  // void initState() {  // 타이머 바로 작동
-  //   super.initState();
-  //   startTimer();
-  // }
   void startTimer() {
     const oneSecond = Duration(seconds: 1);
     _timer = Timer.periodic(oneSecond, (timer) {
@@ -72,6 +34,7 @@ class _CertificationPageState extends State<CertificationPage> {
           _remainingTime--;
         } else {
           _timer.cancel(); // 타이머 중지
+          _isStartEnabled = false;
         }
       });
     });
@@ -83,272 +46,279 @@ class _CertificationPageState extends State<CertificationPage> {
     return '$minutes:$remainingSeconds';
   }
 
-  @override
-  void dispose(){ // 컨트롤러 객체가 제거 될 때 변수에 할당 된 메모리를 해제
-    _phoneNumberController.dispose();
-    _certificationController.dispose();
-    _timer.cancel(); // 페이지가 dispose될 때 타이머 종료
-    super.dispose();
+  bool isPhoneNumberValid(String phoneNumber) {
+    // 전화번호의 길이가 11자리여야 유효.
+    final numberValid = phoneNumber.length == 11;
+    setState(() {
+      _isButtonEnabled = numberValid;
+    });
+    return numberValid;
   }
 
+  bool isOptCodeValid(String optCode) {
+    // 코드의 길이가 6자리여야 유효.
+    final optValid = optCode.length == 6;
+    setState(() {
+      _isStartEnabled = optValid;
+    });
+    return optValid;
+  }
+
+  @override
+  void dispose(){ // 컨트롤러 객체가 제거 될 때 변수에 할당 된 메모리를 해제
+    _timer.cancel(); // 페이지가 dispose될 때 타이머 종료
+    phoneController.dispose();
+    optCodeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: GestureDetector(
-        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
+        child: GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: Scaffold(
             backgroundColor: Colors.white,
-            leading: IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios_new_outlined,
-                color: Colors.black87,
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              leading: IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios_new_outlined,
+                  color: Colors.black87,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              elevation: 0,
             ),
-            elevation: 0,
-          ),
-          body: SingleChildScrollView(
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-              child: Column(
-                children: [
-                  // const SizedBox(
-                  //   height: 20,
-                  // ),
-                  const Row(
+            body: SingleChildScrollView(
+              child: Container(
+                  margin: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                  child: Column(
                     children: [
-                      Text(
-                        '휴대폰 번호로',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Row(
-                    children: [
-                      Text(
-                        '가입해주세요!',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    // margin: const EdgeInsets.symmetric(horizontal: 30),
-                    child: TextField(
-                      controller: _phoneNumberController,// 전화번호 입력칸
-                      keyboardType: TextInputType.number, // 키보드 숫자로 나타남
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly, //숫자만!
-                        NumberFormatter(), // 자동하이픈
-                        LengthLimitingTextInputFormatter(13),
-                        //13자리만 입력받도록 하이픈 2개+숫자 11개
-                      ],
-                      style: const TextStyle(
-                        fontSize: 18,
-                      ),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          // borderSide: BorderSide(color: Colors.black),
-                        ),
-                        hintText: '휴대폰 번호 ( - 없이 숫자만 입력)',
-                        hintStyle: const TextStyle(fontSize: 14),
-                        labelStyle: const TextStyle(
-                          fontSize: 20,
-                          // textAlign: TextAlign.center,
-                        ),
-                        // contentPadding: EdgeInsets.all(20.0),
-                      ),
-                      // 입력값 변할 때마다 setState 호출해서 위젯 업데이트 (disable 설정 반영위해)
-                      onChanged: (text){
-                        setState(() {
-                          _isButtonEnabled = _isValid(); // 입력값이 변경될 때마다 검증 수행
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 10,),
-                  GestureDetector(
-                    onTap: (){
-                      if (_isValid()) {
-                        // 버튼 누르면 입력창 보이도록 상태 업데이트
-                        _showInput();
-                        // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
-                        _text();
-                        if(_buttonText == '인증문자 받기') {
-                          _buttonText = '인증문자 재발송';
-                        }
-                        // Scrollable.ensureVisible(   // 클릭 시, certikey 위치로 스크롤 이동
-                        //   certiKey.currentContext!,
-                        //   duration: const Duration(seconds: 1),
-                        // );
-                      }
-                    },
-                    child: Container(
-                      // margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-                      height: 60,
-                      width: double.infinity,
-                      decoration:  BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: Colors.black,// 버튼 테두리 색상 변경
-                        ),
-                        color: _isButtonEnabled ? Colors.white : Colors.grey[300], // 버튼 색상 변경
-                      ),
-                      child: Center(
-                        child: Text(
-                          _buttonText,
-                          style: TextStyle(
-                            fontSize:25,
-                            fontWeight: FontWeight.bold,
-                            color: _isButtonEnabled ? Colors.black : Colors.grey, // 버튼 텍스트 색상 변경),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30,),
-                  Column(
-                    children: [
-                      // if (_isInputVisible) // ture 일 때만 입력창 보이도록 조건부
-                      //   TextButton(
-                      //       onPressed: (){},
-                      //       child: const Text(
-                      //         '인증문자 재발송',
-                      //         style: TextStyle(
-                      //           color: Colors.black,
-                      //         ),
-                      //       )),
-                      // const SizedBox(height: 5,),
-                      if (_isInputVisible) // ture 일 때만 입력창 보이도록 조건부
-                        Container(
-                          // key: certiKey, // 키 할당
-                          // margin: const EdgeInsets.symmetric(horizontal: 30),
-                          child: TextFormField(
-                            focusNode: _isInputVisible ? _certificationFocus : null, // 입력창 나타나면 자동 포커스(삼항 연산자)
-                            controller: _certificationController, // 인증번호 컨트롤러
-                            keyboardType: TextInputType.number, // 키보드 숫자로 나타남
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly, //숫자만!
-                              LengthLimitingTextInputFormatter(5),
-                              // 5자리 숫자만 입력받도록
-                            ],
-                            style: const TextStyle(
-                              fontSize: 18,
+                      const Row(
+                        children: [
+                          Text(
+                            '휴대폰 번호로',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 30,
                             ),
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                // borderSide: BorderSide(color: Colors.black),
-                              ),
-                              hintText: '인증번호 입력',
-                              suffixText: formatRemainingTime(_remainingTime),
-                              suffixStyle: const TextStyle(color: Colors.red),
-                              labelStyle: const TextStyle(
-                                fontSize: 20,
-                              ),
-                              // contentPadding: EdgeInsets.all(20.0),
-                            ),
-                            onChanged: (text){
-                              setState(() {
-                                _isStartEnabled = _isStart();
-                              });
-                            },
                           ),
+                        ],
+                      ),
+                      const Row(
+                        children: [
+                          Text(
+                            '회원 가입해주세요!',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 30,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20,),
+                      TextField(
+                        controller: phoneController,
+                        keyboardType: TextInputType.phone,
+                        decoration:  InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            // borderSide: BorderSide(color: Colors.black),
+                          ),
+                          hintText: '휴대폰 번호 ( - 없이 숫자만 입력)',
+                          hintStyle: const TextStyle(fontSize: 14),
+                          labelStyle: const TextStyle(
+                            fontSize: 20,
+                            // textAlign: TextAlign.center,
+                          ),
+                          // contentPadding: EdgeInsets.all(20.0),
                         ),
+                        onChanged: (text){
+                          setState(() {
+                            _isButtonEnabled = true;
+                          });
+                        },
+                      ),
                       const SizedBox(height: 10,),
-                      // 인증번호 받기 버튼 등을 여기에 추가
-                      if (_isInputVisible)
-                        GestureDetector(
-                          onTap: (){
-                            if (_isStart()) {
-                              // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const ProfileSettingPage()),
-                              );
-                            }
+                      OutlinedButton(onPressed: (){
+                        if (isPhoneNumberValid(phoneController.text)) {
+                          verifyNumber();
+                        } else {}
+                      },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:_isButtonEnabled ? Colors.white : Colors.grey[300],
+                          elevation: 0,
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          height: 60,
+                          width: double.infinity,
+                          child: Text(otpCodeVisible == true ? "인증문자 재발송" : "인증문자 받기",
+                            style:  TextStyle(color:  _isButtonEnabled ? Colors.black : Colors.grey, fontSize: 25,fontWeight: FontWeight.bold,),
+                            textAlign: TextAlign.center,),
+                        ),),
+                      const SizedBox(height: 20,),
+                      Visibility(
+                        visible: otpCodeVisible,
+                        child: TextField(
+                          autofocus:otpCodeVisible,
+                          controller: optCodeController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              // borderSide: BorderSide(color: Colors.black),
+                            ),
+                            hintText: '인증번호 6자리 입력',
+                            hintStyle: const TextStyle(fontSize: 14),
+                            suffixText: formatRemainingTime(_remainingTime),
+                            suffixStyle: const TextStyle(color: Colors.red),
+                            labelStyle: const TextStyle(
+                              fontSize: 20,
+                              // textAlign: TextAlign.center,
+                            ),
+                            // contentPadding: EdgeInsets.all(20.0),
+                          ),
+                          onChanged: (text){
+                            setState(() {
+                              _isStartEnabled = true;
+                            });
                           },
+                        ),
+                      ),
+                      const SizedBox(height: 10,),
+                      Visibility(
+                        visible: otpCodeVisible,
+                        child: ElevatedButton(onPressed: (){
+                          if (isOptCodeValid(optCodeController.text)) {
+                            verifyCode();
+                          } else {}
+                        },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _isStartEnabled ?  const Color(0xFFFFD954) : Colors.grey[300],
+                            elevation: 0,
+                          ),
                           child: Container(
-                            // margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                            padding: const EdgeInsets.all(10),
                             height: 60,
                             width: double.infinity,
-                            decoration:  BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              // border: Border.all(
-                              // ),
-                              color: _isStartEnabled ?  const Color(0xFFFFD954) : Colors.grey[300], // 버튼 색상 변경
-                            ),
-                            child:  Center(
-                              child: Text(
-                                '다  음',
-                                style: TextStyle(
-                                  fontSize:25,
-                                  fontWeight: FontWeight.bold,
-                                  color: _isStartEnabled ? Colors.black : Colors.grey,),
-                              ),
-                            ),
-                          ),
-                        ),
-
+                            child: const Text("다  음",
+                              style: TextStyle(color: Colors.black, fontSize: 25,fontWeight: FontWeight.bold,),
+                              textAlign: TextAlign.center,),
+                          ),),
+                      ),
                     ],
-                  ),
-                ],
+                  )
               ),
+
             ),
+
           ),
-        ),
-      ),
+
+        )
     );
   }
-}
 
-class NumberFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    var text = newValue.text;
+  // 전화번호 입력 후 firebase로 코드 보내는 기능
+  void verifyNumber(){
+    String totalPhoneNumber = "+82${phoneController.text.substring(1)}";
+    auth.verifyPhoneNumber(
+      phoneNumber: totalPhoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) async{
+        await auth.signInWithCredential(credential).then((value){
+          print('로그인 성공');
+        });
+      },verificationFailed: (FirebaseAuthException exception){
+      print(exception.message);
+    },
+      codeSent: (String verificationID, int? resendToken){
+        verificationIDReceived = verificationID;
+        otpCodeVisible = true;
+        _remainingTime = 180;
+        startTimer();
+        setState(() {
 
-    if (newValue.selection.baseOffset == 0) {
-      return newValue;
-    }
+        });
+      },
+      codeAutoRetrievalTimeout: (String verificationID){
 
-    var buffer = StringBuffer();
-    for (int i = 0; i < text.length; i++) {
-      buffer.write(text[i]);
-      var nonZeroIndex = i + 1;
-      if (nonZeroIndex <= 3) {
-        if (nonZeroIndex % 3 == 0 && nonZeroIndex != text.length) {
-          buffer.write('-'); // Add double spaces.
-        }
-      } else {
-        if (nonZeroIndex % 7 == 0 &&
-            nonZeroIndex != text.length &&
-            nonZeroIndex > 4) {
-          buffer.write('-');
-        }
-      }
-    }
-
-    var string = buffer.toString();
-    return newValue.copyWith(
-        text: string,
-        selection: TextSelection.collapsed(offset: string.length));
+      },
+    );
   }
+
+  // OTP 값 확인하고 메인페이지 가는 기능
+//   void verifyCode() async {
+//
+//     PhoneAuthCredential credential = PhoneAuthProvider.credential(
+//         verificationId:verificationIDReceived, smsCode: optCodeController.text );
+//     await auth.signInWithCredential(credential).then((value){
+//       print("로그인 성공!");
+//       Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileSettingPage()));
+//     });
+//   }
+// }
+  void verifyCode() async {
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: verificationIDReceived, smsCode: optCodeController.text);
+
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Firebase 인증 토큰 얻기
+      String? firebaseToken = await userCredential.user!.getIdToken();
+
+      // 이제 firebaseToken을 백엔드 서버로 전송하거나 필요한 작업을 수행할 수 있습니다.
+
+      print("로그인 성공!");
+      // Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileSettingPage()));
+      // 인증 코드 확인 후 사용자 확인 함수 호출
+      checkUserExistenceAndNavigate();
+
+   } catch (e) {
+      print("로그인 실패: $e");
+    }
+
+  }
+
+// 백엔드에서 사용자가 존재하는지 확인하는 함수
+  Future<void> checkUserExistenceAndNavigate() async {
+    final phoneNumber = phoneController.text; // 사용자가 입력한 전화번호
+    final userExists = await UserProvider().checkUserExists(phoneNumber);
+    // final userProvider = UserProvider();
+    if (userExists) {
+      // 이미 등록된 사용자인 경우
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('이미 등록된 회원입니다'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const MainPage()));
+                  // 기존 사용자 처리 로직 추가
+                },
+                child: Text('메인페이지 이동'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // await userProvider.registerUser(phoneNumber: phoneNumber, nickname: "", profileImg: "");
+      // 백엔드에 등록되지 않은 사용자인 경우
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProfileSettingPage(phoneNumber: phoneController.text)),
+      );
+    }
+  }
+
 }
