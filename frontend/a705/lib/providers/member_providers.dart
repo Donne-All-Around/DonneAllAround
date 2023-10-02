@@ -44,7 +44,7 @@ class UserProvider extends ChangeNotifier {
     final Map<String, dynamic> userData = {
       "tel": phoneNumber,
       "nickname": nickname,
-      "profileImg": profileImg ?? 'assets/image/wagon_don.png',
+      "profileImg": profileImg ?? 'assets/images/wagon_don.png',
       // 나머지 필드는 null 값으로 전달합니다.
     };
 

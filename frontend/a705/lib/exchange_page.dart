@@ -89,6 +89,7 @@ class _ExchangePageState extends State<ExchangePage> {
             'USDRUB': exchangeResponse.quotes.usdRub,
 
           };
+          _moneyController2.text = exchangeResponse.quotes.usdKrw.toStringAsFixed(2);
         });
       } else {
         // API 요청은 성공했지만, 응답이 실패한 경우에 대한 처리
@@ -216,7 +217,7 @@ class _ExchangePageState extends State<ExchangePage> {
 
   // 텍스트 필드 컨트롤러
   final TextEditingController _moneyController1 = TextEditingController(text: "1");
-  final TextEditingController _moneyController2 = TextEditingController(text: "1,300.00 ");
+  final TextEditingController _moneyController2 = TextEditingController(text: "");
   final TextEditingController _moneyController3 = TextEditingController(text: "2 ");
   final TextEditingController _moneyController4 = TextEditingController(text: "600.00 ");
   final TextEditingController _percentController = TextEditingController(text: "30");
@@ -1379,7 +1380,7 @@ class _ExchangePageState extends State<ExchangePage> {
 }
 
 
-// 계산기 눌렀을 때, 은행별 리스트 => 은행 목록과 사진으로 바꿔야 함!!
+
 class BankViewBuilder extends StatefulWidget {
   const BankViewBuilder({super.key});
 
@@ -1394,20 +1395,49 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
     'KB국민은행',
     '신한은행',
     'NH농협은행',
-    '기업은행',
+    'IBK기업은행',
     'SC제일은행',
     '시티은행',
-    '수협은행',
+    'Sh수협은행',
     '부산은행',
-    '대구은행',
-    '전북은행',
-    '경남은행',
-    '제주은행',
+    'DGB대구은행',
   ];
 
-  int idx1 = 0;
+  int idx = 0;
+  int _selectedIdx = idx1;
 
+  List<String> currency1 = [
+    'USDKRW',
+    'USDJPY',
+    'USDCNY',
+    'USDEUR',
+    'USDGBP',
+    'USDAUD',
+    'USDCAD',
+    'USDHKD',
+    'USDPHP',
+    'USDVND',
+    'USDTWD',
+    'USDSGD',
+    'USDCZK',
+    'USDNZD',
+    'USDRUB',
 
+  ];
+
+  Map<String, Map<String, String>> bankInfo = {
+    '하나은행': {'currencyName': '하나은행', 'bankCode': '081'},
+    '우리은행': {'currencyName': '우리은행', 'bankCode': '020'},
+    'KB국민은행': {'currencyName': 'KB국민은행', 'bankCode': '004'},
+    '신한은행': {'currencyName': '신한은행', 'bankCode': '088'},
+    'NH농협은행': {'currencyName': 'NH농협은행', 'bankCode': '011'},
+    'IBK기업은행': {'currencyName': 'IBK기업은행', 'bankCode': '003'},
+    'SC제일은행': {'currencyName': 'SC제일은행', 'bankCode': '023'},
+    '시티은행': {'currencyName': '시티은행', 'bankCode': '027'},
+    'Sh수협은행': {'currencyName': 'Sh수협은행', 'bankCode': '007'},
+    '부산은행': {'currencyName': '부산은행', 'bankCode': '032'},
+    'DGB대구은행': {'currencyName': 'DGB대구은행', 'bankCode': '031'},
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -1415,8 +1445,11 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
       primary: false,
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-      itemCount: _valueList1.length,
+      itemCount:  bankInfo.length,
       itemBuilder: (context, index) {
+        final bankName = bankInfo.keys.elementAt(index); // 은행 이름
+        final bankData = bankInfo[bankName]; // 은행 정보 맵
+        final bankCode = bankData?['bankCode'];
         return Row(
           children: [
             Expanded(
@@ -1426,6 +1459,9 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                     context,
                     MaterialPageRoute(builder: (context) => const BankDetailPage()),
                   );
+                  setState(() {
+                    _selectedIdx = index;
+                  });
                 },
                 child: Container(
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
@@ -1457,10 +1493,14 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                               //   radius: 10,
                               // ),
                               const SizedBox(width: 5),
-                              Text(
-                                _valueList1[index],
-                                style: const TextStyle(fontSize: 16),
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(2,0,0,0),
+                                child: Image.asset(
+                                    'assets/images/banklogo/$bankCode.png'),
+                                width: 150, // 이미지 너비 조절
+                                height: 20,
                               ),
+
                             ],
                           ),
                         ],
