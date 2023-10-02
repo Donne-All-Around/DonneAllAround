@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:intl/intl.dart';
 
+import 'models/BankDto.dart';
+
 class ExchangePage extends StatefulWidget {
   const ExchangePage({super.key});
 
@@ -1259,7 +1261,10 @@ class _ExchangePageState extends State<ExchangePage> {
                     ],
                   ),
                   if (_iscalculate)
-                    const BankViewBuilder(),
+                    BankViewBuilder(
+                      key: UniqueKey(),
+                      idx1 : idx1,
+                    ),
                   ],
               ),
           ),
@@ -1382,13 +1387,18 @@ class _ExchangePageState extends State<ExchangePage> {
 
 
 class BankViewBuilder extends StatefulWidget {
-  const BankViewBuilder({super.key});
+  final int idx1;
+  const BankViewBuilder({Key? key, required this.idx1}) : super(key: key);
 
   @override
-  State<BankViewBuilder> createState() => _BankViewBuilderState();
+  State<BankViewBuilder> createState() =>_BankViewBuilderState(idx1: idx1);
 }
 
 class _BankViewBuilderState extends State<BankViewBuilder> {
+  final int idx1; // idx1 값을 저장할 변수 추가
+  _BankViewBuilderState({required this.idx1});
+
+
   final _valueList1 = [
     '하나은행',
     '우리은행',
@@ -1403,8 +1413,7 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
     'DGB대구은행',
   ];
 
-  int idx = 0;
-  int _selectedIdx = idx1;
+  int _selectedIdx = 0;
 
   List<String> currency1 = [
     'USDKRW',
@@ -1441,6 +1450,13 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
 
   @override
   Widget build(BuildContext context) {
+    if (idx1 == 0) {
+      _selectedIdx = 0;
+    } else if (idx1 >= 2) {
+      _selectedIdx = idx1 - 1;
+    } else if (idx1 == 1) {
+      _selectedIdx = 1;
+    }
     return  ListView.builder(
       primary: false,
       scrollDirection: Axis.vertical,
@@ -1450,6 +1466,7 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
         final bankName = bankInfo.keys.elementAt(index); // 은행 이름
         final bankData = bankInfo[bankName]; // 은행 정보 맵
         final bankCode = bankData?['bankCode'];
+        FeeInfo? feeInfo = bankInfoMap[bankName]?.fees[currency1[_selectedIdx]];
         return Row(
           children: [
             Expanded(
@@ -1460,7 +1477,8 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                     MaterialPageRoute(builder: (context) => const BankDetailPage()),
                   );
                   setState(() {
-                    _selectedIdx = index;
+                    _selectedIdx = idx1;
+
                   });
                 },
                 child: Container(
@@ -1506,11 +1524,11 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                         ],
                       ),
                       const SizedBox(height: 10,),
-                      const Row(
+                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Column(
+                          const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(height: 20),
@@ -1531,7 +1549,7 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                               )
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 50,
                           ),
                           Row(
@@ -1571,11 +1589,11 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                                   ),
                                 ],
                               ),
-                              SizedBox(width: 20),
+                              const SizedBox(width: 20),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(
+                                  const Text(
                                     '수수료',
                                     style: TextStyle(fontSize: 15),
                                   ),
@@ -1583,22 +1601,22 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
-                                        '1.75%',
-                                        style: TextStyle(
+                                        '${feeInfo?.buying ?? "서비스 미제공"}',
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '1.75%',
-                                        style: TextStyle(
+                                        '${feeInfo?.selling ?? "서비스 미제공"}',
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '1.75%',
-                                        style: TextStyle(
+                                        '${feeInfo?.sending ?? "서비스 미제공"}',
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
