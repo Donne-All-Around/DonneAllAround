@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:a705/direct_transaction_page.dart';
 
 class AppointmentPage extends StatefulWidget {
-  const AppointmentPage({super.key});
+  final Map<String, dynamic>? tradeInfoMap;
+  AppointmentPage({Key? key, required this.tradeInfoMap}) : super(key: key);
 
   @override
   State<AppointmentPage> createState() => _AppointmentPageState();
@@ -95,7 +96,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
-                              return const DirectTransactionPage();
+                              return  DirectTransactionPage(
+                               tradeInfoMap : widget.tradeInfoMap,
+                              );
                             },
                           ));
                         },
@@ -134,7 +137,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
-                              return const DeliveryTransactionPage();
+                              return DeliveryTransactionPage(
+                                tradeInfoMap : widget.tradeInfoMap,
+                              );
                             },
                           ));
                         },

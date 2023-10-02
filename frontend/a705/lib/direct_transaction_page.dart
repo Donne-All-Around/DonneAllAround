@@ -7,7 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:a705/choose_location_page.dart';
 
 class DirectTransactionPage extends StatefulWidget {
-  const DirectTransactionPage({super.key});
+  final Map<String, dynamic>? tradeInfoMap;
+  const DirectTransactionPage({Key? key, required this.tradeInfoMap}) : super(key: key);
 
   @override
   State<DirectTransactionPage> createState() => _DirectTransactionPageState();
@@ -29,6 +30,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
   @override
   void initState() {
     super.initState();
+
     // _getUserLocation();
   }
 
@@ -74,6 +76,12 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                   appt += " ";
                   appt += _addr;
                 });
+                // 직거래 약속 data 추가
+
+
+
+
+
                 Navigator.pop(context, appt);
                 Navigator.pop(context, appt);
               },
@@ -112,15 +120,16 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                       ),
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(15),
-                          child: const Image(
+                          child:  Image(
                             height: 60,
                             image: AssetImage(
+                              // widget.tradeInfoMap?['thumbnailImageUrl'] ??
                               'assets/images/ausdollar.jpg',
                             ),
                             fit: BoxFit.cover,
                           )),
                     ),
-                    const Flexible(
+                     Flexible(
                       flex: 1,
                       child: SizedBox(
                         height: 70,
@@ -128,7 +137,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '호주 달러 50달러 팔아요',
+                              widget.tradeInfoMap?['tradeTitle'],
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -148,7 +157,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                                         ),
                                         SizedBox(width: 5),
                                         Text(
-                                          '50 AUD',
+                                          '${NumberFormat.decimalPattern().format(widget.tradeInfoMap?['foreignCurrencyAmount'].toInt())} ${widget.tradeInfoMap?['countryCode']}',
                                           style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
@@ -166,7 +175,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         Text(
-                                          '42,000원',
+                                          '${NumberFormat.decimalPattern().format(widget.tradeInfoMap?['koreanWonAmount'].toInt())}원',
                                           style: TextStyle(
                                               fontSize: 17,
                                               fontWeight: FontWeight.bold),

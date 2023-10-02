@@ -242,17 +242,10 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                     builder: (context) {
 
                                       return  ChattingDetailPage(
-                                          transactionInfoMap :{
-                                            "transactionId" : "board2",
-                                            "transactionTitle" : "싸게싸게팔아요",
+                                          tradeInfoMap :{
+                                            "tradeId" : "6",
                                             "seller" : "신짱구",
-                                            "sellerId" : "098765",
-                                            "countryCode": "USD",
-                                            "transactionUrl" : "",
-                                            "koreanWonAmount" : 50000,
-                                            "foreignCurrencyAmount" : 5000,
-                                            "type": "DIRECT",
-                                            "status": "WAIT"
+                                            "sellerId" : "3",
                                           }
                                       );
                                     },

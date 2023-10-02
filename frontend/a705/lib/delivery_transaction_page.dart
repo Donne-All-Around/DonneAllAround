@@ -5,7 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:kpostal/kpostal.dart';
 
 class DeliveryTransactionPage extends StatefulWidget {
-  const DeliveryTransactionPage({super.key});
+  final Map<String, dynamic>? tradeInfoMap;
+   DeliveryTransactionPage({Key? key, required this.tradeInfoMap}) : super(key: key);
 
   @override
   State<DeliveryTransactionPage> createState() => _DeliveryTransactionPageState();
@@ -128,12 +129,13 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                               child: const Image(
                                 height: 60,
                                 image: AssetImage(
+                                  // widget.tradeInfoMap?['thumbnailImageUrl'] ??
                                   'assets/images/ausdollar.jpg',
                                 ),
                                 fit: BoxFit.cover,
                               )),
                         ),
-                        const Flexible(
+                         Flexible(
                           flex: 1,
                           child: SizedBox(
                             height: 70,
@@ -141,7 +143,7 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '호주 달러 50달러 팔아요',
+                                  widget.tradeInfoMap?['tradeTitle'],
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -161,7 +163,7 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                                             ),
                                             SizedBox(width: 5),
                                             Text(
-                                              '50 AUD',
+                                              '${NumberFormat.decimalPattern().format(widget.tradeInfoMap?['foreignCurrencyAmount'].toInt())} ${widget.tradeInfoMap?['countryCode']}',
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
@@ -179,7 +181,7 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                                           mainAxisAlignment: MainAxisAlignment.end,
                                           children: [
                                             Text(
-                                              '42,000원',
+                                              '${NumberFormat.decimalPattern().format(widget.tradeInfoMap?['koreanWonAmount'].toInt())}원',
                                               style: TextStyle(
                                                   fontSize: 17,
                                                   fontWeight: FontWeight.bold),

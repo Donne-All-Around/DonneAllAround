@@ -4,10 +4,11 @@ import 'package:http/http.dart' as http;
 class SpringApi {
 
   // 채팅방 내 거래글 정보 가져오기
-  Future<Map<String, dynamic>> getChatTransactionInfo(String transactionId) async {
+  Future<Map<String, dynamic>> getChatTransactionInfo(String? sellerId, String? tradeId) async {
+    print('sellerId: $sellerId, tradeId: $tradeId');
     try {
       http.Response _response = await http.get(
-          Uri.parse("https://j9a705.p.ssafy.io/api/trade/chat/6?memberId=3"));
+          Uri.parse("https://j9a705.p.ssafy.io/api/trade/chat/${tradeId}?memberId=${sellerId}"));
       if (_response.statusCode == 200) {
         String responseBody = utf8.decode(_response.bodyBytes); // utf-8로 변환
         Map<String, dynamic> jsonData = json.decode(responseBody);

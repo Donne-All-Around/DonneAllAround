@@ -293,9 +293,32 @@ class DatabaseMethods {
       "buyerId": "abcdef",
       "sellerId": "3",
     };
-
     FirebaseFirestore.instance.collection("trade").doc(tradeId).set(tradeInfo);
-
-
   }
+
+  // 거래 약속잡기 정보 저장
+  Stream<Map<String, dynamic>> getTradeInfo(String tradeId) {
+
+      return  FirebaseFirestore.instance
+          .collection("trade")
+          .doc(tradeId)
+          .snapshots()
+          .map((DocumentSnapshot snapshot) {
+        if (snapshot.exists) {
+          return snapshot.data() as Map<String, dynamic>;
+        } else {
+          return {};
+        }
+      });
+  }
+/**
+ * Future<Stream<QuerySnapshot>> getChatRoomMessages(chatRoomId) async {
+    return FirebaseFirestore.instance
+    .collection("chatrooms")
+    .doc(chatRoomId)
+    .collection("chats")
+    .orderBy("time", descending: true)
+    .snapshots();
+    }
+ */
 }

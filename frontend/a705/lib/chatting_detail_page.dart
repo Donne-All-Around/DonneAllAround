@@ -1,5 +1,5 @@
 import 'package:a705/chatting_page.dart';
-import 'package:a705/dto/TransactionInfo.dart';
+import 'package:a705/models/TradeAppointmentDto.dart';
 import 'package:a705/service/database.dart';
 import 'package:a705/appointment_page.dart';
 import 'package:a705/service/spring_api.dart';
@@ -10,13 +10,13 @@ import 'package:intl/intl.dart';
 import 'package:random_string/random_string.dart';
 
 class ChattingDetailPage extends StatefulWidget {
-  final Map<String, dynamic>? transactionInfoMap;
-  final Map<String, dynamic>? chatRoomDetailInfoMap;
+  final Map<String, dynamic>? tradeInfoMap;
+  final Map<String, dynamic>? chatRoomListInfoMap;
 
   const ChattingDetailPage({
     Key? key,
-    this.transactionInfoMap,
-    this.chatRoomDetailInfoMap,
+    this.tradeInfoMap,
+    this.chatRoomListInfoMap,
   }) : super(key: key);
 
   @override
@@ -24,58 +24,165 @@ class ChattingDetailPage extends StatefulWidget {
 }
 
 enum InfoType {
-  ChatRoomDetailInfo,
-  TransactionInfo,
-  None,
+  CHATROOMLIST,
+  TRADE,
+  NONE,
+}
+
+enum AppointmentType {
+  waitBuyer, // 예약 전, 구매자
+  waitSeller, // 예약 전, 판매자
+  progressBuyerDirect, // 예약 중, 구매자, 직거래
+  progressSellerDirect, // 예약 중, 판매자, 직거래
+  progressBuyerDeliveryBefore, // 예약 중, 구매자, 택배 거래, 송장 번호 입력 전
+  progressBuyerDeliveryAfter, // 예약 중, 구매자, 택배 거래, 송장 번호 입력 후
+  progressSellerDeliveryBefore, // 예약 중, 판매자, 택배 거래, 송장 번호 입력 전
+  progressSellerDeliveryAfter, // 예약 중, 판매자, 택배 거래, 송장 번호 입력 후
+  progressOther, // 예약 중, 타 사용자
+  completeSeller, // 거래 완료, 판매자
+  completeBuyer, // 거래 완료, 구매자
+  completeOther, // 거래 완료, 타 사용자
 }
 
 class _ChattingDetailPageState extends State<ChattingDetailPage> {
   ScrollController _scrollController = ScrollController();
   bool isVisible = false;
   TextEditingController messageController = new TextEditingController();
-  String? messageId; // 메시지 아이디
-  String myUserName = "", // 내 닉네임
-      myUserId = "", // 내 아이디
-      myProfilePic = "", // 내 프로필
-      chatRoomId = "", // 채팅방 아이디
-      otherUserName = "", // 상대방 닉네임
-      seller = "", // 판매자 닉네임
-      sellerId = "", // 판매자 아이디
-      buyer = "", // 구매자 닉네임
-      buyerId = "", // 구매자 아이디
-      transactionId = "", // 거래글 아이디
-      transactionTitle = "", // 거래글 제목
-      countryCode = "", // 거래글 통화 국가
-      transactionUrl = "", // 거래글 썸네일
-      type = "", // 거래 방법
-      status = ""; // 거래 상태
+  String? messageId, // 메시지 아이디
+      myUserName, // 내 닉네임
+      myUserId, // 내 아이디
+      myRole, // 내 역할
+      chatRoomId, // 채팅방 아이디
+      otherUserName, // 상대방 닉네임
+      otherUserId, // 상대방 아이디
+      otherRole, // 상대방 역할
+      seller, // 판매자 닉네임
+      sellerId, // 판매자 아이디
+      buyer, // 구매자 닉네임
+      buyerId, // 구매자 아이디
+      tradeId, // 거래글 아이디
+      tradeTitle, // 거래글 제목
+      countryCode, // 거래글 통화 국가
+      thumbnailImageUrl, // 거래글 썸네일
+      type, // 거래 방법
+      status, // 거래 상태
+      directTradeTime, // 직거래 약속 시간
+      directTradeLocationDetail, // 직거래 상제 장소
+      sellerAccountBankCode, // 판매자 은행 코드
+      sellerAccountNumber, // 판매자 은행 계좌번호
+      deliveryRecipientName, // 택배거래 구매자 이름
+      deliveryRecipientTel, // 택배거래 구매자 번호
+      deliveryAddressZipCode, // 택버거래 주소 우편번호
+      deliveryAddress, // 택배거래 주소
+      deliveryAddressDetail, // 택배거래 상세 주소
+      trackingNumber; // 송장번호
   int foreignCurrencyAmount = 0, koreanWonAmount = 0;
-  String _appt = "약속 잡기";
-  Stream? messageStream;
-  int batchSize = 10; // 한 번에 가져올 메시지 수
-  bool isLoadingMore = false; // 추가 메시지 로딩 중인지 여부
-  DocumentSnapshot? lastVisibleMessage; // 마지막으로 로드된 메시지를 추적하는 데 사용됩니다.
-  bool reachedTop = false; // 스크롤이 맨 위에 도달했는지 여부
+  String? _appt;
+  Stream? messageStream, apptStream;
   bool? isSellerExit, isBuyerExit;
+  bool isBlank = false;
+  AppointmentType appointmentType = AppointmentType.waitBuyer;
+
+
 
   // 채팅방 정보 가져오기
   getUserInfo() async {
-    // 예시 시작
-    myUserName = "이병건";
-    myUserId = "abcdef";
-    // 예시 끝
+    myUserName = "신짱구";
+    myUserId = "3";
+    setState(() {});
+  }
+
+  // 거래 약속 상태
+  setTradeAppointment() async {
+    switch (status) {
+      case "WAIT":
+        // 구매(희망)자
+        if (myRole == "buyer") {
+          appointmentType = AppointmentType.waitBuyer;
+        }
+        // 판매자
+        else if (myRole == "seller") {
+          appointmentType = AppointmentType.waitSeller;
+          _appt = "약속 잡기";
+        }
+        break;
+      case "PROGRESS":
+        // 구매자
+        if (myRole == "buyer") {
+          // 직거래
+          if (type == "DIRECT") {
+            appointmentType = AppointmentType.progressBuyerDirect;
+            _appt = "${directTradeLocationDetail} ${directTradeTime}";
+          }
+          // 택배거래
+          else if (type == "DELIVERY") {
+            if (trackingNumber == null) {
+              // 송장번호 입력 전
+              appointmentType = AppointmentType.progressBuyerDeliveryBefore;
+              _appt = "아직 배송 전이에요.";
+            } else {
+              // 송장번호 입력 후
+              appointmentType = AppointmentType.progressBuyerDeliveryAfter;
+              _appt = "수령확인";
+            }
+          }
+        }
+        // 판매자
+        else if (myRole == "seller") {
+          // 직거래
+          if (type == "DIRECT") {
+            appointmentType = AppointmentType.progressSellerDirect;
+            _appt = "${directTradeLocationDetail} ${directTradeTime}";
+          }
+          // 택배거래
+          else if (type == "DELIVERY") {
+            if (trackingNumber == null) {
+              // 송장번호 입력 전
+              appointmentType = AppointmentType.progressSellerDeliveryBefore;
+              _appt = "송장번호 입력";
+            } else {
+              // 송장번호 입력 후
+              appointmentType = AppointmentType.progressSellerDeliveryAfter;
+              _appt = "$trackingNumber";
+            }
+          }
+        }
+        // 타 사용자
+        else {
+          appointmentType = AppointmentType.progressOther;
+          _appt = "거래 중";
+        }
+        break;
+      case "COMPLETE":
+        // 구매자
+        if (myRole == "buyer") {
+          appointmentType = AppointmentType.completeBuyer;
+        }
+        // 판매자
+        else if (myRole == "seller") {
+          appointmentType = AppointmentType.completeSeller;
+        }
+        // 타 사용자
+        else {
+          appointmentType = AppointmentType.completeOther;
+        }
+        _appt = "거래완료";
+        break;
+    }
+
+    print('사용자 약속 Type: $appointmentType');
     setState(() {});
   }
 
   // 로드
   ontheload() async {
     await getUserInfo(); // 내 정보 가져오기
-    // transactionInfoMap이 있거나 chatRoomDetailInfoMap이 있는 경우, 초기화합니다.
-    if (widget.transactionInfoMap != null ||
-        widget.chatRoomDetailInfoMap != null) {
+    if (widget.tradeInfoMap != null || widget.chatRoomListInfoMap != null) {
       await _initializeInfo(
-          widget.transactionInfoMap, widget.chatRoomDetailInfoMap);
+          widget.tradeInfoMap, widget.chatRoomListInfoMap); // 거래글 가져오기
     }
+    print("I'm $myRole");
+    await setTradeAppointment(); // 거래 약속 set
     await getAndSetMessages(); // 채팅 내역 가져오기
     setState(() {});
   }
@@ -87,32 +194,43 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     ontheload();
   }
 
+  bool _shouldShowGestureDetector(AppointmentType appointmentType) {
+    if (appointmentType == AppointmentType.waitBuyer) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   Future<void> _initializeInfo(
-    Map<String, dynamic>? transactionInfoMap,
-    Map<String, dynamic>? chatRoomDetailInfoMap,
+    Map<String, dynamic>? tradeInfoMap,
+    Map<String, dynamic>? chatRoomListInfoMap,
   ) async {
-    var infoType = InfoType.None;
-    if (chatRoomDetailInfoMap != null) {
-      infoType = InfoType.ChatRoomDetailInfo;
-    } else if (transactionInfoMap != null) {
-      infoType = InfoType.TransactionInfo;
+    var infoType = InfoType.NONE;
+    if (chatRoomListInfoMap != null) {
+      infoType = InfoType.CHATROOMLIST;
+    } else if (tradeInfoMap != null) {
+      infoType = InfoType.TRADE;
     }
 
     switch (infoType) {
-      case InfoType.ChatRoomDetailInfo:
-        // ChatRoomDetailInfo를 초기화합니다.
-        chatRoomId = widget.chatRoomDetailInfoMap?['chatroomId'] ?? "";
+      /**
+     * 채팅목록 -> 채팅방
+     */
+      case InfoType.CHATROOMLIST:
+        chatRoomId = widget.chatRoomListInfoMap?['chatroomId'] ?? "";
         print("chatRoomId: $chatRoomId");
         List<String> chatRoomInfoList = chatRoomId!.split("_");
 
         // 채팅 참여자 정보 설정하기
-        transactionId = chatRoomInfoList[0];
+        tradeId = chatRoomInfoList[0];
         sellerId = chatRoomInfoList[1];
         buyerId = chatRoomInfoList[2];
-        otherUserId = widget.chatRoomDetailInfoMap?['otherUserId'] ?? "";
-        otherUserName = widget.chatRoomDetailInfoMap?['otherUserName'] ?? "";
-        otherRole = widget.chatRoomDetailInfoMap?['otherRole'] ?? "";
-        myRole = widget.chatRoomDetailInfoMap?['myRole'] ?? "";
+        otherUserId = widget.chatRoomListInfoMap?['otherUserId'] ?? "";
+        otherUserName = widget.chatRoomListInfoMap?['otherUserName'] ?? "";
+        otherRole = widget.chatRoomListInfoMap?['otherRole'] ?? "";
+        myRole = widget.chatRoomListInfoMap?['myRole'] ?? "";
+
 
         if (otherRole == "seller") {
           seller = otherUserName;
@@ -124,54 +242,94 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
 
         // 거래글 정보 가져오기
         Map<String, dynamic> data =
-            await SpringApi().getChatTransactionInfo("12");
-        Trade trade = Trade.fromJson(data);
-        transactionId = trade.id.toString();
-        transactionTitle = trade.title;
+            await SpringApi().getChatTransactionInfo(sellerId!, tradeId!);
+        TradeAppointmentDto trade = TradeAppointmentDto.fromJson(data);
+        tradeId = trade.id.toString();
+        tradeTitle = trade.title;
         countryCode = trade.countryCode;
         type = trade.type;
         status = trade.status;
-        transactionUrl = trade.thumbnailImage;
+        thumbnailImageUrl = trade.thumbnailImage;
         koreanWonAmount = trade.koreanWonAmount;
         foreignCurrencyAmount = trade.foreignCurrencyAmount;
+        apptStream = await DatabaseMethods().getTradeInfo(tradeId!);
+        if (status != "WAIT") {
+
+
+          // Map<String, dynamic> tradeDetailInfo =
+          //     await DatabaseMethods().getTradeInfo(tradeId!);
+          // deliveryAddress = tradeDetailInfo['deliveryAddress'];
+          // deliveryAddressDetail = tradeDetailInfo['deliveryAddressDetail'];
+          // deliveryAddressZipCode = tradeDetailInfo['deliveryAddressZipCode'];
+          // deliveryRecipientName = tradeDetailInfo['deliveryRecipientName'];
+          // deliveryRecipientTel = tradeDetailInfo['deliveryRecipientTel'];
+          // directTradeLocationDetail =
+          //     tradeDetailInfo['directTradeLocationDetail'];
+          // directTradeTime = tradeDetailInfo['directTradeTime'];
+          // sellerAccountBankCode = tradeDetailInfo['sellerAccountBankCode'];
+          // sellerAccountNumber = tradeDetailInfo['sellerAccountNumber'];
+          // trackingNumber = tradeDetailInfo['trackingNumber'];
+        }
+
         break;
 
-      case InfoType.TransactionInfo:
-        // 거래글 정보 가져오기
+      /**
+     * 거래글 -> 채팅방
+     */
+      case InfoType.TRADE:
+        // 채팅 참여자 정보 설정하기
         // 새로 만들 시, 상대방은 seller 사용자는 buyer
+        seller = widget.tradeInfoMap?['seller'];
+        sellerId = widget.tradeInfoMap?['sellerId'];
+        tradeId = widget.tradeInfoMap?['tradeId'];
+        buyer = myUserName;
+        buyerId = myUserId;
+        otherUserName = seller;
+        otherUserId = sellerId;
+        otherRole = "seller";
+        myRole = "buyer";
+
+        // 거래글 정보 가져오기
         Map<String, dynamic> data =
-            await SpringApi().getChatTransactionInfo("12");
-        Trade trade = Trade.fromJson(data);
-        transactionId = trade.id.toString();
-        transactionTitle = trade.title;
+            await SpringApi().getChatTransactionInfo(sellerId, tradeId);
+        TradeAppointmentDto trade = TradeAppointmentDto.fromJson(data);
+        tradeTitle = trade.title;
         countryCode = trade.countryCode;
         type = trade.type;
         status = trade.status;
-        transactionUrl = trade.thumbnailImage;
+        thumbnailImageUrl = trade.thumbnailImage;
         koreanWonAmount = trade.koreanWonAmount;
         foreignCurrencyAmount = trade.foreignCurrencyAmount;
-        // transactionId = widget.transactionInfoMap?['transactionId'] ?? "";
-        print("transactionId : $transactionId");
 
-        // 채팅 참여자 정보 설정하기
-        seller = widget.transactionInfoMap?['seller'];
-        sellerId = trade.sellerId.toString();
-        buyer = myUserName;
-        buyerId = myUserId;
-        chatRoomId = "${transactionId!}_${sellerId!}_${buyerId!}";
-        otherUserName = seller;
+        if (status != "WAIT") {
+          // Map<String, dynamic> tradeDetailInfo =
+          //     await DatabaseMethods().getTradeInfo(tradeId!);
+          // deliveryAddress = tradeDetailInfo['deliveryAddress'];
+          // deliveryAddressDetail = tradeDetailInfo['deliveryAddressDetail'];
+          // deliveryAddressZipCode = tradeDetailInfo['deliveryAddressZipCode'];
+          // deliveryRecipientName = tradeDetailInfo['deliveryRecipientName'];
+          // deliveryRecipientTel = tradeDetailInfo['deliveryRecipientTel'];
+          // directTradeLocationDetail =
+          //     tradeDetailInfo['directTradeLocationDetail'];
+          // directTradeTime = tradeDetailInfo['directTradeTime'];
+          // sellerAccountBankCode = tradeDetailInfo['sellerAccountBankCode'];
+          // sellerAccountNumber = tradeDetailInfo['sellerAccountNumber'];
+          // trackingNumber = tradeDetailInfo['trackingNumber'];
+        }
+
+        chatRoomId = "${tradeId!}_${sellerId!}_${buyerId!}";
 
         // user 정보에 새 채팅방 목록 추가
         Map<String, dynamic> chatRoomListInfoMap = {
           "sellerId": sellerId,
           "buyerId": buyerId,
         };
-        print("user에 chatlist update: ${transactionId}");
+        print("user에 chatlist update: ${tradeId}");
         DatabaseMethods().setUserChatList(
             sellerId!, buyerId!, chatRoomId!, chatRoomListInfoMap);
         break;
 
-      case InfoType.None:
+      case InfoType.NONE:
         // 아무 작업도 수행하지 않습니다.
         break;
     }
@@ -325,45 +483,114 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     );
   }
 
-// 더 이전 메시지 가져오기
-  void loadMoreMessages() async {
-    if (!isLoadingMore) {
-      setState(() {
-        isLoadingMore = true;
-      });
+  Widget header(){
+    return StreamBuilder(
+      stream: apptStream,
+      builder: (context, snapshot) {
+        print(snapshot.connectionState);
+        if (snapshot.connectionState == ConnectionState.active) {
+          Map<String, dynamic> tradeDetailInfo = snapshot.data ?? {};
+          appointmentType = calculateAppointmentType(tradeDetailInfo);
+          print('새로 스트림: ${tradeDetailInfo['type']}');
+        }
 
-      Query query = FirebaseFirestore.instance
-          .collection("chatrooms")
-          .doc(chatRoomId)
-          .collection("chats")
-          .orderBy("time", descending: true)
-          .limit(batchSize);
+        print('$appointmentType');
 
-      if (lastVisibleMessage != null) {
-        query = query.startAfterDocument(lastVisibleMessage!);
-      }
+        return Visibility(
+          visible: _shouldShowGestureDetector(appointmentType),
+          child: GestureDetector(
+            onTap: () async {
+              String? appt;
+              // 약속 잡기
+              if (appointmentType == AppointmentType.waitSeller) {
 
-      QuerySnapshot? additionalMessages = await query.get();
+                appt = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            AppointmentPage(
+                              tradeInfoMap : {
+                                "tradeId" : tradeId,
+                                "tradeTitle" : tradeTitle,
+                                "countryCode" : countryCode,
+                                "thumbnailImageUrl" : thumbnailImageUrl,
+                                "foreignCurrencyAmount" : foreignCurrencyAmount,
+                                "koreanWonAmount" :koreanWonAmount,
+                              },
+                            )));
+              }
+              // 직거래 약속 정보 수정 페이지
+              else if (appointmentType ==
+                  AppointmentType.progressSellerDirect) {
+              }
+              // 택배거래 송장번호 입력 페이지
+              else if (appointmentType ==
+                  AppointmentType.progressSellerDeliveryBefore) {
+              }
+              // 택배거래 송장번호 수정 페이지
+              else if (appointmentType ==
+                  AppointmentType.progressSellerDeliveryAfter) {
+              }
+              // 택배거래 수령확인 액션
+              else if (appointmentType ==
+                  AppointmentType.progressBuyerDeliveryAfter) {
+              } else {}
 
-      if (additionalMessages.docs.isNotEmpty) {
-        lastVisibleMessage =
-            additionalMessages.docs[additionalMessages.docs.length - 1];
-        messageStream = FirebaseFirestore.instance
-            .collection("chatRooms")
-            .doc(chatRoomId)
-            .collection("chats")
-            .orderBy("time", descending: true)
-            .startAfterDocument(lastVisibleMessage!)
-            .limit(batchSize)
-            .snapshots();
-      }
-
-      setState(() {
-        isLoadingMore = false;
-      });
-    }
+              setState(() {
+                _appt = appt!;
+              });
+            },
+            child: Container(
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+              margin: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+              height: _appt == "약속 잡기" ? 40 : null,
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+                color: Color(0xFFFFD954),
+              ),
+              child: Center(
+                  child: Text(
+                    _appt ?? "",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  )),
+            ),
+          ),
+        );
+      },
+    );
   }
+  AppointmentType calculateAppointmentType(Map<String, dynamic> tradeDetailInfo) {
+    // final String status = tradeDetailInfo['status'];
+    // final String myRole = tradeDetailInfo['myRole'];
+    final String type = tradeDetailInfo['type'];
+    final String trackingNumber = tradeDetailInfo['trackingNumber'];
 
+    if (status == "WAIT") {
+      if (myRole == "seller") {
+        return AppointmentType.waitSeller;
+      }
+    } else if (status == "PROGRESS") {
+      if (myRole == "seller") {
+        if (type == "DIRECT") {
+          return AppointmentType.progressSellerDirect;
+        } else if (type == "DELIVERY") {
+          if (trackingNumber == null) {
+            return AppointmentType.progressSellerDeliveryBefore;
+          } else {
+            return AppointmentType.progressSellerDeliveryAfter;
+          }
+        }
+      }
+    } else if (status == "COMPLETE") {
+      // 거래가 완료된 경우에 대한 로직 추가
+    }
+
+    // 기본적으로 다른 상황에 대한 처리 또는 기본값 설정
+    return AppointmentType.progressOther;
+  }
   // 메시지 추가
   addMessage(bool sendClicked) {
     if (messageController.text != "") {
@@ -385,7 +612,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
       /**
        * 현재 접속한 user 비교 후, 상대방의 unread 갱신
        */
-
       String otherRole =
           otherUserName == seller ? "seller" : "buyer"; // 상대방 collection 찾기
 
@@ -418,7 +644,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
           "lastMessageSendTs": formattedDate,
           "time": FieldValue.serverTimestamp(),
           "lastMessageSendBy": myUserName,
-          "transactionId": transactionId,
+          "transactionId": tradeId,
           "transactionUrl": "",
         };
 
@@ -501,7 +727,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         Container(
                           height: 70,
                           width: 70,
-                          margin: const EdgeInsets.fromLTRB(20, 15, 10, 10),
+                          margin: const EdgeInsets.fromLTRB(20, 15, 10, 15),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -524,7 +750,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                               children: [
                                 Text(
                                   // "",
-                                  transactionTitle,
+                                  tradeTitle ?? "",
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -545,7 +771,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                             ),
                                             SizedBox(width: 5),
                                             Text(
-                                              '${NumberFormat.decimalPattern().format(foreignCurrencyAmount)} ${countryCode}',
+                                              '${NumberFormat.decimalPattern().format(foreignCurrencyAmount.toInt())} ${countryCode}',
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
@@ -564,7 +790,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                               MainAxisAlignment.end,
                                           children: [
                                             Text(
-                                              '${NumberFormat.decimalPattern().format(koreanWonAmount)}원',
+                                              '${NumberFormat.decimalPattern().format(koreanWonAmount.toInt())}원',
                                               style: TextStyle(
                                                   fontSize: 17,
                                                   fontWeight: FontWeight.bold),
@@ -582,34 +808,70 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         )
                       ],
                     ),
-                    GestureDetector(
-                      onTap: () async {
-                        String appt = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const AppointmentPage()));
-                        setState(() {
-                          _appt = appt;
-                        });
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                        margin: const EdgeInsets.fromLTRB(20, 0, 20, 15),
-                        height: _appt == "약속 잡기" ? 40 : null,
-                        width: double.infinity,
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                          color: Color(0xFFFFD954),
-                        ),
-                        child: Center(
-                            child: Text(
-                          _appt,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        )),
-                      ),
-                    ),
+                    header(),
+                    // Visibility(
+                    //   visible: _shouldShowGestureDetector(appointmentType),
+                    //   child: GestureDetector(
+                    //     onTap: () async {
+                    //       String? appt;
+                    //       // 약속 잡기
+                    //       if (appointmentType == AppointmentType.waitSeller) {
+                    //
+                    //         appt = await Navigator.push(
+                    //             context,
+                    //             MaterialPageRoute(
+                    //                 builder: (context) =>
+                    //                      AppointmentPage(
+                    //                       tradeInfoMap : {
+                    //                         "tradeId" : tradeId,
+                    //                         "tradeTitle" : tradeTitle,
+                    //                         "countryCode" : countryCode,
+                    //                         "thumbnailImageUrl" : thumbnailImageUrl,
+                    //                         "foreignCurrencyAmount" : foreignCurrencyAmount,
+                    //                         "koreanWonAmount" :koreanWonAmount,
+                    //                       },
+                    //                     )));
+                    //       }
+                    //       // 직거래 약속 정보 수정 페이지
+                    //       else if (appointmentType ==
+                    //           AppointmentType.progressSellerDirect) {
+                    //       }
+                    //       // 택배거래 송장번호 입력 페이지
+                    //       else if (appointmentType ==
+                    //           AppointmentType.progressSellerDeliveryBefore) {
+                    //       }
+                    //       // 택배거래 송장번호 수정 페이지
+                    //       else if (appointmentType ==
+                    //           AppointmentType.progressSellerDeliveryAfter) {
+                    //       }
+                    //       // 택배거래 수령확인 액션
+                    //       else if (appointmentType ==
+                    //           AppointmentType.progressBuyerDeliveryAfter) {
+                    //       } else {}
+                    //
+                    //       setState(() {
+                    //         _appt = appt!;
+                    //       });
+                    //     },
+                    //     child: Container(
+                    //       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    //       margin: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+                    //       height: _appt == "약속 잡기" ? 40 : null,
+                    //       width: double.infinity,
+                    //       decoration: const BoxDecoration(
+                    //         borderRadius: BorderRadius.all(
+                    //           Radius.circular(10),
+                    //         ),
+                    //         color: Color(0xFFFFD954),
+                    //       ),
+                    //       child: Center(
+                    //           child: Text(
+                    //         _appt ?? "",
+                    //         style: const TextStyle(fontWeight: FontWeight.bold),
+                    //       )),
+                    //     ),
+                    //   ),
+                    // )
                   ],
                 ),
               ),
