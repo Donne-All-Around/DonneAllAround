@@ -1,16 +1,15 @@
 import 'dart:io';
 
-import 'package:a705/choose_location_page.dart';
+import 'package:a705/choose_location_page2.dart';
 import 'package:a705/main_page.dart';
 import 'package:a705/models/address.dart';
 import 'package:a705/providers/trade_providers.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-
-import 'choose_location_page2.dart';
-import 'models/TradeDto.dart';
+import 'package:a705/models/TradeDto.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});
@@ -177,6 +176,10 @@ class _TransactionPageState extends State<TransactionPage> {
   //     }
   //   });
   // }
+
+  // FirebaseStorage _storage = FirebaseStorage.instance;
+  // Reference _ref = _storage.ref("trade/text");
+  // _ref.putString("Hello World!");
 
   @override
   Widget build(BuildContext context) {
@@ -493,8 +496,8 @@ class _TransactionPageState extends State<TransactionPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      const Text("거래 가격 "),
-                      Text("${_currency * 100}원"),
+                      const Text("적정 거래 가격 "),
+                      Text("${_currency * 90} ~ ${_currency * 100}원"),
                     ],
                   ),
                   const SizedBox(height: 15),
@@ -572,40 +575,63 @@ class _TransactionPageState extends State<TransactionPage> {
                   const SizedBox(height: 30),
                   GestureDetector(
                     onTap: () async {
-                      if (!mounted) return;
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const MainPage()),
-                          (route) => false);
-                      uploadTrade = TradeDto(
-                        id: uploadTrade.id,
-                        sellerId: uploadTrade.sellerId,
-                        title: _titleEditController.text,
-                        description: _contentEditController.text,
-                        thumbnailImageUrl: uploadTrade.thumbnailImageUrl,
-                        status: uploadTrade.status,
-                        countryCode: uploadTrade.countryCode,
-                        foreignCurrencyAmount:
-                            int.parse(_currencyEditController.text),
-                        koreanWonAmount: int.parse(_krwEditController.text),
-                        latitude: uploadTrade.latitude,
-                        longitude: uploadTrade.longitude,
-                        preferredTradeCountry: _address.country,
-                        preferredTradeCity: _address.city,
-                        preferredTradeDistrict: _address.district,
-                        preferredTradeTown: _address.town,
-                        tradeLikeCount: uploadTrade.tradeLikeCount,
-                        sellerNickname: uploadTrade.sellerNickname,
-                        sellerImgUrl: uploadTrade.sellerImgUrl,
-                        sellerPoint: uploadTrade.sellerPoint,
-                        isLike: uploadTrade.isLike,
-                        createTime: uploadTrade.createTime,
-                        koreanWonPerForeignCurrency:
-                            uploadTrade.koreanWonPerForeignCurrency,
-                        imageUrlList: uploadTrade.imageUrlList,
-                      );
-                      await tradeProvider.postTrade(uploadTrade);
+                      // if (!mounted) return;
+                      if (_titleEditController.text.isEmpty ||
+                          _currencyEditController.text.isEmpty ||
+                          _krwEditController.text.isEmpty ||
+                          _contentEditController.text.isEmpty ||
+                          _addr == "장소 선택") {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: Container(
+                                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                                    child: const Text("빈 칸이 없이 모두 입력해주세요.", style: TextStyle(fontSize: 16),)),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text("확인"))
+                                ],
+                              );
+                            });
+                      } else {
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MainPage()),
+                            (route) => false);
+                        uploadTrade = TradeDto(
+                          id: uploadTrade.id,
+                          sellerId: uploadTrade.sellerId,
+                          title: _titleEditController.text,
+                          description: _contentEditController.text,
+                          thumbnailImageUrl: uploadTrade.thumbnailImageUrl,
+                          status: uploadTrade.status,
+                          countryCode: uploadTrade.countryCode,
+                          foreignCurrencyAmount:
+                              int.parse(_currencyEditController.text),
+                          koreanWonAmount: int.parse(_krwEditController.text),
+                          latitude: uploadTrade.latitude,
+                          longitude: uploadTrade.longitude,
+                          preferredTradeCountry: _address.country,
+                          preferredTradeCity: _address.city,
+                          preferredTradeDistrict: _address.district,
+                          preferredTradeTown: _address.town,
+                          tradeLikeCount: uploadTrade.tradeLikeCount,
+                          sellerNickname: uploadTrade.sellerNickname,
+                          sellerImgUrl: uploadTrade.sellerImgUrl,
+                          sellerPoint: uploadTrade.sellerPoint,
+                          isLike: uploadTrade.isLike,
+                          createTime: uploadTrade.createTime,
+                          koreanWonPerForeignCurrency:
+                              uploadTrade.koreanWonPerForeignCurrency,
+                          imageUrlList: uploadTrade.imageUrlList,
+                        );
+                        await tradeProvider.postTrade(uploadTrade);
+                      }
                     },
                     child: Container(
                       height: 50,
@@ -637,10 +663,19 @@ class _TransactionPageState extends State<TransactionPage> {
     final pickedFile = await picker.pickMultiImage();
     List<XFile> xfilePick = pickedFile;
 
+    // if (xfilePick.isNotEmpty) {
+    //   for (var i = 0; i < xfilePick.length; i++) {
+    //     File _file = File(xfilePick[i].path);
+    //     await FirebaseStorage.instance.ref("trade/multi/image_$i").putFile(_file);
+    //   }
+    // }
+
     setState(() {
       if (xfilePick.isNotEmpty) {
         for (var i = 0; i < xfilePick.length; i++) {
-          selectedImages.add(File(xfilePick[i].path));
+          File _file = File(xfilePick[i].path);
+          selectedImages.add(_file);
+          FirebaseStorage.instance.ref("trade/image_$i").putFile(_file);
         }
       }
     });

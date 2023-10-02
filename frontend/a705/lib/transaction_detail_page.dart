@@ -19,7 +19,6 @@ class TransactionDetailPage extends StatefulWidget {
 }
 
 class _TransactionDetailPageState extends State<TransactionDetailPage> {
-  bool isLiked = false;
   Map<String, dynamic> boardInfoMap = {
 
   };
@@ -232,7 +231,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                     child: Row(
                       children: [
                         IconButton(
-                          icon: isLiked
+                          icon: trade.isLike
                               ? const Icon(
                                   Icons.favorite_rounded,
                                   color: Colors.red,
@@ -240,7 +239,12 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                               : const Icon(Icons.favorite_border_rounded),
                           onPressed: () {
                             setState(() {
-                              isLiked = !isLiked;
+                              if(trade.isLike) {
+                                tradeProvider.unlikeTrade(widget.id);
+                              }
+                              else {
+                                tradeProvider.likeTrade(widget.id);
+                              }
                             });
                           },
                         ),

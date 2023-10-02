@@ -561,14 +561,16 @@ class _HomePageState extends State<HomePage> {
                                                     padding: const EdgeInsets
                                                         .fromLTRB(3, 2, 3, 2),
                                                     decoration: BoxDecoration(
-                                                      color: const Color(
-                                                          0xFFFFD954),
+                                                      color: trade[index].status == "PROGRESS" ? const Color(
+                                                          0xFFFFD954)
+                                                      : Colors.transparent,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               5),
                                                     ),
                                                     child: Text(
-                                                        trade[index].status),
+                                                        trade[index].status == "PROGRESS" ?
+                                                        "예약 중" : " " ),
                                                   ),
                                                   Column(
                                                     children: [

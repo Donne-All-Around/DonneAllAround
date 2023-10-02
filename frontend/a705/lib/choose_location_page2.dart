@@ -105,43 +105,48 @@ class _ChooseLocationPage2State extends State<ChooseLocationPage2> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  Navigator.pop(context, address);
+                  if(addr.isNotEmpty) {
+                    Navigator.pop(context, address);
+                  }
                 },
               ),
             ],
           ),
           body: Stack(children: [
-            Column(
-              children: [
-                const SizedBox(height: 40),
-                const Text(
-                  '거래하실 장소를 선택해 주세요.',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+            Container(
+              height: MediaQuery.of(context).size.height / 3 * 1,
+              padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+              child: Column(
+                children: [
+                  const Text(
+                    '거래하실 장소를 선택해 주세요.',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                const Center(child: Text('선택하신 장소')),
-                Container(
-                  margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  height: 50,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.black87),
-                  ),
-                  child: Center(
-                    child: Text(
-                      addr,
-                      style: const TextStyle(fontSize: 16),
+                  const SizedBox(height: 20),
+                  const Center(child: Text('선택하신 장소')),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    height: 50,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.black87),
+                    ),
+                    child: Center(
+                      child: Text(
+                        addr,
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             SizedBox(
               height: double.infinity,
@@ -190,6 +195,7 @@ class _ChooseLocationPage2State extends State<ChooseLocationPage2> {
               bottom: 100,
               right: 30,
               child: FloatingActionButton(
+                shape: const CircleBorder(),
                 onPressed: () async {
                   var gps = await getCurrentLocation();
                   mapController?.animateCamera(CameraUpdate.newLatLng(
@@ -208,7 +214,12 @@ class _ChooseLocationPage2State extends State<ChooseLocationPage2> {
                 onTap: () async {
                   LatLng _currentCenter = await getCenter();
                   List<Placemark> placemark = await placemarkFromCoordinates(
-                      _currentCenter.latitude, _currentCenter.longitude);
+                      _currentCenter.latitude, _currentCenter.longitude, localeIdentifier: "ko");
+
+                  String addressssss ='${placemark.first.thoroughfare!.isNotEmpty ? '${placemark.first.thoroughfare}, ' : ''}${placemark.first.subLocality!.isNotEmpty ? '${placemark.first.subLocality}, ' : ''}${placemark.first.locality!.isNotEmpty ? '${placemark.first.locality}, ' : ''}${placemark.first.subAdministrativeArea!.isNotEmpty ? '${placemark.first.subAdministrativeArea}, ' : ''}${placemark.first.administrativeArea!.isNotEmpty ? placemark.first.administrativeArea : ''}';
+
+
+                  print(addressssss);
 
                   // print('country: ${placemark.reversed.last.country}');
                   // print('locality: ${placemark.reversed.last.locality}');
@@ -232,8 +243,10 @@ class _ChooseLocationPage2State extends State<ChooseLocationPage2> {
                     city: placemark.reversed.last.administrativeArea!,
                     district: placemark.reversed.last.subLocality!,
                     town: placemark.reversed.last.thoroughfare!);
-                    addr =
-                        "${placemark.reversed.last.subLocality} ${placemark.reversed.last.thoroughfare}";
+
+                    addr = addressssss;
+                    // addr =
+                    //     "${placemark.reversed.last.subLocality} ${placemark.reversed.last.thoroughfare}";
                   });
                 },
                 child: Container(

@@ -193,37 +193,41 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
             ],
           ),
           body: Stack(children: [
-            Column(
-              children: [
-                const SizedBox(height: 40),
-                const Text(
-                  '거래하실 장소를 선택해 주세요.',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+            Container(
+              height: MediaQuery.of(context).size.height / 3 * 1,
+              padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+              child: Column(
+                children: [
+                  const SizedBox(height: 40),
+                  const Text(
+                    '거래하실 장소를 선택해 주세요.',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                const Center(child: Text('선택하신 장소')),
-                Container(
-                  margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  height: 50,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.black87),
-                  ),
-                  child: Center(
-                    child: Text(
-                      addr,
-                      style: const TextStyle(fontSize: 16),
+                  const SizedBox(height: 20),
+                  const Center(child: Text('선택하신 장소')),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    height: 50,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.black87),
+                    ),
+                    child: Center(
+                      child: Text(
+                        addr,
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             SizedBox(
               height: double.infinity,
@@ -272,6 +276,7 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
               bottom: 100,
               right: 30,
               child: FloatingActionButton(
+                shape: const CircleBorder(),
                 onPressed: () async {
                   var gps = await getCurrentLocation();
                   mapController?.animateCamera(CameraUpdate.newLatLng(
@@ -291,6 +296,8 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
                   LatLng _currentCenter = await getCenter();
                   List<Placemark> placemark = await placemarkFromCoordinates(
                       _currentCenter.latitude, _currentCenter.longitude);
+
+
 
                   // print('country: ${placemark.reversed.last.country}');
                   // print('locality: ${placemark.reversed.last.locality}');

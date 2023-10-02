@@ -121,7 +121,7 @@ class TradeProviders {
     List<TradeDto> trade = [];
     var response = await http.get(
       Uri.parse(
-          '$url/api/trade/history/sell/complete?lastTradeId=$lastTradeId'),
+          '$url/api/trade/history/sell/complete?lastTradeId=$lastTradeId?memberId=1'),
       headers: <String, String>{
         'Content-Type': 'applcation/json',
       },
@@ -138,7 +138,7 @@ class TradeProviders {
   // 거래 상세 조회
   Future<TradeDto> getTradeDetail(int tradeId) async {
     var response = await http.get(
-      Uri.parse('$url/api/trade/detail/$tradeId'),
+      Uri.parse('$url/api/trade/detail/$tradeId?memberId=1'),
       headers: <String, String>{
         'Content-Type': 'applcation/json',
       },
@@ -161,7 +161,7 @@ class TradeProviders {
     //   body: tradeDto.toJson(),
     // );
     Response response = await dio.post(
-      '$url/',
+      '$url/api/trade/create?memberId=1',
       data: tradeDto.toJson(),
       options: Options(
         headers: {'Content-Type': 'application/json'}, // Content-Type 설정
@@ -173,4 +173,21 @@ class TradeProviders {
 
     return response.data;
   }
+
+  Future<void> likeTrade(int tradeId) async {
+    final response = await http.post(
+      Uri.parse('$url/api/trade/$tradeId/like?memberId=1'),
+    );
+
+    print(response.statusCode);
+  }
+
+  Future<void> unlikeTrade(int tradeId) async {
+    final response = await http.delete(
+      Uri.parse('$url/api/trade/$tradeId/unlike?memberId=1'),
+    );
+
+    print(response.statusCode);
+  }
+
 }

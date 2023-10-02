@@ -32,7 +32,7 @@ dependencies:
     sdk: flutter
   firebase_core: ^2.15.1 # firebase 추가
   firebase_auth: ^4.9.0 # firebase auth 추가
-  cloud_firestore: ^4.9.1 # cloud firestore 추가
+  cloud_firestore: ^4.9.2 # cloud firestore 추가
   random_string: ^2.3.1 # random String 추가
   shared_preferences: ^2.2.1 # shared preference 추가
 
@@ -61,6 +61,7 @@ dependencies:
   fl_chart: ^0.63.0
   kpostal: ^0.5.1
   dio: ^4.0.6
+  firebase_storage: ^11.2.7
 
 dev_dependencies:
   flutter_test:
