@@ -108,7 +108,7 @@ class _ExchangePageState extends State<ExchangePage> {
       final targetRate = exchangeRates![targetCurrency];
 
       if (targetCurrency == 'USDJPY' || targetCurrency == 'USDVND') {
-        return baseRate! / targetRate! * 100;
+        return baseRate! / targetRate! ;
       } else {
         return baseRate! / targetRate!;
       }
@@ -145,16 +145,43 @@ class _ExchangePageState extends State<ExchangePage> {
   int idx3 = 3;
   int idx4 = 4;
 
-  void calculateExchangeRate() {
-    // 환율 계산 로직을 수행하고 결과를 업데이트
-    double? rate = calculateRate(currency1[idx1], currency1[idx2]);
-    setState(() {
-      // UI 업데이트를 수행
-      _moneyController2.text = '${_moneyController1.text.isNotEmpty
-          ? (double.parse(_moneyController1.text.replaceAll(',', '')) * rate!).toStringAsFixed(2)
-          : '0.00'} ${sign[idx2]}';
-    });
+  void calculateExchangeRate(int baseIdx, int targetIdx) {
+    double? rate;
+    String base;
+    String target;
+
+    if (currency[targetIdx] != 'USD') {
+      base = currency1[targetIdx - 1];
+      target = currency1[baseIdx - 1];
+    } else {
+      base = currency1[targetIdx - 1];
+      target = '1';
+    }
+
+    if (currency[baseIdx] == 'USD') {
+      // USD에서 다른 통화로 변환할 때, 이미 계산된 환율을 사용합니다.
+      rate = exchangeRates![currency1[targetIdx-1]];
+    } else {
+      rate = calculateRate(base, target);
+    }
+
+
+    if (rate != null) {
+      double amountToConvert = double.parse(
+          _moneyController1.text.replaceAll(',', ''));
+      double convertedAmount = amountToConvert * rate;
+      String formattedAmount = convertedAmount.toStringAsFixed(2);
+      print('$formattedAmount');
+      setState(() {
+        // UI 업데이트를 수행
+        // _moneyController2.text = '${_moneyController1.text.isNotEmpty
+        //     ? (double.parse(_moneyController1.text.replaceAll(',', '')) * rate!).toStringAsFixed(2)
+        //     : '0.00'} ${sign[idx2]}';
+        _moneyController2.text = '$formattedAmount';
+      });
+    }
   }
+
   String getToday() {
     DateTime now = DateTime.now();
     DateFormat formatter = DateFormat('yyyy.MM.dd HH:mm');
@@ -1030,6 +1057,7 @@ class _ExchangePageState extends State<ExchangePage> {
                               onPressed: (){
                                 setState(() {
                                   _iscalculate = true;
+                                  calculateExchangeRate(idx1, idx2);
                                 });
                               },
                               icon: const Icon(Icons.drag_handle_rounded),
