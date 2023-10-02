@@ -107,15 +107,22 @@ class _ExchangePageState extends State<ExchangePage> {
       final baseRate = exchangeRates![baseCurrency];
       final targetRate = exchangeRates![targetCurrency];
 
-      if (targetCurrency == 'USDJPY' || targetCurrency == 'USDVND') {
+      if (baseCurrency == 'USDKRW' && targetCurrency == 'USDJPY') {
         return baseRate! / targetRate! ;
-      } else {
+      }  else {
         return baseRate! / targetRate!;
       }
+
     }
     return null;
   }
 
+  double? calculateUsd(String targetCurrency) {
+    if (exchangeRates != null && exchangeRates!.containsKey(targetCurrency)) {
+      return exchangeRates![targetCurrency];
+    }
+    return null;
+  }
 
 
   List<String> currency = [
@@ -145,24 +152,30 @@ class _ExchangePageState extends State<ExchangePage> {
   int idx3 = 3;
   int idx4 = 4;
 
-  void calculateExchangeRate(int baseIdx, int targetIdx) {
+ void calculateExchangeRate(int baseIdx, int targetIdx) {
     double? rate;
     String base;
     String target;
+    // 기준 통화와 대상 통화를 가져옵니다.
+    // String baseCurrency = currency1[baseIdx-1];
+    // String targetCurrency = currency1[targetIdx-1];
 
-    if (currency[targetIdx] != 'USD') {
+    // 기준 통화와 대상 통화가 같은 경우, 환율은 1.0입니다.
+    // if (baseCurrency == targetCurrency) {
+    //   rate = 1.0;
+    // } else {
+    //   // 환율을 계산합니다.
+    //   rate = calculateRate(targetCurrency, baseCurrency);
+    // }
+
+    if (currency[baseIdx] != 'USD') {
       base = currency1[targetIdx - 1];
       target = currency1[baseIdx - 1];
-    } else {
-      base = currency1[targetIdx - 1];
-      target = '1';
-    }
-
-    if (currency[baseIdx] == 'USD') {
-      // USD에서 다른 통화로 변환할 때, 이미 계산된 환율을 사용합니다.
-      rate = exchangeRates![currency1[targetIdx-1]];
-    } else {
       rate = calculateRate(base, target);
+    } else if (currency[baseIdx] == 'USD') {
+      rate = calculateUsd(currency1[targetIdx - 1]);
+    } else if (currency[targetIdx] != 'USD'){
+      rate =  calculateUsd(currency1[targetIdx-1]);
     }
 
 
@@ -171,7 +184,6 @@ class _ExchangePageState extends State<ExchangePage> {
           _moneyController1.text.replaceAll(',', ''));
       double convertedAmount = amountToConvert * rate;
       String formattedAmount = convertedAmount.toStringAsFixed(2);
-      print('$formattedAmount');
       setState(() {
         // UI 업데이트를 수행
         // _moneyController2.text = '${_moneyController1.text.isNotEmpty
@@ -181,6 +193,8 @@ class _ExchangePageState extends State<ExchangePage> {
       });
     }
   }
+
+
 
   String getToday() {
     DateTime now = DateTime.now();
@@ -606,7 +620,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                               });
                                           setState(() {
                                             idx2 = idx;
-                                            _moneyController2.text = (1 * unit[idx2]).toString();
+                                            // _moneyController2.text = (1 * unit[idx2]).toString();
                                           });
                                         },
                                         child: Container(
@@ -1166,7 +1180,13 @@ class _ExchangePageState extends State<ExchangePage> {
                                   if (exchangeRate != null) {
                                     formattedRate = exchangeRate.toStringAsFixed(2);
                                   }
-                                } else {
+                                } else if(currency1[index]== 'USDJPY' ) {
+                                  final rate = calculateRate('USDKRW', currency1[index])! * 100;
+                                  if (rate != null) {
+                                    formattedRate = rate.toStringAsFixed(2);
+                                  }
+                                }
+                                else {
                                   // 다른 국가의 환율 계산
                                   final rate = calculateRate('USDKRW', currency1[index]);
                                   if (rate != null) {
