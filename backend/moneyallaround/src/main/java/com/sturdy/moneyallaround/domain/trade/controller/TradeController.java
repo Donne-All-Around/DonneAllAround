@@ -11,6 +11,7 @@ import com.sturdy.moneyallaround.domain.trade.entity.Trade;
 import com.sturdy.moneyallaround.domain.trade.service.TradeLikeService;
 import com.sturdy.moneyallaround.domain.trade.service.TradeReviewService;
 import com.sturdy.moneyallaround.domain.trade.service.TradeService;
+import com.sturdy.moneyallaround.domain.transfer.service.TransferService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ public class TradeController {
     private final TradeLikeService tradeLikeService;
     private final TradeReviewService tradeReviewService;
     private final KeywordNotificationService keywordNotificationService;
+    private final TransferService transferService;
 
     @PostMapping("/list")
     public ApiResponse<Map<String, Object>> tradeList(
@@ -104,7 +106,7 @@ public class TradeController {
     public ApiResponse<TradeChatResponseDto> tradeChat(
             @RequestParam(required = false) Long memberId,
             @PathVariable Long tradeId) {
-        return ApiResponse.success("채팅방 내 거래 정보 조회 성공", TradeChatResponseDto.from(tradeService.findTrade(tradeId)));
+        return ApiResponse.success("채팅방 내 거래 정보 조회 성공", TradeChatResponseDto.from(tradeService.findTrade(tradeId), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
     }
 
     @PostMapping("/create")
@@ -137,14 +139,15 @@ public class TradeController {
             @RequestParam(required = false) Long memberId,
             @PathVariable Long tradeId,
             @RequestBody DirectTradeCreateRequestDto directTradeCreateRequestDto) {
-        return ApiResponse.success("직거래 약속 잡기 성공", TradeChatResponseDto.from(tradeService.makeDirectPromise(tradeId, directTradeCreateRequestDto)));
+        return ApiResponse.success("직거래 약속 잡기 성공", TradeChatResponseDto.from(tradeService.makeDirectPromise(tradeId, directTradeCreateRequestDto), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
     }
 
     @PutMapping("/promise/delivery/{tradeId}")
     public ApiResponse<TradeChatResponseDto> makeDeliveryPromise(
+            @RequestParam(required = false) Long memberId,
             @PathVariable Long tradeId,
             @RequestBody DeliveryTradeRequestDto deliveryTradeRequestDto) {
-        return ApiResponse.success("택배거래 약속 잡기 성공", TradeChatResponseDto.from(tradeService.makeDeliveryPromise(tradeId, deliveryTradeRequestDto)));
+        return ApiResponse.success("택배거래 약속 잡기 성공", TradeChatResponseDto.from(tradeService.makeDeliveryPromise(tradeId, deliveryTradeRequestDto), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
     }
 
     @PutMapping("/promise/direct/{tradeId}/edit")
@@ -152,7 +155,7 @@ public class TradeController {
             @RequestParam(required = false) Long memberId,
             @PathVariable Long tradeId,
             @RequestBody DirectTradeUpdateRequestDto directTradeUpdateRequestDto) {
-        return ApiResponse.success("직거래 약속 수정 성공", TradeChatResponseDto.from(tradeService.updateDirectPromise(tradeId, directTradeUpdateRequestDto)));
+        return ApiResponse.success("직거래 약속 수정 성공", TradeChatResponseDto.from(tradeService.updateDirectPromise(tradeId, directTradeUpdateRequestDto), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
     }
 
     @PutMapping("/promise/delivery/{tradeId}/account")
@@ -160,7 +163,7 @@ public class TradeController {
             @RequestParam(required = false) Long memberId,
             @PathVariable Long tradeId,
             @RequestBody AccountNumberRequestDto accountNumberRequestDto) {
-        return ApiResponse.success("택배거래 판매자 계좌번호 수정 성공", TradeChatResponseDto.from(tradeService.updateSellerAccountNumber(tradeId, accountNumberRequestDto)));
+        return ApiResponse.success("택배거래 판매자 계좌번호 수정 성공", TradeChatResponseDto.from(tradeService.updateSellerAccountNumber(tradeId, accountNumberRequestDto), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
     }
 
     @PutMapping("/promise/delivery/{tradeId}/address")
@@ -168,7 +171,7 @@ public class TradeController {
             @RequestParam(required = false) Long memberId,
             @PathVariable Long tradeId,
             @RequestBody DeliveryInfoRequestDto deliveryInfoRequestDto) {
-        return ApiResponse.success("택배거래 구매자 배송지 수정 성공", TradeChatResponseDto.from(tradeService.updateDeliveryInfo(tradeId, deliveryInfoRequestDto)));
+        return ApiResponse.success("택배거래 구매자 배송지 수정 성공", TradeChatResponseDto.from(tradeService.updateDeliveryInfo(tradeId, deliveryInfoRequestDto), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
     }
 
     @PutMapping("/promise/delivery/{tradeId}/tracking")
@@ -176,21 +179,21 @@ public class TradeController {
             @RequestParam(required = false) Long memberId,
             @PathVariable Long tradeId,
             @RequestBody TrackingNumberRequestDto trackingNumberRequestDto) {
-        return ApiResponse.success("택배거래 송장번호 수정 성공", TradeChatResponseDto.from(tradeService.updateTrackingNumber(tradeId, trackingNumberRequestDto)));
+        return ApiResponse.success("택배거래 송장번호 수정 성공", TradeChatResponseDto.from(tradeService.updateTrackingNumber(tradeId, trackingNumberRequestDto), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
     }
 
     @PutMapping("/promise/cancel/{tradeId}")
     public ApiResponse<TradeChatResponseDto> cancelPromise(
             @RequestParam(required = false) Long memberId,
             @PathVariable Long tradeId) {
-        return ApiResponse.success("약속 취소 성공", TradeChatResponseDto.from(tradeService.cancelPromise(tradeId)));
+        return ApiResponse.success("약속 취소 성공", TradeChatResponseDto.from(tradeService.cancelPromise(tradeId), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
     }
 
     @PutMapping("/promise/complete/{tradeId}")
     public ApiResponse<TradeChatResponseDto> completePromise(
             @RequestParam(required = false) Long memberId,
             @PathVariable Long tradeId) {
-        return ApiResponse.success("거래 완료 성공", TradeChatResponseDto.from(tradeService.completePromise(tradeId)));
+        return ApiResponse.success("거래 완료 성공", TradeChatResponseDto.from(tradeService.completePromise(tradeId), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
     }
 
     @PostMapping("/{tradeId}/like")

@@ -109,4 +109,11 @@ public class Member {
         rating = (rating + (rating + reviewScore * 50) * 2) / 3;
     }
 
+    public void remittance(Integer amount) {
+        point -= amount;
+    }
+
+    public void deposit(Integer amount) {
+        point += amount;
+    }
 }

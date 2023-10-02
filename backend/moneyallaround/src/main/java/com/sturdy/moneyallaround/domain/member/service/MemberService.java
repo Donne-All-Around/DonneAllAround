@@ -188,4 +188,13 @@ public class MemberService {
         findById(revieweeId).updateRating(reviewScore);
     }
 
+    @Transactional
+    public void remittance(Long memberId, Integer amount) {
+        findById(memberId).remittance(amount);
+    }
+
+    @Transactional
+    public void deposit(Long memberId, Integer amount) {
+        findById(memberId).deposit(amount);
+    }
 }

@@ -18,6 +18,8 @@ public record TradeChatResponseDto(@NotNull Long id,
                                    @NotNull Integer koreanWonAmount,
                                    @NotNull TradeStatus status,
                                    @NotNull TradeType type,
+                                   @NotNull Boolean hasReview,
+                                   @NotNull Boolean hasTransfer,
                                    Long buyerId,
                                    LocalDateTime directTradeTime,
                                    String directTradeLocationDetail,
@@ -30,7 +32,7 @@ public record TradeChatResponseDto(@NotNull Long id,
                                    String deliveryAddressDetail,
                                    String trackingNumber,
                                    @NotNull LocalDateTime createTime) {
-    public static TradeChatResponseDto from(Trade trade) {
+    public static TradeChatResponseDto from(Trade trade, Boolean hasReview, Boolean hasTransfer) {
         return TradeChatResponseDto.builder()
                 .id(trade.getId())
                 .sellerId(trade.getSeller().getId())
@@ -41,6 +43,8 @@ public record TradeChatResponseDto(@NotNull Long id,
                 .koreanWonAmount(trade.getKoreanWonAmount())
                 .status(trade.getStatus())
                 .type(trade.getType())
+                .hasReview(hasReview)
+                .hasTransfer(hasTransfer)
                 .buyerId(trade.getBuyer() == null ? null : trade.getBuyer().getId())
                 .directTradeTime(trade.getDirectTradeTime())
                 .directTradeLocationDetail(trade.getDirectTradeLocationDetail())
