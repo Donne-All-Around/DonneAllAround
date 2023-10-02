@@ -1407,17 +1407,6 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
 
   int idx1 = 0;
 
-  // List<String> currency1 = [
-  //   'USD',
-  //   'JPY',
-  //   'EUR',
-  //   'GBP',
-  //   'AUD',
-  //   'CNY',
-  //   'VND',
-  //   'KRW',
-  //   'HKD'
-  // ];
 
 
   @override
