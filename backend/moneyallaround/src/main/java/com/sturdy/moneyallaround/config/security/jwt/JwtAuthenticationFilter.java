@@ -22,7 +22,6 @@ import java.util.Enumeration;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    //private final JwtService jwtService;
 
     //우선 request 에서 토큰이 있는지 없는지 체크하자
     @Override
@@ -70,13 +69,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     //request 에서 JWT 엑세스 토큰 추출 메서드
     // HttpservletRequest 객체 사용하여 클라이언트의 HTTP 요청 헤더에서 JWT 엑세스 토큰 찾아내고 반환함
     private String resolveAccessToken(HttpServletRequest request) {
-//        log.info("headers = {}", request.getHeaderNames()); //헤더 이름을 로그로 출력
-//        Enumeration eHeader = request.getHeaderNames();
-//        while (eHeader.hasMoreElements()) { //헤더 처리
-//            String requestName = (String) eHeader.nextElement();
-//            String requestValue = request.getHeader(requestName);
-//            System.out.println("requestName : " + requestName + " | requestValue : " + requestValue);
-//        }
 
         String bearerToken = request.getHeader("Authorization"); //jwt의 엑세스 토큰 포함될 것
         log.info("authorization = {}", request.getHeader("Authorization"));

@@ -1,9 +1,17 @@
 package com.sturdy.moneyallaround.domain.member.service;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseToken;
 import com.sturdy.moneyallaround.Exception.message.ExceptionMessage;
+import com.sturdy.moneyallaround.Exception.model.TokenCheckFailException;
+import com.sturdy.moneyallaround.Exception.model.TokenNotFoundException;
 import com.sturdy.moneyallaround.Exception.model.UserAuthException;
 import com.sturdy.moneyallaround.Exception.model.UserException;
 import com.sturdy.moneyallaround.config.security.jwt.JwtTokenProvider;
+import com.sturdy.moneyallaround.config.security.jwt.TokenInfo;
 import com.sturdy.moneyallaround.domain.member.dto.request.*;
 import com.sturdy.moneyallaround.domain.member.dto.response.*;
 import com.sturdy.moneyallaround.domain.member.entity.Member;
@@ -11,9 +19,10 @@ import com.sturdy.moneyallaround.domain.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileInputStream;
 import java.util.Optional;
 
 @Slf4j
@@ -48,44 +58,31 @@ public class MemberService implements UserDetailsService {
         return SignUpResponse.from(member);
     }
 
-    //로그인
-    @Transactional
-    public LogInResponse logIn(LogInRequest request) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.tel());
-        log.info("authenticationToken = {}", authenticationToken);
+    public boolean verifyFirebaseToken(String firebaseToken) {
+
+        try {
+            // Firebase Admin SDK 초기화
+            FileInputStream serviceAccount = new FileInputStream("donnearound-firebase-adminsdk.json"); // Firebase Admin SDK 설정 파일 경로
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .build();
+            FirebaseApp.initializeApp(options);
+
+            // Firebase 토큰 검증
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseToken);
+
+            // 검증에 성공하면 true 반환
+            return decodedToken != null;
+        } catch (Exception e) {
+            // 검증에 실패하면 false 반환
+            return false;
+        }
     }
 
-//    @Transactional
-//    public LogInResponse signIn(LogInRequest request) {
-//
-//        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
-//        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.id(), request.password());
-//        log.info("authenticationToken={}", authenticationToken);
-//
-//        log.info("Email Login");
-//        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
-//        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
-//        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-//        log.info("authentication={}", authentication);
-//
-//        // 2-1. 비밀번호 체크
-//        Optional<Member> member = memberRepository.findById(request.id());
-//        log.info("member={}", member.get().getId());
-//        if(member.isEmpty()){
-//            throw new UserAuthException(ExceptionMessage.USER_NOT_FOUND);
-//        } else if(!encoder.matches(request.password(), member.get().getPassword())) {
-//            throw new UserAuthException(ExceptionMessage.MISMATCH_PASSWORD);
-//        }
-//        // 3. 인증 정보를 기반으로 JWT 토큰 생성
-//        TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
-//
-//        String nickname = member.get().getNickname();
-//        String image = member.get().getImage();
-//
-//        return new SignInResponse(request.id(), nickname,image, tokenInfo);
-//    }
+    public LogInResponse logIn(LogInRequest request) {
 
+
+    }
 
     //멤버 업데이트
     @Transactional
@@ -99,10 +96,7 @@ public class MemberService implements UserDetailsService {
         }
     }
 
-
-
     //UpdateTelResponse
-
 
 
     // 멤버 삭제
@@ -123,19 +117,47 @@ public class MemberService implements UserDetailsService {
 
 
 
-    //토큰 만료 검사 및 reissue 해주기
-//    @Transactional
-//    public ReIssueResponse reissue(String refreshToken, Authentication authentication) {
-//
-//    }
-
-    //refresh token 만료 검사 및 redis에서 가져오기, 권한 검사)
+    @Transactional
+    public ReIssueResponse reissue(String refreshToken, Authentication authentication) {
+        // 1. 인가 이름 확인
+        log.info("authentication.getName={}", authentication.getName());
+        if (authentication.getName() == null) {
+            throw new UserAuthException(ExceptionMessage.NOT_AUTHORIZED_ACCESS);
+        }
+        log.info("refreshToken={}", refreshToken);
+        // 2. refreshToken 만료 검사
+        if(!jwtTokenProvider.validateToken(refreshToken)){
+            // 2-1. refreshToken 만료 시, Redis에서 삭제
+            // Front에서 Logout 실행
+            refreshTokenService.delValues(refreshToken);
+            throw new TokenNotFoundException(ExceptionMessage.TOKEN_VALID_TIME_EXPIRED);
+//            return ReIssueResponse.from(null, "INVALID_REFRESH_TOKEN");
+        }
+        // 3. Redis에서 refreshToken 가져오기
+        String id = refreshTokenService.getValues(refreshToken);
+        log.info("id from redis={}", id);
+        // 4. 권한 검사
+        if(id == null || !id.equals(authentication.getName())){
+            throw new TokenCheckFailException(ExceptionMessage.MISMATCH_TOKEN);
+        }
+        return createAccessToken(refreshToken, authentication);
+    }
 
     /**
      * RefreshToken으로 AccessToken 재발급
      */
 
-    //토큰 만료 검사 (기간 확인 및 access token 재발급)
+    private ReIssueResponse createAccessToken(String refreshToken, Authentication authentication) {
+        // 5. RefreshToken의 만료 기간 확인
+        if (jwtTokenProvider.expiredToken(refreshToken)){
+            TokenInfo tokenInfo = jwtTokenProvider.generateAccessToken(authentication);
+            // 6. RefreshToken으로 AccessToke 발급 성공
+            return ReIssueResponse.from(tokenInfo.getAccessToken(), "SUCCESS");
+        }
+        // RefreshToken 발급 실패
+        return ReIssueResponse.from(jwtTokenProvider.generateAccessToken(authentication).getAccessToken(),"GENERAL_FAILURE");
+
+    }
 
     //전화번호 체크
     @Transactional
@@ -196,4 +218,7 @@ public class MemberService implements UserDetailsService {
         return memberRepository.findByTel(tel)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
     }
+
+
+
 }

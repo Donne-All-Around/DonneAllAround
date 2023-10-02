@@ -23,7 +23,9 @@ public enum ExceptionMessage {
 
     MISMATCH_TOKEN("토큰명이 일치하지 않습니다."),
 
-    USER_NOT_FOUND("유저를 찾을 수 없습니다.");
+    USER_NOT_FOUND("유저를 찾을 수 없습니다."),
+
+    FIREBASE_NOT_VALID("파이어베이스 권한 정보가 없는 토큰입니다.");
 
     private final String message;
 

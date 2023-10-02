@@ -1,14 +1,24 @@
 package com.sturdy.moneyallaround.config.security.jwt;
 
 
+import com.google.api.client.auth.oauth2.TokenRequest;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseToken;
 import com.sturdy.moneyallaround.Exception.message.ExceptionMessage;
+import com.sturdy.moneyallaround.Exception.model.FirebaseTokenValidationException;
 import com.sturdy.moneyallaround.Exception.model.TokenCheckFailException;
 import com.sturdy.moneyallaround.Exception.model.TokenNotFoundException;
+import com.sturdy.moneyallaround.common.ApiResponse;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,11 +26,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.io.FileInputStream;
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,10 +39,32 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
 
     private final Key key;
+    private JwtService jwtService;
+
     //토큰 생성 및 유효성 검사에 사용되는 시크릿 키 초기화 역할
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private boolean isValidFirebaseToken(String firebaseToken) {
+        try {
+            // Firebase Admin SDK 초기화
+            FileInputStream serviceAccount = new FileInputStream("donnearound-firebase-adminsdk.json"); // Firebase Admin SDK 설정 파일 경로
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .build();
+            FirebaseApp.initializeApp(options);
+
+            // Firebase 토큰 검증
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseToken);
+
+            // 검증에 성공하면 true 반환
+            return decodedToken != null;
+        } catch (Exception e) {
+            // 검증에 실패하면 false 반환
+            return false;
+        }
     }
 
     /**
@@ -41,15 +74,20 @@ public class JwtTokenProvider {
 
     // 유저 전화번호를 가지고 AccessToken, RefreshToken 을 생성하는 메서드
 
-    public TokenInfo generateToken(Authentication authentication) {
-        String accessToken = createAccessToken(authentication);
-        String refreshToken = createRefreshToken();
+    public TokenInfo generateToken(String phoneNumber, String firebaseToken, Authentication authentication) {
+        // Firebase 토큰 검증
+        if (isValidFirebaseToken(firebaseToken)) {
+            String accessToken = createAccessToken(authentication);
+            String refreshToken = createRefreshToken();
 
-        return TokenInfo.builder()
-                .grantType("Bearer")
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+            return TokenInfo.builder()
+                    .grantType("Bearer")
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .build();
+        } else {
+            throw new FirebaseTokenValidationException("Firebase 토큰 검증 실패");
+        }
     }
 
     public TokenInfo generateAccessToken(Authentication authentication){
@@ -149,5 +187,7 @@ public class JwtTokenProvider {
             return e.getClaims();
         }
     }
+
+
 
 }

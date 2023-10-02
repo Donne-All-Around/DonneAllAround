@@ -46,11 +46,9 @@ dependencies {
 	//swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
+	//Firebase SDK  admin dependency
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
 
-	//SMS 인증
-	//Import the BoM for the Firebase platform
-//	implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
-//	implementation("com.google.firebase:firebase-auth")
 
 	// querydsl 설정
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
