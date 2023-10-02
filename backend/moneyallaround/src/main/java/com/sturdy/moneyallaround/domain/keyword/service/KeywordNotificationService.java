@@ -38,11 +38,11 @@ public class KeywordNotificationService {
             수정 필요
             추후 전화번호가 아닌 멤버 엔티티 안에 fcm 토큰으로 변경하기
          */
-        try {
-            fcmService.sendMulticastMessageTo("돈네한바퀴", body.toString(), notificationList.stream().map(notification -> notification.getMember().getTel()).toList());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
+//        try {
+//            fcmService.sendMulticastMessageTo("돈네한바퀴", body.toString(), notificationList.stream().map(notification -> notification.getMember().getTel()).toList());
+//        } catch (Exception e) {
+//            log.error(e.getMessage());
+//        }
     }
 
     @Transactional

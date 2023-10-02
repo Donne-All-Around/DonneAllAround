@@ -114,7 +114,8 @@ public class TradeController {
             @RequestParam(required = false) Long memberId,
             @RequestBody TradeRequestDto tradeRequestDto) {
         Trade trade = tradeService.createTrade(tradeRequestDto, memberId);
-        keywordNotificationService.createKeywordNotification(trade);
+        // FCM 연동 후 주석 해제
+        //keywordNotificationService.createKeywordNotification(trade);
         return ApiResponse.success("거래 글 작성 성공", TradeDetailResponseDto.from(trade, tradeLikeService.existTradeLike(trade.getId(), memberId)));
     }
 

@@ -17,5 +17,10 @@ spring:
     username: ssafy
     password: ssafy
 
+data:
+  redis:
+    host: docker-redis
+    port: 6380
+
 fcm:
-  service-account-file: firebase/donnearound-firebase-adminsdk-access-key.json #비밀 키 경로
+  service-account-file: firebase/donnearound-java-access-key.json #비밀 키 경로

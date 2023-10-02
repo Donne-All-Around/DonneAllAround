@@ -40,18 +40,8 @@ public class FCMService {
     /*
         단체 알림 전송 ver
      */
-    private void firebaseCreateOption() throws IOException {
-        FileInputStream refreshToken = new FileInputStream(serviceAccountFilePath);
-        FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(refreshToken))
-                .build();
-
-        FirebaseApp.initializeApp(options);
-    }
 
     public void sendMulticastMessageTo(String title, String body, List<String> tokenList) throws IOException, FirebaseMessagingException {
-        firebaseCreateOption();
-
         MulticastMessage message = MulticastMessage.builder()
                 .putData("fcm_type", "NOTIFICATION")
                 .putData("title", title)
