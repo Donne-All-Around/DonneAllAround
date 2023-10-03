@@ -1201,9 +1201,13 @@ class _ExchangePageState extends State<ExchangePage> {
 
                               return GestureDetector(
                                 onTap: (){
+                                  final selectedRate = formattedRate;
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => const ExchangeDetailPage()),
+                                    MaterialPageRoute(builder: (context) => ExchangeDetailPage(
+                                      selectedIndex: index,
+                                      formattedRateText: selectedRate,
+                                    )),
                                   );
                                 },
                                 child: Row(
@@ -1474,7 +1478,10 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                 onTap: (){
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const BankDetailPage()),
+                    MaterialPageRoute(builder: (context) => BankDetailPage(
+                        selectedIndex : idx1,
+                      bankCode: bankCode!,
+                    )),
                   );
                   setState(() {
                     _selectedIdx = idx1;
@@ -1554,7 +1561,7 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                           ),
                           Row(
                             children: [
-                              Column(
+                              const Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
@@ -1601,21 +1608,21 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
-                                        '${feeInfo?.buying ?? "서비스 미제공"}',
+                                        '${feeInfo?.buying ?? "서비스 미제공"}%',
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '${feeInfo?.selling ?? "서비스 미제공"}',
+                                        '${feeInfo?.selling ?? "서비스 미제공"}%',
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '${feeInfo?.sending ?? "서비스 미제공"}',
+                                        '${feeInfo?.sending ?? "서비스 미제공"}%',
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,

@@ -4,7 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class BankDetailPage extends StatefulWidget {
-  const BankDetailPage({super.key});
+  final int selectedIndex;
+  final String bankCode;
+
+  BankDetailPage({
+    required this.selectedIndex,
+    required this.bankCode,
+  });
+
 
   @override
   State<BankDetailPage> createState() => _BankDetailPageState();
@@ -15,15 +22,39 @@ class _BankDetailPageState extends State<BankDetailPage> {
   int _idx = 0;
   int _idx2 = 7;
 
-  final _bankList = ['신한은행', '하나은행'];
-  var _selectedValue = '신한은행';
+
+  List<String> currency1 = [
+    'USDKRW',
+    'USDJPY',
+    'USDCNY',
+    'USDEUR',
+    'USDGBP',
+    'USDAUD',
+    'USDCAD',
+    'USDHKD',
+    'USDPHP',
+    'USDVND',
+    'USDTWD',
+    'USDSGD',
+    'USDCZK',
+    'USDNZD',
+    'USDRUB',
+
+  ];
+
 
   Map<String, Map<String, String>> bankInfo = {
-    '신한은행': {'imagePath': 'assets/images/flag/USDKRW.png', 'currencyName': '신한은행'},
-    '하나은행': {
-      'imagePath': 'assets/images/flag/USDAUD.png',
-      'currencyName': '하나은행'
-    },
+    '하나은행': {'currencyName': '하나은행', 'bankCode': '081'},
+    '우리은행': {'currencyName': '우리은행', 'bankCode': '020'},
+    'KB국민은행': {'currencyName': 'KB국민은행', 'bankCode': '004'},
+    '신한은행': {'currencyName': '신한은행', 'bankCode': '088'},
+    'NH농협은행': {'currencyName': 'NH농협은행', 'bankCode': '011'},
+    'IBK기업은행': {'currencyName': 'IBK기업은행', 'bankCode': '003'},
+    'SC제일은행': {'currencyName': 'SC제일은행', 'bankCode': '023'},
+    '시티은행': {'currencyName': '시티은행', 'bankCode': '027'},
+    'Sh수협은행': {'currencyName': 'Sh수협은행', 'bankCode': '007'},
+    '부산은행': {'currencyName': '부산은행', 'bankCode': '032'},
+    'DGB대구은행': {'currencyName': 'DGB대구은행', 'bankCode': '031'},
   };
 
   String getToday() {
@@ -110,42 +141,11 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                       Container(
                                         margin:
                                         const EdgeInsets.fromLTRB(10, 10, 30, 10),
-                                        width: 170,
-                                        height: 55,
+                                        // width: 170,
+                                        height: 25,
                                         // color: Colors.red,
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton(
-                                            value: _selectedValue,
-                                            items: _bankList.map(
-                                                  (value) {
-                                                return DropdownMenuItem(
-                                                  value: value,
-                                                  child: Row(
-                                                    children: [
-                                                      Image.asset(
-                                                        bankInfo[value]![
-                                                        'imagePath']!,
-                                                        width: 20,
-                                                        height: 20,
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Text(bankInfo[value]![
-                                                      'currencyName']!,
-                                                        style: const TextStyle(fontWeight: FontWeight.bold),),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                            ).toList(),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _selectedValue = value.toString();
-                                              });
-                                            },
-                                          ),
-                                        ),
+                                        child: Image.asset(
+                                            'assets/images/banklogo/${widget.bankCode}.png'),
                                       ),
                                     ],
                                   ),
