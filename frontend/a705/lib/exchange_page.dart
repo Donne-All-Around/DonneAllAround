@@ -215,13 +215,14 @@ class _ExchangePageState extends State<ExchangePage> {
 
     if (currency[baseIdx] != 'USD') {
       base = currency1[targetIdx - 1];
-      target = currency1[baseIdx - 1];
+      target = currency1[baseIdx];
       rate = calculateRate(base, target);
     } else if (currency[baseIdx] == 'USD') {
       rate = calculateUsd(currency1[targetIdx - 1]);
     } else if (currency[targetIdx] != 'USD'){
       rate =  calculateUsd(currency1[targetIdx-1]);
     }
+    // 미국이 타겟 일 때, 계산 값 추가.
 
 
     if (rate != null) {

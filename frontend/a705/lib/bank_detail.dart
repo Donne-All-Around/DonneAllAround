@@ -112,6 +112,60 @@ class _BankDetailPageState extends State<BankDetailPage> {
     return null;
   }
 
+
+  void calculateExchangeRate(int baseIdx, int targetIdx) {
+    double? rate;
+    String base;
+    String target;
+    // 기준 통화와 대상 통화를 가져옵니다.
+    // String baseCurrency = currency1[baseIdx-1];
+    // String targetCurrency = currency1[targetIdx-1];
+
+    // 기준 통화와 대상 통화가 같은 경우, 환율은 1.0입니다.
+    // if (baseCurrency == targetCurrency) {
+    //   rate = 1.0;
+    // } else {
+    //   // 환율을 계산합니다.
+    //   rate = calculateRate(targetCurrency, baseCurrency);
+    // }
+
+    double? calculateUsd(String targetCurrency) {
+      if (exchangeRates != null && exchangeRates!.containsKey(targetCurrency)) {
+        return exchangeRates![targetCurrency];
+      }
+      return null;
+    }
+
+    if (currency[baseIdx] != 'USD') {
+      base = currency1[targetIdx - 1];
+      target = currency1[baseIdx - 1];
+      rate = calculateRate(base, target);
+    } else if (currency[baseIdx] == 'USD') {
+      rate = calculateUsd(currency1[targetIdx - 1]);
+    } else if (currency[targetIdx] != 'USD'){
+      rate =  calculateUsd(currency1[targetIdx-1]);
+    }
+
+
+    if (rate != null) {
+      double amountToConvert = double.parse(
+          _moneyController1.text.replaceAll(',', ''));
+      double convertedAmount = amountToConvert * rate;
+      String formattedAmount = convertedAmount.toStringAsFixed(2);
+      setState(() {
+        // UI 업데이트를 수행
+        // _moneyController2.text = '${_moneyController1.text.isNotEmpty
+        //     ? (double.parse(_moneyController1.text.replaceAll(',', '')) * rate!).toStringAsFixed(2)
+        //     : '0.00'} ${sign[idx2]}';
+        _moneyController2.text = '$formattedAmount';
+      });
+    }
+  }
+
+
+
+
+
   List<String> currency1 = [
     'USDKRW',
     'USDJPY',
@@ -687,6 +741,9 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                 child:IconButton(
                                   padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
                                   onPressed: (){
+                                    setState(() {
+                                      // calculateExchangeRate( idx, idx2);
+                                    });
                                   },
                                   icon: const Icon(Icons.drag_handle_rounded),
                                   iconSize: 50,

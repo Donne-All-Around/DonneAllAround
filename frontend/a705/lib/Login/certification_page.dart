@@ -151,6 +151,8 @@ class _CertificationPageState extends State<CertificationPage> {
                       OutlinedButton(onPressed: (){
                         if (isPhoneNumberValid(phoneController.text)) {
                           verifyNumber();
+
+                          optCodeController.text = "";
                         } else {}
                       },
                         style: ElevatedButton.styleFrom(
@@ -274,7 +276,7 @@ class _CertificationPageState extends State<CertificationPage> {
 
       // Firebase 인증 토큰 얻기
       String? firebaseToken = await userCredential.user!.getIdToken();
-
+      // print("Firebase 토큰: $firebaseToken");
       // Firebase 토큰을 백엔드 서버로 전송하여 JWT 토큰을 가져옴
       String? jwtToken = await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!);
 

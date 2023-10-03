@@ -109,6 +109,7 @@ class UserProvider extends ChangeNotifier {
   Future<String?> getJwtTokenFromFirebaseToken(String firebaseToken) async {
     final url = "$baseUrl/api/member/verifyFirebaseToken";
 
+    // print('HTTP Request Body: ${jsonEncode({'firebaseToken': firebaseToken})}');
     try {
       final response = await http.post(
         Uri.parse(url),
