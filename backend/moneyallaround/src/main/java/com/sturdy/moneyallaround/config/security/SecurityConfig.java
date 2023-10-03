@@ -3,6 +3,7 @@ package com.sturdy.moneyallaround.config.security;
 import com.sturdy.moneyallaround.config.security.jwt.JwtAuthenticationFilter;
 import com.sturdy.moneyallaround.config.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,11 +13,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
     private final JwtTokenProvider jwtTokenProvider;
 
     private static final String[] AUTH_WHITELIST = {
@@ -36,7 +37,6 @@ public class SecurityConfig {
             "/swagger*/**",
             "/swagger-ui/index.html",
             "/api/solution/detect",
-            "/api/member/**"
     };
 
     private static final String[] USER_LIST = {
@@ -48,6 +48,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+        log.info("filterchain start!!!");
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(AUTH_WHITELIST).permitAll()
@@ -64,9 +65,9 @@ public class SecurityConfig {
         return (web) -> web.ignoring().requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/api-docs/json/**");
     }
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+//        return new BCryptPasswordEncoder();
+//    }
 
 }

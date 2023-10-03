@@ -16,14 +16,12 @@ import com.sturdy.moneyallaround.domain.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +36,6 @@ public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
-    private final PasswordEncoder encoder;
     private final RefreshTokenService refreshTokenService;
 
 
@@ -47,7 +44,7 @@ public class MemberService implements UserDetailsService {
     public SignUpResponse registNewMember(SignUpRequest request){
         log.info(request.toString());
         //회원정보 저장, 근데 비밀번호 없는데 encoder 필요한가?
-        Member member = memberRepository.save(Member.from(request, encoder));
+        Member member = memberRepository.save(Member.from(request));
         try {
             memberRepository.flush();
         }catch (DataIntegrityViolationException e){
@@ -144,7 +141,7 @@ public class MemberService implements UserDetailsService {
             // Front에서 Logout 실행
             refreshTokenService.delValues(refreshToken);
             throw new TokenNotFoundException(ExceptionMessage.TOKEN_VALID_TIME_EXPIRED);
-//            return ReIssueResponse.from(null, "INVALID_REFRESH_TOKEN");
+
         }
         // 3. Redis에서 refreshToken 가져오기
         String id = refreshTokenService.getValues(refreshToken);

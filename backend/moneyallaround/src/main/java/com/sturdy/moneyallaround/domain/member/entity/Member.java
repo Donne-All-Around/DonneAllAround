@@ -63,7 +63,7 @@ public class Member implements UserDetails {
     }
 
     //Member Update
-    public static Member from(SignUpRequest request, PasswordEncoder encoder){
+    public static Member from(SignUpRequest request){
         return Member.builder()
                 .nickname(request.nickname())
                 .imageUrl(request.imageUrl())

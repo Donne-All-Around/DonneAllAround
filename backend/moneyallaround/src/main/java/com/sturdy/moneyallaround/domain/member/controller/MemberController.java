@@ -109,7 +109,7 @@ public class MemberController {
     })
 
 
-    @PostMapping("/api/member/join")
+    @PostMapping("/join")
     public ApiResponse signUp(@RequestBody SignUpRequest request) {
         log.info("회원가입 시작");
         return ApiResponse.success(memberService.registNewMember(request));
