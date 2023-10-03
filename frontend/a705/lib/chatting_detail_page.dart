@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:random_string/random_string.dart';
 
+import 'delivery_transaction_page.dart';
+
 class ChattingDetailPage extends StatefulWidget {
   final Map<String, dynamic>? tradeInfoMap;
   final Map<String, dynamic>? chatRoomListInfoMap;
@@ -66,6 +68,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
       thumbnailImageUrl, // 거래글 썸네일
       type, // 거래 방법
       status, // 거래 상태
+      finalBuyerId, // 최종 구매자
       directTradeTime, // 직거래 약속 시간
       directTradeLocationDetail, // 직거래 상제 장소
       sellerAccountBankCode, // 판매자 은행 코드
@@ -83,94 +86,10 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   bool isBlank = false;
   AppointmentType appointmentType = AppointmentType.waitBuyer;
 
-
-
   // 채팅방 정보 가져오기
   getUserInfo() async {
     myUserName = "신짱구";
     myUserId = "3";
-    setState(() {});
-  }
-
-  // 거래 약속 상태
-  setTradeAppointment() async {
-    switch (status) {
-      case "WAIT":
-        // 구매(희망)자
-        if (myRole == "buyer") {
-          appointmentType = AppointmentType.waitBuyer;
-        }
-        // 판매자
-        else if (myRole == "seller") {
-          appointmentType = AppointmentType.waitSeller;
-          _appt = "약속 잡기";
-        }
-        break;
-      case "PROGRESS":
-        // 구매자
-        if (myRole == "buyer") {
-          // 직거래
-          if (type == "DIRECT") {
-            appointmentType = AppointmentType.progressBuyerDirect;
-            _appt = "${directTradeLocationDetail} ${directTradeTime}";
-          }
-          // 택배거래
-          else if (type == "DELIVERY") {
-            if (trackingNumber == null) {
-              // 송장번호 입력 전
-              appointmentType = AppointmentType.progressBuyerDeliveryBefore;
-              _appt = "아직 배송 전이에요.";
-            } else {
-              // 송장번호 입력 후
-              appointmentType = AppointmentType.progressBuyerDeliveryAfter;
-              _appt = "수령확인";
-            }
-          }
-        }
-        // 판매자
-        else if (myRole == "seller") {
-          // 직거래
-          if (type == "DIRECT") {
-            appointmentType = AppointmentType.progressSellerDirect;
-            _appt = "${directTradeLocationDetail} ${directTradeTime}";
-          }
-          // 택배거래
-          else if (type == "DELIVERY") {
-            if (trackingNumber == null) {
-              // 송장번호 입력 전
-              appointmentType = AppointmentType.progressSellerDeliveryBefore;
-              _appt = "송장번호 입력";
-            } else {
-              // 송장번호 입력 후
-              appointmentType = AppointmentType.progressSellerDeliveryAfter;
-              _appt = "$trackingNumber";
-            }
-          }
-        }
-        // 타 사용자
-        else {
-          appointmentType = AppointmentType.progressOther;
-          _appt = "거래 중";
-        }
-        break;
-      case "COMPLETE":
-        // 구매자
-        if (myRole == "buyer") {
-          appointmentType = AppointmentType.completeBuyer;
-        }
-        // 판매자
-        else if (myRole == "seller") {
-          appointmentType = AppointmentType.completeSeller;
-        }
-        // 타 사용자
-        else {
-          appointmentType = AppointmentType.completeOther;
-        }
-        _appt = "거래완료";
-        break;
-    }
-
-    print('사용자 약속 Type: $appointmentType');
     setState(() {});
   }
 
@@ -182,7 +101,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
           widget.tradeInfoMap, widget.chatRoomListInfoMap); // 거래글 가져오기
     }
     print("I'm $myRole");
-    await setTradeAppointment(); // 거래 약속 set
     await getAndSetMessages(); // 채팅 내역 가져오기
     setState(() {});
   }
@@ -194,8 +112,17 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     ontheload();
   }
 
-  bool _shouldShowGestureDetector(AppointmentType appointmentType) {
+  bool _shouldShowHeader(AppointmentType appointmentType) {
     if (appointmentType == AppointmentType.waitBuyer) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  bool _shouldShowTradeInfo(AppointmentType appointmentType) {
+    if (appointmentType == AppointmentType.waitBuyer ||
+        appointmentType == AppointmentType.waitSeller) {
       return false;
     } else {
       return true;
@@ -231,7 +158,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         otherRole = widget.chatRoomListInfoMap?['otherRole'] ?? "";
         myRole = widget.chatRoomListInfoMap?['myRole'] ?? "";
 
-
         if (otherRole == "seller") {
           seller = otherUserName;
           buyer = myUserName;
@@ -253,24 +179,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         koreanWonAmount = trade.koreanWonAmount;
         foreignCurrencyAmount = trade.foreignCurrencyAmount;
         apptStream = await DatabaseMethods().getTradeInfo(tradeId!);
-        if (status != "WAIT") {
-
-
-          // Map<String, dynamic> tradeDetailInfo =
-          //     await DatabaseMethods().getTradeInfo(tradeId!);
-          // deliveryAddress = tradeDetailInfo['deliveryAddress'];
-          // deliveryAddressDetail = tradeDetailInfo['deliveryAddressDetail'];
-          // deliveryAddressZipCode = tradeDetailInfo['deliveryAddressZipCode'];
-          // deliveryRecipientName = tradeDetailInfo['deliveryRecipientName'];
-          // deliveryRecipientTel = tradeDetailInfo['deliveryRecipientTel'];
-          // directTradeLocationDetail =
-          //     tradeDetailInfo['directTradeLocationDetail'];
-          // directTradeTime = tradeDetailInfo['directTradeTime'];
-          // sellerAccountBankCode = tradeDetailInfo['sellerAccountBankCode'];
-          // sellerAccountNumber = tradeDetailInfo['sellerAccountNumber'];
-          // trackingNumber = tradeDetailInfo['trackingNumber'];
-        }
-
         break;
 
       /**
@@ -301,23 +209,9 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         koreanWonAmount = trade.koreanWonAmount;
         foreignCurrencyAmount = trade.foreignCurrencyAmount;
 
-        if (status != "WAIT") {
-          // Map<String, dynamic> tradeDetailInfo =
-          //     await DatabaseMethods().getTradeInfo(tradeId!);
-          // deliveryAddress = tradeDetailInfo['deliveryAddress'];
-          // deliveryAddressDetail = tradeDetailInfo['deliveryAddressDetail'];
-          // deliveryAddressZipCode = tradeDetailInfo['deliveryAddressZipCode'];
-          // deliveryRecipientName = tradeDetailInfo['deliveryRecipientName'];
-          // deliveryRecipientTel = tradeDetailInfo['deliveryRecipientTel'];
-          // directTradeLocationDetail =
-          //     tradeDetailInfo['directTradeLocationDetail'];
-          // directTradeTime = tradeDetailInfo['directTradeTime'];
-          // sellerAccountBankCode = tradeDetailInfo['sellerAccountBankCode'];
-          // sellerAccountNumber = tradeDetailInfo['sellerAccountNumber'];
-          // trackingNumber = tradeDetailInfo['trackingNumber'];
-        }
-
         chatRoomId = "${tradeId!}_${sellerId!}_${buyerId!}";
+
+          apptStream = await DatabaseMethods().getTradeInfo(tradeId!);
 
         // user 정보에 새 채팅방 목록 추가
         Map<String, dynamic> chatRoomListInfoMap = {
@@ -483,7 +377,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     );
   }
 
-  Widget header(){
+  // 거래 상태 헤더 Stream
+  Widget header() {
     return StreamBuilder(
       stream: apptStream,
       builder: (context, snapshot) {
@@ -491,37 +386,37 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         if (snapshot.connectionState == ConnectionState.active) {
           Map<String, dynamic> tradeDetailInfo = snapshot.data ?? {};
           appointmentType = calculateAppointmentType(tradeDetailInfo);
-          print('새로 스트림: ${tradeDetailInfo['type']}');
+          print('거래 상태 변경: ${tradeDetailInfo['type']}');
         }
 
         print('$appointmentType');
 
         return Visibility(
-          visible: _shouldShowGestureDetector(appointmentType),
+          visible: _shouldShowHeader(appointmentType),
           child: GestureDetector(
             onTap: () async {
               String? appt;
               // 약속 잡기
               if (appointmentType == AppointmentType.waitSeller) {
-
                 appt = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            AppointmentPage(
-                              tradeInfoMap : {
-                                "tradeId" : tradeId,
-                                "tradeTitle" : tradeTitle,
-                                "countryCode" : countryCode,
-                                "thumbnailImageUrl" : thumbnailImageUrl,
-                                "foreignCurrencyAmount" : foreignCurrencyAmount,
-                                "koreanWonAmount" :koreanWonAmount,
+                        builder: (context) => AppointmentPage(
+                              tradeInfoMap: {
+                                "tradeId": tradeId,
+                                "tradeTitle": tradeTitle,
+                                "countryCode": countryCode,
+                                "thumbnailImageUrl": thumbnailImageUrl,
+                                "foreignCurrencyAmount": foreignCurrencyAmount,
+                                "koreanWonAmount": koreanWonAmount,
+                                "buyerId": buyerId,
                               },
                             )));
               }
               // 직거래 약속 정보 수정 페이지
               else if (appointmentType ==
                   AppointmentType.progressSellerDirect) {
+
               }
               // 택배거래 송장번호 입력 페이지
               else if (appointmentType ==
@@ -537,7 +432,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
               } else {}
 
               setState(() {
-                _appt = appt!;
+                // _appt = appt!;
               });
             },
             child: Container(
@@ -553,44 +448,103 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
               ),
               child: Center(
                   child: Text(
-                    _appt ?? "",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  )),
+                _appt ?? "",
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              )),
             ),
           ),
         );
       },
     );
   }
-  AppointmentType calculateAppointmentType(Map<String, dynamic> tradeDetailInfo) {
-    // final String status = tradeDetailInfo['status'];
-    // final String myRole = tradeDetailInfo['myRole'];
-    final String type = tradeDetailInfo['type'];
-    final String trackingNumber = tradeDetailInfo['trackingNumber'];
 
-    if (status == "WAIT") {
-      if (myRole == "seller") {
-        return AppointmentType.waitSeller;
-      }
-    } else if (status == "PROGRESS") {
-      if (myRole == "seller") {
-        if (type == "DIRECT") {
-          return AppointmentType.progressSellerDirect;
-        } else if (type == "DELIVERY") {
-          if (trackingNumber == null) {
-            return AppointmentType.progressSellerDeliveryBefore;
-          } else {
-            return AppointmentType.progressSellerDeliveryAfter;
+  AppointmentType calculateAppointmentType(
+      Map<String, dynamic> tradeDetailInfo) {
+    status = tradeDetailInfo['status'];
+    type = tradeDetailInfo['type'];
+    trackingNumber = tradeDetailInfo['trackingNumber'];
+    directTradeLocationDetail = tradeDetailInfo['directTradeLocationDetail'];
+    directTradeTime = tradeDetailInfo['directTradeTime'];
+    finalBuyerId = tradeDetailInfo['buyerId'];
+
+    switch (status) {
+      case "WAIT":
+        // 구매(희망)자
+        if (myRole == "buyer") {
+          return AppointmentType.waitBuyer;
+        }
+        // 판매자
+        else if (myRole == "seller") {
+          _appt = "약속 잡기";
+          return AppointmentType.waitSeller;
+        }
+        break;
+      case "PROGRESS":
+        // 구매자
+        if (myRole == "buyer" && finalBuyerId == myUserId) {
+          // 직거래
+          if (type == "DIRECT") {
+            _appt = "${directTradeLocationDetail} ${directTradeTime}";
+            return AppointmentType.progressBuyerDirect;
+          }
+          // 택배거래
+          else if (type == "DELIVERY") {
+            if (trackingNumber == null || trackingNumber == "") {
+              // 송장번호 입력 전
+              _appt = "아직 배송 전이에요.";
+              return AppointmentType.progressBuyerDeliveryBefore;
+            } else {
+              // 송장번호 입력 후
+              _appt = "수령확인";
+              return AppointmentType.progressBuyerDeliveryAfter;
+            }
           }
         }
-      }
-    } else if (status == "COMPLETE") {
-      // 거래가 완료된 경우에 대한 로직 추가
+        // 판매자
+        else if (myRole == "seller") {
+          // 직거래
+          if (type == "DIRECT") {
+            _appt = "${directTradeLocationDetail} ${directTradeTime}";
+            return AppointmentType.progressSellerDirect;
+          }
+          // 택배거래
+          else if (type == "DELIVERY") {
+            if (trackingNumber == null || trackingNumber == "") {
+              // 송장번호 입력 전
+              _appt = "송장번호 입력";
+              return AppointmentType.progressSellerDeliveryBefore;
+            } else {
+              // 송장번호 입력 후
+              _appt = "$trackingNumber";
+              return AppointmentType.progressSellerDeliveryAfter;
+            }
+          }
+        }
+        // 타 사용자
+        else {
+          _appt = "거래 중";
+          return AppointmentType.progressOther;
+        }
+        break;
+      case "COMPLETE":
+        _appt = "거래완료";
+        // 구매자
+        if (myRole == "buyer" && finalBuyerId == myUserId) {
+          return AppointmentType.completeBuyer;
+        }
+        // 판매자
+        else if (myRole == "seller") {
+          return AppointmentType.completeSeller;
+        }
+        // 타 사용자
+        else {
+          return AppointmentType.completeOther;
+        }
     }
-
     // 기본적으로 다른 상황에 대한 처리 또는 기본값 설정
     return AppointmentType.progressOther;
   }
+
   // 메시지 추가
   addMessage(bool sendClicked) {
     if (messageController.text != "") {
@@ -666,7 +620,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   // 메시지 작성 읽기
   getAndSetMessages() async {
     messageStream = await DatabaseMethods().getChatRoomMessages(chatRoomId);
-    String myRole = myUserName == seller ? "seller" : "buyer";
+    myRole = myUserName == seller ? "seller" : "buyer";
     DatabaseMethods().setRead(chatRoomId, myRole); // 읽음 처리
     setState(() {});
   }
@@ -809,69 +763,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       ],
                     ),
                     header(),
-                    // Visibility(
-                    //   visible: _shouldShowGestureDetector(appointmentType),
-                    //   child: GestureDetector(
-                    //     onTap: () async {
-                    //       String? appt;
-                    //       // 약속 잡기
-                    //       if (appointmentType == AppointmentType.waitSeller) {
-                    //
-                    //         appt = await Navigator.push(
-                    //             context,
-                    //             MaterialPageRoute(
-                    //                 builder: (context) =>
-                    //                      AppointmentPage(
-                    //                       tradeInfoMap : {
-                    //                         "tradeId" : tradeId,
-                    //                         "tradeTitle" : tradeTitle,
-                    //                         "countryCode" : countryCode,
-                    //                         "thumbnailImageUrl" : thumbnailImageUrl,
-                    //                         "foreignCurrencyAmount" : foreignCurrencyAmount,
-                    //                         "koreanWonAmount" :koreanWonAmount,
-                    //                       },
-                    //                     )));
-                    //       }
-                    //       // 직거래 약속 정보 수정 페이지
-                    //       else if (appointmentType ==
-                    //           AppointmentType.progressSellerDirect) {
-                    //       }
-                    //       // 택배거래 송장번호 입력 페이지
-                    //       else if (appointmentType ==
-                    //           AppointmentType.progressSellerDeliveryBefore) {
-                    //       }
-                    //       // 택배거래 송장번호 수정 페이지
-                    //       else if (appointmentType ==
-                    //           AppointmentType.progressSellerDeliveryAfter) {
-                    //       }
-                    //       // 택배거래 수령확인 액션
-                    //       else if (appointmentType ==
-                    //           AppointmentType.progressBuyerDeliveryAfter) {
-                    //       } else {}
-                    //
-                    //       setState(() {
-                    //         _appt = appt!;
-                    //       });
-                    //     },
-                    //     child: Container(
-                    //       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    //       margin: const EdgeInsets.fromLTRB(20, 0, 20, 15),
-                    //       height: _appt == "약속 잡기" ? 40 : null,
-                    //       width: double.infinity,
-                    //       decoration: const BoxDecoration(
-                    //         borderRadius: BorderRadius.all(
-                    //           Radius.circular(10),
-                    //         ),
-                    //         color: Color(0xFFFFD954),
-                    //       ),
-                    //       child: Center(
-                    //           child: Text(
-                    //         _appt ?? "",
-                    //         style: const TextStyle(fontWeight: FontWeight.bold),
-                    //       )),
-                    //     ),
-                    //   ),
-                    // )
                   ],
                 ),
               ),
@@ -1014,14 +905,82 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         ),
                         GestureDetector(
                           onTap: () async {
-                            String appt = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const TransactionInfoPage()));
-                            setState(() {
-                              // _appt = appt;
-                            });
+                            if (_shouldShowTradeInfo(appointmentType)) {
+                              if(appointmentType == AppointmentType.progressSellerDirect){
+                                String appt = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>  TransactionInfoPage(
+                                      tradeInfoMap: {
+                                        "tradeId": tradeId,
+                                        "tradeTitle": tradeTitle,
+                                        "countryCode": countryCode,
+                                        "thumbnailImageUrl": thumbnailImageUrl,
+                                        "foreignCurrencyAmount": foreignCurrencyAmount,
+                                        "koreanWonAmount": koreanWonAmount,
+                                        "buyerId": buyerId,
+                                        "directTradeLocationDetail": directTradeLocationDetail,
+                                        "directTradeTime": directTradeTime,
+                                      },
+                                    ),
+                                  ),
+                                );
+                                setState(() {
+
+                                });
+                              }else if(appointmentType == AppointmentType.progressSellerDeliveryBefore ||
+                              appointmentType == AppointmentType.progressSellerDeliveryAfter ||
+                              appointmentType == AppointmentType.progressBuyerDeliveryBefore ||
+                              appointmentType == AppointmentType.progressBuyerDeliveryAfter){
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>  DeliveryTransactionPage(
+                                      tradeInfoMap: {
+                                        "tradeId": tradeId,
+                                        "tradeTitle": tradeTitle,
+                                        "countryCode": countryCode,
+                                        "thumbnailImageUrl": thumbnailImageUrl,
+                                        "foreignCurrencyAmount": foreignCurrencyAmount,
+                                        "koreanWonAmount": koreanWonAmount,
+                                        "buyerId": buyerId,
+                                        "deliveryAddress": deliveryAddress,
+                                        "deliveryAddressDetail": deliveryAddressDetail,
+                                        "deliveryAddressZipCode": deliveryAddressZipCode,
+                                        "deliveryRecipientName": deliveryRecipientName,
+                                        "deliveryRecipientTel": deliveryRecipientTel,
+                                        "sellerAccountBankCode": sellerAccountBankCode,
+                                        "sellerAccountNumber": sellerAccountNumber,
+                                        "sellerId": sellerId,
+                                        "trackingNumber": trackingNumber,
+                                      },
+                                    ),
+                                  ),
+                                );
+                                setState(() {
+
+                                });
+                              }
+
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    // title: Text("안내"),
+                                    content: Text("아직 거래 약속을 잡지 않았어요."),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context); // Close the dialog
+                                        },
+                                        child: Text("확인"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,

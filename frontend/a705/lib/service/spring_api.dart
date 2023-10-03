@@ -14,13 +14,39 @@ class SpringApi {
         Map<String, dynamic> jsonData = json.decode(responseBody);
         // "data" 객체 추출
         Map<String, dynamic> data = jsonData['data'];
+        print(responseBody);
         return data;
       } else {
+        print("stauts code: ${_response.statusCode}");
         return {};
       }
     } catch (e) {
       print('조회 실패: $e');
     }
     return {};
+  }
+
+  // 직거래 약속 잡기
+  setAppointment(Map<String, dynamic> apptInfoMap, String tradeId, String memberId) async{
+    print('tradeId: $tradeId');
+    final String jsonData = json.encode(apptInfoMap);
+
+    try {
+      http.Response _response = await http.put(
+          Uri.parse("https://j9a705.p.ssafy.io/api/trade/promise/direct/${tradeId}?memberId=${memberId}"),
+          body: jsonData);
+      if (_response.statusCode == 200) {
+        String responseBody = utf8.decode(_response.bodyBytes); // utf-8로 변환
+        Map<String, dynamic> jsonData = json.decode(responseBody);
+        // "data" 객체 추출
+        Map<String, dynamic> data = jsonData['data'];
+        return data;
+      } else {
+        print('상태 코드 오류: ${_response.statusCode}');
+        return {};
+      }
+    } catch (e) {
+      print('조회 실패: $e');
+    }
   }
 }

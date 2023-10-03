@@ -243,7 +243,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
 
                                       return  ChattingDetailPage(
                                           tradeInfoMap :{
-                                            "tradeId" : "6",
+                                            "tradeId" : "1",
                                             "seller" : "신짱구",
                                             "sellerId" : "3",
                                           }

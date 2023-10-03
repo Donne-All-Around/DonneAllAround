@@ -9,15 +9,15 @@ import 'package:a705/choose_location_page.dart';
 
 import 'chatting_page.dart';
 
-class TransactionInfoPage extends StatefulWidget {
+class TransactionDeliveryInfoPage extends StatefulWidget {
   final Map<String, dynamic>? tradeInfoMap;
-  TransactionInfoPage({Key? key, required this.tradeInfoMap}) : super(key: key);
+  TransactionDeliveryInfoPage({Key? key, required this.tradeInfoMap}) : super(key: key);
 
   @override
-  State<TransactionInfoPage> createState() => _TransactionInfoPageState();
+  State<TransactionDeliveryInfoPage> createState() => _TransactionInfoPageState();
 }
 
-class _TransactionInfoPageState extends State<TransactionInfoPage> {
+class _TransactionInfoPageState extends State<TransactionDeliveryInfoPage> {
 
   var appointmentDate = DateTime.now().add(Duration(hours: 9));
   String _addr = "장소 선택";

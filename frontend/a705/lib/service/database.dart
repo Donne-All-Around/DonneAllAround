@@ -146,6 +146,7 @@ class DatabaseMethods {
   // 상대방의 안 읽음 개수 조회
   getUnreadCnt(chatRoomId, userId) async {
     dynamic unReadCnt = 0;
+    print("안읽음 개수 조회할 userId : $userId");
     DocumentSnapshot ds = await FirebaseFirestore.instance
         .collection('chatrooms')
         .doc(chatRoomId)
@@ -216,18 +217,23 @@ class DatabaseMethods {
   // users에 chatlist 추가
   setUserChatList(String sellerId, String buyerId, String transactionId,
       Map<String, dynamic> chatRoomListInfoMap) async {
-    await FirebaseFirestore.instance
-        .collection("user")
-        .doc(sellerId)
-        .collection("chatroomList")
-        .doc(transactionId)
-        .set(chatRoomListInfoMap);
-    await FirebaseFirestore.instance
-        .collection("user")
-        .doc(buyerId)
-        .collection("chatroomList")
-        .doc(transactionId)
-        .set(chatRoomListInfoMap);
+    try{
+      await FirebaseFirestore.instance
+          .collection("user")
+          .doc(sellerId)
+          .collection("chatroomList")
+          .doc(transactionId)
+          .set(chatRoomListInfoMap);
+      await FirebaseFirestore.instance
+          .collection("user")
+          .doc(buyerId)
+          .collection("chatroomList")
+          .doc(transactionId)
+          .set(chatRoomListInfoMap);
+    }catch(e){
+      print('users에 chatlist 추가 실패: $e');
+    }
+    
   }
 
   // users에서 채팅목록 조회
@@ -277,48 +283,45 @@ class DatabaseMethods {
   }
 
   // 거래 약속잡기 정보 저장
-  setTradeInfo(String tradeId) {
-    Map<String, dynamic> tradeInfo = {
-      "type": "DIRECT",
-      "directTradeTime": "2023년 10월 4일 10:00AM",
-      "directTradeLocationDetail": "역삼역 2번 출구",
-      "sellerAccountBankCode": "우리은행",
-      "sellerAccountNumber": "1234-5678-91011",
-      "deliveryRecipientName": "이병건",
-      "deliveryRecipientTel": "010-1234-5678",
-      "deliveryAddressZipCode": "12345",
-      "deliveryAddressDetail": "101동 1004호",
-      "deliveryAddress": "서울시 강남구 대치동",
-      "trackingNumber": "12345678",
-      "buyerId": "abcdef",
-      "sellerId": "3",
-    };
-    FirebaseFirestore.instance.collection("trade").doc(tradeId).set(tradeInfo);
-  }
-
-  // 거래 약속잡기 정보 저장
-  Stream<Map<String, dynamic>> getTradeInfo(String tradeId) {
-
-      return  FirebaseFirestore.instance
+  setTradeInfo(String tradeId, Map<String, dynamic> tradeInfoMap) {
+    // Map<String, dynamic> tradeInfo = {
+    //   "type": "DIRECT",
+    //   "directTradeTime": null,
+    //   "directTradeLocationDetail": null,
+    //   "sellerAccountBankCode": null,
+    //   "sellerAccountNumber": null,
+    //   "deliveryRecipientName": null,
+    //   "deliveryRecipientTel": null,
+    //   "deliveryAddressZipCode": null,
+    //   "deliveryAddressDetail": null,
+    //   "deliveryAddress": null,
+    //   "trackingNumber": null,
+    //   "buyerId": null,
+    //   "sellerId": "3",
+    //   "status": "WAIT",
+    // };
+    try {
+      FirebaseFirestore.instance
           .collection("trade")
           .doc(tradeId)
-          .snapshots()
-          .map((DocumentSnapshot snapshot) {
-        if (snapshot.exists) {
-          return snapshot.data() as Map<String, dynamic>;
-        } else {
-          return {};
-        }
-      });
-  }
-/**
- * Future<Stream<QuerySnapshot>> getChatRoomMessages(chatRoomId) async {
-    return FirebaseFirestore.instance
-    .collection("chatrooms")
-    .doc(chatRoomId)
-    .collection("chats")
-    .orderBy("time", descending: true)
-    .snapshots();
+          .set(tradeInfoMap);
+    } catch (e) {
+      print('FireStore 저장 실패: $e');
     }
- */
+  }
+
+  // 거래 약속잡기 정보 조회
+  Stream<Map<String, dynamic>> getTradeInfo(String tradeId) {
+    return FirebaseFirestore.instance
+        .collection("trade")
+        .doc(tradeId)
+        .snapshots()
+        .map((DocumentSnapshot snapshot) {
+      if (snapshot.exists) {
+        return snapshot.data() as Map<String, dynamic>;
+      } else {
+        return {};
+      }
+    });
+  }
 }

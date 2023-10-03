@@ -4,9 +4,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:kpostal/kpostal.dart';
 
+import 'chatting_page.dart';
+
 class DeliveryTransactionPage extends StatefulWidget {
   final Map<String, dynamic>? tradeInfoMap;
-   DeliveryTransactionPage({Key? key, required this.tradeInfoMap}) : super(key: key);
+  DeliveryTransactionPage({Key? key, required this.tradeInfoMap}) : super(key: key);
 
   @override
   State<DeliveryTransactionPage> createState() => _DeliveryTransactionPageState();
@@ -33,6 +35,7 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
   void initState() {
     super.initState();
     _getUserLocation();
+    print("${widget.tradeInfoMap.toString()}");
   }
 
   @override
@@ -88,8 +91,12 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                       appt += _addrDetail;
                       // appt += "($postCode)";
                     });
+
+                    // 택배거래 약속잡기
+                    addDeliveryApptData();
+
                     Navigator.pop(context, appt);
-                    Navigator.pop(context, appt);
+
                   },
                   icon: const Icon(
                     Icons.check_rounded,
@@ -97,8 +104,8 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                   )),
             ],
           ),
-          body: Column(
-            children: [
+          body:  Column(
+            children: <Widget>[
               Container(
                 margin: const EdgeInsets.fromLTRB(20, 2, 20, 10),
                 width: double.infinity,
@@ -135,7 +142,7 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                                 fit: BoxFit.cover,
                               )),
                         ),
-                         Flexible(
+                        Flexible(
                           flex: 1,
                           child: SizedBox(
                             height: 70,
@@ -202,7 +209,13 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                   ],
                 ),
               ),
-              const SizedBox(height: 50),
+              Expanded(child:
+              Column(children: [
+
+
+              ],)
+              ),
+              const SizedBox(height: 20),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -233,15 +246,15 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                   children: [
                     Expanded(
                       child: TextField(
-                          decoration: InputDecoration(
-                            hintText: '계좌번호를 입력하세요',
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
-                            isDense: true,
-                          ),
-                          style: TextStyle(
-                            fontSize: 15,
-                          ),
+                        decoration: InputDecoration(
+                          hintText: '계좌번호를 입력하세요',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                          isDense: true,
+                        ),
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
                       ),
                     ),
                   ],
@@ -261,7 +274,7 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
               GestureDetector(
                 onTap: () async {
                   await Navigator.push(
-                      context,
+                    context,
                     MaterialPageRoute(
                       builder: (_) => KpostalView(
                         useLocalServer: true,
@@ -312,6 +325,7 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                   ),
                 ),
               ),
+
               Container(
                 margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -334,27 +348,239 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                     Expanded(
 
                       child: TextField(
-                        controller: _addrTextEditController,
-                        decoration: InputDecoration(
-                          hintText: '상세주소를 입력하세요',
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.zero,
-                          isDense: true,
-                          enabled: _addr == "장소 선택" ? false : true,
-                        ),
-                        style: const TextStyle(
-                          fontSize: 15,
-                        ),
-                        onChanged: (text) {
-                          _addrDetail = text;
-                        }
+                          controller: _addrTextEditController,
+                          decoration: InputDecoration(
+                            hintText: '상세주소를 입력하세요',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                            isDense: true,
+                            enabled: _addr == "장소 선택" ? false : true,
+                          ),
+                          style: const TextStyle(
+                            fontSize: 15,
+                          ),
+                          onChanged: (text) {
+                            _addrDetail = text;
+                          }
                       ),
                     ),
                   ],
                 ),
               ),
+              const SizedBox(height: 20),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(width: 30),
+                  Text(
+                    '택배 수령인',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Container(
+                margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 3,
+                      offset: const Offset(0, 0),
+                    ),
+                  ],
+                ),
+                child: const Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: '수령인의 이름을 입력하세요',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                          isDense: true,
+                        ),
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(width: 30),
+                  Text(
+                    '택배 수령인',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Container(
+                margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 3,
+                      offset: const Offset(0, 0),
+                    ),
+                  ],
+                ),
+                child: const Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: '수령인의 이름을 입력하세요',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                          isDense: true,
+                        ),
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(width: 30),
+                  Text(
+                    '택배 수령인',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Container(
+                margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 3,
+                      offset: const Offset(0, 0),
+                    ),
+                  ],
+                ),
+                child: const Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: '수령인의 이름을 입력하세요',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                          isDense: true,
+                        ),
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(width: 30),
+                        Text(
+                          '택배 수령인',
+                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                      child: const Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              decoration: InputDecoration(
+                                hintText: '수령인의 이름을 입력하세요',
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.zero,
+                                isDense: true,
+                              ),
+                              style: TextStyle(
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+
             ],
           ),
+
         ));
   }
+
+  void addDeliveryApptData() {
+    Map<String, dynamic> tradeInfo = {
+      "type": "DELIVERY",
+      "directTradeTime": null,
+      "directTradeLocationDetail": null,
+      "sellerAccountBankCode": null,
+      "sellerAccountNumber": null,
+      "deliveryRecipientName": null,
+      "deliveryRecipientTel": null,
+      "deliveryAddressZipCode": postCode,
+      "deliveryAddressDetail": _addrDetail,
+      "deliveryAddress": _addr,
+      "trackingNumber": null,
+      "buyerId": widget.tradeInfoMap?['buyerId'],
+      "sellerId": myUserId,
+      "status": "PROGRESS",
+    };
+    // DatabaseMethods().setTradeInfo(widget.tradeInfoMap?['tradeId'], tradeInfo);
+    print(tradeInfo.toString());
+  }
+
+
+
 }
