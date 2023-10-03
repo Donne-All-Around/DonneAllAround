@@ -1,10 +1,5 @@
 package com.sturdy.moneyallaround.domain.member.service;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseToken;
 import com.sturdy.moneyallaround.Exception.message.ExceptionMessage;
 import com.sturdy.moneyallaround.Exception.model.*;
 import com.sturdy.moneyallaround.config.security.jwt.JwtTokenProvider;
@@ -25,7 +20,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.FileInputStream;
 import java.util.Optional;
 
 @Slf4j
@@ -41,38 +35,28 @@ public class MemberService implements UserDetailsService {
 
     //registMember
     @Transactional
-    public SignUpResponse registNewMember(SignUpRequest request){
+    public LogInResponse registNewMember(SignUpRequest request){
         log.info(request.toString());
-        //회원정보 저장, 근데 비밀번호 없는데 encoder 필요한가?
         Member member = memberRepository.save(Member.from(request));
-        try {
-            memberRepository.flush();
-        }catch (DataIntegrityViolationException e){
-            throw new UserAuthException(ExceptionMessage.FAIL_SAVE_DATA);
+
+        // Firebase 토큰 검증
+        String firebaseToken = request.getFirebaseToken();
+        if (!verifyFirebaseToken(firebaseToken)) {
+            throw new FirebaseTokenValidationException("Firebase 토큰 검증 실패");
         }
-        //저장한 회원 정보로 응답 생성
-        return SignUpResponse.from(member);
+
+        // 사용자 정보로 JWT 토큰을 생성하여 자동으로 로그인
+        TokenInfo tokenInfo = jwtTokenProvider.generateToken(member.getTel(), firebaseToken, null);
+
+        // 로그인 응답을 생성하여 반환
+        LogInResponse loginResponse = LogInResponse.from(member, tokenInfo);
+
+        return loginResponse;
     }
 
+
     public boolean verifyFirebaseToken(String firebaseToken) {
-
-        try {
-            // Firebase Admin SDK 초기화
-            FileInputStream serviceAccount = new FileInputStream("donnearound-firebase-adminsdk.json"); // Firebase Admin SDK 설정 파일 경로
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .build();
-            FirebaseApp.initializeApp(options);
-
-            // Firebase 토큰 검증
-            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseToken);
-
-            // 검증에 성공하면 true 반환
-            return decodedToken != null;
-        } catch (Exception e) {
-            // 검증에 실패하면 false 반환
-            return false;
-        }
+        return jwtTokenProvider.isValidFirebaseToken(firebaseToken);
     }
 
 
@@ -153,6 +137,7 @@ public class MemberService implements UserDetailsService {
         return createAccessToken(refreshToken, authentication);
     }
 
+
     /**
      * RefreshToken으로 AccessToken 재발급
      */
@@ -204,6 +189,7 @@ public class MemberService implements UserDetailsService {
         );
         return member;
     }
+
 
     @Transactional
     public Member findByNickname(String nickname) {

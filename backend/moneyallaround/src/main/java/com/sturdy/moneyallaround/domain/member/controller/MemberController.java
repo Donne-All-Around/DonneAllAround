@@ -1,6 +1,5 @@
 package com.sturdy.moneyallaround.domain.member.controller;
 
-import com.sturdy.moneyallaround.Exception.model.FirebaseTokenValidationException;
 import com.sturdy.moneyallaround.common.ApiResponse;
 import com.sturdy.moneyallaround.config.security.jwt.JwtTokenProvider;
 import com.sturdy.moneyallaround.config.security.jwt.TokenInfo;
@@ -43,7 +42,6 @@ public class MemberController {
         if (!jwtTokenProvider.isValidFirebaseToken(firebaseToken)) {
             return ResponseEntity.badRequest().body(ApiResponse.error("Firebase 토큰 검증 실패"));
         }
-
         // Firebase 토큰이 유효하면, 해당 사용자를 데이터베이스에서 찾아온다.
         Member member = memberService.findByTel(request.tel());
 

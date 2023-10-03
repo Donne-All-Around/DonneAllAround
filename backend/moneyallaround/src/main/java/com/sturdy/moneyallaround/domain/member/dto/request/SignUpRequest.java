@@ -10,4 +10,10 @@ public record SignUpRequest(
 
 
 ) {
+
+	private static String firebaseToken;
+
+	public String getFirebaseToken() {
+		return firebaseToken;
+	}
 }
