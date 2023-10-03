@@ -24,6 +24,8 @@ public class TradeLikeService {
     }
 
     public void unlike(Long tradeId, Long memberId) {
-        tradeLikeRepository.deleteByTradeIdAndMemberId(tradeId, memberId);
+        TradeLike tradeLike = tradeLikeRepository.findByTradeIdAndMemberId(tradeId, memberId);
+        tradeLikeRepository.delete(tradeLike);
+        tradeLikeRepository.flush();
     }
 }

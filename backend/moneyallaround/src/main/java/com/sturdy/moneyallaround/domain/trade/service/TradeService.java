@@ -64,7 +64,7 @@ public class TradeService {
         tradeRepository.findById(tradeId)
                 .ifPresentOrElse(trade -> {
                             tradeImageService.deleteTradeImages(trade.getImageList());
-                            trade.getImageList().clear();
+                            trade.clearImageList();
                             trade.addImages(tradeRequestDto.imageUrlList().stream().map(imageUrl -> new TradeImage(imageUrl, trade)).toList());
                             trade.update(tradeRequestDto.title(), tradeRequestDto.description(), tradeRequestDto.thumbnailImageUrl(),
                                     tradeRequestDto.countryCode(), tradeRequestDto.foreignCurrencyAmount(), tradeRequestDto.koreanWonAmount(),
