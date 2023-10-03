@@ -33,17 +33,19 @@ public class KeywordService {
     }
 
     public Boolean existKeyword(KeywordRequestDto keywordRequestDto, Long memberId) {
-        return keywordRepository.existsByCountryCodeAndPreferredTradeCountryAndPreferredTradeCityAndPreferredTradeDistrictAndPreferredTradeTownAndMember(
+        return keywordRepository.existsByMemberAndLocationAndCountryCode(
                 keywordRequestDto.countryCode(),
-                keywordRequestDto.preferredTradeCountry(),
-                keywordRequestDto.preferredTradeCity(),
-                keywordRequestDto.preferredTradeDistrict(),
-                keywordRequestDto.preferredTradeTown(),
+                keywordRequestDto.country(),
+                keywordRequestDto.administrativeArea(),
+                keywordRequestDto.subAdministrativeArea(),
+                keywordRequestDto.locality(),
+                keywordRequestDto.subLocality(),
+                keywordRequestDto.thoroughfare(),
                 memberService.findById(memberId)
         );
     }
 
     public List<Keyword> findByTrade(Trade trade) {
-        return keywordRepository.findByCountryCodeAndPreferredTradeLocation(trade);
+        return keywordRepository.findByCountryCodeAndLocation(trade);
     }
 }

@@ -5,17 +5,21 @@ import com.sturdy.moneyallaround.domain.member.entity.Member;
 import jakarta.validation.constraints.NotNull;
 
 public record KeywordRequestDto(@NotNull String countryCode,
-                                @NotNull String preferredTradeCountry,
-                                @NotNull String preferredTradeCity,
-                                @NotNull String preferredTradeDistrict,
-                                @NotNull String preferredTradeTown) {
+                                String country,
+                                String administrativeArea,
+                                String subAdministrativeArea,
+                                String locality,
+                                String subLocality,
+                                String thoroughfare) {
     public Keyword toKeyword(Member member) {
         return Keyword.builder()
                 .countryCode(countryCode)
-                .preferredTradeCountry(preferredTradeCountry)
-                .preferredTradeCity(preferredTradeCity)
-                .preferredTradeDistrict(preferredTradeDistrict)
-                .preferredTradeTown(preferredTradeTown)
+                .country(country)
+                .administrativeArea(administrativeArea)
+                .subAdministrativeArea(subAdministrativeArea)
+                .locality(locality)
+                .subLocality(subLocality)
+                .thoroughfare(thoroughfare)
                 .member(member)
                 .build();
     }

@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -27,12 +26,12 @@ public class KeywordNotificationService {
         List<KeywordNotification> notificationList = keywordNotificationRepository.saveAll(keywordService.findByTrade(trade)
                 .stream().map(keyword -> new KeywordNotification(trade, keyword.getMember())).toList());
 
-        StringBuilder body = new StringBuilder();
-        body.append(trade.getPreferredTradeCountry()).append(" ")
-                .append(trade.getPreferredTradeCity()).append(" ")
-                .append(trade.getPreferredTradeDistrict()).append(" ")
-                .append(trade.getPreferredTradeTown()).append(" [")
-                .append(trade.getCountryCode()).append("]");
+//        StringBuilder body = new StringBuilder();
+//        body.append(trade.getPreferredTradeCountry()).append(" ")
+//                .append(trade.getPreferredTradeCity()).append(" ")
+//                .append(trade.getPreferredTradeDistrict()).append(" ")
+//                .append(trade.getPreferredTradeTown()).append(" [")
+//                .append(trade.getCountryCode()).append("]");
 
         /*
             수정 필요

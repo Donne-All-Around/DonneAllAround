@@ -21,25 +21,31 @@ public class Keyword extends BaseEntity {
     private String countryCode;
 
     @Column(nullable = true)
-    private String preferredTradeCountry;
+    private String country;
     @Column(nullable = true)
-    private String preferredTradeCity;
+    private String administrativeArea;
     @Column(nullable = true)
-    private String preferredTradeDistrict;
+    private String subAdministrativeArea;
     @Column(nullable = true)
-    private String preferredTradeTown;
+    private String locality;
+    @Column(nullable = true)
+    private String subLocality;
+    @Column(nullable = true)
+    private String thoroughfare;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @Builder
-    public Keyword(String countryCode, String preferredTradeCountry, String preferredTradeCity, String preferredTradeDistrict, String preferredTradeTown, Member member) {
+    public Keyword(String countryCode, String country, String administrativeArea, String subAdministrativeArea, String locality, String subLocality, String thoroughfare, Member member) {
         this.countryCode = countryCode;
-        this.preferredTradeCountry = preferredTradeCountry;
-        this.preferredTradeCity = preferredTradeCity;
-        this.preferredTradeDistrict = preferredTradeDistrict;
-        this.preferredTradeTown = preferredTradeTown;
+        this.country = country;
+        this.administrativeArea = administrativeArea;
+        this.subAdministrativeArea = subAdministrativeArea;
+        this.locality = locality;
+        this.subLocality = subLocality;
+        this.thoroughfare = thoroughfare;
         this.member = member;
     }
 }

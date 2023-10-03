@@ -6,17 +6,21 @@ import lombok.Builder;
 
 @Builder
 public record KeywordResponseDto(@NotNull String countryCode,
-                                 @NotNull String preferredTradeCountry,
-                                 @NotNull String preferredTradeCity,
-                                 @NotNull String preferredTradeDistrict,
-                                 @NotNull String preferredTradeTown) {
+                                 String country,
+                                 String administrativeArea,
+                                 String subAdministrativeArea,
+                                 String locality,
+                                 String subLocality,
+                                 String thoroughfare) {
     public static KeywordResponseDto from(Keyword keyword) {
         return KeywordResponseDto.builder()
                 .countryCode(keyword.getCountryCode())
-                .preferredTradeCountry(keyword.getPreferredTradeCountry())
-                .preferredTradeCity(keyword.getPreferredTradeCity())
-                .preferredTradeDistrict(keyword.getPreferredTradeDistrict())
-                .preferredTradeTown(keyword.getPreferredTradeTown())
+                .country(keyword.getCountry())
+                .administrativeArea(keyword.getAdministrativeArea())
+                .subAdministrativeArea(keyword.getSubAdministrativeArea())
+                .locality(keyword.getLocality())
+                .subLocality(keyword.getSubLocality())
+                .thoroughfare(keyword.getThoroughfare())
                 .build();
     }
 }
