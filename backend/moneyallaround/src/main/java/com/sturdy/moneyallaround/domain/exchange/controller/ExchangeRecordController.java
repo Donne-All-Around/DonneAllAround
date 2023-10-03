@@ -35,7 +35,7 @@ public class ExchangeRecordController {
         return ApiResponse.success("환전 기록 조회 성공", response);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ApiResponse<ExchangeRecordResponseDto> createExchangeRecord(
             @RequestParam(required = false) Long memberId,
             @RequestBody ExchangeRecordRequestDto exchangeRecordRequestDto) {
