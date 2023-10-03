@@ -130,6 +130,47 @@ class _ExchangePageState extends State<ExchangePage> {
 
   List<String> currency = [
     'USD',
+    'JPY',
+    'CNY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CAD',
+    'HKD',
+    'PHP',
+    'VND',
+    'TWD',
+    'SGD',
+    'CZK',
+    'NZD',
+    'RUB',
+  ];
+  List<String> sign = ['\$',  '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
+
+  List<int> unit = [1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
+
+
+
+  List<String> country2 = [
+    '미국(달러)',
+    '한국(원)',
+    '일본(엔)',
+    '중국(위안)',
+    '유럽(유로) ',
+    '영국(파운드)',
+    '호주(달러)',
+    '캐나다(달러)',
+    '홍콩(달러)',
+    '필리핀(페소)',
+    '베트남(동)',
+    '대만(달러)',
+    '싱가폴(달러)',
+    '체코(코루나)',
+    '뉴질랜드(달러)',
+    '러시아(루블)',
+  ];
+  List<String> currency2 = [
+    'USD',
     'KRW',
     'JPY',
     'CNY',
@@ -146,9 +187,10 @@ class _ExchangePageState extends State<ExchangePage> {
     'NZD',
     'RUB',
   ];
-  List<String> sign = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
+  List<String> sign2 = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
 
-  List<int> unit = [1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
+  List<int> unit2 = [1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
+
 
   int idx1 = 0;
   int idx2 = 1;
@@ -616,7 +658,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                                                 fontSize: 20),
                                                           ),
                                                           SizedBox(height: 10),
-                                                          Expanded(child: CountryListViewBuilder()),
+                                                          Expanded(child: CountryListViewBuilder2()),
                                                         ],
                                                       ),
                                                     ));
@@ -635,7 +677,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               CircleAvatar(
-                                                backgroundImage: AssetImage('assets/images/flag/${currency[idx2] == 'KRW' ? 'KRW' : currency[idx2] == 'USD' ? 'USDKRW' : 'USD${currency[idx2]}'}.png'),
+                                                backgroundImage: AssetImage('assets/images/flag/${currency2[idx2] == 'KRW' ? 'KRW' : currency2[idx2] == 'USD' ? 'USDKRW' : 'USD${currency2[idx2]}'}.png'),
                                                 radius: 15,
                                               ),
                                               const SizedBox(width: 5),
@@ -644,12 +686,12 @@ class _ExchangePageState extends State<ExchangePage> {
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   Text(
-                                                    country[idx2],
+                                                    country2[idx2],
                                                     style:
                                                     const TextStyle(fontSize: 15),
                                                   ),
                                                   Text(
-                                                    currency[idx2],
+                                                    currency2[idx2],
                                                     style:
                                                     const TextStyle(fontSize: 15),
                                                   ),
@@ -682,7 +724,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                             enabledBorder: const UnderlineInputBorder(
                                                 borderSide: BorderSide(color: Colors.transparent)
                                             ),
-                                            suffixText: '${sign[idx2]}',
+                                            suffixText: '${sign2[idx2]}',
                                             // suffixText: rate != null ? ' 1 USD = ${rate.toStringAsFixed(2)} ${sign[idx2]}' : '',
                                           ),
                                           textAlign: TextAlign.end,
@@ -885,7 +927,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                                                 fontSize: 20),
                                                           ),
                                                           SizedBox(height: 10),
-                                                          Expanded(child: CountryListViewBuilder()),
+                                                          Expanded(child: CountryListViewBuilder2()),
                                                         ],
                                                       ),
                                                     ));
@@ -1650,7 +1692,6 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
 
 List<String> country = [
   '미국(달러)',
-  '한국(원)',
   '일본(엔)',
   '중국(위안)',
   '유럽(유로) ',
@@ -1668,7 +1709,6 @@ List<String> country = [
 ];
 List<String> currency = [
   'USD',
-  'KRW',
   'JPY',
   'CNY',
   'EUR',
@@ -1684,9 +1724,9 @@ List<String> currency = [
   'NZD',
   'RUB',
 ];
-List<String> sign = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
+List<String> sign = ['\$', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
 
-List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
+List<int> unit = [1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
 
 class CountryListViewBuilder extends StatefulWidget {
   const CountryListViewBuilder({super.key});
@@ -1744,6 +1784,119 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
                       ),
                       Text(
                         currency[index],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 20),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+
+List<String> country2 = [
+  '미국(달러)',
+  '한국(원)',
+  '일본(엔)',
+  '중국(위안)',
+  '유럽(유로) ',
+  '영국(파운드)',
+  '호주(달러)',
+  '캐나다(달러)',
+  '홍콩(달러)',
+  '필리핀(페소)',
+  '베트남(동)',
+  '대만(달러)',
+  '싱가폴(달러)',
+  '체코(코루나)',
+  '뉴질랜드(달러)',
+  '러시아(루블)',
+];
+List<String> currency2 = [
+  'USD',
+  'KRW',
+  'JPY',
+  'CNY',
+  'EUR',
+  'GBP',
+  'AUD',
+  'CAD',
+  'HKD',
+  'PHP',
+  'VND',
+  'TWD',
+  'SGD',
+  'CZK',
+  'NZD',
+  'RUB',
+];
+List<String> sign2 = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
+
+List<int> unit2 = [1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
+
+class CountryListViewBuilder2 extends StatefulWidget {
+  const CountryListViewBuilder2({super.key});
+
+  @override
+  State<CountryListViewBuilder2> createState() => _CountryListViewBuilder2State();
+}
+
+class _CountryListViewBuilder2State extends State<CountryListViewBuilder2> {
+  int idx = 0;
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: country.length,
+      itemBuilder: (BuildContext context, int index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              idx = index;
+            });
+            Navigator.pop(context,idx);
+          },
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+            height: 50,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+              color: Color(0xFFFFD954),
+            ),
+            child: Row(
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(width: 20),
+                    CircleAvatar(
+                      backgroundImage: AssetImage('assets/images/flag/${currency2[index] == 'KRW' ? 'KRW' : currency2[index] == 'USD' ? 'USDKRW' : 'USD${currency2[index]}'}.png'),
+                      radius: 10,
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        country2[index],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        currency2[index],
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),

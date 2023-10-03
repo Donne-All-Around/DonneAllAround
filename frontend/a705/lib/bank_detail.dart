@@ -19,9 +19,36 @@ class BankDetailPage extends StatefulWidget {
 
 class _BankDetailPageState extends State<BankDetailPage> {
 
-  int _idx = 0;
-  int _idx2 = 7;
+  List<String> currency = [
+    'USD',
+    'KRW',
+    'JPY',
+    'CNY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CAD',
+    'HKD',
+    'PHP',
+    'VND',
+    'TWD',
+    'SGD',
+    'CZK',
+    'NZD',
+    'RUB',
+  ];
+  List<String> sign = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
 
+  List<int> unit = [1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
+
+  late int _idx;
+  int _idx2 = 1;
+  
+  @override
+  void initState() {
+    super.initState();
+    _idx = widget.selectedIndex == 0 ? 0 : widget.selectedIndex + 1;
+  }
 
   List<String> currency1 = [
     'USDKRW',
@@ -295,8 +322,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               CircleAvatar(
-                                                backgroundImage:
-                                                AssetImage('assets/images/flag/${currency[_idx]}.png'),
+                                                backgroundImage: AssetImage('assets/images/flag/${currency[_idx] == 'KRW' ? 'KRW' : currency[_idx] == 'USD' ? 'USDKRW' : 'USD${currency[_idx]}'}.png'),
                                                 radius: 15,
                                               ),
                                               const SizedBox(width: 5),
@@ -383,7 +409,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                     children: [
                                       GestureDetector(
                                         onTap: () async {
-                                          int idx2 = await showModalBottomSheet(
+                                          int idx = await showModalBottomSheet(
                                               context: context,
                                               isScrollControlled: true,
                                               shape: RoundedRectangleBorder(
@@ -410,14 +436,14 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                                                 fontSize: 20),
                                                           ),
                                                           SizedBox(height: 10),
-                                                          Expanded(child: CountryListViewBuilder2()),
+                                                          Expanded(child: CountryListViewBuilder()),
                                                         ],
                                                       ),
                                                     ));
                                               });
                                           setState(() {
-                                            _idx2 = idx2;
-                                            _moneyController2.text = (1 * unit2[_idx2]).toString();
+                                            _idx2 = idx;
+                                            _moneyController2.text = (1 * unit[_idx2]).toString();
                                           });
                                         },
                                         child: Container(
@@ -429,8 +455,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               CircleAvatar(
-                                                backgroundImage:
-                                                AssetImage('assets/images/flag/${currency2[_idx2]}.png'),
+                                                backgroundImage: AssetImage('assets/images/flag/${currency[_idx2] == 'KRW' ? 'KRW' : currency[_idx2] == 'USD' ? 'USDKRW' : 'USD${currency[_idx2]}'}.png'),
                                                 radius: 15,
                                               ),
                                               const SizedBox(width: 5),
@@ -477,7 +502,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                             enabledBorder: const UnderlineInputBorder(
                                                 borderSide: BorderSide(color: Colors.transparent)
                                             ),
-                                            suffixText: ' ${sign2[_idx2]}',
+                                            suffixText: ' ${sign[_idx2]}',
                                           ),
                                           textAlign: TextAlign.end,
                                           style: const TextStyle(
@@ -646,7 +671,6 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
     '싱가폴(달러) SGD',
     '대만(달러) TWD',
   ];
-  var _selectedValue1 = '미국(달러) USD';
   int idx1 = 0;
 
   List<String> currency1 = [
@@ -845,41 +869,41 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
 
 List<String> country = [
   '미국(달러)',
+  '한국(원)',
   '일본(엔)',
-  '유럽(유로)',
+  '중국(위안)',
+  '유럽(유로) ',
   '영국(파운드)',
   '호주(달러)',
-  '중국(위안)',
-  '베트남(동)',
-  '한국(원)',
-  '홍콩(달러)',
   '캐나다(달러)',
+  '홍콩(달러)',
+  '필리핀(페소)',
+  '베트남(동)',
+  '대만(달러)',
+  '싱가폴(달러)',
   '체코(코루나)',
   '뉴질랜드(달러)',
-  '필리핀(페소)',
   '러시아(루블)',
-  '싱가폴(달러)',
-  '대만(달러)',
 ];
 List<String> currency = [
   'USD',
+  'KRW',
   'JPY',
+  'CNY',
   'EUR',
   'GBP',
   'AUD',
-  'CNY',
-  'VND',
-  'KRW',
-  'HKD',
   'CAD',
+  'HKD',
+  'PHP',
+  'VND',
+  'TWD',
+  'SGD',
   'CZK',
   'NZD',
-  'PHP',
   'RUB',
-  'SGD',
-  'TWD',
 ];
-List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
+List<String> sign = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
 
 List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
 
@@ -921,8 +945,7 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
                   children: [
                     const SizedBox(width: 20),
                     CircleAvatar(
-                      backgroundImage:
-                      AssetImage('assets/images/flag/${currency[index]}.png'),
+                      backgroundImage: AssetImage('assets/images/flag/${currency[index] == 'KRW' ? 'KRW' : currency[index] == 'USD' ? 'USDKRW' : 'USD${currency[index]}'}.png'),
                       radius: 10,
                     ),
                     const SizedBox(width: 10),
@@ -958,117 +981,5 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
 }
 
 
-List<String> country2 = [
-  '미국(달러)',
-  '일본(엔)',
-  '유럽(유로)',
-  '영국(파운드)',
-  '호주(달러)',
-  '중국(위안)',
-  '베트남(동)',
-  '한국(원)',
-  '홍콩(달러)',
-  '캐나다(달러)',
-  '체코(코루나)',
-  '뉴질랜드(달러)',
-  '필리핀(페소)',
-  '러시아(루블)',
-  '싱가폴(달러)',
-  '대만(달러)',
-];
-List<String> currency2 = [
-  'USD',
-  'JPY',
-  'EUR',
-  'GBP',
-  'AUD',
-  'CNY',
-  'VND',
-  'KRW',
-  'HKD',
-  'CAD',
-  'CZK',
-  'NZD',
-  'PHP',
-  'RUB',
-  'SGD',
-  'TWD',
-];
-List<String> sign2 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
 
-List<int> unit2 = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
-
-class CountryListViewBuilder2 extends StatefulWidget {
-  const CountryListViewBuilder2({super.key});
-
-  @override
-  State<CountryListViewBuilder2> createState() => _CountryListViewBuilderState2();
-}
-
-class _CountryListViewBuilderState2 extends State<CountryListViewBuilder2> {
-  int idx2 = 7;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: country.length,
-      itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          onTap: () {
-            setState(() {
-              idx2 = index;
-            });
-            Navigator.pop(context, idx2);
-          },
-          child: Container(
-            margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-            height: 50,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
-              color: Color(0xFFFFD954),
-            ),
-            child: Row(
-              children: [
-                Row(
-                  children: [
-                    const SizedBox(width: 20),
-                    CircleAvatar(
-                      backgroundImage:
-                      AssetImage('assets/images/flag/${currency2[index]}.png'),
-                      radius: 10,
-                    ),
-                    const SizedBox(width: 10),
-                  ],
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        country[index],
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        currency[index],
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 20),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
 
