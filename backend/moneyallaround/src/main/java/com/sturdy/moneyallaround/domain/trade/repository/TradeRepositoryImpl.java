@@ -24,19 +24,19 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<Trade> findAll(TradeListRequestDto tradeListRequestDto, Pageable pageable) {
+    public Slice<Trade> findAll(TradeListRequestDto tradeListRequestDto, Long lastTradeId, Pageable pageable) {
         List<Trade> result = queryFactory
                 .select(trade)
                 .from(trade)
                 .leftJoin(trade.seller, member)
                 .fetchJoin()
                 .where(
-                        // 수정 필요 : 탈퇴한 사용자의 거래 글은 안 보이도록
                         trade.isDeleted.eq(false),
                         trade.status.in(TradeStatus.WAIT, TradeStatus.PROGRESS),
                         trade.countryCode.eq(tradeListRequestDto.countryCode()),
-                        eqPreferredTradeLocation(tradeListRequestDto.preferredTradeCountry(), tradeListRequestDto.preferredTradeCity(), tradeListRequestDto.preferredTradeDistrict(), tradeListRequestDto.preferredTradeTown()),
-                        ltLastTradeId(tradeListRequestDto.lastTradeId(), pageable)
+                        eqTradeLocation(tradeListRequestDto.country(), tradeListRequestDto.administrativeArea(), tradeListRequestDto.subAdministrativeArea(),
+                                tradeListRequestDto.locality(), tradeListRequestDto.subLocality(), tradeListRequestDto.thoroughfare()),
+                        ltLastTradeId(lastTradeId, pageable)
                 )
                 .limit(pageable.getPageSize() + 1)
                 .orderBy(tradeSort(pageable), trade.createTime.desc())
@@ -141,13 +141,16 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
         return checkLastPage(result, pageable);
     }
 
-    private BooleanExpression eqPreferredTradeLocation(String preferredTradeCountry, String preferredTradeCity, String preferredTradeDistrict, String preferredTradeTown) {
-        BooleanExpression countryExpression = preferredTradeCountry == null ? null : trade.preferredTradeCountry.eq(preferredTradeCountry);
-        BooleanExpression cityExpression = preferredTradeCity == null ? null : trade.preferredTradeCity.eq(preferredTradeCity);
-        BooleanExpression districtExpression = preferredTradeDistrict == null ? null : trade.preferredTradeDistrict.eq(preferredTradeDistrict);
-        BooleanExpression townExpression = preferredTradeTown == null ? null : trade.preferredTradeTown.eq(preferredTradeTown);
+    private BooleanExpression eqTradeLocation(String country, String administrativeArea, String subAdministrativeArea,
+                                              String locality, String subLocality, String thoroughfare) {
+        BooleanExpression countryExpression = country == null ? null : trade.country.eq(country);
+        BooleanExpression administrativeAreaExpression = administrativeArea == null ? null : trade.administrativeArea.eq(administrativeArea);
+        BooleanExpression subAdministrativeAreaExpression = subAdministrativeArea == null ? null : trade.subAdministrativeArea.eq(subAdministrativeArea);
+        BooleanExpression localityExpression = locality == null ? null : trade.locality.eq(locality);
+        BooleanExpression subLocalityExpression = subLocality == null ? null : trade.subLocality.eq(subLocality);
+        BooleanExpression thoroughfareExpression = thoroughfare == null ? null : trade.thoroughfare.eq(thoroughfare);
 
-        return Expressions.allOf(countryExpression, cityExpression, districtExpression, townExpression);
+        return Expressions.allOf(countryExpression, administrativeAreaExpression, subAdministrativeAreaExpression, localityExpression, subLocalityExpression, thoroughfareExpression);
     }
 
     private BooleanExpression ltLastTradeId(Long lastTradeId, Pageable pageable) {

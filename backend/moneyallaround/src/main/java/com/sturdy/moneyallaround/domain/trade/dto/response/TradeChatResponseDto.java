@@ -21,16 +21,6 @@ public record TradeChatResponseDto(@NotNull Long id,
                                    @NotNull Boolean hasReview,
                                    @NotNull Boolean hasTransfer,
                                    Long buyerId,
-                                   LocalDateTime directTradeTime,
-                                   String directTradeLocationDetail,
-                                   String sellerAccountBankCode,
-                                   String sellerAccountNumber,
-                                   String deliveryRecipientName,
-                                   String deliveryRecipientTel,
-                                   String deliveryAddressZipCode,
-                                   String deliveryAddress,
-                                   String deliveryAddressDetail,
-                                   String trackingNumber,
                                    @NotNull LocalDateTime createTime) {
     public static TradeChatResponseDto from(Trade trade, Boolean hasReview, Boolean hasTransfer) {
         return TradeChatResponseDto.builder()
@@ -46,16 +36,6 @@ public record TradeChatResponseDto(@NotNull Long id,
                 .hasReview(hasReview)
                 .hasTransfer(hasTransfer)
                 .buyerId(trade.getBuyer() == null ? null : trade.getBuyer().getId())
-                .directTradeTime(trade.getDirectTradeTime())
-                .directTradeLocationDetail(trade.getDirectTradeLocationDetail())
-                .sellerAccountBankCode(trade.getSellerAccountBankCode())
-                .sellerAccountNumber(trade.getSellerAccountNumber())
-                .deliveryRecipientName(trade.getDeliveryRecipientName())
-                .deliveryRecipientTel(trade.getDeliveryRecipientTel())
-                .deliveryAddressZipCode(trade.getDeliveryAddressZipCode())
-                .deliveryAddress(trade.getDeliveryAddress())
-                .deliveryAddressDetail(trade.getDeliveryAddressDetail())
-                .trackingNumber(trade.getTrackingNumber())
                 .createTime(trade.getCreateTime())
                 .build();
     }

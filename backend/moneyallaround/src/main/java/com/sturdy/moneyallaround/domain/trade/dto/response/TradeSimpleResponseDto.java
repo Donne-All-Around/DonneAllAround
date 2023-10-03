@@ -16,10 +16,12 @@ public record TradeSimpleResponseDto(@NotNull Long id,
                                      @NotNull Integer foreignCurrencyAmount,
                                      @NotNull Integer koreanWonAmount,
                                      @NotNull Double koreanWonPerForeignCurrency,
-                                     @NotNull String preferredTradeCountry,
-                                     @NotNull String preferredTradeCity,
-                                     @NotNull String preferredTradeDistrict,
-                                     @NotNull String preferredTradeTown,
+                                     String country,
+                                     String administrativeArea,
+                                     String subAdministrativeArea,
+                                     String locality,
+                                     String subLocality,
+                                     String thoroughfare,
                                      @NotNull Integer tradeLikeCount,
                                      @NotNull LocalDateTime createTime) {
     public static TradeSimpleResponseDto from(Trade trade) {
@@ -32,10 +34,12 @@ public record TradeSimpleResponseDto(@NotNull Long id,
                 .foreignCurrencyAmount(trade.getForeignCurrencyAmount())
                 .koreanWonAmount(trade.getKoreanWonAmount())
                 .koreanWonPerForeignCurrency(trade.getKoreanWonPerForeignCurrency())
-                .preferredTradeCountry(trade.getPreferredTradeCountry())
-                .preferredTradeCity(trade.getPreferredTradeCity())
-                .preferredTradeDistrict(trade.getPreferredTradeDistrict())
-                .preferredTradeTown(trade.getPreferredTradeTown())
+                .country(trade.getCountry())
+                .administrativeArea(trade.getAdministrativeArea())
+                .subAdministrativeArea(trade.getSubAdministrativeArea())
+                .locality(trade.getLocality())
+                .subLocality(trade.getSubLocality())
+                .thoroughfare(trade.getThoroughfare())
                 .tradeLikeCount(trade.getLikeList().size())
                 .createTime(trade.getCreateTime())
                 .build();

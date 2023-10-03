@@ -18,12 +18,14 @@ public record TradeHistoryResponseDto(@NotNull Long id,
                                       @NotNull Integer foreignCurrencyAmount,
                                       @NotNull Integer koreanWonAmount,
                                       @NotNull TradeType type,
-                                      @NotNull String preferredTradeCountry,
-                                      @NotNull String preferredTradeCity,
-                                      @NotNull String preferredTradeDistrict,
-                                      @NotNull String preferredTradeTown,
-                                      @NotNull LocalDateTime createTime,
-                                      @NotNull Boolean hasReview) {
+                                      String country,
+                                      String administrativeArea,
+                                      String subAdministrativeArea,
+                                      String locality,
+                                      String subLocality,
+                                      String thoroughfare,
+                                      @NotNull Boolean hasReview,
+                                      @NotNull LocalDateTime createTime) {
     public static TradeHistoryResponseDto from(Trade trade, Boolean hasReview) {
         return TradeHistoryResponseDto.builder()
                 .id(trade.getId())
@@ -35,12 +37,14 @@ public record TradeHistoryResponseDto(@NotNull Long id,
                 .foreignCurrencyAmount(trade.getForeignCurrencyAmount())
                 .koreanWonAmount(trade.getKoreanWonAmount())
                 .type(trade.getType())
-                .preferredTradeCountry(trade.getPreferredTradeCountry())
-                .preferredTradeCity(trade.getPreferredTradeCity())
-                .preferredTradeDistrict(trade.getPreferredTradeDistrict())
-                .preferredTradeTown(trade.getPreferredTradeTown())
-                .createTime(trade.getCreateTime())
+                .country(trade.getCountry())
+                .administrativeArea(trade.getAdministrativeArea())
+                .subAdministrativeArea(trade.getSubAdministrativeArea())
+                .locality(trade.getLocality())
+                .subLocality(trade.getSubLocality())
+                .thoroughfare(trade.getThoroughfare())
                 .hasReview(hasReview)
+                .createTime(trade.getCreateTime())
                 .build();
     }
 }

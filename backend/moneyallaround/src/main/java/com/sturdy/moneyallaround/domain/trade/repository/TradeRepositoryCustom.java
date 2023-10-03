@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 public interface TradeRepositoryCustom {
-    Slice<Trade> findAll(TradeListRequestDto tradeListRequestDto, Pageable pageable);
+    Slice<Trade> findAll(TradeListRequestDto tradeListRequestDto, Long lastTradeId, Pageable pageable);
     Slice<Trade> findCompleteTradeBySeller(Member seller, Long lastTradeId, Pageable pageable);
     Slice<Trade> findSaleTradeBySeller(Member seller, Long lastTradeId, Pageable pageable);
     Slice<Trade> findByBuyerAndStatus(Member buyer, Long lastTradeId, Pageable pageable);

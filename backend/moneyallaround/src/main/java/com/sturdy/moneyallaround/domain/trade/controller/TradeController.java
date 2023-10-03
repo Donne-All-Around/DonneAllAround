@@ -38,9 +38,10 @@ public class TradeController {
     @PostMapping("/list")
     public ApiResponse<Map<String, Object>> tradeList(
             @RequestParam(required = false) Long memberId,
+            @RequestParam(required = false) Long lastTradeId,
             @RequestBody @Valid TradeListRequestDto tradeListRequestDto,
             @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
-        Slice<Trade> slices = tradeService.findAll(tradeListRequestDto, pageable);
+        Slice<Trade> slices = tradeService.findAll(tradeListRequestDto, lastTradeId, pageable);
         Map<String, Object> response = new HashMap<>();
         response.put("tradeList", slices.stream().map(TradeSimpleResponseDto::from).toList());
         response.put("last", slices.isLast());
@@ -139,48 +140,16 @@ public class TradeController {
     public ApiResponse<TradeChatResponseDto> makeDirectPromise(
             @RequestParam(required = false) Long memberId,
             @PathVariable Long tradeId,
-            @RequestBody DirectTradeCreateRequestDto directTradeCreateRequestDto) {
-        return ApiResponse.success("직거래 약속 잡기 성공", TradeChatResponseDto.from(tradeService.makeDirectPromise(tradeId, directTradeCreateRequestDto), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
+            @RequestBody PromiseRequestDto promiseRequestDto) {
+        return ApiResponse.success("직거래 약속 잡기 성공", TradeChatResponseDto.from(tradeService.makeDirectPromise(tradeId, promiseRequestDto), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
     }
 
     @PutMapping("/promise/delivery/{tradeId}")
     public ApiResponse<TradeChatResponseDto> makeDeliveryPromise(
             @RequestParam(required = false) Long memberId,
             @PathVariable Long tradeId,
-            @RequestBody DeliveryTradeRequestDto deliveryTradeRequestDto) {
-        return ApiResponse.success("택배거래 약속 잡기 성공", TradeChatResponseDto.from(tradeService.makeDeliveryPromise(tradeId, deliveryTradeRequestDto), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
-    }
-
-    @PutMapping("/promise/direct/{tradeId}/edit")
-    public ApiResponse<TradeChatResponseDto> updateDirectPromise(
-            @RequestParam(required = false) Long memberId,
-            @PathVariable Long tradeId,
-            @RequestBody DirectTradeUpdateRequestDto directTradeUpdateRequestDto) {
-        return ApiResponse.success("직거래 약속 수정 성공", TradeChatResponseDto.from(tradeService.updateDirectPromise(tradeId, directTradeUpdateRequestDto), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
-    }
-
-    @PutMapping("/promise/delivery/{tradeId}/account")
-    public ApiResponse<TradeChatResponseDto> updateSellerAccountNumber(
-            @RequestParam(required = false) Long memberId,
-            @PathVariable Long tradeId,
-            @RequestBody AccountNumberRequestDto accountNumberRequestDto) {
-        return ApiResponse.success("택배거래 판매자 계좌번호 수정 성공", TradeChatResponseDto.from(tradeService.updateSellerAccountNumber(tradeId, accountNumberRequestDto), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
-    }
-
-    @PutMapping("/promise/delivery/{tradeId}/address")
-    public ApiResponse<TradeChatResponseDto> updateDeliveryInfo(
-            @RequestParam(required = false) Long memberId,
-            @PathVariable Long tradeId,
-            @RequestBody DeliveryInfoRequestDto deliveryInfoRequestDto) {
-        return ApiResponse.success("택배거래 구매자 배송지 수정 성공", TradeChatResponseDto.from(tradeService.updateDeliveryInfo(tradeId, deliveryInfoRequestDto), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
-    }
-
-    @PutMapping("/promise/delivery/{tradeId}/tracking")
-    public ApiResponse<TradeChatResponseDto> updateTrackingNumber(
-            @RequestParam(required = false) Long memberId,
-            @PathVariable Long tradeId,
-            @RequestBody TrackingNumberRequestDto trackingNumberRequestDto) {
-        return ApiResponse.success("택배거래 송장번호 수정 성공", TradeChatResponseDto.from(tradeService.updateTrackingNumber(tradeId, trackingNumberRequestDto), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
+            @RequestBody PromiseRequestDto promiseRequestDto) {
+        return ApiResponse.success("택배거래 약속 잡기 성공", TradeChatResponseDto.from(tradeService.makeDeliveryPromise(tradeId, promiseRequestDto), tradeReviewService.existTradeReview(tradeId, memberId), transferService.existsTransfer(tradeId)));
     }
 
     @PutMapping("/promise/cancel/{tradeId}")

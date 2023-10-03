@@ -20,10 +20,11 @@ public class KeywordRepositoryImpl implements KeywordRepositoryCustom {
                 .where(
                         keyword.member.ne(trade.getSeller()),
                         keyword.countryCode.eq(trade.getCountryCode()),
-                        keyword.preferredTradeCountry.eq(trade.getPreferredTradeCountry()),
-                        keyword.preferredTradeCity.eq(trade.getPreferredTradeCity()),
-                        keyword.preferredTradeDistrict.eq(trade.getPreferredTradeDistrict()),
-                        keyword.preferredTradeTown.eq(trade.getPreferredTradeTown())
+                        keyword.preferredTradeCountry.eq(trade.getCountry()),
+                        keyword.preferredTradeCity.eq(trade.getAdministrativeArea()),
+                        keyword.preferredTradeDistrict.eq(trade.getSubAdministrativeArea()),
+                        keyword.preferredTradeTown.eq(trade.getLocality()),
+                        keyword.preferredTradeTown.eq(trade.getSubLocality())
                 )
                 .fetch();
     }

@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,18 +20,26 @@ public class Trade extends BaseEntity {
     @Column(nullable = false)
     private Long id;
 
+    /*
+        판매 글 관련 정보
+     */
     @Column(nullable = false)
     private String title;
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
-
     @Column(nullable = false)
     private String thumbnailImageUrl;
 
+    /*
+        거래 상태 : 대기(WAIT), 예약 중(PROGRESS), 완료(COMPLETE)
+     */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TradeStatus status;
 
+    /*
+        판매 상품 및 금액 정보
+     */
     @Column(nullable = false)
     private String countryCode;
     @Column(nullable = false)
@@ -42,65 +49,39 @@ public class Trade extends BaseEntity {
     @Column(nullable = false)
     private Double koreanWonPerForeignCurrency;
 
+    /*
+        직거래 위치 정보
+     */
     @Column(nullable = false)
     private Double latitude;
     @Column(nullable = false)
     private Double longitude;
 
-    @Column(nullable = false)
-    private String preferredTradeCountry;
-    @Column(nullable = false)
-    private String preferredTradeCity;
-    @Column(nullable = false)
-    private String preferredTradeDistrict;
-    @Column(nullable = false)
-    private String preferredTradeTown;
+    @Column(nullable = true)
+    private String country;
+    @Column(nullable = true)
+    private String administrativeArea;
+    @Column(nullable = true)
+    private String subAdministrativeArea;
+    @Column(nullable = true)
+    private String locality;
+    @Column(nullable = true)
+    private String subLocality;
+    @Column(nullable = true)
+    private String thoroughfare;
 
+    /*
+        거래 타입 : 직거래(DIRECT), 택배거래(DELIVERY)
+     */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TradeType type;
 
+    /*
+        판매 글 삭제 유무
+     */
     @Column(nullable = false)
     private Boolean isDeleted;
-
-    // 직거래 일시
-    @Column(nullable = true, columnDefinition = "datetime")
-    private LocalDateTime directTradeTime;
-
-    // 직거래 장소
-    @Column(nullable = true)
-    private String directTradeLocationDetail;
-
-    @Column(nullable = true)
-    private String sellerAccountBankCode;
-
-    // 판매자 계좌번호
-    @Column(nullable = true)
-    private String sellerAccountNumber;
-
-    // 택배 수취인 이름
-    @Column(nullable = true)
-    private String deliveryRecipientName;
-
-    // 택배 수취인 전화번호
-    @Column(nullable = true)
-    private String deliveryRecipientTel;
-
-    // 배송지 우편번호
-    @Column(nullable = true)
-    private String deliveryAddressZipCode;
-
-    // 배송지
-    @Column(nullable = true)
-    private String deliveryAddress;
-
-    // 배송지 상세주소
-    @Column(nullable = true)
-    private String deliveryAddressDetail;
-
-    // 송장번호
-    @Column(nullable = true)
-    private String trackingNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
@@ -110,14 +91,24 @@ public class Trade extends BaseEntity {
     @JoinColumn(name = "buyer_id", nullable = true)
     private Member buyer;
 
+    /*
+        이미지 url 리스트
+     */
     @OneToMany(mappedBy = "trade", cascade = CascadeType.ALL)
     private List<TradeImage> imageList = new ArrayList<>();
 
+    /*
+        판매글 관심 리스트
+     */
     @OneToMany(mappedBy = "trade", cascade = CascadeType.ALL)
     private List<TradeLike> likeList = new ArrayList<>();
 
     @Builder
-    public Trade(String title, String description, String thumbnailImageUrl, String countryCode, Integer foreignCurrencyAmount, Integer koreanWonAmount, Double latitude, Double longitude, String preferredTradeCountry, String preferredTradeCity, String preferredTradeDistrict, String preferredTradeTown, Member seller) {
+    public Trade(String title, String description, String thumbnailImageUrl,
+                 String countryCode, Integer foreignCurrencyAmount, Integer koreanWonAmount,
+                 Double latitude, Double longitude,
+                 String country, String administrativeArea, String subAdministrativeArea, String locality, String subLocality, String thoroughfare,
+                 Member seller) {
         this.title = title;
         this.description = description;
         this.thumbnailImageUrl = thumbnailImageUrl;
@@ -128,16 +119,21 @@ public class Trade extends BaseEntity {
         koreanWonPerForeignCurrency = (double)koreanWonAmount / (double)foreignCurrencyAmount;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.preferredTradeCountry = preferredTradeCountry;
-        this.preferredTradeCity = preferredTradeCity;
-        this.preferredTradeDistrict = preferredTradeDistrict;
-        this.preferredTradeTown = preferredTradeTown;
+        this.country = country;
+        this.administrativeArea = administrativeArea;
+        this.subAdministrativeArea = subAdministrativeArea;
+        this.locality = locality;
+        this.subLocality = subLocality;
+        this.thoroughfare = thoroughfare;
         type = TradeType.DIRECT;
         isDeleted = false;
         this.seller = seller;
     }
 
-    public void update(String title, String description, String thumbnailImageUrl, String countryCode, Integer foreignCurrencyAmount, Integer koreanWonAmount, Double latitude, Double longitude, String preferredTradeCountry, String preferredTradeCity, String preferredTradeDistrict, String preferredTradeTown) {
+    public void update(String title, String description, String thumbnailImageUrl,
+                       String countryCode, Integer foreignCurrencyAmount, Integer koreanWonAmount,
+                       Double latitude, Double longitude,
+                       String country, String administrativeArea, String subAdministrativeArea, String locality, String subLocality, String thoroughfare) {
         this.title = title;
         this.description = description;
         this.thumbnailImageUrl = thumbnailImageUrl;
@@ -147,22 +143,22 @@ public class Trade extends BaseEntity {
         koreanWonPerForeignCurrency = (double)koreanWonAmount / (double)foreignCurrencyAmount;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.preferredTradeCountry = preferredTradeCountry;
-        this.preferredTradeCity = preferredTradeCity;
-        this.preferredTradeDistrict = preferredTradeDistrict;
-        this.preferredTradeTown = preferredTradeTown;
+        this.country = country;
+        this.administrativeArea = administrativeArea;
+        this.subAdministrativeArea = subAdministrativeArea;
+        this.locality = locality;
+        this.subLocality = subLocality;
+        this.thoroughfare = thoroughfare;
     }
 
     public void delete() {
         isDeleted = true;
     }
 
-    public void makeDirectPromise(Member buyer, LocalDateTime directTradeTime, String directTradeLocationDetail) {
+    public void makeDirectPromise(Member buyer) {
         status = TradeStatus.PROGRESS;
         type = TradeType.DIRECT;
         this.buyer = buyer;
-        this.directTradeTime = directTradeTime;
-        this.directTradeLocationDetail = directTradeLocationDetail;
     }
 
     public void makeDeliveryPromise(Member buyer) {
@@ -171,42 +167,10 @@ public class Trade extends BaseEntity {
         this.buyer = buyer;
     }
 
-    public void updateDirectPromise(LocalDateTime directTradeTime, String directTradeLocationDetail) {
-        this.directTradeTime = directTradeTime;
-        this.directTradeLocationDetail = directTradeLocationDetail;
-    }
-
-    public void updateSellerAccountNumber(String sellerAccountBankCode, String sellerAccountNumber) {
-        this.sellerAccountBankCode = sellerAccountBankCode;
-        this.sellerAccountNumber = sellerAccountNumber;
-    }
-
-    public void updateDeliveryInfo(String deliveryRecipientName, String deliveryRecipientTel, String deliveryAddressZipCode, String deliveryAddress, String deliveryAddressDetail) {
-        this.deliveryRecipientName = deliveryRecipientName;
-        this.deliveryRecipientTel = deliveryRecipientTel;
-        this.deliveryAddressZipCode = deliveryAddressZipCode;
-        this.deliveryAddress = deliveryAddress;
-        this.deliveryAddressDetail = deliveryAddressDetail;
-    }
-
-    public void updateTrackingNumber(String trackingNumber) {
-        this.trackingNumber = trackingNumber;
-    }
-
     public void cancelPromise() {
         status = TradeStatus.WAIT;
         type = TradeType.DIRECT;
         buyer = null;
-        directTradeTime = null;
-        directTradeLocationDetail = null;
-        sellerAccountBankCode = null;
-        sellerAccountNumber = null;
-        deliveryRecipientName = null;
-        deliveryRecipientTel = null;
-        deliveryAddressZipCode = null;
-        deliveryAddress = null;
-        deliveryAddressDetail = null;
-        trackingNumber = null;
     }
 
     public void complete() {

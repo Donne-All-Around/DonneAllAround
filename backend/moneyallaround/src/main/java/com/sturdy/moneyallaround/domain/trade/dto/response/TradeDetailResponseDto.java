@@ -3,6 +3,7 @@ package com.sturdy.moneyallaround.domain.trade.dto.response;
 import com.sturdy.moneyallaround.domain.trade.entity.Trade;
 import com.sturdy.moneyallaround.domain.trade.entity.TradeImage;
 import com.sturdy.moneyallaround.domain.trade.entity.TradeStatus;
+import com.sturdy.moneyallaround.domain.trade.entity.TradeType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
@@ -20,10 +21,13 @@ public record TradeDetailResponseDto(@NotNull Long id,
                                      @NotNull Double koreanWonPerForeignCurrency,
                                      @NotNull Double latitude,
                                      @NotNull Double longitude,
-                                     @NotNull String preferredTradeCountry,
-                                     @NotNull String preferredTradeCity,
-                                     @NotNull String preferredTradeDistrict,
-                                     @NotNull String preferredTradeTown,
+                                     String country,
+                                     String administrativeArea,
+                                     String subAdministrativeArea,
+                                     String locality,
+                                     String subLocality,
+                                     String thoroughfare,
+                                     @NotNull TradeType type,
                                      @NotNull List<String> imageUrlList,
                                      @NotNull Long sellerId,
                                      @NotNull String sellerNickname,
@@ -43,10 +47,13 @@ public record TradeDetailResponseDto(@NotNull Long id,
                 .koreanWonPerForeignCurrency(trade.getKoreanWonPerForeignCurrency())
                 .latitude(trade.getLatitude())
                 .longitude(trade.getLongitude())
-                .preferredTradeCountry(trade.getPreferredTradeCountry())
-                .preferredTradeCity(trade.getPreferredTradeCity())
-                .preferredTradeDistrict(trade.getPreferredTradeDistrict())
-                .preferredTradeTown(trade.getPreferredTradeTown())
+                .country(trade.getCountry())
+                .administrativeArea(trade.getAdministrativeArea())
+                .subAdministrativeArea(trade.getSubAdministrativeArea())
+                .locality(trade.getLocality())
+                .subLocality(trade.getSubLocality())
+                .thoroughfare(trade.getThoroughfare())
+                .type(trade.getType())
                 .imageUrlList(trade.getImageList().stream().map(TradeImage::getUrl).toList())
                 .sellerId(trade.getSeller().getId())
                 .sellerNickname(trade.getSeller().getNickname())

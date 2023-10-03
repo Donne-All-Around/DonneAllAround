@@ -21,8 +21,8 @@ public class TradeService {
     private final TradeImageService tradeImageService;
 
     // 완료되지 않은 거래 목록 조회
-    public Slice<Trade> findAll(TradeListRequestDto tradeListRequestDto, Pageable pageable) {
-        return tradeRepository.findAll(tradeListRequestDto, pageable);
+    public Slice<Trade> findAll(TradeListRequestDto tradeListRequestDto, Long lastTradeId, Pageable pageable) {
+        return tradeRepository.findAll(tradeListRequestDto, lastTradeId, pageable);
     }
 
     // 완료된 판매 내역
@@ -66,20 +66,24 @@ public class TradeService {
                             tradeImageService.deleteTradeImages(trade.getImageList());
                             trade.getImageList().clear();
                             trade.addImages(tradeRequestDto.imageUrlList().stream().map(imageUrl -> new TradeImage(imageUrl, trade)).toList());
-                            trade.update(tradeRequestDto.title(), tradeRequestDto.description(), tradeRequestDto.thumbnailImageUrl(), tradeRequestDto.countryCode(), tradeRequestDto.foreignCurrencyAmount(), tradeRequestDto.koreanWonAmount(), tradeRequestDto.latitude(), tradeRequestDto.longitude(), tradeRequestDto.preferredTradeCountry(), tradeRequestDto.preferredTradeCity(), tradeRequestDto.preferredTradeDistrict(), tradeRequestDto.preferredTradeTown());
+                            trade.update(tradeRequestDto.title(), tradeRequestDto.description(), tradeRequestDto.thumbnailImageUrl(),
+                                    tradeRequestDto.countryCode(), tradeRequestDto.foreignCurrencyAmount(), tradeRequestDto.koreanWonAmount(),
+                                    tradeRequestDto.latitude(), tradeRequestDto.longitude(),
+                                    tradeRequestDto.country(), tradeRequestDto.administrativeArea(), tradeRequestDto.subAdministrativeArea(),
+                                    tradeRequestDto.locality(), tradeRequestDto.subLocality(), tradeRequestDto.thoroughfare());
                         },
                         () -> { throw new EntityNotFoundException(); });
 
         return findTrade(tradeId);
     }
 
-    // 거래 글 삭제(isDeleted 속성 수정)
+    // 거래 글 삭제
     @Transactional
     public void deleteTrade(Long tradeId) {
         tradeRepository.findById(tradeId)
                 .ifPresentOrElse(trade -> {
                             tradeImageService.deleteTradeImages(trade.getImageList());
-                            trade.getImageList().clear();
+                            trade.clearImageList();
                             trade.delete();
                         },
                         () -> { throw new EntityNotFoundException(); });
@@ -87,49 +91,15 @@ public class TradeService {
 
     // 직거래 약속 잡기
     @Transactional
-    public Trade makeDirectPromise(Long tradeId, DirectTradeCreateRequestDto directTradeCreateRequestDto) {
-        tradeRepository.findById(tradeId)
-                .ifPresentOrElse(trade -> trade.makeDirectPromise(memberService.findById(directTradeCreateRequestDto.buyerId()), directTradeCreateRequestDto.getDirectTradeTime(), directTradeCreateRequestDto.directTradeLocationDetail()),
-                        () -> { throw new EntityNotFoundException(); });
-
-        return findTrade(tradeId);
-    }
-
-    // 직거래 약속 수정
-    @Transactional
-    public Trade updateDirectPromise(Long tradeId, DirectTradeUpdateRequestDto directTradeUpdateRequestDto) {
-        tradeRepository.findById(tradeId)
-                .ifPresentOrElse(trade -> trade.updateDirectPromise(directTradeUpdateRequestDto.getDirectTradeTime(), directTradeUpdateRequestDto.directTradeLocationDetail()),
-                        () -> { throw new EntityNotFoundException(); });
-
+    public Trade makeDirectPromise(Long tradeId, PromiseRequestDto promiseRequestDto) {
+        findTrade(tradeId).makeDirectPromise(memberService.findById(promiseRequestDto.buyerId()));
         return findTrade(tradeId);
     }
 
     // 택배거래 약속 잡기
     @Transactional
-    public Trade makeDeliveryPromise(Long tradeId, DeliveryTradeRequestDto deliveryTradeRequestDto) {
-        findTrade(tradeId).makeDeliveryPromise(memberService.findById(deliveryTradeRequestDto.buyerId()));
-        return findTrade(tradeId);
-    }
-
-    // 택배거래 - 판매자 계좌 정보 입력
-    @Transactional
-    public Trade updateSellerAccountNumber(Long tradeId, AccountNumberRequestDto accountNumberRequestDto) {
-        findTrade(tradeId).updateSellerAccountNumber(accountNumberRequestDto.sellerAccountBankCode(), accountNumberRequestDto.sellerAccountNumber());
-        return findTrade(tradeId);
-    }
-
-    // 택배거래 - 배송지 정보 입력
-    @Transactional
-    public Trade updateDeliveryInfo(Long tradeId, DeliveryInfoRequestDto deliveryInfoRequestDto) {
-        findTrade(tradeId).updateDeliveryInfo(deliveryInfoRequestDto.deliveryRecipientName(), deliveryInfoRequestDto.deliveryRecipientTel(), deliveryInfoRequestDto.deliveryAddressZipCode(), deliveryInfoRequestDto.deliveryAddress(), deliveryInfoRequestDto.deliveryAddressDetail());
-        return findTrade(tradeId);
-    }
-
-    // 택배거래 - 송장 번호 입력
-    @Transactional
-    public Trade updateTrackingNumber(Long tradeId, TrackingNumberRequestDto trackingNumberRequestDto) {
-        findTrade(tradeId).updateTrackingNumber(trackingNumberRequestDto.trackingNumber());
+    public Trade makeDeliveryPromise(Long tradeId, PromiseRequestDto promiseRequestDto) {
+        findTrade(tradeId).makeDeliveryPromise(memberService.findById(promiseRequestDto.buyerId()));
         return findTrade(tradeId);
     }
 
@@ -152,6 +122,7 @@ public class TradeService {
         return tradeRepository.findByKeyword(keyword, lastTradeId, pageable);
     }
 
+    // 키워드 알림 거래 목록 조회
     public Slice<Trade> findNotification(Long memberId, Long lastTradeId, Pageable pageable) {
         return tradeRepository.findNotificationTrade(memberService.findById(memberId), lastTradeId, pageable);
     }
