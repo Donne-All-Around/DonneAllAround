@@ -30,7 +30,7 @@ public class ExchangeRecordController {
             @PageableDefault(size = 20, sort = "exchangeDate", direction = Sort.Direction.DESC)Pageable pageable) {
         Slice<ExchangeRecord> slices = exchangeRecordService.findByMember(memberId, lastExchangeRecordId, pageable);
         Map<String, Object> response = new HashMap<>();
-        response.put("exchageRecordList", slices.stream().map(ExchangeRecordResponseDto::from).toList());
+        response.put("exchangeRecordList", slices.stream().map(ExchangeRecordResponseDto::from).toList());
         response.put("last", slices.isLast());
         return ApiResponse.success("환전 기록 조회 성공", response);
     }
