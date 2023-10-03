@@ -6,4 +6,13 @@ public record LogInRequest(
         @NotNull String tel
 
 ) {
+	private static String firebaseToken;
+
+	public String getFirebaseToken() {
+		return firebaseToken;
+	}
+
+	public String getTel() {
+		return tel;
+	}
 }

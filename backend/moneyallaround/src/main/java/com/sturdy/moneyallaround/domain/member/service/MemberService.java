@@ -6,10 +6,7 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import com.sturdy.moneyallaround.Exception.message.ExceptionMessage;
-import com.sturdy.moneyallaround.Exception.model.TokenCheckFailException;
-import com.sturdy.moneyallaround.Exception.model.TokenNotFoundException;
-import com.sturdy.moneyallaround.Exception.model.UserAuthException;
-import com.sturdy.moneyallaround.Exception.model.UserException;
+import com.sturdy.moneyallaround.Exception.model.*;
 import com.sturdy.moneyallaround.config.security.jwt.JwtTokenProvider;
 import com.sturdy.moneyallaround.config.security.jwt.TokenInfo;
 import com.sturdy.moneyallaround.domain.member.dto.request.*;
@@ -49,12 +46,14 @@ public class MemberService implements UserDetailsService {
     @Transactional
     public SignUpResponse registNewMember(SignUpRequest request){
         log.info(request.toString());
+        //회원정보 저장, 근데 비밀번호 없는데 encoder 필요한가?
         Member member = memberRepository.save(Member.from(request, encoder));
         try {
             memberRepository.flush();
         }catch (DataIntegrityViolationException e){
             throw new UserAuthException(ExceptionMessage.FAIL_SAVE_DATA);
         }
+        //저장한 회원 정보로 응답 생성
         return SignUpResponse.from(member);
     }
 
@@ -79,9 +78,25 @@ public class MemberService implements UserDetailsService {
         }
     }
 
+
+    // 로그인 로직
     public LogInResponse logIn(LogInRequest request) {
+        String firebaseToken = request.getFirebaseToken();
 
+        // Firebase 토큰을 검증하고, 유효한 사용자인지 확인한다.
+        if (!verifyFirebaseToken(firebaseToken)) {
+            throw new FirebaseTokenValidationException("Firebase 토큰 검증 실패");
+        }
 
+        // Firebase 토큰이 유효하면, 해당 사용자를 데이터베이스에서 찾아온다.
+        Member member = memberRepository.findByTel(request.getTel())
+                .orElseThrow(() -> new UserException(ExceptionMessage.USER_NOT_FOUND));
+
+        // 사용자 정보로 JWT 토큰을 생성한다.
+        TokenInfo tokenInfo = jwtTokenProvider.generateToken(request.getTel(), firebaseToken, null);
+
+        // 로그인 응답을 생성하여 반환한다.
+        return LogInResponse.from(member, tokenInfo);
     }
 
     //멤버 업데이트
@@ -95,8 +110,6 @@ public class MemberService implements UserDetailsService {
             throw new UserAuthException(ExceptionMessage.FAIL_UPDATE_DATA);
         }
     }
-
-    //UpdateTelResponse
 
 
     // 멤버 삭제
@@ -201,7 +214,14 @@ public class MemberService implements UserDetailsService {
                 () -> new UserException(ExceptionMessage.USER_NOT_FOUND)
         );
         return member;
+    }
 
+    @Transactional
+    public Member findByTel(String tel) {
+        Member member = memberRepository.findByTel(tel).orElseThrow(
+                () -> new UserException(ExceptionMessage.USER_NOT_FOUND)
+        );
+        return member;
     }
 
     @Transactional
@@ -218,7 +238,6 @@ public class MemberService implements UserDetailsService {
         return memberRepository.findByTel(tel)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
     }
-
 
 
 }

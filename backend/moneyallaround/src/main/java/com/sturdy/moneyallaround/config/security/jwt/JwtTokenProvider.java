@@ -32,14 +32,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.io.FileInputStream;
 import java.security.Key;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static javax.crypto.Cipher.SECRET_KEY;
 
 @Slf4j
 @Component
 public class JwtTokenProvider {
 
     private final Key key;
-    private JwtService jwtService;
+    private String SECRET_KEY;
+
 
     //토큰 생성 및 유효성 검사에 사용되는 시크릿 키 초기화 역할
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
@@ -47,7 +51,32 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private boolean isValidFirebaseToken(String firebaseToken) {
+    public String extractTel(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    // extractAllclaims() : 토큰이 유효한 토큰인지 검사한 후, 토큰에 담긴 Payload 값을 가져온다.
+    private Claims extractAllClaims(String token) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    private Key getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64URL.decode(SECRET_KEY);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    //파이어베이스 토큰 유효성 검증
+    public boolean isValidFirebaseToken(String firebaseToken) {
         try {
             // Firebase Admin SDK 초기화
             FileInputStream serviceAccount = new FileInputStream("donnearound-firebase-adminsdk.json"); // Firebase Admin SDK 설정 파일 경로
