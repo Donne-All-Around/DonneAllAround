@@ -148,7 +148,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
             onTap: () {
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {
-                  return const TransactionDetailPage();
+                  return const TransactionDetailPage(1);
                 },
               ));
             },
@@ -250,7 +250,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                 children: [
                                   CircleAvatar(
                                     backgroundImage:
-                                    AssetImage('assets/images/AUD.png'),
+                                    AssetImage('assets/images/USDAUD.png'),
                                     radius: 8,
                                   ),
                                   SizedBox(width: 5),

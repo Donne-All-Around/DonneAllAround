@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:kpostal/kpostal.dart';
 
 class DeliveryTransactionPage extends StatefulWidget {
@@ -156,7 +155,7 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                                           children: [
                                             CircleAvatar(
                                               backgroundImage: AssetImage(
-                                                  'assets/images/flag/AUD.png'),
+                                                  'assets/images/flag/USDAUD.png'),
                                               radius: 8,
                                             ),
                                             SizedBox(width: 5),

@@ -1,7 +1,5 @@
 import 'package:bottom_picker/bottom_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
 import 'package:a705/choose_location_page.dart';
@@ -19,30 +17,10 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
   String _addr = "장소 선택";
   String appt = "";
 
-  // Future<Position> getCurrentLocation() async {
-  //   LocationPermission permission = await Geolocator.requestPermission();
-  //   Position position =
-  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-  //   return position;
-  // }
-
   @override
   void initState() {
     super.initState();
-    // _getUserLocation();
   }
-
-  // void _getUserLocation() async {
-  //   var position = await GeolocatorPlatform.instance.getCurrentPosition(
-  //       locationSettings: const LocationSettings(
-  //           accuracy: LocationAccuracy.bestForNavigation));
-  //
-  //   setState(() {
-  //     currentPosition = LatLng(position.latitude, position.longitude);
-  //   });
-  // }
-  //
-  // late LatLng currentPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +121,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                                       children: [
                                         CircleAvatar(
                                           backgroundImage: AssetImage(
-                                              'assets/images/flag/AUD.png'),
+                                              'assets/images/flag/USDAUD.png'),
                                           radius: 8,
                                         ),
                                         SizedBox(width: 5),

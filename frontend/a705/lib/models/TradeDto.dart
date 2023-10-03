@@ -1,6 +1,6 @@
 class TradeDto {
   final int id;
-  final int seller;
+  final int sellerId;
   final String title;
   final String description;
   final String thumbnailImageUrl;
@@ -8,72 +8,79 @@ class TradeDto {
   final String countryCode;
   final int foreignCurrencyAmount;
   final int koreanWonAmount;
-  final double locationLatitude;
-  final double locationLongitude;
+  final double koreanWonPerForeignCurrency;
+  final double latitude;
+  final double longitude;
   final String preferredTradeCountry;
   final String preferredTradeCity;
   final String preferredTradeDistrict;
   final String preferredTradeTown;
-  final String type;
-  final int isShow;
-  final String directTradeTime;
-  final String directTradeLocationDetail;
-  final int buyer;
-  final int isDeliveryReceived;
+  final List<dynamic> imageUrlList;
+  final int tradeLikeCount;
+  final String sellerNickname;
+  final String sellerImgUrl;
+  final int sellerPoint;
+  final bool isLike;
+  final String createTime;
 
-  TradeDto(
-      {required this.id,
-      required this.seller,
-      required this.title,
-      required this.description,
-      required this.thumbnailImageUrl,
-      required this.status,
-      required this.countryCode,
-      required this.foreignCurrencyAmount,
-      required this.koreanWonAmount,
-      required this.locationLatitude,
-      required this.locationLongitude,
-      required this.preferredTradeCountry,
-      required this.preferredTradeCity,
-      required this.preferredTradeDistrict,
-      required this.preferredTradeTown,
-      required this.type,
-      required this.isShow,
-      required this.directTradeTime,
-      required this.directTradeLocationDetail,
-      required this.buyer,
-      required this.isDeliveryReceived});
+  TradeDto({
+    required this.id,
+    required this.sellerId,
+    required this.title,
+    required this.description,
+    required this.thumbnailImageUrl,
+    required this.status,
+    required this.countryCode,
+    required this.foreignCurrencyAmount,
+    required this.koreanWonAmount,
+    required this.koreanWonPerForeignCurrency,
+    required this.latitude,
+    required this.longitude,
+    required this.preferredTradeCountry,
+    required this.preferredTradeCity,
+    required this.preferredTradeDistrict,
+    required this.preferredTradeTown,
+    required this.imageUrlList,
+    required this.tradeLikeCount,
+    required this.sellerNickname,
+    required this.sellerImgUrl,
+    required this.sellerPoint,
+    required this.isLike,
+    required this.createTime,
+  });
 
   factory TradeDto.fromJson(Map<String, dynamic> json) {
     return TradeDto(
       id: json['id'],
-      seller: json['seller'],
+      sellerId: json['sellerId'] ?? 1,
       title: json['title'],
-      description: json['description'],
-      thumbnailImageUrl: json['thumbnailImageUrl'],
+      description: json['description'] ?? "hello",
+      thumbnailImageUrl: json['thumbnailImageUrl'] ?? "4444.png",
       status: json['status'],
       countryCode: json['countryCode'],
       foreignCurrencyAmount: json['foreignCurrencyAmount'],
       koreanWonAmount: json['koreanWonAmount'],
-      locationLatitude: json['locationLatitude'],
-      locationLongitude: json['locationLongitude'],
+      koreanWonPerForeignCurrency: json['koreanWonPerForeignCurrency'],
+      latitude: json['latitude'] ?? 37,
+      longitude: json['longitude'] ?? 127,
       preferredTradeCountry: json['preferredTradeCountry'],
       preferredTradeCity: json['preferredTradeCity'],
       preferredTradeDistrict: json['preferredTradeDistrict'],
       preferredTradeTown: json['preferredTradeTown'],
-      type: json['type'],
-      isShow: json['isShow'],
-      directTradeTime: json['directTradeTime'],
-      directTradeLocationDetail: json['directTradeLocationDetail'],
-      buyer: json['buyer'],
-      isDeliveryReceived: json['isDeliveryReceived'],
+      imageUrlList: json['imageUrlList'] ?? [],
+      tradeLikeCount: json['tradeLikeCount'] ?? 0,
+      sellerNickname: json['sellerNickname'] ?? "옹골찬",
+      sellerImgUrl: json['sellerImgUrl'] ?? "4444.png",
+      sellerPoint: json['sellerPoint'] ?? 1,
+      isLike: json['isLike'] ?? false,
+      createTime: json['createTime'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'seller': seller,
+      'sellerId': sellerId,
       'title': title,
       'description': description,
       'thumbnailImageUrl': thumbnailImageUrl,
@@ -81,18 +88,20 @@ class TradeDto {
       'countryCode': countryCode,
       'foreignCurrencyAmount': foreignCurrencyAmount,
       'koreanWonAmount': koreanWonAmount,
-      'locationLatitude': locationLatitude,
-      'locationLongitude': locationLongitude,
+      'koreanWonPerForeignCurrency': koreanWonPerForeignCurrency,
+      'latitude': latitude,
+      'locationLongitude': longitude,
       'preferredTradeCountry': preferredTradeCountry,
       'preferredTradeCity': preferredTradeCity,
       'preferredTradeDistrict': preferredTradeDistrict,
       'preferredTradeTown': preferredTradeTown,
-      'type': type,
-      'isShow' :isShow,
-      'directTradeTime': directTradeTime,
-      'directTradeLocationDetail': directTradeLocationDetail,
-      'buyer': buyer,
-      'isDeliveryReceived': isDeliveryReceived,
+      'imageUrlList': imageUrlList,
+      'tradeLikeCount': tradeLikeCount,
+      'sellerNickname': sellerNickname,
+      'sellerImgUrl': sellerImgUrl,
+      'sellerPoint': sellerPoint,
+      'isLike': isLike,
+      'createTime': createTime,
     };
   }
 }
