@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // JSON 디코딩을 위해 추가
+
+
+
 
 class ReviewPage extends StatefulWidget {
   const ReviewPage({super.key});
@@ -9,15 +14,48 @@ class ReviewPage extends StatefulWidget {
 
 class ReviewPageState extends State<ReviewPage> {
   // 서버에서 임티후기 count 받아오기
-  int badCount = 5;
-  int goodCount = 11;
-  int bestCount = 15;
+  int badCount = 0;
+  int goodCount = 0;
+  int verygoodCount = 0;
 
   // 현재 선택된 버튼 (디폴트 : 판매)
   String selectedButton = '판매';
 
   void _handleDelete() {
     // 삭제 작업 코드
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // initState에서 서버로 GET 요청을 보냅니다.
+    fetchReviewCounts();
+  }
+
+  void fetchReviewCounts() async {
+    try {
+      const memberId = '1'; // 원하는 회원 ID를 여기에 넣어주세요.
+      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/review/score?memberId=$memberId');
+
+      http.Response response = await http.get(url);
+      String responseBody = utf8.decode(response.bodyBytes);
+
+      if (response.statusCode == 200) {
+        // 서버 응답이 성공인 경우
+        final responseData = json.decode(response.body);
+        final data = responseData['data'];
+        setState(() {
+          badCount = data['bad'];
+          goodCount = data['good'];
+          verygoodCount = data['veryGood'];
+        });
+      } else {
+        // 서버 응답이 실패인 경우
+        print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('서버 요청 중 오류 발생: $e');
+    }
   }
 
   Widget _buildSellComment() {
@@ -257,7 +295,7 @@ class ReviewPageState extends State<ReviewPage> {
                         fit: BoxFit.cover,
                       ),
                       Text(
-                        '$bestCount',
+                        '$verygoodCount',
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold
