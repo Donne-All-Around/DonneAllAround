@@ -46,28 +46,12 @@ class _ChooseLocationPage2State extends State<ChooseLocationPage2> {
   final myController = TextEditingController();
 
   String addr = "";
-  Address address = Address(country: "", city: "", district: "", town: "");
-
-  @override
-  void initState() {
-    super.initState();
-    _getUserLocation();
-  }
+  Address address = Address(country: "", administrativeArea: "", subAdministrativeArea: "", locality: "", subLocality: "", thoroughfare: "", latitude: 0, longitude: 0);
 
   @override
   void dispose() {
     myController.dispose();
     super.dispose();
-  }
-
-  void _getUserLocation() async {
-    var position = await GeolocatorPlatform.instance.getCurrentPosition(
-        locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.bestForNavigation));
-
-    setState(() {
-      currentPosition = LatLng(position.latitude, position.longitude);
-    });
   }
 
   @override
@@ -218,31 +202,33 @@ class _ChooseLocationPage2State extends State<ChooseLocationPage2> {
 
                   String addressssss ='${placemark.first.thoroughfare!.isNotEmpty ? '${placemark.first.thoroughfare}, ' : ''}${placemark.first.subLocality!.isNotEmpty ? '${placemark.first.subLocality}, ' : ''}${placemark.first.locality!.isNotEmpty ? '${placemark.first.locality}, ' : ''}${placemark.first.subAdministrativeArea!.isNotEmpty ? '${placemark.first.subAdministrativeArea}, ' : ''}${placemark.first.administrativeArea!.isNotEmpty ? placemark.first.administrativeArea : ''}';
 
-
-                  print(addressssss);
-
-                  // print('country: ${placemark.reversed.last.country}');
-                  // print('locality: ${placemark.reversed.last.locality}');
-                  // print('street: ${placemark.reversed.last.street}');
-                  // print('subLocality: ${placemark.reversed.last.subLocality}');
-                  // print('name: ${placemark.reversed.last.name}');
-                  // print(
-                  //     'isoCountryCode: ${placemark.reversed.last.isoCountryCode}');
-                  // print('postalCode: ${placemark.reversed.last.postalCode}');
-                  // print(
-                  //     'administrativeArea: ${placemark.reversed.last.administrativeArea}');
-                  // print(
-                  //     'subAdministrativeArea: ${placemark.reversed.last.subAdministrativeArea}');
-                  // print(
-                  //     'subThoroughfare: ${placemark.reversed.last.subThoroughfare}');
-                  // print('thoroughfare: ${placemark.reversed.last.thoroughfare}');
-                  // print('hashCode: ${placemark.reversed.last.hashCode}');
+                  print('country: ${placemark.reversed.last.country}');
+                  print('locality: ${placemark.reversed.last.locality}');
+                  print('street: ${placemark.reversed.last.street}');
+                  print('subLocality: ${placemark.reversed.last.subLocality}');
+                  print('name: ${placemark.reversed.last.name}');
+                  print(
+                      'isoCountryCode: ${placemark.reversed.last.isoCountryCode}');
+                  print('postalCode: ${placemark.reversed.last.postalCode}');
+                  print(
+                      'administrativeArea: ${placemark.reversed.last.administrativeArea}');
+                  print(
+                      'subAdministrativeArea: ${placemark.reversed.last.subAdministrativeArea}');
+                  print(
+                      'subThoroughfare: ${placemark.reversed.last.subThoroughfare}');
+                  print('thoroughfare: ${placemark.reversed.last.thoroughfare}');
+                  print('hashCode: ${placemark.reversed.last.hashCode}');
 
                   setState(() {
-                    address = Address(country: placemark.reversed.last.country!,
-                    city: placemark.reversed.last.administrativeArea!,
-                    district: placemark.reversed.last.subLocality!,
-                    town: placemark.reversed.last.thoroughfare!);
+                    address = Address(
+                        country: placemark.reversed.last.country!,
+                        administrativeArea: placemark.reversed.last.administrativeArea!,
+                        subAdministrativeArea: placemark.reversed.last.subAdministrativeArea!,
+                        locality: placemark.reversed.last.locality!,
+                        subLocality: placemark.reversed.last.subLocality!,
+                        thoroughfare: placemark.reversed.last.thoroughfare!,
+                    latitude: _currentCenter.latitude,
+                    longitude: _currentCenter.longitude);
 
                     addr = addressssss;
                     // addr =

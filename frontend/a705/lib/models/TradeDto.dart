@@ -16,11 +16,11 @@ class TradeDto {
   final String preferredTradeDistrict;
   final String preferredTradeTown;
   final List<dynamic> imageUrlList;
-  final int tradeLikeCount;
+  late int tradeLikeCount;
   final String sellerNickname;
   final String sellerImgUrl;
-  final int sellerPoint;
-  final bool isLike;
+  final int sellerRating;
+  late bool isLike;
   final String createTime;
 
   TradeDto({
@@ -44,7 +44,7 @@ class TradeDto {
     required this.tradeLikeCount,
     required this.sellerNickname,
     required this.sellerImgUrl,
-    required this.sellerPoint,
+    required this.sellerRating,
     required this.isLike,
     required this.createTime,
   });
@@ -53,27 +53,27 @@ class TradeDto {
     return TradeDto(
       id: json['id'],
       sellerId: json['sellerId'] ?? 1,
-      title: json['title'],
-      description: json['description'] ?? "hello",
-      thumbnailImageUrl: json['thumbnailImageUrl'] ?? "4444.png",
-      status: json['status'],
-      countryCode: json['countryCode'],
+      title: json['title'].toString(),
+      description: json['description'].toString() ?? "hello",
+      thumbnailImageUrl: json['thumbnailImageUrl'].toString() ?? "4444.png",
+      status: json['status'].toString(),
+      countryCode: json['countryCode'].toString(),
       foreignCurrencyAmount: json['foreignCurrencyAmount'],
       koreanWonAmount: json['koreanWonAmount'],
       koreanWonPerForeignCurrency: json['koreanWonPerForeignCurrency'],
       latitude: json['latitude'] ?? 37,
       longitude: json['longitude'] ?? 127,
-      preferredTradeCountry: json['preferredTradeCountry'],
-      preferredTradeCity: json['preferredTradeCity'],
-      preferredTradeDistrict: json['preferredTradeDistrict'],
-      preferredTradeTown: json['preferredTradeTown'],
+      preferredTradeCountry: json['preferredTradeCountry'].toString(),
+      preferredTradeCity: json['preferredTradeCity'].toString(),
+      preferredTradeDistrict: json['preferredTradeDistrict'].toString(),
+      preferredTradeTown: json['preferredTradeTown'].toString(),
       imageUrlList: json['imageUrlList'] ?? [],
       tradeLikeCount: json['tradeLikeCount'] ?? 0,
-      sellerNickname: json['sellerNickname'] ?? "옹골찬",
-      sellerImgUrl: json['sellerImgUrl'] ?? "4444.png",
-      sellerPoint: json['sellerPoint'] ?? 1,
+      sellerNickname: json['sellerNickname'].toString() ?? "옹골찬",
+      sellerImgUrl: json['sellerImgUrl'].toString() ?? "4444.png",
+      sellerRating: json['sellerRating'] ?? 1,
       isLike: json['isLike'] ?? false,
-      createTime: json['createTime'],
+      createTime: json['createTime'].toString(),
     );
   }
 
@@ -99,7 +99,7 @@ class TradeDto {
       'tradeLikeCount': tradeLikeCount,
       'sellerNickname': sellerNickname,
       'sellerImgUrl': sellerImgUrl,
-      'sellerPoint': sellerPoint,
+      'sellerRating': sellerRating,
       'isLike': isLike,
       'createTime': createTime,
     };

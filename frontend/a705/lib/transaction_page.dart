@@ -83,7 +83,7 @@ class _TransactionPageState extends State<TransactionPage> {
   final picker = ImagePicker();
 
   String _addr = "장소 선택";
-  Address _address = Address(country: "", city: "", district: "", town: "");
+  Address _address = Address(country: "", administrativeArea: "", subAdministrativeArea: "", locality: "", subLocality: "", thoroughfare: "", latitude: 0, longitude: 0);
 
   @override
   void initState() {
@@ -100,7 +100,7 @@ class _TransactionPageState extends State<TransactionPage> {
     description: "",
     thumbnailImageUrl: "",
     status: "",
-    countryCode: "USD",
+    countryCode: "",
     foreignCurrencyAmount: 0,
     koreanWonAmount: 0,
     latitude: 0,
@@ -112,7 +112,7 @@ class _TransactionPageState extends State<TransactionPage> {
     tradeLikeCount: 0,
     sellerNickname: "",
     sellerImgUrl: "",
-    sellerPoint: 0,
+    sellerRating: 0,
     isLike: false,
     createTime: "",
     koreanWonPerForeignCurrency: 0,
@@ -123,63 +123,6 @@ class _TransactionPageState extends State<TransactionPage> {
   final _currencyEditController = TextEditingController();
   final _krwEditController = TextEditingController();
   final _contentEditController = TextEditingController();
-
-  // List<AssetPathEntity>? _paths;
-  // List<Album> _albums = [];
-  // late List<AssetEntity> _images;
-  // int _currentPage = 0;
-  // late Album _currentAlbum;
-  //
-  // Future<void> checkPermission() async {
-  //   final PermissionState ps = await PhotoManager.requestPermissionExtend();
-  //   if (ps.isAuth) {
-  //     await getAlbum();
-  //   } else {
-  //     await PhotoManager.openSetting();
-  //   }
-  // }
-  //
-  // Future<void> getAlbum() async {
-  //   _paths = await PhotoManager.getAssetPathList(
-  //     type: RequestType.image,
-  //   );
-  //
-  //   _albums = _paths!.map((e) {
-  //     return Album(
-  //       id: e.id,
-  //       name: e.isAll ? '모든 사진' : e.name,
-  //     );
-  //   }).toList();
-  //
-  //   await getPhotos(_albums[0], albumChange: true);
-  // }
-  //
-  // Future<void> getPhotos(
-  //   Album album, {
-  //   bool albumChange = false,
-  // }) async {
-  //   _currentAlbum = album;
-  //   albumChange ? _currentPage = 0 : _currentPage++;
-  //
-  //   final loadImages = await _paths!
-  //       .singleWhere((AssetPathEntity e) => e.id == album.id)
-  //       .getAssetListPaged(
-  //         page: _currentPage,
-  //         size: 20,
-  //       );
-
-  //   setState(() {
-  //     if (albumChange) {
-  //       _images = loadImages;
-  //     } else {
-  //       _images.addAll(loadImages);
-  //     }
-  //   });
-  // }
-
-  // FirebaseStorage _storage = FirebaseStorage.instance;
-  // Reference _ref = _storage.ref("trade/text");
-  // _ref.putString("Hello World!");
 
   @override
   Widget build(BuildContext context) {
@@ -221,7 +164,9 @@ class _TransactionPageState extends State<TransactionPage> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          getImages();
+                          if (selectedImages.isEmpty) {
+                            getImages();
+                          }
                         },
                         child: Container(
                           height: 80,
@@ -494,10 +439,12 @@ class _TransactionPageState extends State<TransactionPage> {
                     ),
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      const Text("적정 거래 가격 "),
-                      Text("${_currency * 90} ~ ${_currency * 100}원"),
+                      Expanded(
+                          child: Text(
+                        "적정 거래 가격 ${_currency * 90} ~ ${_currency * 100}원",
+                        textAlign: TextAlign.end,
+                      )),
                     ],
                   ),
                   const SizedBox(height: 15),
@@ -544,7 +491,7 @@ class _TransactionPageState extends State<TransactionPage> {
                               builder: (context) => const ChooseLocationPage2(
                                   37.5013068, 127.0396597)));
                       setState(() {
-                        _addr = "${address.district} ${address.town}";
+                        _addr = "${address.subLocality} ${address.thoroughfare}";
                         _address = address;
                       });
                     },
@@ -576,7 +523,8 @@ class _TransactionPageState extends State<TransactionPage> {
                   GestureDetector(
                     onTap: () async {
                       // if (!mounted) return;
-                      if (_titleEditController.text.isEmpty ||
+                      if (selectedImages.isEmpty ||
+                          _titleEditController.text.isEmpty ||
                           _currencyEditController.text.isEmpty ||
                           _krwEditController.text.isEmpty ||
                           _contentEditController.text.isEmpty ||
@@ -586,8 +534,12 @@ class _TransactionPageState extends State<TransactionPage> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 content: Container(
-                                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                                    child: const Text("빈 칸이 없이 모두 입력해주세요.", style: TextStyle(fontSize: 16),)),
+                                    padding: const EdgeInsets.fromLTRB(
+                                        20, 20, 20, 0),
+                                    child: const Text(
+                                      "빈 칸이 없이 모두 입력해주세요.",
+                                      style: TextStyle(fontSize: 16),
+                                    )),
                                 actions: [
                                   TextButton(
                                       onPressed: () {
@@ -608,22 +560,23 @@ class _TransactionPageState extends State<TransactionPage> {
                           sellerId: uploadTrade.sellerId,
                           title: _titleEditController.text,
                           description: _contentEditController.text,
-                          thumbnailImageUrl: uploadTrade.thumbnailImageUrl,
+                          thumbnailImageUrl:
+                              "https://firebasestorage.googleapis.com/v0/b/donnearroundfirebase.appspot.com/o/trade%2F${uploadTrade.sellerId}%2Fimage_${uploadTrade.id}_0.jpg?alt=media",
                           status: uploadTrade.status,
-                          countryCode: uploadTrade.countryCode,
+                          countryCode: _selectedValue,
                           foreignCurrencyAmount:
                               int.parse(_currencyEditController.text),
                           koreanWonAmount: int.parse(_krwEditController.text),
-                          latitude: uploadTrade.latitude,
-                          longitude: uploadTrade.longitude,
+                          latitude: _address.latitude,
+                          longitude: _address.longitude,
                           preferredTradeCountry: _address.country,
-                          preferredTradeCity: _address.city,
-                          preferredTradeDistrict: _address.district,
-                          preferredTradeTown: _address.town,
+                          preferredTradeCity: _address.locality!,
+                          preferredTradeDistrict: _address.subLocality!,
+                          preferredTradeTown: _address.thoroughfare!,
                           tradeLikeCount: uploadTrade.tradeLikeCount,
                           sellerNickname: uploadTrade.sellerNickname,
                           sellerImgUrl: uploadTrade.sellerImgUrl,
-                          sellerPoint: uploadTrade.sellerPoint,
+                          sellerRating: uploadTrade.sellerRating,
                           isLike: uploadTrade.isLike,
                           createTime: uploadTrade.createTime,
                           koreanWonPerForeignCurrency:
@@ -663,19 +616,16 @@ class _TransactionPageState extends State<TransactionPage> {
     final pickedFile = await picker.pickMultiImage();
     List<XFile> xfilePick = pickedFile;
 
-    // if (xfilePick.isNotEmpty) {
-    //   for (var i = 0; i < xfilePick.length; i++) {
-    //     File _file = File(xfilePick[i].path);
-    //     await FirebaseStorage.instance.ref("trade/multi/image_$i").putFile(_file);
-    //   }
-    // }
-
     setState(() {
       if (xfilePick.isNotEmpty) {
         for (var i = 0; i < xfilePick.length; i++) {
           File _file = File(xfilePick[i].path);
           selectedImages.add(_file);
-          FirebaseStorage.instance.ref("trade/image_$i").putFile(_file);
+          FirebaseStorage.instance
+              .ref(
+                  "trade/${uploadTrade.sellerId}/image_${uploadTrade.id}_$i.jpg")
+              .putFile(_file);
+          uploadTrade.imageUrlList.add("https://firebasestorage.googleapis.com/v0/b/donnearroundfirebase.appspot.com/o/trade%2F${uploadTrade.sellerId}%2Fimage_${uploadTrade.id}_$i.jpg?alt=media");
         }
       }
     });

@@ -1,36 +1,40 @@
 import 'dart:convert';
 
 import 'package:a705/models/TradeDto.dart';
-import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 
 class TradeProviders {
-  Dio dio = Dio();
   String url = "https://j9a705.p.ssafy.io";
 
   // 거래 목록 조회(최신순)
   Future<List<TradeDto>> getLatestTrade(
       String countryCode,
-      int lastTradeId,
-      String preferredTradeCountry,
-      String preferredTradeCity,
-      String preferredTradeDistrict,
-      String preferredTradeTown) async {
+      int? lastTradeId,
+      String? country,
+      String? administrativeArea,
+      String? subAdministrativeArea,
+      String? locality,
+      String? subLocality,
+      String? thoroughfare) async {
     List<TradeDto> trade = [];
 
     final response = await http.post(
-      Uri.parse('$url/api/trade/list?sort=createTime'),
+      lastTradeId == null
+          ? Uri.parse('$url/api/trade/list?lastTradeId=&sort=createTime')
+          : Uri.parse(
+              '$url/api/trade/list?lastTradeId=$lastTradeId&sort=createTime'),
       headers: {
         "Accept": "application/json",
         "content-type": "application/json"
       },
       body: jsonEncode({
         "countryCode": countryCode,
-        "lastTradeId": lastTradeId,
-        "preferredTradeCountry": preferredTradeCountry,
-        "preferredTradeCity": preferredTradeCity,
-        "preferredTradeDistrict": preferredTradeDistrict,
-        "preferredTradeTown": preferredTradeTown,
+        "country": country,
+        "administrativeArea": administrativeArea,
+        "subAdministrativeArea": subAdministrativeArea,
+        "locality": locality,
+        "subLocality": subLocality,
+        "thoroughfare": thoroughfare
       }),
     );
     if (response.statusCode == 200) {
@@ -51,22 +55,26 @@ class TradeProviders {
   // 거래 목록 조회(낮은 가격순)
   Future<List<TradeDto>> getLowestTrade(
       String countryCode,
-      int lastTradeId,
-      String preferredTradeCountry,
-      String preferredTradeCity,
-      String preferredTradeDistrict,
-      String preferredTradeTown) async {
+      int? lastTradeId,
+      String? country,
+      String? administrativeArea,
+      String? subAdministrativeArea,
+      String? locality,
+      String? subLocality,
+      String? thoroughfare) async {
     List<TradeDto> trade = [];
 
     final response = await http.post(
-      Uri.parse('$url/api/trade/list?sort=koreanWonAmount'),
+      Uri.parse(
+          '$url/api/trade/list?lastTradeId=$lastTradeId&sort=koreanWonAmount'),
       body: jsonEncode({
-        'countryCode': countryCode,
-        'lastTradeId': lastTradeId,
-        'preferredTradeCountry': preferredTradeCountry,
-        'preferredTradeCity': preferredTradeCity,
-        'preferredTradeDistrict': preferredTradeDistrict,
-        'preferredTradeTown': preferredTradeTown,
+        "countryCode": countryCode,
+        "country": country,
+        "administrativeArea": administrativeArea,
+        "subAdministrativeArea": subAdministrativeArea,
+        "locality": locality,
+        "subLocality": subLocality,
+        "thoroughfare": thoroughfare
       }),
     );
     if (response.statusCode == 200) {
@@ -83,26 +91,30 @@ class TradeProviders {
   // 거래 목록 조회(단위 당 낮은 가격순)
   Future<List<TradeDto>> getLowestRateTrade(
       String countryCode,
-      int lastTradeId,
-      String preferredTradeCountry,
-      String preferredTradeCity,
-      String preferredTradeDistrict,
-      String preferredTradeTown) async {
+      int? lastTradeId,
+      String? country,
+      String? administrativeArea,
+      String? subAdministrativeArea,
+      String? locality,
+      String? subLocality,
+      String? thoroughfare) async {
     List<TradeDto> trade = [];
 
     final response = await http.post(
-      Uri.parse('$url/api/trade/list?sort=koreanWonPerForeignCurrency'),
+      Uri.parse(
+          '$url/api/trade/list?lastTradeId=$lastTradeId&sort=koreanWonPerForeignCurrency'),
       headers: {
         "Accept": "application/json",
         "content-type": "application/json"
       },
       body: jsonEncode({
-        'countryCode': countryCode,
-        'lastTradeId': lastTradeId,
-        'preferredTradeCountry': preferredTradeCountry,
-        'preferredTradeCity': preferredTradeCity,
-        'preferredTradeDistrict': preferredTradeDistrict,
-        'preferredTradeTown': preferredTradeTown,
+        "countryCode": countryCode,
+        "country": country,
+        "administrativeArea": administrativeArea,
+        "subAdministrativeArea": subAdministrativeArea,
+        "locality": locality,
+        "subLocality": subLocality,
+        "thoroughfare": thoroughfare
       }),
     );
     if (response.statusCode == 200) {
@@ -154,24 +166,37 @@ class TradeProviders {
   }
 
   // 거래 글 생성
-  Future<String> postTrade(TradeDto tradeDto) async {
-    // var response = await http.post(
-    //   Uri.parse('$url/api/trade/create'),
-    //   headers: {'Content-Type': 'applcation/json'},
-    //   body: tradeDto.toJson(),
+  Future<void> postTrade(TradeDto tradeDto) async {
+    var response =
+        await http.post(Uri.parse('$url/api/trade/create?memberId=1'),
+            headers: <String, String>{
+              'Content-Type': 'applcation/json; charset=UTF-8',
+            },
+            body: jsonEncode({
+              "title": tradeDto.title,
+              "description": tradeDto.description,
+              "thumbnailImageUrl": tradeDto.thumbnailImageUrl,
+              "countryCode": tradeDto.countryCode,
+              "foreignCurrencyAmount": tradeDto.foreignCurrencyAmount,
+              "koreanWonAmount": tradeDto.koreanWonAmount,
+              "latitude": tradeDto.latitude,
+              "longitude": tradeDto.longitude,
+              "preferredTradeCountry": tradeDto.preferredTradeCountry,
+              "preferredTradeCity": tradeDto.preferredTradeCity,
+              "preferredTradeDistrict": tradeDto.preferredTradeDistrict,
+              "preferredTradeTown": tradeDto.preferredTradeTown,
+              "imageUrlList": tradeDto.imageUrlList
+            }));
+    // Response response = await dio.post(
+    //   '$url/api/trade/create?memberId=1',
+    //   data: tradeDto.toJson(),
+    //   options: Options(
+    //     headers: {'Content-Type': 'application/json'}, // Content-Type 설정
+    //   ),
     // );
-    Response response = await dio.post(
-      '$url/api/trade/create?memberId=1',
-      data: tradeDto.toJson(),
-      options: Options(
-        headers: {'Content-Type': 'application/json'}, // Content-Type 설정
-      ),
-    );
 
-    print(response.data);
+    print(response.body);
     print(response.statusCode);
-
-    return response.data;
   }
 
   Future<void> likeTrade(int tradeId) async {
@@ -189,5 +214,4 @@ class TradeProviders {
 
     print(response.statusCode);
   }
-
 }

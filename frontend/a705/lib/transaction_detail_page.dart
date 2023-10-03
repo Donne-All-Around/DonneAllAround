@@ -19,9 +19,6 @@ class TransactionDetailPage extends StatefulWidget {
 }
 
 class _TransactionDetailPageState extends State<TransactionDetailPage> {
-  Map<String, dynamic> boardInfoMap = {
-
-  };
 
   @override
   void initState() {
@@ -75,7 +72,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     tradeLikeCount: 0,
     sellerNickname: "",
     sellerImgUrl: "",
-    sellerPoint: 0,
+    sellerRating: 0,
     isLike: false,
     createTime: "",
     koreanWonPerForeignCurrency: 0,
@@ -241,9 +238,11 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                             setState(() {
                               if(trade.isLike) {
                                 tradeProvider.unlikeTrade(widget.id);
+                                trade.isLike = false;
                               }
                               else {
                                 tradeProvider.likeTrade(widget.id);
+                                trade.isLike = true;
                               }
                             });
                           },
@@ -288,7 +287,6 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                 onTap: () {
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
-
                                       return  const ChattingDetailPage(
                                           transactionInfoMap :{
                                             "transactionId" : "board2",
