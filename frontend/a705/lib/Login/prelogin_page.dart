@@ -265,9 +265,9 @@ class _PreLoginPageState extends State<PreLoginPage> {
     UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
     // Firebase 인증 토큰 얻기
     String? firebaseToken = await userCredential.user!.getIdToken();
-    print("Firebase 토큰: $firebaseToken");
     String? uid = userCredential.user!.uid;
     String? tel = phoneController.text;
+    print("Firebase 토큰: $firebaseToken");
     print("uid : $uid");
     print("tel : $tel");
 
@@ -285,16 +285,16 @@ class _PreLoginPageState extends State<PreLoginPage> {
         // 스토리지 저장 및 헤더에 토큰 값 할당 구현.!!!!!!!
         saveUserInfo('$id','$tel','$token');
         Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
-      } else {
-        // null  인 경우,  uid 와 tel 갖고 프로필페이지로 이동.
-        Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfileSettingPage(phoneNumber: '$tel', uid: '$uid')));
       }
-
+    }
+    if (signInResponse == null) {
+      // null  인 경우,  uid 와 tel 갖고 프로필페이지로 이동.
+      Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfileSettingPage(phoneNumber: '$tel', uid: '$uid')));
     }
     // print("토큰 : $jwtToken");
-    print("로그인 성공!");
+    print("파베로그인 성공!");
     } catch (e) {
-    print("로그인 실패: $e");
+    print("파베로그인 실패: $e");
     }
 
   }

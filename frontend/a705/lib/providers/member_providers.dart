@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
+import '../models/JoinDto.dart';
 import '../models/MemberDto.dart'; // MemberDto 클래스를 가져옵니다.
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -11,9 +12,11 @@ class UserProvider extends ChangeNotifier {
   MemberDto? _user; // 사용자 데이터를 저장
 
   MemberDto? get user => _user;
+
+
   final String baseUrl = "https://j9a705.p.ssafy.io";
 
-  // 백엔드에서 사용자가 존재하는지 확인하는 함수
+  // 백엔드에서 사용자가 존재하는지 확인하는 함수 (전화 번호 체크 - 사실상 필요 없긴함)
   Future<bool> checkUserExists(String phoneNumber) async {
     final url = "$baseUrl/api/member/check/tel?tel=$phoneNumber";
 
@@ -32,62 +35,62 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  // 백엔드에 새 사용자를 등록하는 함수
-  Future<void> registerUser({
-    required String phoneNumber,
-    required String nickname,
-    String? profileImg,
-  }) async {
-    final url = "$baseUrl/api/member/join";
+  // 백엔드에 새 사용자를 등록하는 함수(회원가입)
+  Future<Map<String, dynamic>?> signUp(SignUpDto signUpDto) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/member/join'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(signUpDto.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      final responseBody = jsonDecode(response.body);
+      return responseBody;
+    } else {
+      // 서버로부터 오류 응답을 처리하는 코드
+      throw Exception('Failed to sign up');
+    }
+  }
 
 
-    final Map<String, dynamic> userData = {
-      "tel": phoneNumber,
-      "nickname": nickname,
-      "profileImg": profileImg ?? 'assets/images/wagon_don.png',
-      // 나머지 필드는 null 값으로 전달합니다.
-    };
-
+// 닉네임 체크 
+  Future<String> checkNickname(String nickname) async {
     try {
       final response = await http.post(
-        Uri.parse(url),
-        body: jsonEncode(userData),
+        Uri.parse(baseUrl),
         headers: {
           'Content-Type': 'application/json',
         },
+        body: jsonEncode({
+          'nickname': nickname,
+        }),
       );
 
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        final newUser = MemberDto.fromJson(responseData);
-        _user = newUser;
-        notifyListeners();
+        final Map<String, dynamic> data = json.decode(response.body);
+        final String checkedNickname = data['data']['checkedNickname'];
+
+        if (checkedNickname == 'SUCCESS') {
+          // 중복되지 않음
+          return 'SUCCESS';
+        } else {
+          // 중복됨
+          return 'FAIL';
+        }
       } else {
-        throw Exception('Failed to register user');
+        // 서버에서 오류 응답
+        return 'ERROR';
       }
     } catch (e) {
-      print('Error registering user: $e');
+      // 네트워크 오류 등 예외 발생
+      return 'ERROR';
     }
   }
 
-  Future<bool> checkNicknameExists(String nickname) async {
-    final url = "$baseUrl/api/member/check/nickname?nickname=$nickname";
-
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        final nicknameExists = responseData['exists'];
-        return nicknameExists;
-      } else {
-        throw Exception('Failed to check nickname existence');
-      }
-    } catch (e) {
-      print('Error checking nickname existence: $e');
-      return false;
-    }
-  }
-
+  
+  // 이미지 firebasestore 에 업로드 및 url 변환
   Future<String?> uploadImage(File imageFile) async {
     try {
       final String fileExtension = imageFile.path.split('.').last; // 파일 확장자 추출
@@ -106,6 +109,7 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  // 파베 토큰 주고 jwt 토큰 받아오기
   Future<Map<String, dynamic>?> getJwtTokenFromFirebaseToken(String firebaseToken, String uid, String tel) async {
     final url = "$baseUrl/api/member/sign-in";
 

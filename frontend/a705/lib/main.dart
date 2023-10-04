@@ -1,3 +1,4 @@
+import 'package:a705/Login/profilesetting_page.dart';
 import 'package:a705/main_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:a705/Login/start_page.dart';
@@ -38,8 +39,9 @@ class MyApp extends StatelessWidget {
         Locale('ko', 'KR'),
       ],
       locale: const Locale('ko'),
-      home: const StartPage(),
+      // home: const StartPage(),
       // home: const MainPage(),
+      home: ProfileSettingPage(phoneNumber: '01099999999', uid: 'akjg4464HLSH'),
     );
   }
 }

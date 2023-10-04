@@ -17,6 +17,7 @@ class ProfileSettingPage extends StatefulWidget {
 
 class _ProfileSettingPageState extends State<ProfileSettingPage> {
   String? _errorText;
+  Color? _errorTextColor;
   final ImagePicker _picker = ImagePicker(); // ImagePicker 초기화
   File? _pickedFile; // 이미지 담을 변수 선언
   final ImageProvider<Object> _profileImage = const AssetImage('assets/images/wagon_don.png');
@@ -29,6 +30,36 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
     // 정규표현식을 사용하여 닉네임 유효성 검사
     final RegExp regex = RegExp(r'^[a-zA-Z가-힣0-9]{1,8}$');
     return regex.hasMatch(nickname);
+  }
+
+
+  Future<void> _checkNicknameAvailability() async {
+    String nickname = _nicknameController.text;
+
+    if (!isNicknameValid(nickname)) {
+      setState(() {
+        _errorText = '영문자, 한글로 8글자 이내 가능';
+      });
+      return;
+    }
+
+    String result = await _userProvider.checkNickname(nickname);
+
+    setState(() {
+      if (result == 'SUCCESS') {
+        // 중복되지 않는 경우
+        _errorText = '사용 가능한 닉네임입니다.';
+        _errorTextColor = Colors.blue; // 파란색으로 변경
+      } else if (result == 'FAIL') {
+        // 중복된 경우
+        _errorText = '이미 등록된 닉네임입니다.';
+        _errorTextColor = Colors.red; // 빨간색으로 변경
+      } else {
+        // 서버 오류 또는 네트워크 오류
+        _errorText = '서버 오류 또는 네트워크 오류가 발생했습니다.';
+        _errorTextColor = Colors.red; // 빨간색으로 변경
+      }
+    });
   }
 
   @override
@@ -181,6 +212,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                             elevation: 0,
                           ),
                             onPressed: (){
+                            // 닉네임 중복 체크 함수 작성
                               _checkNicknameAvailability();
                             },
                             child: const Text('중복 체크',
@@ -197,8 +229,10 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                 GestureDetector(
                   onTap: (){
                     if (_errorText == '사용 가능한 닉네임입니다.') {
-                      _registerUser();
+                      // _registerUser();
+                      // 시작하기 버튼을 누를 때, uid, tel, img, nickname 으로 join 보내고 응답으로 받은 값(id, tel, token)을 storage 에 저장.하고 홈페이지이동
 
+                      // 이밑에 코드들은 지우지 마셈!!
                       //// 메인페이지에서 뒤로 가기 가능.
                       // Navigator.push(
                       //   context,
@@ -322,56 +356,6 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
     }
   }
 
-
-  void _registerUser() async {
-    // 사용자 입력 정보 가져오기
-    final phoneNumber = widget.phoneNumber;
-    final nickname = _nicknameController.text;
-    String? profileImg;
-
-    if (_pickedFile != null) {
-      // profileImgUrl = await uploadImage(_pickedFile!);
-      profileImg = await _userProvider.uploadImage(_pickedFile!.path as File);
-    }
-
-    // 사용자 등록 요청 보내기
-    await _userProvider.registerUser(
-      phoneNumber: phoneNumber,
-      nickname: nickname,
-      profileImg: profileImg,
-    );
-
-    // 사용자 등록 후 다음 화면으로 이동
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const MainPage()),
-          (Route<dynamic> route) => false,
-    );
-  }
-
-  // 닉네임 중복 체크
-// 닉네임 중복 체크
-  Future<void> _checkNicknameAvailability() async {
-    String nickname = _nicknameController.text;
-
-    if (!isNicknameValid(nickname)) {
-      setState(() {
-        _errorText = '영문자,한글로 8글자 이내 가능';
-      });
-      return;
-    }
-
-    bool isNicknameAvailable = await _userProvider.checkNicknameExists(nickname);
-
-    if (isNicknameAvailable) {
-      setState(() {
-        _errorText = '사용 가능한 닉네임입니다.';
-      });
-    } else {
-      setState(() {
-        _errorText = '이미 존재하는 닉네임입니다.';
-      });
-    }
-  }
 
 
 
