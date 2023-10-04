@@ -1,5 +1,6 @@
 import 'package:a705/Login/profilesetting_page.dart';
 import 'package:a705/main_page.dart';
+import 'package:a705/storage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:a705/Login/start_page.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ void main() async {
       child: const MyApp(),
     ),
   );
+  startTokenAutoRefresh(); // 앱 시작 시 자동 갱신 시작
 }
 
 class MyApp extends StatelessWidget {
