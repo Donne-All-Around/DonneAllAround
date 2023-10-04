@@ -21,6 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 //항상 처음 request 가 들어오면 jwtAuthentication Filter먼저 거친다
@@ -31,11 +32,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private static final String[] AUTH_WHITELIST = {
+            "/api/member/check/nickname",
+            "/api/member/check/tel",
+            "/api/member/join",
+            "/api/member/login",
+            "/api/member/verifyFirebaseToken",
+            "/api/member/check/nickname"
+    };
+
     //파이어베이스 토큰 유효성 검증
     public boolean isValidFirebaseToken(String firebaseToken) {
         try {
             // Firebase Admin SDK 초기화
-            FileInputStream serviceAccount = new FileInputStream("donnearound-firebase-adminsdk.json"); // Firebase Admin SDK 설정 파일 경로
+            FileInputStream serviceAccount = new FileInputStream("**/src/main/resources/firebase/donnearound-firebase-adminsdk.json"); // Firebase Admin SDK 설정 파일 경로
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
@@ -43,13 +53,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // Firebase 토큰 검증
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseToken);
+            log.info("firebase 초기화하고 검증했어");
 
             // 검증에 성공하면 true 반환
             return decodedToken != null;
         } catch (Exception e) {
             // 검증에 실패하면 false 반환
+            log.info("firebase 검증실패");
             return false;
         }
+
     }
 
 
@@ -58,25 +71,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("일단 여기까진 온다");
         logRequest(request);
-        log.info("authentication filter start!!!");
+        log.info("doFilter start!!!");
 
 
-        if(request.getRequestURI().equals("/api/member/verifyFirebaseToken") ||
-                request.getRequestURI().equals("/api/member/check/nickname")
-        ){
-            log.info("파이어베이스 토큰 검증");
+        if (Arrays.asList(AUTH_WHITELIST).contains(request.getRequestURI())) {
+            log.info("AUTH_WHITELIST - 권한 허가");
+
             filterChain.doFilter(request, response);
             return;
         }
-
-//        final String authHeader = request.getHeader("Authorization");
-//        final String jwtToken;
-//
-//        if (authHeader == null || !authHeader.startsWith("Bearer")) {
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
-//        jwtToken = authHeader.substring(7);
 
         String token = resolveAccessToken(request);
         log.info("headerToken={}",token);
@@ -112,12 +115,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // HttpservletRequest 객체 사용하여 클라이언트의 HTTP 요청 헤더에서 JWT 엑세스 토큰 찾아내고 반환함
     // Request Header 에서 Access Token 정보 추출
     private String resolveAccessToken(HttpServletRequest request) {
+        log.info("[resolveAccessToken]");
         log.info("headers={}",request.getHeaderNames());
-        Enumeration eHeader = request.getHeaderNames();
+
+        Enumeration<String> eHeader = request.getHeaderNames();
         while(eHeader.hasMoreElements()){
-            String requestName = (String) eHeader.nextElement();
+            String requestName = eHeader.nextElement();
             String requestValue = request.getHeader(requestName);
-            System.out.println("requestName : "+requestName+" | requestValue : "+requestValue);
+            log.info("requestName : "+requestName+" | requestValue : "+requestValue);
         }
 
         String bearerToken = request.getHeader("Authorization");

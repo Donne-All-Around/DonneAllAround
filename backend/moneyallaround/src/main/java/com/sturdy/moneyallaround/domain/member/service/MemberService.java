@@ -32,6 +32,8 @@ public class MemberService implements UserDetailsService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
 
+
+
     //회원가입
     @Transactional
     public LogInResponse registNewMember(SignUpRequest request) {
@@ -53,6 +55,7 @@ public class MemberService implements UserDetailsService {
 
         // 로그인 응답을 생성하여 반환
         LogInResponse loginResponse = new LogInResponse(tokenInfo);
+
 
         return loginResponse;
     }
@@ -163,6 +166,7 @@ public class MemberService implements UserDetailsService {
         log.info("resultMessage = {}", resultMessage);
         return new CheckTelResponse(resultMessage);
     }
+
 
     //닉네임 체크
     @Transactional
