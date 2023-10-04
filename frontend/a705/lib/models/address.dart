@@ -1,5 +1,5 @@
 class Address {
-  final String country;
+  final String? country;
   final String? administrativeArea;
   final String? subAdministrativeArea;
   final String? locality;

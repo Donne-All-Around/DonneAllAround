@@ -46,7 +46,15 @@ class _ChooseLocationPage2State extends State<ChooseLocationPage2> {
   final myController = TextEditingController();
 
   String addr = "";
-  Address address = Address(country: "", administrativeArea: "", subAdministrativeArea: "", locality: "", subLocality: "", thoroughfare: "", latitude: 0, longitude: 0);
+  Address address = Address(
+      country: null,
+      administrativeArea: null,
+      subAdministrativeArea: null,
+      locality: null,
+      subLocality: null,
+      thoroughfare: null,
+      latitude: 0,
+      longitude: 0);
 
   @override
   void dispose() {
@@ -89,7 +97,7 @@ class _ChooseLocationPage2State extends State<ChooseLocationPage2> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  if(addr.isNotEmpty) {
+                  if (addr.isNotEmpty) {
                     Navigator.pop(context, address);
                   }
                 },
@@ -198,37 +206,42 @@ class _ChooseLocationPage2State extends State<ChooseLocationPage2> {
                 onTap: () async {
                   LatLng _currentCenter = await getCenter();
                   List<Placemark> placemark = await placemarkFromCoordinates(
-                      _currentCenter.latitude, _currentCenter.longitude, localeIdentifier: "ko");
+                      _currentCenter.latitude, _currentCenter.longitude,
+                      localeIdentifier: "ko");
 
-                  String addressssss ='${placemark.first.thoroughfare!.isNotEmpty ? '${placemark.first.thoroughfare}, ' : ''}${placemark.first.subLocality!.isNotEmpty ? '${placemark.first.subLocality}, ' : ''}${placemark.first.locality!.isNotEmpty ? '${placemark.first.locality}, ' : ''}${placemark.first.subAdministrativeArea!.isNotEmpty ? '${placemark.first.subAdministrativeArea}, ' : ''}${placemark.first.administrativeArea!.isNotEmpty ? placemark.first.administrativeArea : ''}';
+                  String addressssss =
+                      '${placemark.first.thoroughfare!.isNotEmpty ? '${placemark.first.thoroughfare}, ' : ''}${placemark.first.subLocality!.isNotEmpty ? '${placemark.first.subLocality}, ' : ''}${placemark.first.locality!.isNotEmpty ? '${placemark.first.locality}, ' : ''}${placemark.first.subAdministrativeArea!.isNotEmpty ? '${placemark.first.subAdministrativeArea}, ' : ''}${placemark.first.administrativeArea!.isNotEmpty ? placemark.first.administrativeArea : ''}';
 
-                  print('country: ${placemark.reversed.last.country}');
-                  print('locality: ${placemark.reversed.last.locality}');
-                  print('street: ${placemark.reversed.last.street}');
-                  print('subLocality: ${placemark.reversed.last.subLocality}');
-                  print('name: ${placemark.reversed.last.name}');
-                  print(
-                      'isoCountryCode: ${placemark.reversed.last.isoCountryCode}');
-                  print('postalCode: ${placemark.reversed.last.postalCode}');
-                  print(
-                      'administrativeArea: ${placemark.reversed.last.administrativeArea}');
-                  print(
-                      'subAdministrativeArea: ${placemark.reversed.last.subAdministrativeArea}');
-                  print(
-                      'subThoroughfare: ${placemark.reversed.last.subThoroughfare}');
-                  print('thoroughfare: ${placemark.reversed.last.thoroughfare}');
-                  print('hashCode: ${placemark.reversed.last.hashCode}');
+                  // print('country: ${placemark.reversed.last.country}');
+                  // print('locality: ${placemark.reversed.last.locality}');
+                  // print('street: ${placemark.reversed.last.street}');
+                  // print('subLocality: ${placemark.reversed.last.subLocality}');
+                  // print('name: ${placemark.reversed.last.name}');
+                  // print(
+                  //     'isoCountryCode: ${placemark.reversed.last.isoCountryCode}');
+                  // print('postalCode: ${placemark.reversed.last.postalCode}');
+                  // print(
+                  //     'administrativeArea: ${placemark.reversed.last.administrativeArea}');
+                  // print(
+                  //     'subAdministrativeArea: ${placemark.reversed.last.subAdministrativeArea}');
+                  // print(
+                  //     'subThoroughfare: ${placemark.reversed.last.subThoroughfare}');
+                  // print(
+                  //     'thoroughfare: ${placemark.reversed.last.thoroughfare}');
+                  // print('hashCode: ${placemark.reversed.last.hashCode}');
 
                   setState(() {
                     address = Address(
                         country: placemark.reversed.last.country!,
-                        administrativeArea: placemark.reversed.last.administrativeArea!,
-                        subAdministrativeArea: placemark.reversed.last.subAdministrativeArea!,
+                        administrativeArea:
+                            placemark.reversed.last.administrativeArea!,
+                        subAdministrativeArea:
+                            placemark.reversed.last.subAdministrativeArea!,
                         locality: placemark.reversed.last.locality!,
                         subLocality: placemark.reversed.last.subLocality!,
                         thoroughfare: placemark.reversed.last.thoroughfare!,
-                    latitude: _currentCenter.latitude,
-                    longitude: _currentCenter.longitude);
+                        latitude: _currentCenter.latitude,
+                        longitude: _currentCenter.longitude);
 
                     addr = addressssss;
                     // addr =

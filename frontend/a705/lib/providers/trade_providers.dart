@@ -65,8 +65,14 @@ class TradeProviders {
     List<TradeDto> trade = [];
 
     final response = await http.post(
-      Uri.parse(
-          '$url/api/trade/list?lastTradeId=$lastTradeId&sort=koreanWonAmount'),
+      lastTradeId == null
+          ? Uri.parse('$url/api/trade/list?lastTradeId=&sort=koreanWonAmount')
+          : Uri.parse(
+              '$url/api/trade/list?lastTradeId=$lastTradeId&sort=koreanWonAmount'),
+      headers: {
+        "Accept": "application/json",
+        "content-type": "application/json"
+      },
       body: jsonEncode({
         "countryCode": countryCode,
         "country": country,
@@ -101,8 +107,11 @@ class TradeProviders {
     List<TradeDto> trade = [];
 
     final response = await http.post(
-      Uri.parse(
-          '$url/api/trade/list?lastTradeId=$lastTradeId&sort=koreanWonPerForeignCurrency'),
+      lastTradeId == null
+          ? Uri.parse(
+              '$url/api/trade/list?lastTradeId=&sort=koreanWonPerForeignCurrency')
+          : Uri.parse(
+              '$url/api/trade/list?lastTradeId=$lastTradeId&sort=koreanWonPerForeignCurrency'),
       headers: {
         "Accept": "application/json",
         "content-type": "application/json"
@@ -169,9 +178,9 @@ class TradeProviders {
   Future<void> postTrade(TradeDto tradeDto) async {
     var response =
         await http.post(Uri.parse('$url/api/trade/create?memberId=1'),
-            headers: <String, String>{
-              'Content-Type': 'applcation/json; charset=UTF-8',
-            },
+            // headers: <String, String>{
+            //   'Content-Type': 'applcation/json',
+            // },
             body: jsonEncode({
               "title": tradeDto.title,
               "description": tradeDto.description,
@@ -181,10 +190,12 @@ class TradeProviders {
               "koreanWonAmount": tradeDto.koreanWonAmount,
               "latitude": tradeDto.latitude,
               "longitude": tradeDto.longitude,
-              "preferredTradeCountry": tradeDto.preferredTradeCountry,
-              "preferredTradeCity": tradeDto.preferredTradeCity,
-              "preferredTradeDistrict": tradeDto.preferredTradeDistrict,
-              "preferredTradeTown": tradeDto.preferredTradeTown,
+              "country": tradeDto.country,
+              "administrativeArea": tradeDto.administrativeArea,
+              "subAdministrativeArea": tradeDto.subAdministrativeArea,
+              "locality": tradeDto.locality,
+              "subLocality": tradeDto.subLocality,
+              "thoroughfare": tradeDto.thoroughfare,
               "imageUrlList": tradeDto.imageUrlList
             }));
     // Response response = await dio.post(

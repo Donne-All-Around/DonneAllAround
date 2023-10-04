@@ -4,12 +4,23 @@ import 'package:a705/choose_location_page2.dart';
 import 'package:a705/main_page.dart';
 import 'package:a705/models/address.dart';
 import 'package:a705/providers/trade_providers.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:a705/models/TradeDto.dart';
+import 'package:intl/intl.dart';
+
+// final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+//
+// Future<void> signInWithAnonymous() async {
+//   UserCredential _credential = await _firebaseAuth.signInAnonymously();
+//   if (_credential.user != null) {
+//     print(_credential.user!.uid);
+//   }
+// }
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});
@@ -83,7 +94,15 @@ class _TransactionPageState extends State<TransactionPage> {
   final picker = ImagePicker();
 
   String _addr = "장소 선택";
-  Address _address = Address(country: "", administrativeArea: "", subAdministrativeArea: "", locality: "", subLocality: "", thoroughfare: "", latitude: 0, longitude: 0);
+  Address _address = Address(
+      country: "",
+      administrativeArea: "",
+      subAdministrativeArea: "",
+      locality: "",
+      subLocality: "",
+      thoroughfare: "",
+      latitude: 0,
+      longitude: 0);
 
   @override
   void initState() {
@@ -105,10 +124,13 @@ class _TransactionPageState extends State<TransactionPage> {
     koreanWonAmount: 0,
     latitude: 0,
     longitude: 0,
-    preferredTradeCountry: "",
-    preferredTradeCity: "",
-    preferredTradeDistrict: "",
-    preferredTradeTown: "",
+    country: "",
+    administrativeArea: "",
+    subAdministrativeArea: "",
+    locality: "",
+    subLocality: "",
+    thoroughfare: "",
+    type: "",
     tradeLikeCount: 0,
     sellerNickname: "",
     sellerImgUrl: "",
@@ -485,13 +507,15 @@ class _TransactionPageState extends State<TransactionPage> {
                   const SizedBox(height: 5),
                   GestureDetector(
                     onTap: () async {
+                      FocusManager.instance.primaryFocus?.unfocus();
                       Address address = await Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const ChooseLocationPage2(
                                   37.5013068, 127.0396597)));
                       setState(() {
-                        _addr = "${address.subLocality} ${address.thoroughfare}";
+                        _addr =
+                            "${address.subLocality} ${address.thoroughfare}";
                         _address = address;
                       });
                     },
@@ -550,18 +574,12 @@ class _TransactionPageState extends State<TransactionPage> {
                               );
                             });
                       } else {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MainPage()),
-                            (route) => false);
                         uploadTrade = TradeDto(
                           id: uploadTrade.id,
                           sellerId: uploadTrade.sellerId,
                           title: _titleEditController.text,
                           description: _contentEditController.text,
-                          thumbnailImageUrl:
-                              "https://firebasestorage.googleapis.com/v0/b/donnearroundfirebase.appspot.com/o/trade%2F${uploadTrade.sellerId}%2Fimage_${uploadTrade.id}_0.jpg?alt=media",
+                          thumbnailImageUrl: uploadTrade.imageUrlList[0],
                           status: uploadTrade.status,
                           countryCode: _selectedValue,
                           foreignCurrencyAmount:
@@ -569,10 +587,14 @@ class _TransactionPageState extends State<TransactionPage> {
                           koreanWonAmount: int.parse(_krwEditController.text),
                           latitude: _address.latitude,
                           longitude: _address.longitude,
-                          preferredTradeCountry: _address.country,
-                          preferredTradeCity: _address.locality!,
-                          preferredTradeDistrict: _address.subLocality!,
-                          preferredTradeTown: _address.thoroughfare!,
+                          country: _address.country!,
+                          administrativeArea: _address.administrativeArea!,
+                          subAdministrativeArea:
+                              _address.subAdministrativeArea!,
+                          locality: _address.locality!,
+                          subLocality: _address.subLocality!,
+                          thoroughfare: _address.thoroughfare!,
+                          type: uploadTrade.type,
                           tradeLikeCount: uploadTrade.tradeLikeCount,
                           sellerNickname: uploadTrade.sellerNickname,
                           sellerImgUrl: uploadTrade.sellerImgUrl,
@@ -583,7 +605,15 @@ class _TransactionPageState extends State<TransactionPage> {
                               uploadTrade.koreanWonPerForeignCurrency,
                           imageUrlList: uploadTrade.imageUrlList,
                         );
-                        await tradeProvider.postTrade(uploadTrade);
+
+                        tradeProvider.postTrade(uploadTrade);
+
+                        if (!mounted) return;
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MainPage()),
+                            (route) => false);
                       }
                     },
                     child: Container(
@@ -615,19 +645,27 @@ class _TransactionPageState extends State<TransactionPage> {
   Future getImages() async {
     final pickedFile = await picker.pickMultiImage();
     List<XFile> xfilePick = pickedFile;
-
+    DateTime now = DateTime.now();
+    final String _dateTime = DateFormat('yyMMdd-HHmmss').format(now);
     setState(() {
       if (xfilePick.isNotEmpty) {
         for (var i = 0; i < xfilePick.length; i++) {
           File _file = File(xfilePick[i].path);
           selectedImages.add(_file);
-          FirebaseStorage.instance
-              .ref(
-                  "trade/${uploadTrade.sellerId}/image_${uploadTrade.id}_$i.jpg")
-              .putFile(_file);
-          uploadTrade.imageUrlList.add("https://firebasestorage.googleapis.com/v0/b/donnearroundfirebase.appspot.com/o/trade%2F${uploadTrade.sellerId}%2Fimage_${uploadTrade.id}_$i.jpg?alt=media");
         }
       }
     });
+    if (xfilePick.isNotEmpty) {
+      for (var i = 0; i < selectedImages.length; i++) {
+        String _path =
+            "trade/${uploadTrade.sellerId}/image_${_dateTime}_$i.jpg";
+        File _file = File(xfilePick[i].path);
+        await FirebaseStorage.instance.ref(_path).putFile(_file);
+        final String _urlString =
+            await FirebaseStorage.instance.ref(_path).getDownloadURL();
+        uploadTrade.imageUrlList.add(_urlString);
+        print(_urlString);
+      }
+    }
   }
 }

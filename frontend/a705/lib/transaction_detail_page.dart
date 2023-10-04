@@ -4,14 +4,15 @@ import 'package:a705/chatting_detail_page.dart';
 import 'package:a705/chatting_page.dart';
 import 'package:a705/models/TradeDto.dart';
 import 'package:a705/providers/trade_providers.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:ui' as ui;
 
 class TransactionDetailPage extends StatefulWidget {
-
   final int id;
+
   const TransactionDetailPage(this.id, {super.key});
 
   @override
@@ -19,7 +20,6 @@ class TransactionDetailPage extends StatefulWidget {
 }
 
 class _TransactionDetailPageState extends State<TransactionDetailPage> {
-
   @override
   void initState() {
     getTradeDetail();
@@ -58,17 +58,19 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     sellerId: 0,
     title: "",
     description: "",
-    thumbnailImageUrl: "",
     status: "",
     countryCode: "USD",
     foreignCurrencyAmount: 0,
     koreanWonAmount: 0,
     latitude: 0,
     longitude: 0,
-    preferredTradeCountry: "",
-    preferredTradeCity: "",
-    preferredTradeDistrict: "",
-    preferredTradeTown: "",
+    country: "",
+    administrativeArea: "",
+    subAdministrativeArea: "",
+    locality: "",
+    subLocality: "",
+    thoroughfare: "",
+    type: "",
     tradeLikeCount: 0,
     sellerNickname: "",
     sellerImgUrl: "",
@@ -77,6 +79,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     createTime: "",
     koreanWonPerForeignCurrency: 0,
     imageUrlList: [],
+    thumbnailImageUrl: "",
   );
 
   Future getTradeDetail() async {
@@ -108,10 +111,17 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const SizedBox(
-                    child: Image(
-                  image: AssetImage('assets/images/ausdollar.jpg'),
-                )),
+                SizedBox(
+                  height: 400,
+                  child: PageView.builder(
+                      itemCount: trade.imageUrlList.length,
+                      pageSnapping: true,
+                      itemBuilder: (context, index) {
+                        return Image(
+                            image:
+                                NetworkImage(trade.imageUrlList[index]));
+                      }),
+                ),
                 Container(height: 1, color: Colors.black26),
                 Container(
                   padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
@@ -163,9 +173,11 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(
-                              trade.description,
-                              style: const TextStyle(fontSize: 16),
+                            Expanded(
+                              child: Text(
+                                trade.description,
+                                style: const TextStyle(fontSize: 16),
+                              ),
                             ),
                           ],
                         ),
@@ -186,14 +198,14 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                               ],
                             ),
                             Text(
-                              '${trade.preferredTradeDistrict} ${trade.preferredTradeTown}',
+                              '${trade.subLocality} ${trade.thoroughfare}',
                               style: const TextStyle(fontSize: 15),
                             ),
                           ],
                         ),
                         Container(
                           margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          height: 400,
+                          height: 350,
                           child: GoogleMap(
                             initialCameraPosition: CameraPosition(
                               target: LatLng(trade.latitude, trade.longitude),
@@ -236,11 +248,10 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                               : const Icon(Icons.favorite_border_rounded),
                           onPressed: () {
                             setState(() {
-                              if(trade.isLike) {
+                              if (trade.isLike) {
                                 tradeProvider.unlikeTrade(widget.id);
                                 trade.isLike = false;
-                              }
-                              else {
+                              } else {
                                 tradeProvider.likeTrade(widget.id);
                                 trade.isLike = true;
                               }
@@ -261,8 +272,8 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                     children: [
                                       const SizedBox(width: 10),
                                       const CircleAvatar(
-                                        backgroundImage:
-                                            AssetImage('assets/images/flag/AUD.png'),
+                                        backgroundImage: AssetImage(
+                                            'assets/images/flag/AUD.png'),
                                         radius: 8,
                                       ),
                                       const SizedBox(width: 5),
@@ -287,20 +298,19 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                 onTap: () {
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
-                                      return  const ChattingDetailPage(
-                                          transactionInfoMap :{
-                                            "transactionId" : "board2",
-                                            "transactionTitle" : "싸게싸게팔아요",
-                                            "seller" : "신짱구",
-                                            "sellerId" : "098765",
+                                      return const ChattingDetailPage(
+                                          transactionInfoMap: {
+                                            "transactionId": "board2",
+                                            "transactionTitle": "싸게싸게팔아요",
+                                            "seller": "신짱구",
+                                            "sellerId": "098765",
                                             "countryCode": "USD",
-                                            "transactionUrl" : "",
-                                            "koreanWonAmount" : 50000,
-                                            "foreignCurrencyAmount" : 5000,
+                                            "transactionUrl": "",
+                                            "koreanWonAmount": 50000,
+                                            "foreignCurrencyAmount": 5000,
                                             "type": "DIRECT",
                                             "status": "WAIT"
-                                          }
-                                      );
+                                          });
                                     },
                                   ));
                                 },

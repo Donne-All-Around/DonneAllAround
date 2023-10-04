@@ -11,10 +11,13 @@ class TradeDto {
   final double koreanWonPerForeignCurrency;
   final double latitude;
   final double longitude;
-  final String preferredTradeCountry;
-  final String preferredTradeCity;
-  final String preferredTradeDistrict;
-  final String preferredTradeTown;
+  final String country;
+  final String? administrativeArea;
+  final String? subAdministrativeArea;
+  final String? locality;
+  final String? subLocality;
+  final String? thoroughfare;
+  final String type;
   final List<dynamic> imageUrlList;
   late int tradeLikeCount;
   final String sellerNickname;
@@ -36,10 +39,13 @@ class TradeDto {
     required this.koreanWonPerForeignCurrency,
     required this.latitude,
     required this.longitude,
-    required this.preferredTradeCountry,
-    required this.preferredTradeCity,
-    required this.preferredTradeDistrict,
-    required this.preferredTradeTown,
+    required this.country,
+    required this.administrativeArea,
+    required this.subAdministrativeArea,
+    required this.locality,
+    required this.subLocality,
+    required this.thoroughfare,
+    required this.type,
     required this.imageUrlList,
     required this.tradeLikeCount,
     required this.sellerNickname,
@@ -63,10 +69,13 @@ class TradeDto {
       koreanWonPerForeignCurrency: json['koreanWonPerForeignCurrency'],
       latitude: json['latitude'] ?? 37,
       longitude: json['longitude'] ?? 127,
-      preferredTradeCountry: json['preferredTradeCountry'].toString(),
-      preferredTradeCity: json['preferredTradeCity'].toString(),
-      preferredTradeDistrict: json['preferredTradeDistrict'].toString(),
-      preferredTradeTown: json['preferredTradeTown'].toString(),
+      country: json['country'].toString(),
+      administrativeArea: json['administrativeArea'].toString(),
+      subAdministrativeArea: json['subAdministrativeArea'].toString(),
+      locality: json['locality'].toString(),
+      subLocality: json['subLocality'].toString(),
+      thoroughfare: json['thoroughfare'].toString(),
+      type: json['type'].toString(),
       imageUrlList: json['imageUrlList'] ?? [],
       tradeLikeCount: json['tradeLikeCount'] ?? 0,
       sellerNickname: json['sellerNickname'].toString() ?? "옹골찬",
@@ -91,10 +100,13 @@ class TradeDto {
       'koreanWonPerForeignCurrency': koreanWonPerForeignCurrency,
       'latitude': latitude,
       'locationLongitude': longitude,
-      'preferredTradeCountry': preferredTradeCountry,
-      'preferredTradeCity': preferredTradeCity,
-      'preferredTradeDistrict': preferredTradeDistrict,
-      'preferredTradeTown': preferredTradeTown,
+      'country': country,
+      'administrativeArea': administrativeArea,
+      'subAdministrativeArea': subAdministrativeArea,
+      'locality': locality,
+      'subLocality': subLocality,
+      'thoroughfare': thoroughfare,
+      'type': type,
       'imageUrlList': imageUrlList,
       'tradeLikeCount': tradeLikeCount,
       'sellerNickname': sellerNickname,

@@ -41,14 +41,14 @@ class _HomePageState extends State<HomePage> {
 
   String _addr = "강남구 역삼동";
   Address _address = Address(
-      country: "USD",
+      country: null,
       administrativeArea: null,
       subAdministrativeArea: null,
       locality: null,
       subLocality: null,
       thoroughfare: null,
-      latitude: 0,
-      longitude: 0);
+      latitude: 37.5013068,
+      longitude: 127.0396597,);
 
   @override
   Widget build(BuildContext context) {
@@ -350,7 +350,7 @@ class _HomePageState extends State<HomePage> {
                                 _address.thoroughfare);
                             setState(() {});
                           }
-                          if (value == "낮은 가격순") {
+                          else if (value == "낮은 가격순") {
                             trade = await tradeProvider.getLowestTrade(
                                 currency[_idx],
                                 null,
@@ -362,7 +362,7 @@ class _HomePageState extends State<HomePage> {
                                 _address.thoroughfare);
                             setState(() {});
                           }
-                          if (value == "단위 당 낮은 가격순") {
+                          else {
                             trade = await tradeProvider.getLowestRateTrade(
                                 currency[_idx],
                                 null,
@@ -425,11 +425,13 @@ class _HomePageState extends State<HomePage> {
                                         child: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(15),
-                                            child: const Image(
+                                            child: Image(
                                               height: 60,
-                                              image: AssetImage(
-                                                "assets/images/ausdollar.jpg",
-                                              ),
+                                              image: 
+                                                  NetworkImage(trade[index].thumbnailImageUrl),
+                                              // AssetImage(
+                                              //   "assets/images/ausdollar.jpg",
+                                              // ),
                                               fit: BoxFit.cover,
                                             )),
                                       ),
@@ -451,7 +453,7 @@ class _HomePageState extends State<HomePage> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    '${trade[index].preferredTradeDistrict} ${trade[index].preferredTradeTown}',
+                                                    '${trade[index].subLocality} ${trade[index].thoroughfare}',
                                                     style: const TextStyle(
                                                         color: Colors.black54),
                                                   ),
