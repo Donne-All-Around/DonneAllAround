@@ -750,7 +750,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                     // 나라별 환율
                     const SizedBox(height: 20,),
                     ListViewBuilder(
-                      exchangeRates: exchangeRates,
+                      exchangeRates: exchangeRates!,
                       bankCode: widget.bankCode,
                     ),
                   ],
@@ -764,7 +764,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
 }
 
 class ListViewBuilder extends StatefulWidget {
-  final Map<String, double>? exchangeRates;
+  final Map<String, double> exchangeRates;
   final String bankCode;
   const ListViewBuilder({required this.exchangeRates, required this.bankCode,});
 
@@ -774,24 +774,6 @@ class ListViewBuilder extends StatefulWidget {
 
 class _ListViewBuilderState extends State<ListViewBuilder> {
   Map<String, double> exchangeRates = {};
-
-
-  double? calculateRate(String baseCurrency, String targetCurrency) {
-    if (exchangeRates != null &&
-        exchangeRates!.containsKey(baseCurrency) &&
-        exchangeRates!.containsKey(targetCurrency)) {
-      final baseRate = exchangeRates![baseCurrency];
-      final targetRate = exchangeRates![targetCurrency];
-
-      if (baseCurrency == 'USDKRW' && targetCurrency == 'USDJPY') {
-        return baseRate! / targetRate! ;
-      }  else {
-        return baseRate! / targetRate!;
-      }
-
-    }
-    return null;
-  }
 
   final _valueList1 = [
     '미국(달러) USD',
@@ -844,7 +826,22 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
     'DGB대구은행': {'currencyName': 'DGB대구은행', 'bankCode': '031'},
   };
 
+  double? calculateRate(String baseCurrency, String targetCurrency) {
+    if (exchangeRates != null &&
+        exchangeRates!.containsKey(baseCurrency) &&
+        exchangeRates!.containsKey(targetCurrency)) {
+      final baseRate = exchangeRates![baseCurrency];
+      final targetRate = exchangeRates![targetCurrency];
 
+      if (baseCurrency == 'USDKRW' && targetCurrency == 'USDJPY') {
+        return baseRate! / targetRate! ;
+      }  else {
+        return baseRate! / targetRate!;
+      }
+
+    }
+    return null;
+  }
 
   @override
   void initState() {
@@ -881,29 +878,29 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
 // // 송금 보낼 때 수수료
 //         final sendingFee = bankInfoData['fees'][currency1[index]]['sendingFee'];
 
-        String? formattedRate = 'N/A'; // 초기값 설정
+        String formattedRate = 'N/A'; // 초기값 설정
 
-        if (currency1[index] == 'USDKRW') {
-          // 미국 달러(USD)은 그대로 표시
-          final exchangeRate = exchangeRates[currency1[index]];
-          if (exchangeRate != null) {
-            formattedRate = exchangeRate.toStringAsFixed(2);
+        if (exchangeRates != null) {
+          if (currency1[index] == 'USDKRW') {
+            // 미국 달러(USD)은 그대로 표시
+            final exchangeRate = exchangeRates![currency1[index]];
+            if (exchangeRate != null) {
+              formattedRate = exchangeRate.toStringAsFixed(2);
+            }
+          } else if(currency1[index]== 'USDJPY' ) {
+            final rate = calculateRate('USDKRW', currency1[index])! * 100;
+            if (rate != null) {
+              formattedRate = rate.toStringAsFixed(2);
+            }
           }
-        } else if(currency1[index]== 'USDJPY' ) {
-          var rate = calculateRate('USDKRW', currency1[index]);
-          if (rate != null) {
-            rate *= 100;
-          }
-          formattedRate = rate?.toStringAsFixed(2);
-                }
-        else {
-          // 다른 국가의 환율 계산
-          final rate = calculateRate('USDKRW', currency1[index]);
-          if (rate != null) {
-            formattedRate = rate.toStringAsFixed(2);
+          else {
+            // 다른 국가의 환율 계산
+            final rate = calculateRate('USDKRW', currency1[index]);
+            if (rate != null) {
+              formattedRate = rate.toStringAsFixed(2);
+            }
           }
         }
-
 
         return Row(
           children: [
