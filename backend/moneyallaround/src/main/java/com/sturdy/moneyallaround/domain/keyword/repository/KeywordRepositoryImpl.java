@@ -21,6 +21,7 @@ public class KeywordRepositoryImpl implements KeywordRepositoryCustom {
         return queryFactory
                 .selectFrom(keyword)
                 .where(
+                        keyword.member.isDeleted.eq(false),
                         keyword.member.ne(trade.getSeller()),
                         keyword.countryCode.eq(trade.getCountryCode()),
                         eqTradeLocation(trade.getCountry(), trade.getAdministrativeArea(), trade.getSubAdministrativeArea(),

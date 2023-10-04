@@ -31,6 +31,7 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
                 .leftJoin(trade.seller, member)
                 .fetchJoin()
                 .where(
+                        trade.seller.isDeleted.eq(false),
                         trade.isDeleted.eq(false),
                         trade.status.in(TradeStatus.WAIT, TradeStatus.PROGRESS),
                         trade.countryCode.eq(tradeListRequestDto.countryCode()),
@@ -100,6 +101,7 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
                 .from(tradeLike)
                 .where(
                         tradeLike.member.eq(member),
+                        trade.seller.isDeleted.eq(false),
                         ltLastTradeId(lastTradeId, pageable)
                 )
                 .orderBy(trade.createTime.desc())
@@ -114,6 +116,7 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
         List<Trade> result = queryFactory
                 .selectFrom(trade)
                 .where(
+                        trade.seller.isDeleted.eq(false),
                         ltLastTradeId(lastTradeId, pageable),
                         trade.title.contains(keyword)
                                 .or(trade.description.contains(keyword))
@@ -131,6 +134,7 @@ public class TradeRepositoryImpl implements TradeRepositoryCustom {
                 .select(trade)
                 .from(keywordNotification)
                 .where(
+                        trade.seller.isDeleted.eq(false),
                         keywordNotification.member.eq(member),
                         ltLastTradeId(lastTradeId, pageable)
                 )
