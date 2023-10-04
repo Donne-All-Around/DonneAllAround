@@ -211,7 +211,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                 children: [
                                   CircleAvatar(
                                     backgroundImage:
-                                    AssetImage('assets/images/flag/${trade['countryCode']}.png'),
+                                    AssetImage('assets/images/flag/${trade['countryCode'] == 'KRW' ? 'KRW' : trade['countryCode'] == 'USD' ? 'USDKRW' : 'USD${trade['countryCode']}'}.png'),
                                     radius: 8,
                                   ),
                                   const SizedBox(width: 5),

@@ -376,7 +376,7 @@ class ExchangeRecordEditPageState extends State<ExchangeRecordEditPage> {
                                     children: [
                                       CircleAvatar(
                                         backgroundImage: AssetImage(
-                                          'assets/images/flag/${currency[_valueList.indexOf(value)]}.png'),
+                                            'assets/images/flag/${currency[_valueList.indexOf(value)] == 'KRW' ? 'KRW' : currency[_valueList.indexOf(value)] == 'USD' ? 'USDKRW' : 'USD${currency[_valueList.indexOf(value)]}'}.png'),
                                         radius: 10,
                                       ),
                                       const SizedBox(width: 5),
