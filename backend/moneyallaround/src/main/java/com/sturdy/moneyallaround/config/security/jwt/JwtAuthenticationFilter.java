@@ -26,7 +26,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/member/check/nickname",
             "/api/member/check/tel",
             "/api/member/sign-in",
-            "/api/member/join"
+            "/api/member/join",
+            "/api/member/firebase"
     };
 
     @Override

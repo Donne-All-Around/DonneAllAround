@@ -1,13 +1,15 @@
 package com.sturdy.moneyallaround.domain.member.service;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import com.sturdy.moneyallaround.Exception.message.ExceptionMessage;
 import com.sturdy.moneyallaround.Exception.model.UserAuthException;
 import com.sturdy.moneyallaround.Exception.model.UserException;
 //import com.sturdy.moneyallaround.config.security.jwt.JwtTokenProvider;
-import com.sturdy.moneyallaround.domain.member.dto.request.CheckNicknameRequest;
-import com.sturdy.moneyallaround.domain.member.dto.request.CheckTelnumberRequest;
-import com.sturdy.moneyallaround.domain.member.dto.request.SignUpRequest;
-import com.sturdy.moneyallaround.domain.member.dto.request.UpdateProfileRequest;
+import com.sturdy.moneyallaround.config.security.jwt.TokenInfo;
+import com.sturdy.moneyallaround.config.security.jwt.TokenProvider;
+import com.sturdy.moneyallaround.domain.member.dto.request.*;
 import com.sturdy.moneyallaround.domain.member.dto.response.*;
 import com.sturdy.moneyallaround.domain.member.entity.Member;
 import com.sturdy.moneyallaround.domain.member.repository.MemberRepository;
@@ -17,6 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 //import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 //import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,14 +34,48 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class MemberService {
+public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
-    //private final AuthenticationManagerBuilder authenticationManagerBuilder;
-  //  private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final TokenProvider tokenProvider;
   //  private final PasswordEncoder encoder;
     private final RefreshTokenService refreshTokenService;
+    private final FirebaseAuth firebaseAuth;
 
-    public
+    public FirebaseAuthResponse signIn(FirebaseAuthRequest request) {
+        log.info("memberservice - signin");
+        log.info("request = {}", request);
+
+        try {
+            FirebaseToken firebaseToken = firebaseAuth.verifyIdToken(request.idToken());
+            log.info("{}", firebaseToken);
+        } catch (FirebaseAuthException e) {
+            return new FirebaseAuthResponse();
+        }
+
+        log.info("파이어베이스 인증 완료");
+
+        Optional<Member> member = memberRepository.findByTel(request.tel());
+        if (member.isEmpty()) {
+            return new FirebaseAuthResponse(false);
+        }
+
+        log.info("사용자 찾음");
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(request.tel(), null);
+        authentication.setAuthenticated(true);
+
+        log.info("authentication = {}", authentication);
+
+        TokenInfo tokenInfo = tokenProvider.generateToken(authentication);
+
+        return new FirebaseAuthResponse(true,
+                FirebaseAuthResponse.SignInResponse.builder()
+                        .id(member.get().getId())
+                        .tel(member.get().getTel())
+                        .token(tokenInfo)
+                        .build());
+    }
 
     //registMember
 //    @Transactional
@@ -195,5 +237,11 @@ public class MemberService {
     @Transactional
     public void deposit(Long memberId, Integer amount) {
         findById(memberId).deposit(amount);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return memberRepository.findByTel(username)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 유저를 찾을 수 없습니다."));
     }
 }

@@ -23,7 +23,7 @@ data:
     port: 6380
 
 fcm:
-  service-account-file: firebase/donnearound-java-access-key.json #비밀 키 경로
+  service-account-file: src/main/resources/firebase/donnearound-java-access-key.json #비밀 키 경로
 
 jwt:
   secret: o79wfnSC9mNCkN6xKfAinMH4Zh9WZCnby/zNpPa9Yi2FiXy+cbqZUho6/gWNWVWj

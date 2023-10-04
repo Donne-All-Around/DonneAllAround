@@ -5,6 +5,7 @@ import com.sturdy.moneyallaround.domain.member.dto.request.CheckNicknameRequest;
 import com.sturdy.moneyallaround.domain.member.dto.request.CheckTelnumberRequest;
 import com.sturdy.moneyallaround.domain.member.dto.request.FirebaseAuthRequest;
 import com.sturdy.moneyallaround.domain.member.dto.request.SignUpRequest;
+import com.sturdy.moneyallaround.domain.member.dto.response.FirebaseAuthResponse;
 import com.sturdy.moneyallaround.domain.member.service.MemberService;
 import com.sturdy.moneyallaround.domain.member.service.RefreshTokenService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,9 +53,9 @@ public class MemberController {
     }
 
     @PostMapping("/firebase")
-    public ApiResponse firebaseToken(@RequestBody FirebaseAuthRequest firebaseAuthRequest) {
+    public FirebaseAuthResponse firebaseToken(@RequestBody FirebaseAuthRequest firebaseAuthRequest) {
         log.info("파이어베이스 체크");
-        return ApiResponse.success("파이어베이스 조회 성공");
+        return memberService.signIn(firebaseAuthRequest);
     }
 
     // 회원가입

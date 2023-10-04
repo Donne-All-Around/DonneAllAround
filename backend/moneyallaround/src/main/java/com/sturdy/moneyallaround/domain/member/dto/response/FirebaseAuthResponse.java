@@ -2,7 +2,9 @@ package com.sturdy.moneyallaround.domain.member.dto.response;
 
 import com.sturdy.moneyallaround.config.security.jwt.TokenInfo;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class FirebaseAuthResponse {
     boolean firebaseAuthStatus;
     boolean isMember;

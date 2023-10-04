@@ -1,10 +1,14 @@
 package com.sturdy.moneyallaround.domain.member.entity;
 
 //import com.sturdy.moneyallaround.domain.member.dto.request.SignUpRequest;
+import com.sturdy.moneyallaround.common.audit.BaseEntity;
 import com.sturdy.moneyallaround.domain.member.dto.request.UpdateProfileRequest;
 import com.sturdy.moneyallaround.domain.member.dto.request.UpdateTelRequest;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.authority.SimpleGrantedAuthority;
 //import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +24,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 //public class Member implements UserDetails {
-public class Member {
+public class Member extends BaseEntity implements UserDetails {
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, unique = true, nullable = false)
@@ -115,5 +119,43 @@ public class Member {
 
     public void deposit(Integer amount) {
         point += amount;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+                .map(Role::name)
+                .map(SimpleGrantedAuthority::new)
+                .toList();
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return tel;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 }
