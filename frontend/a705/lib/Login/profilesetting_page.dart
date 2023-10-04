@@ -31,10 +31,10 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
   final UserProvider _userProvider = UserProvider();
 
   SignUpDto  uploadSign = SignUpDto(
-      tel: widget.phoneNumber,
+      tel: '',
     nickname: '',
     imageUrl: '',
-    uid: widget.uid,
+    uid: '',
   );
 
   bool isNicknameValid(String nickname) {
@@ -245,7 +245,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                       uploadSign = SignUpDto(
                           tel: widget.phoneNumber,
                           nickname: _nicknameController.text,
-                          imageUrl: profileImg,
+                          imageUrl:  profileImg ?? 'assets/images/wagon_don.png',
                           uid: widget.uid);
 
                       try {
@@ -365,12 +365,18 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
 
 
   // 갤러리에서 가져오기
-  Future<void> _takePhoto(ImageSource source) async {
+  Future _takePhoto(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
-      uploadImageToFirebase(pickedFile.path);
+      // uploadImageToFirebase(pickedFile.path);
+      String _path = "profile/image.jpg";
+      File _file = File(pickedFile.path);
+      await FirebaseStorage.instance.ref(_path).putFile(_file);
+      final String _urlString =
+      await FirebaseStorage.instance.ref(_path).getDownloadURL();
       setState(() {
         _pickedFile = File(pickedFile.path);
+        profileImg = _urlString;
       });
     } else {
       if (kDebugMode) {
