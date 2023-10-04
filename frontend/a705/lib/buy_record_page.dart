@@ -25,7 +25,7 @@ class BuyRecordPageState extends State<BuyRecordPage> {
 
   void fetchBuyHistory() async {
     try {
-      const memberId = '1'; // 원하는 회원 ID를 여기에 넣어주세요.
+      const memberId = '2'; // 원하는 회원 ID를 여기에 넣어주세요.
       final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/buy?memberId=$memberId');
 
       http.Response response = await http.get(url);
