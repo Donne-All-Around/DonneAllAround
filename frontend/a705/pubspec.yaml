@@ -60,11 +60,8 @@ dependencies:
   flutter_inappwebview: ^5.7.2+3
   fl_chart: ^0.63.0
   kpostal: ^0.5.1
-<<<<<<< HEAD
   dio: ^4.0.6
   firebase_storage: ^11.2.7
-=======
->>>>>>> 1a80912c35c97bd63e825860f07d3fa30f7e2162
   flutter_provider: ^2.1.0
   provider: ^6.0.5
   uuid: ^4.1.0

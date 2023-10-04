@@ -860,19 +860,6 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
       itemBuilder: (context, index) {
         final selectedBankCode = widget.bankCode;
         final bankInfoData = bankInfoMap[selectedBankCode];
-        //
-        // String buyingFee = '미제공';
-        // String sellingFee = '미제공';
-        // String sendingFee = '미제공';
-        //
-        // if (bankInfoData != null) {
-        //   final fees = bankInfoData.fees[currency1[index]];
-        //   if (fees != null) {
-        //     buyingFee = fees.buying?.toStringAsFixed(2) ?? '미제공';
-        //     sellingFee = fees.selling?.toStringAsFixed(2) ?? '미제공';
-        //     sendingFee = fees.sending?.toStringAsFixed(2) ?? '미제공';
-        //   }
-        // }
 
         final currencyCode = currency1[index];
         final feeInfo = bankInfoData?.fees[currencyCode];

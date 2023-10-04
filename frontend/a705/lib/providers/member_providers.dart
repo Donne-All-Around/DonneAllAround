@@ -106,8 +106,8 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  Future<String?> getJwtTokenFromFirebaseToken(String firebaseToken, String uid, String tel) async {
-    final url = "$baseUrl/api/member/verifyFirebaseToken";
+  Future<Map<String, dynamic>?> getJwtTokenFromFirebaseToken(String firebaseToken, String uid, String tel) async {
+    final url = "$baseUrl/api/member/sign-in";
 
     // Prepare the request body with the firebaseToken, uid, and tel
     final requestBody = {
@@ -127,13 +127,29 @@ class UserProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        final jwtToken = responseData['jwtToken'];
-        return jwtToken;
-      } else {
-        throw Exception('Firebase 토큰으로부터 JWT 토큰을 가져오지 못했습니다');
+        if (responseData['member'] == true) {
+          final signInResponse = responseData['signInResponse'];
+          if (signInResponse is Map<String, dynamic>) {
+            final id = signInResponse['id'];
+            final tel = signInResponse['tel'];
+            final token = signInResponse['token'];
+            print('$id');
+            print('$tel');
+            print('$token');
+            return {
+              'id': id,
+              'tel': tel,
+              'token': token,
+            };
+          }
+        } else {
+          print('뉴멤버환영');
+          return null;
+        }
       }
+      throw Exception('Firebase 토큰으로부터 회원 정보를 가져오지 못했습니다');
     } catch (e) {
-      print('Firebase 토큰으로부터 JWT 토큰을 가져오는 중 오류 발생: $e');
+      print('Firebase 토큰으로부터 회원 정보를 가져오는 중 오류 발생: $e');
       return null;
     }
   }

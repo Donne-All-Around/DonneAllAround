@@ -1,8 +1,10 @@
 import 'dart:async'; // 타이머
 import 'package:a705/Login/join_page.dart';
+import 'package:a705/Login/profilesetting_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../home_page.dart';
 import '../main_page.dart';
 import '../providers/member_providers.dart';
 import '../service/shared_pref.dart';
@@ -260,37 +262,37 @@ class _PreLoginPageState extends State<PreLoginPage> {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId:verificationIDReceived, smsCode: optCodeController.text );
 
-    // await auth.signInWithCredential(credential).then((value){
-    //   print("로그인 성공!");
-    //   Navigator.push(context, MaterialPageRoute(builder: (context) => const MainPage()));
-    // });
     UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
     // Firebase 인증 토큰 얻기
     String? firebaseToken = await userCredential.user!.getIdToken();
     print("Firebase 토큰: $firebaseToken");
     String? uid = userCredential.user!.uid;
     String? tel = phoneController.text;
+    print("uid : $uid");
+    print("tel : $tel");
 
     // Firebase 토큰을 백엔드 서버로 전송하여 JWT 토큰을 가져옴
-    String? jwtToken = await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!, uid, tel);
-    print("토큰 : $jwtToken");
+    Map<String, dynamic>? signInResponse = await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!, uid, tel);
+    if (signInResponse != null) {
+      String? id = signInResponse['id'];
+      String? tel = signInResponse['tel'];
+      String? token = signInResponse['token'];
+
+      if (id != null && tel != null && token != null) {
+        String jwtToken = '$id|$tel|$token'; // 예제에서 사용하는 방식으로 JWT 토큰 구성
+        print("토큰 : $jwtToken");
+
+        // 스토리지 저장 및 헤더에 토큰 값 할당 구현.!!!!!!!
+        saveUserInfo('$id','$tel','$token');
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
+      } else {
+        // null  인 경우,  uid 와 tel 갖고 프로필페이지로 이동.
+        Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfileSettingPage(phoneNumber: '$tel', uid: '$uid')));
+      }
+
+    }
+    // print("토큰 : $jwtToken");
     print("로그인 성공!");
-    // if (jwtToken != null) {
-    //   final jwtInfo = await parseJwt(jwtToken);
-    //
-    //   if (jwtInfo != null) {
-    //     final isMember = jwtInfo['isMember'];
-    //     final signInResponse = jwtInfo['signInResponse'];
-    //
-    //     final id = signInResponse['id'];
-    //     final tel = signInResponse['tel'];
-    //     final token = signInResponse['token'];
-    //
-    //     await saveUserInfo(id, tel, token);
-    //
-    //     checkUserExistenceAndNavigate();
-    //   }
-    // }
     } catch (e) {
     print("로그인 실패: $e");
     }

@@ -8,7 +8,8 @@ import '../providers/member_providers.dart';
 
 class ProfileSettingPage extends StatefulWidget {
   final String phoneNumber; // 이전 페이지에서 전달된 전화번호
-  const ProfileSettingPage({Key? key, required this.phoneNumber}) : super(key: key);
+  final String uid;
+  ProfileSettingPage({required this.phoneNumber,  required this.uid});
 
   @override
   State<ProfileSettingPage> createState() => _ProfileSettingPageState();

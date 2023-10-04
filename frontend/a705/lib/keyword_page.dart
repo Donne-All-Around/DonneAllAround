@@ -33,11 +33,8 @@ class KeywordPageState extends State<KeywordPage> {
     Keyword(
       countryCurrency: '호주(달러) AUD',
       location: '서울특별시 강서구 화곡동',
-<<<<<<< HEAD
-      flagImageUrl: 'assets/images/flag/AUD.png',
-=======
       flagImageUrl: 'assets/images/flag/USDAUD.png',
->>>>>>> 1a80912c35c97bd63e825860f07d3fa30f7e2162
+
     ),
     Keyword(
       countryCurrency: '호주(달러) AUD',
