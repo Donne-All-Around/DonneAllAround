@@ -19,8 +19,8 @@ public class KeywordService {
     private final MemberService memberService;
 
     @Transactional
-    public void createKeyword(KeywordRequestDto keywordRequestDto, Long memberId) {
-        keywordRepository.save(keywordRequestDto.toKeyword(memberService.findById(memberId)));
+    public void createKeyword(KeywordRequestDto keywordRequestDto, String memberTel) {
+        keywordRepository.save(keywordRequestDto.toKeyword(memberService.findByTel(memberTel)));
     }
 
     @Transactional
@@ -28,11 +28,11 @@ public class KeywordService {
         keywordRepository.deleteById(keywordId);
     }
 
-    public List<Keyword> findAll(Long memberId) {
-        return keywordRepository.findByMemberOrderByCreateTimeDesc(memberService.findById(memberId));
+    public List<Keyword> findAll(String memberTel) {
+        return keywordRepository.findByMemberOrderByCreateTimeDesc(memberService.findByTel(memberTel));
     }
 
-    public Boolean existKeyword(KeywordRequestDto keywordRequestDto, Long memberId) {
+    public Boolean existKeyword(KeywordRequestDto keywordRequestDto, String memberTel) {
         return keywordRepository.existsByMemberAndLocationAndCountryCode(
                 keywordRequestDto.countryCode(),
                 keywordRequestDto.country(),
@@ -41,7 +41,7 @@ public class KeywordService {
                 keywordRequestDto.locality(),
                 keywordRequestDto.subLocality(),
                 keywordRequestDto.thoroughfare(),
-                memberService.findById(memberId)
+                memberService.findByTel(memberTel)
         );
     }
 

@@ -62,6 +62,6 @@ public class MemberController {
 
     @GetMapping("/reissue")
     public ApiResponse<ReIssueResponse> reissue(@RequestBody ReIssueRequest request) {
-        return ApiResponse.success("refresh token 재발급 성공", memberService.reissue(request.refreshToken(), SecurityContextHolder.getContext().getAuthentication()));
+        return ApiResponse.success("토큰 재발급 성공", memberService.reissue(request.refreshToken(), SecurityContextHolder.getContext().getAuthentication()));
     }
 }

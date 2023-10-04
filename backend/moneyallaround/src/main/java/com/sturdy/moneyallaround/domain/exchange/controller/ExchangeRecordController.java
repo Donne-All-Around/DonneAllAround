@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -25,10 +27,10 @@ public class ExchangeRecordController {
 
     @GetMapping("/list")
     public ApiResponse<Map<String, Object>> exchangeRecordList(
-            @RequestParam(required = false) Long memberId,
             @RequestParam(required = false) Long lastExchangeRecordId,
+            @AuthenticationPrincipal UserDetails principal,
             @PageableDefault(size = 20, sort = "exchangeDate", direction = Sort.Direction.DESC)Pageable pageable) {
-        Slice<ExchangeRecord> slices = exchangeRecordService.findByMember(memberId, lastExchangeRecordId, pageable);
+        Slice<ExchangeRecord> slices = exchangeRecordService.findByMember(principal.getUsername(), lastExchangeRecordId, pageable);
         Map<String, Object> response = new HashMap<>();
         response.put("exchangeRecordList", slices.stream().map(ExchangeRecordResponseDto::from).toList());
         response.put("last", slices.isLast());
@@ -37,14 +39,13 @@ public class ExchangeRecordController {
 
     @PostMapping("/create")
     public ApiResponse<ExchangeRecordResponseDto> createExchangeRecord(
-            @RequestParam(required = false) Long memberId,
+            @AuthenticationPrincipal UserDetails principal,
             @RequestBody ExchangeRecordRequestDto exchangeRecordRequestDto) {
-        return ApiResponse.success("환전 기록 작성 성공", ExchangeRecordResponseDto.from(exchangeRecordService.createExchangeRecord(exchangeRecordRequestDto, memberId)));
+        return ApiResponse.success("환전 기록 작성 성공", ExchangeRecordResponseDto.from(exchangeRecordService.createExchangeRecord(exchangeRecordRequestDto, principal.getUsername())));
     }
 
     @DeleteMapping("/{exchangeRecordId}")
     public ApiResponse<Object> deleteExchangeRecord(
-            @RequestParam(required = false) Long memberId,
             @PathVariable Long exchangeRecordId) {
         exchangeRecordService.deleteExchangeRecord(exchangeRecordId);
         return ApiResponse.success("환전 기록 삭제 성공", null);
@@ -52,7 +53,6 @@ public class ExchangeRecordController {
 
     @PutMapping("/{exchangeRecordId}")
     public ApiResponse<ExchangeRecordResponseDto> updateExchangeRecord(
-            @RequestParam(required = false) Long memberId,
             @PathVariable Long exchangeRecordId,
             @RequestBody ExchangeRecordRequestDto exchangeRecordRequestDto) {
         return ApiResponse.success("환전 기록 수정 성공", ExchangeRecordResponseDto.from(exchangeRecordService.updateExchangeRecord(exchangeRecordRequestDto, exchangeRecordId)));

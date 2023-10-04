@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -25,19 +27,19 @@ public class TradeReviewController {
 
     @PostMapping("/{tradeId}")
     public ApiResponse<Object> createTradeReview(
-            @RequestParam(required = false) Long memberId,
             @PathVariable Long tradeId,
+            @AuthenticationPrincipal UserDetails principal,
             @RequestBody TradeReviewRequestDto tradeReviewRequestDto) {
-        tradeReviewService.createTradeReview(tradeId, memberId, tradeReviewRequestDto);
+        tradeReviewService.createTradeReview(tradeId, principal.getUsername(), tradeReviewRequestDto);
         return ApiResponse.success("거래 후기 등록 성공", null);
     }
 
     @GetMapping("/list/sell")
     public ApiResponse<Map<String, Object>> tradeSellReviewList(
-            @RequestParam(required = false) Long memberId,
             @RequestParam(required = false) Long lastTradeReviewId,
+            @AuthenticationPrincipal UserDetails principal,
             @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
-        Slice<TradeReview> slices = tradeReviewService.findSellReview(memberId, lastTradeReviewId, pageable);
+        Slice<TradeReview> slices = tradeReviewService.findSellReview(principal.getUsername(), lastTradeReviewId, pageable);
         Map<String, Object> response = new HashMap<>();
         response.put("tradeReviewList", slices.stream().map(TradeReviewResponseDto::from).toList());
         response.put("last", slices.isLast());
@@ -46,10 +48,10 @@ public class TradeReviewController {
 
     @GetMapping("/list/buy")
     public ApiResponse<Map<String, Object>> tradeBuyReviewList(
-            @RequestParam(required = false) Long memberId,
             @RequestParam(required = false) Long lastTradeReviewId,
+            @AuthenticationPrincipal UserDetails principal,
             @PageableDefault(size = 20, sort = "createTime", direction = Sort.Direction.DESC)Pageable pageable) {
-        Slice<TradeReview> slices = tradeReviewService.findBuyReview(memberId, lastTradeReviewId, pageable);
+        Slice<TradeReview> slices = tradeReviewService.findBuyReview(principal.getUsername(), lastTradeReviewId, pageable);
         Map<String, Object> response = new HashMap<>();
         response.put("tradeReviewList", slices.stream().map(TradeReviewResponseDto::from).toList());
         response.put("last", slices.isLast());
@@ -58,7 +60,7 @@ public class TradeReviewController {
 
     @GetMapping("/score")
     public ApiResponse<Map<String, Integer>> tradeReviewScoreList(
-            @RequestParam(required = false) Long memberId) {
-        return ApiResponse.success("나의 평가 항목별 개수 조회 성공", tradeReviewService.countScore(memberId));
+            @AuthenticationPrincipal UserDetails principal) {
+        return ApiResponse.success("나의 평가 항목별 개수 조회 성공", tradeReviewService.countScore(principal.getUsername()));
     }
 }

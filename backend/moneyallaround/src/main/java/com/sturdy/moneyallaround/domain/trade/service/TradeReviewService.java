@@ -23,21 +23,21 @@ public class TradeReviewService {
     private final MemberService memberService;
 
     @Transactional
-    public void createTradeReview(Long tradeId, Long reviewerId, TradeReviewRequestDto tradeReviewRequestDto) {
-        tradeReviewRepository.save(tradeReviewRequestDto.toTradeReview(tradeService.findTrade(tradeId), memberService.findById(reviewerId), memberService.findById(tradeReviewRequestDto.revieweeId())));
+    public void createTradeReview(Long tradeId, String memberTel, TradeReviewRequestDto tradeReviewRequestDto) {
+        tradeReviewRepository.save(tradeReviewRequestDto.toTradeReview(tradeService.findTrade(tradeId), memberService.findByTel(memberTel), memberService.findById(tradeReviewRequestDto.revieweeId())));
         memberService.updateRating(tradeReviewRequestDto.revieweeId(), tradeReviewRequestDto.score());
     }
 
-    public Slice<TradeReview> findSellReview(Long reviweeId, Long lastTradeId, Pageable pageable) {
-        return tradeReviewRepository.findSellReviewByReviewee(memberService.findById(reviweeId), lastTradeId, pageable);
+    public Slice<TradeReview> findSellReview(String memberTel, Long lastTradeId, Pageable pageable) {
+        return tradeReviewRepository.findSellReviewByReviewee(memberService.findByTel(memberTel), lastTradeId, pageable);
     }
 
-    public Slice<TradeReview> findBuyReview(Long reviweeId, Long lastTradeId, Pageable pageable) {
-        return tradeReviewRepository.findBuyReviewByReviewee(memberService.findById(reviweeId), lastTradeId, pageable);
+    public Slice<TradeReview> findBuyReview(String memberTel, Long lastTradeId, Pageable pageable) {
+        return tradeReviewRepository.findBuyReviewByReviewee(memberService.findByTel(memberTel), lastTradeId, pageable);
     }
 
-    public Map<String, Integer> countScore(Long revieweeId) {
-        Member member = memberService.findById(revieweeId);
+    public Map<String, Integer> countScore(String memberTel) {
+        Member member = memberService.findByTel(memberTel);
 
         Map<String, Integer> map = new HashMap<>();
         map.put("bad", tradeReviewRepository.countByRevieweeAndScore(member, -1));
@@ -47,7 +47,7 @@ public class TradeReviewService {
         return map;
     }
 
-    public Boolean existTradeReview(Long tradeId, Long reviewerId) {
-        return tradeReviewRepository.existsByTradeAndReviewer(tradeService.findTrade(tradeId), memberService.findById(reviewerId));
+    public Boolean existTradeReview(Long tradeId, String memberTel) {
+        return tradeReviewRepository.existsByTradeAndReviewer(tradeService.findTrade(tradeId), memberService.findByTel(memberTel));
     }
 }

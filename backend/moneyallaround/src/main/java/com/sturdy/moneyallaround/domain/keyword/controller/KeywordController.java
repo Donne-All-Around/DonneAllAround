@@ -6,6 +6,8 @@ import com.sturdy.moneyallaround.domain.keyword.dto.response.KeywordResponseDto;
 import com.sturdy.moneyallaround.domain.keyword.service.KeywordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,19 +21,20 @@ public class KeywordController {
 
     @PostMapping
     public ApiResponse<Object> createKeyword(
-            @RequestParam(required = false) Long memberId,
+            @AuthenticationPrincipal UserDetails principal,
             @RequestBody KeywordRequestDto keywordRequestDto) {
-        if (keywordService.existKeyword(keywordRequestDto, memberId)) {
+        String memberTel = principal.getUsername();
+
+        if (keywordService.existKeyword(keywordRequestDto, memberTel)) {
             return ApiResponse.fail("이미 존재하는 키워드");
         }
 
-        keywordService.createKeyword(keywordRequestDto, memberId);
+        keywordService.createKeyword(keywordRequestDto, memberTel);
         return ApiResponse.success("키워드 등록 성공", null);
     }
 
     @DeleteMapping("/{keywordId}")
     public ApiResponse<Object> deleteKeyword(
-            @RequestParam(required = false) Long memberId,
             @PathVariable Long keywordId) {
         keywordService.deleteKeyword(keywordId);
         return ApiResponse.success("키워드 삭제 성공", null);
@@ -39,8 +42,8 @@ public class KeywordController {
 
     @GetMapping
     public ApiResponse<List<KeywordResponseDto>> keywordList(
-            @RequestParam(required = false) Long memberId
+            @AuthenticationPrincipal UserDetails principal
     ) {
-        return ApiResponse.success("키워드 목록 조회 성공", keywordService.findAll(memberId).stream().map(KeywordResponseDto::from).toList());
+        return ApiResponse.success("키워드 목록 조회 성공", keywordService.findAll(principal.getUsername()).stream().map(KeywordResponseDto::from).toList());
     }
 }

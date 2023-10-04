@@ -185,23 +185,28 @@ public class MemberService implements UserDetailsService {
     }
 
     @Transactional
-    public void updateRating(String revieweeTel, int reviewScore) {
-        findByTel(revieweeTel).updateRating(reviewScore);
+    public void updateRating(Long revieweeId, int reviewScore) {
+        findById(revieweeId).updateRating(reviewScore);
     }
 
     @Transactional
-    public void remittance(String revieweeTel, Integer amount) {
-        findByTel(revieweeTel).remittance(amount);
+    public void remittance(Long memberId, Integer amount) {
+        findById(memberId).remittance(amount);
     }
 
     @Transactional
-    public void deposit(String memberId, Integer amount) {
-        findByTel(memberId).deposit(amount);
+    public void deposit(Long memberId, Integer amount) {
+        findById(memberId).deposit(amount);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return memberRepository.findByTel(username)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저를 찾을 수 없습니다."));
+    }
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new UserException(ExceptionMessage.USER_NOT_FOUND));
     }
 }

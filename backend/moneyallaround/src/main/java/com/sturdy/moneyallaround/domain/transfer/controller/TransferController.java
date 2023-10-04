@@ -5,6 +5,8 @@ import com.sturdy.moneyallaround.domain.transfer.dto.request.TransferRequestDto;
 import com.sturdy.moneyallaround.domain.transfer.service.TransferService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -16,10 +18,10 @@ public class TransferController {
 
     @PostMapping
     public ApiResponse<Object> transfer(
-            @RequestParam(required = false) Long memberId,
+            @AuthenticationPrincipal UserDetails principal,
             @RequestBody TransferRequestDto transferRequestDto
             ) {
-        transferService.transfer(memberId, transferRequestDto);
+        transferService.transfer(principal.getUsername(), transferRequestDto);
         return ApiResponse.success("송금 성공", null);
     }
 

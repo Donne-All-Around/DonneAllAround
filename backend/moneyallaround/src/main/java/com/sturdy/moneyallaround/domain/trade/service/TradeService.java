@@ -26,23 +26,23 @@ public class TradeService {
     }
 
     // 완료된 판매 내역
-    public Slice<Trade> findCompleteTradeSellHistory(Long sellerId, Long lastTradeId, Pageable pageable) {
-        return tradeRepository.findCompleteTradeBySeller(memberService.findById(sellerId), lastTradeId, pageable);
+    public Slice<Trade> findCompleteTradeSellHistory(String memberTel, Long lastTradeId, Pageable pageable) {
+        return tradeRepository.findCompleteTradeBySeller(memberService.findByTel(memberTel), lastTradeId, pageable);
     }
 
     // 판매 중인 판매 내역
-    public Slice<Trade> findSaleTradeSellHistory(Long sellerId, Long lastTradeId, Pageable pageable) {
-        return tradeRepository.findSaleTradeBySeller(memberService.findById(sellerId), lastTradeId, pageable);
+    public Slice<Trade> findSaleTradeSellHistory(String memberTel, Long lastTradeId, Pageable pageable) {
+        return tradeRepository.findSaleTradeBySeller(memberService.findByTel(memberTel), lastTradeId, pageable);
     }
 
     // 구매 내역
-    public Slice<Trade> findTradeBuyHistory(Long buyerId, Long lastTradeId, Pageable pageable) {
-        return tradeRepository.findByBuyerAndStatus(memberService.findById(buyerId), lastTradeId, pageable);
+    public Slice<Trade> findTradeBuyHistory(String memberTel, Long lastTradeId, Pageable pageable) {
+        return tradeRepository.findByBuyerAndStatus(memberService.findByTel(memberTel), lastTradeId, pageable);
     }
 
     // 관심 목록
-    public Slice<Trade> findLikeTrade(Long memberId, Long lastTradeId, Pageable pageable) {
-        return tradeRepository.findLikeTradeByMember(memberService.findById(memberId), lastTradeId, pageable);
+    public Slice<Trade> findLikeTrade(String memberTel, Long lastTradeId, Pageable pageable) {
+        return tradeRepository.findLikeTradeByMember(memberService.findByTel(memberTel), lastTradeId, pageable);
     }
 
     // 거래 상세 조회
@@ -52,8 +52,8 @@ public class TradeService {
 
     // 거래 글 생성
     @Transactional
-    public Trade createTrade(TradeRequestDto tradeRequestDto, Long memberId) {
-        Trade trade =  tradeRepository.save(tradeRequestDto.toTrade(memberService.findById(memberId)));
+    public Trade createTrade(TradeRequestDto tradeRequestDto, String memberTel) {
+        Trade trade =  tradeRepository.save(tradeRequestDto.toTrade(memberService.findByTel(memberTel)));
         trade.addImages(tradeRequestDto.imageUrlList().stream().map(imageUrl -> new TradeImage(imageUrl, trade)).toList());
         return findTrade(trade.getId());
     }
@@ -123,7 +123,7 @@ public class TradeService {
     }
 
     // 키워드 알림 거래 목록 조회
-    public Slice<Trade> findNotification(Long memberId, Long lastTradeId, Pageable pageable) {
-        return tradeRepository.findNotificationTrade(memberService.findById(memberId), lastTradeId, pageable);
+    public Slice<Trade> findNotification(String memberTel, Long lastTradeId, Pageable pageable) {
+        return tradeRepository.findNotificationTrade(memberService.findByTel(memberTel), lastTradeId, pageable);
     }
 }

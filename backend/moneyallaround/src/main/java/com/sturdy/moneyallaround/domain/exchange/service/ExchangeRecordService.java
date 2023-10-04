@@ -20,13 +20,13 @@ public class ExchangeRecordService {
     private final ExchangeRecordRepository exchangeRecordRepository;
     private final MemberService memberService;
 
-    public Slice<ExchangeRecord> findByMember(Long memberId, Long lastExchangeRecordId, Pageable pageable) {
-        return exchangeRecordRepository.findByMember(memberService.findById(memberId), lastExchangeRecordId, pageable);
+    public Slice<ExchangeRecord> findByMember(String memberTel, Long lastExchangeRecordId, Pageable pageable) {
+        return exchangeRecordRepository.findByMember(memberService.findByTel(memberTel), lastExchangeRecordId, pageable);
     }
 
     @Transactional
-    public ExchangeRecord createExchangeRecord(ExchangeRecordRequestDto exchangeRecordRequestDto, Long memberId) {
-        return exchangeRecordRepository.save(exchangeRecordRequestDto.toExchangeRecord(memberService.findById(memberId)));
+    public ExchangeRecord createExchangeRecord(ExchangeRecordRequestDto exchangeRecordRequestDto, String memberTel) {
+        return exchangeRecordRepository.save(exchangeRecordRequestDto.toExchangeRecord(memberService.findByTel(memberTel)));
     }
 
     @Transactional

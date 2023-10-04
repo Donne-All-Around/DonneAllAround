@@ -30,9 +30,9 @@ public class TransferService {
     private final FCMService fcmService;
 
     @Transactional
-    public void transfer(Long memberId, TransferRequestDto transferRequestDto) {
+    public void transfer(String memberTel, TransferRequestDto transferRequestDto) {
         transferRepository.save(transferRequestDto.toTransfer(tradeService.findTrade(transferRequestDto.tradeId())));
-        memberService.remittance(memberId, transferRequestDto.amount());
+        memberService.remittance(memberService.findByTel(memberTel).getId(), transferRequestDto.amount());
     }
 
     @Transactional
