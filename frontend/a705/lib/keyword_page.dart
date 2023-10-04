@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 import 'keyword_create_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Keyword {
   final String countryCurrency;
   final String location;
   final String flagImageUrl;
+  final String administrativeArea;
+  final String subLocality;
+  final String thoroughfare;
+  final String countryCode;
 
   Keyword({
     required this.countryCurrency,
     required this.location,
     required this.flagImageUrl,
+    required this.administrativeArea,
+    required this.subLocality,
+    required this.thoroughfare,
+    required this.countryCode,
   });
 }
-
 
 class KeywordPage extends StatefulWidget {
   const KeywordPage({super.key});
@@ -24,58 +33,80 @@ class KeywordPage extends StatefulWidget {
 class KeywordPageState extends State<KeywordPage> {
 
   // 가상의 키워드 데이터 목록
-  final List<Keyword> keywords = [
-    // Keyword(
-    //   countryCurrency: '호주(달러) AUD',
-    //   location: '서울특별시 강서구 화곡동',
-    //   flagImageUrl: 'assets/images/flag/AUD.png',
-    // ),
-    Keyword(
-      countryCurrency: '호주(달러) AUD',
-      location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/flag/USDAUD.png',
-    ),
-    Keyword(
-      countryCurrency: '호주(달러) AUD',
-      location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/flag/USDAUD.png',
-    ),
-    Keyword(
-      countryCurrency: '호주(달러) AUD',
-      location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/flag/USDAUD.png',
-    ),
-    Keyword(
-      countryCurrency: '호주(달러) AUD',
-      location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/flag/USDAUD.png',
-    ),
-    Keyword(
-      countryCurrency: '호주(달러) AUD',
-      location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/flag/USDAUD.png',
-    ),
-    Keyword(
-      countryCurrency: '호주(달러) AUD',
-      location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/flag/USDAUD.png',
-    ),
-    Keyword(
-      countryCurrency: '호주(달러) AUD',
-      location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/flag/USDAUD.png',
-    ),
-    Keyword(
-      countryCurrency: '호주(달러) AUD',
-      location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/flag/USDAUD.png',
-    ),
-    Keyword(
-      countryCurrency: '호주(달러) AUD',
-      location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/flag/USDAUD.png',
-    ),
-  ];
+  List<Keyword> keywords = [];
+
+  Future<void> fetchKeywords() async {
+    const memberId = "1";
+    const url = 'https://j9a705.p.ssafy.io/api/keyword?memberId=$memberId';
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = utf8.decode(response.bodyBytes);
+        final keywordList = json.decode(responseData)['data'];
+
+        final newKeywords = keywordList.map<Keyword>((keywordData) {
+          final countryCode = keywordData['countryCode'];
+          final countryCurrency = getCurrencyName(countryCode);
+          return Keyword(
+            countryCurrency: countryCurrency,
+            location: '${keywordData['administrativeArea']} ${keywordData['subLocality']} ${keywordData['thoroughfare']}',
+            flagImageUrl: 'assets/images/flag/${keywordData['countryCode'] == 'KRW' ? 'KRW' : keywordData['countryCode'] == 'USD' ? 'USDKRW' : 'USD${keywordData['countryCode']}'}.png',
+            administrativeArea: keywordData['administrativeArea'],
+            subLocality: keywordData['subLocality'],
+            thoroughfare: keywordData['thoroughfare'],
+            countryCode: keywordData['countryCode'],
+          );
+        }).toList();
+
+        setState(() {
+          keywords = newKeywords; // 데이터를 업데이트하고 화면을 다시 그립니다.
+        });
+        print('호출됨?');
+      } else {
+        // API 호출 실패 처리
+        print('API 호출 실패: ${response.statusCode}');
+      }
+    } catch (e) {
+      // 오류 처리
+      print('오류: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // 페이지가 처음 로드될 때 API를 호출하여 데이터를 가져옵니다.
+    fetchKeywords();
+  }
+
+  String getCurrencyName(String countryCode) {
+    final currencyInfo = {
+      'USD' : '미국(달러) USD',
+      'JPY' : '일본(엔) JPY',
+      'CNY' : '중국(위안) CNY',
+      'EUR' : '유럽(유로) EUR',
+      'GBP' : '영국(파운드) GBP',
+      'AUD' : '호주(달러) AUD',
+      'CAD' : '캐나다(달러) CAD',
+      'HKD' : '홍콩(달러) HKD',
+      'PHP' : '필리핀(페소) PHP',
+      'VND' : '베트남(동) VND',
+      'TWD' : '대만(달러) TWD',
+      'SGD' : '싱가폴(달러) SGD',
+      'CZK' : '체코(코루나) CZK',
+      'NZD' : '뉴질랜드(달러) NZD',
+      'RUB' : '러시아(루블) RUB',
+    };
+
+    return currencyInfo[countryCode] ?? ''; // 해당하는 은행 코드를 찾아 반환하거나 기본값으로 빈 문자열 반환
+  }
 
   @override
   Widget build(BuildContext context) {
