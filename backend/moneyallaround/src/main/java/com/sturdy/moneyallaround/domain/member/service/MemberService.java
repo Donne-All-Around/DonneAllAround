@@ -138,12 +138,11 @@ public class MemberService {
     //토큰 만료 검사 (기간 확인 및 access token 재발급)
 
     //전화번호 체크
-    @Transactional
     public CheckTelResponse checkTel(CheckTelnumberRequest request){
         String resultMessage = "SUCCESS";
         log.info(request.tel());
-        Optional<Member> member = memberRepository.findByTel(request.tel());
-        if(member.isPresent()){
+
+        if(memberRepository.existsByTel(request.tel())){
             resultMessage = "FAIL";
         }
         log.info("resultMessage = {}", resultMessage);
@@ -151,13 +150,12 @@ public class MemberService {
     }
 
     //닉네임 체크
-    @Transactional
     //request 객체 입력 받고 response 반환
     public CheckNicknameResponse checkNickname(CheckNicknameRequest request){
         String resultMessage = "SUCCESS";   //초기값 success , 최종반환 응답 메시지
         log.info(request.nickname());
-        Optional<Member> member = memberRepository.findByNickname(request.nickname());
-        if(member.isPresent()){
+
+        if(memberRepository.existsByNickname(request.nickname())){
             resultMessage = "FAIL";
         } //동일 닉네임 있으면 fail 반환
         log.info("resultMessage = {}", resultMessage);

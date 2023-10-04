@@ -2,6 +2,7 @@ package com.sturdy.moneyallaround.domain.member.controller;
 
 import com.sturdy.moneyallaround.common.ApiResponse;
 import com.sturdy.moneyallaround.domain.member.dto.request.CheckNicknameRequest;
+import com.sturdy.moneyallaround.domain.member.dto.request.CheckTelnumberRequest;
 import com.sturdy.moneyallaround.domain.member.dto.request.SignUpRequest;
 import com.sturdy.moneyallaround.domain.member.service.MemberService;
 import com.sturdy.moneyallaround.domain.member.service.RefreshTokenService;
@@ -22,7 +23,7 @@ public class MemberController {
     private final RefreshTokenService refreshTokenService;
 
 
-    @Operation(summary = "닉네임 중복확인", description = "닉네임 중복을 확인한다.")
+    @Operation(summary = "닉네임 중복 확인", description = "닉네임 중복을 확인한다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 실패"),
@@ -30,10 +31,24 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
     })
 
-    @PostMapping("/checkNickname")
+    @PostMapping("/check/nickname")
     public ApiResponse checkNickname(@RequestBody CheckNicknameRequest request){
-        log.info("닉네임 전송 시작");
+        log.info("닉네임 중복 체크");
         return ApiResponse.success(memberService.checkNickname(request));
+    }
+
+    @Operation(summary = "전화번호 중복 확인", description = "전화번호 중복을 확인한다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "인증 실패"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "사용자 없음"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+
+    @PostMapping("/check/tel")
+    public ApiResponse checkTel(@RequestBody CheckTelnumberRequest request){
+        log.info("전화번호 중복 체크");
+        return ApiResponse.success(memberService.checkTel(request));
     }
 
 //    @Operation(summary = "회원가입", description = "전화번호 인증을 통해 회원가입 한다.")
