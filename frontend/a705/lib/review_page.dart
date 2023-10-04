@@ -21,15 +21,69 @@ class ReviewPageState extends State<ReviewPage> {
   // 현재 선택된 버튼 (디폴트 : 판매)
   String selectedButton = '판매';
 
-  void _handleDelete() {
-    // 삭제 작업 코드
-  }
+  // 판매 후기, 구매 후기 목록
+  List<Map<String, dynamic>> buyReviews = [];
+  List<Map<String, dynamic>> sellReviews = [];
 
   @override
   void initState() {
     super.initState();
     // initState에서 서버로 GET 요청을 보냅니다.
     fetchReviewCounts();
+    fetchBuyReviews();
+    fetchSellReviews();
+  }
+
+  void fetchBuyReviews() async {
+    try {
+      const memberId = '1'; // 원하는 회원 ID를 여기에 넣어주세요.
+      final url = Uri.parse(
+          'https://j9a705.p.ssafy.io/api/trade/review/list/buy?memberId=$memberId');
+
+      http.Response response = await http.get(url);
+      String responseBody = utf8.decode(response.bodyBytes);
+
+      if (response.statusCode == 200) {
+        // 서버 응답이 성공인 경우
+        final responseData = json.decode(response.body);
+        final data = responseData['data']['tradeReviewList'];
+        setState(() {
+          buyReviews = List<Map<String, dynamic>>.from(data);
+        });
+        print('구매 서버 요청 성공');
+      } else {
+        // 서버 응답이 실패인 경우
+        print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('서버 요청 중 오류 발생: $e');
+    }
+  }
+
+  void fetchSellReviews() async {
+    try {
+      const memberId = '1'; // 원하는 회원 ID를 여기에 넣어주세요.
+      final url = Uri.parse(
+          'https://j9a705.p.ssafy.io/api/trade/review/list/sell?memberId=$memberId');
+
+      http.Response response = await http.get(url);
+      String responseBody = utf8.decode(response.bodyBytes);
+
+      if (response.statusCode == 200) {
+        // 서버 응답이 성공인 경우
+        final responseData = json.decode(response.body);
+        final data = responseData['data']['tradeReviewList'];
+        setState(() {
+          sellReviews = List<Map<String, dynamic>>.from(data);
+        });
+        print('판매 서버 요청 성공');
+      } else {
+        // 서버 응답이 실패인 경우
+        print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('서버 요청 중 오류 발생: $e');
+    }
   }
 
   void fetchReviewCounts() async {
@@ -49,6 +103,7 @@ class ReviewPageState extends State<ReviewPage> {
           goodCount = data['good'];
           verygoodCount = data['veryGood'];
         });
+        print('갯수 서버 요청 성공');
       } else {
         // 서버 응답이 실패인 경우
         print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
@@ -58,163 +113,178 @@ class ReviewPageState extends State<ReviewPage> {
     }
   }
 
+  String _getDayOfWeekKorean(int weekday) {
+    switch (weekday) {
+      case 1:
+        return '월요일';
+      case 2:
+        return '화요일';
+      case 3:
+        return '수요일';
+      case 4:
+        return '목요일';
+      case 5:
+        return '금요일';
+      case 6:
+        return '토요일';
+      case 7:
+        return '일요일';
+      default:
+        return '';
+    }
+  }
+
   Widget _buildSellComment() {
-    return Container(
-      width : 350,
-      height: 200,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        color: const Color(0xFFF2F2F2),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  '2022년 9월 20일 수요일',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  )
-                ),
-                PopupMenuButton<String>(
-                  icon: const Icon(
-                    Icons.more_horiz,
-                    color: Colors.black,
-                  ),
-                  itemBuilder: (context) {
-                    return [
-                      const PopupMenuItem<String>(
-                        value: 'delete',
-                        child: Text('삭제하기'),
-                      )
-                    ];
-                  },
-                  onSelected: (value) {
-                    if (value == 'delete') {
-                      _handleDelete();
-                    }
-                  }
-                )
-              ]
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: sellReviews.length,
+      itemBuilder: (BuildContext context, int index) {
+        final sellreview = sellReviews[index];
+        final sellcreateTime = DateTime.parse(sellreview['createTime']);
+        final sellformattedDate =
+            '${sellcreateTime.year}년 ${sellcreateTime.month}월 ${sellcreateTime
+            .day}일 ${_getDayOfWeekKorean(sellcreateTime.weekday)}';
+        final sellreviewerNickname = sellreview['reviewerNickname'];
+        final sellcomment = sellreview['comment'];
+
+        return Container(
+            width: 350,
+            height: 200,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              color: const Color(0xFFF2F2F2),
             ),
-          ),
-          const SizedBox(height: 5),
-          Row(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(left: 16),
-                child: const CircleAvatar(
-                  radius: 20,
-                  backgroundImage: AssetImage('assets/images/profile.jpg')
-                )
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 16),
-                child: const Text(
-                  '닉네임',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                              sellformattedDate,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              )
+                          ),
+                        ]
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                      children: [
+                        Container(
+                            margin: const EdgeInsets.only(left: 16),
+                            child: const CircleAvatar(
+                                radius: 20,
+                                backgroundImage: AssetImage(
+                                    'assets/images/profile.jpg')
+                            )
+                        ),
+                        Container(
+                            margin: const EdgeInsets.only(left: 16),
+                            child: Text(
+                                sellreviewerNickname,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                )
+                            )
+                        )
+                      ]
+                  ),
+                  Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
+                      child: Text(
+                          sellcomment,
+                          style: TextStyle(
+                            fontSize: 16,
+                          )
+                      )
                   )
-                )
-              )
-            ]
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: const Text(
-              '코멘트 내용 from 서버',
-              style: TextStyle(
-                fontSize: 16,
-              )
+                ]
             )
-          )
-        ]
-      )
+        );
+      }
     );
   }
 
   Widget _buildBuyComment() {
-    return Container(
-        width : 350,
-        height: 200,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          color: const Color(0xFFF2F2F2),
-        ),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                          '2022년 9월 22일 수요일',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          )
-                      ),
-                      PopupMenuButton<String>(
-                          icon: const Icon(
-                            Icons.more_horiz,
-                            color: Colors.black,
-                          ),
-                          itemBuilder: (context) {
-                            return [
-                              const PopupMenuItem<String>(
-                                value: 'delete',
-                                child: Text('삭제하기'),
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: buyReviews.length,
+      itemBuilder: (BuildContext context, int index) {
+        final buyreview = buyReviews[index];
+        final buycreateTime = DateTime.parse(buyreview['createTime']);
+        final buyformattedDate =
+            '${buycreateTime.year}년 ${buycreateTime.month}월 ${buycreateTime
+            .day}일 ${_getDayOfWeekKorean(buycreateTime.weekday)}';
+        final buyreviewerNickname = buyreview['reviewerNickname'];
+        final buycomment = buyreview['comment'];
+
+        return Container(
+            width: 350,
+            height: 200,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              color: const Color(0xFFF2F2F2),
+            ),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                              buyformattedDate,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
                               )
-                            ];
-                          },
-                          onSelected: (value) {
-                            if (value == 'delete') {
-                              _handleDelete();
-                            }
-                          }
-                      )
-                    ]
-                ),
-              ),
-              const SizedBox(height: 5),
-              Row(
-                  children: [
-                    Container(
-                        margin: const EdgeInsets.only(left: 16),
-                        child: const CircleAvatar(
-                            radius: 20,
-                            backgroundImage: AssetImage('assets/images/profile.jpg')
-                        )
+                          ),
+                        ]
                     ),
-                    Container(
-                        margin: const EdgeInsets.only(left: 16),
-                        child: const Text(
-                            '닉네임',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                      children: [
+                        Container(
+                            margin: const EdgeInsets.only(left: 16),
+                            child: const CircleAvatar(
+                                radius: 20,
+                                backgroundImage: AssetImage(
+                                    'assets/images/profile.jpg')
+                            )
+                        ),
+                        Container(
+                            margin: const EdgeInsets.only(left: 16),
+                            child: Text(
+                                buyreviewerNickname,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                )
                             )
                         )
-                    )
-                  ]
-              ),
-              Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  child: const Text(
-                      '코멘트 내용 from 서버',
-                      style: TextStyle(
-                        fontSize: 16,
+                      ]
+                  ),
+                  Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
+                      child: Text(
+                          buycomment,
+                          style: TextStyle(
+                            fontSize: 16,
+                          )
                       )
                   )
-              )
-            ]
-        )
+                ]
+            )
+        );
+      }
     );
   }
 
@@ -368,3 +438,5 @@ class ReviewPageState extends State<ReviewPage> {
     );
   }
 }
+
+
