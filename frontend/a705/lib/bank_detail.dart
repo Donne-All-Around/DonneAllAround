@@ -859,6 +859,34 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
       itemCount: _valueList1.length,
       itemBuilder: (context, index) {
         final selectedBankCode = widget.bankCode;
+        final bankInfoData = bankInfoMap[selectedBankCode];
+        //
+        // String buyingFee = '미제공';
+        // String sellingFee = '미제공';
+        // String sendingFee = '미제공';
+        //
+        // if (bankInfoData != null) {
+        //   final fees = bankInfoData.fees[currency1[index]];
+        //   if (fees != null) {
+        //     buyingFee = fees.buying?.toStringAsFixed(2) ?? '미제공';
+        //     sellingFee = fees.selling?.toStringAsFixed(2) ?? '미제공';
+        //     sendingFee = fees.sending?.toStringAsFixed(2) ?? '미제공';
+        //   }
+        // }
+
+        final currencyCode = currency1[index];
+        final feeInfo = bankInfoData?.fees[currencyCode];
+
+        String buyingFee = '미제공';
+        String sellingFee = '미제공';
+        String sendingFee = '미제공';
+
+        if (feeInfo != null) {
+          buyingFee = feeInfo.buying?.toStringAsFixed(2) ?? '미제공';
+          sellingFee = feeInfo.selling?.toStringAsFixed(2) ?? '미제공';
+          sendingFee = feeInfo.sending?.toStringAsFixed(2) ?? '미제공';
+        }
+
 //
 //         // 선택된 은행 코드와 일치하는 은행 정보 가져오기
 //         final bankInfoData = bankInfo[selectedBankCode];
@@ -1017,41 +1045,41 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                               ],
                             ),
                             SizedBox(width: 20),
-                            // Column(
-                            //   crossAxisAlignment: CrossAxisAlignment.center,
-                            //   children: [
-                            //     Text(
-                            //       '수수료',
-                            //       style: TextStyle(fontSize: 15),
-                            //     ),
-                            //     Column(
-                            //       crossAxisAlignment: CrossAxisAlignment.end,
-                            //       children: [
-                            //         Text(
-                            //           '${fees?.buying ?? "서비스 미제공"}%',
-                            //           style: TextStyle(
-                            //               fontWeight: FontWeight.bold,
-                            //               fontSize: 16,
-                            //               height: 1.532),
-                            //         ),
-                            //         Text(
-                            //           '${fees?.selling ?? "서비스 미제공"}%',
-                            //           style: TextStyle(
-                            //               fontWeight: FontWeight.bold,
-                            //               fontSize: 16,
-                            //               height: 1.532),
-                            //         ),
-                            //         Text(
-                            //           '${fees?.sending ?? "서비스 미제공"}% ',
-                            //           style: TextStyle(
-                            //               fontWeight: FontWeight.bold,
-                            //               fontSize: 16,
-                            //               height: 1.532),
-                            //         )
-                            //       ],
-                            //     ),
-                            //   ],
-                            // ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '수수료',
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                    ' $buyingFee',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          height: 1.532),
+                                    ),
+                                    Text(
+                                      '$sellingFee',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          height: 1.532),
+                                    ),
+                                    Text(
+                                      '$sendingFee',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          height: 1.532),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ],

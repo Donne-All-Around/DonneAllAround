@@ -276,11 +276,16 @@ class _CertificationPageState extends State<CertificationPage> {
 
       // Firebase 인증 토큰 얻기
       String? firebaseToken = await userCredential.user!.getIdToken();
-      // print("Firebase 토큰: $firebaseToken");
+      String? uid = userCredential.user!.uid;
+      String? tel = phoneController.text;
+      // print(userCredential.user);
+      //print("Firebase 토큰: $firebaseToken");
+
       // Firebase 토큰을 백엔드 서버로 전송하여 JWT 토큰을 가져옴
-      String? jwtToken = await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!);
+      String? jwtToken = await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!, uid, tel);
 
       print("로그인 성공!");
+      // jwtToken 응답에 기존 회원이 아니라서 jwt 값이 Null 값이면 닉네임/ 이미지 회원가입을 하고 시작하기를 눌러야지 jwt 값 받음.
       // Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileSettingPage()));
       if (jwtToken != null) {
         // JWT 토큰을 사용하여 로그인 또는 기타 인증 및 권한 부여 작업 수행

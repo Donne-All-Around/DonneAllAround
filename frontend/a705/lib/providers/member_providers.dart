@@ -106,17 +106,23 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  Future<String?> getJwtTokenFromFirebaseToken(String firebaseToken) async {
+  Future<String?> getJwtTokenFromFirebaseToken(String firebaseToken, String uid, String tel) async {
     final url = "$baseUrl/api/member/verifyFirebaseToken";
 
-    // print('HTTP Request Body: ${jsonEncode({'firebaseToken': firebaseToken})}');
+    // Prepare the request body with the firebaseToken, uid, and tel
+    final requestBody = {
+      'firebaseToken': firebaseToken,
+      'uid': uid,
+      'tel': tel,
+    };
+
     try {
       final response = await http.post(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({'firebaseToken': firebaseToken}),
+        body: jsonEncode(requestBody),
       );
 
       if (response.statusCode == 200) {
@@ -131,5 +137,49 @@ class UserProvider extends ChangeNotifier {
       return null;
     }
   }
+  //
+  // Future<SignInResponse?> getSignInResponseFromFirebaseToken(String firebaseToken, String uid, String tel) async {
+  //   final url = "$baseUrl/api/member/verifyFirebaseToken";
+  //
+  //   // Prepare the request body with the firebaseToken, uid, and tel
+  //   final requestBody = {
+  //     'firebaseToken': firebaseToken,
+  //     'uid': uid,
+  //     'tel': tel,
+  //   };
+  //
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse(url),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: jsonEncode(requestBody),
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       final responseData = jsonDecode(response.body);
+  //       final isMember = responseData['isMember'];
+  //
+  //       if (isMember) {
+  //         final signInResponseData = responseData['signInResponse'];
+  //         final signInResponse = SignInResponse(
+  //           id: signInResponseData['id'],
+  //           tel: signInResponseData['tel'],
+  //           token: signInResponseData['token'],
+  //         );
+  //         return signInResponse;
+  //       } else {
+  //         // 새로운 회원인 경우
+  //         return null;
+  //       }
+  //     } else {
+  //       throw Exception('Firebase 토큰으로부터 응답을 가져오지 못했습니다. 상태 코드: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     print('Firebase 토큰으로부터 응답을 가져오는 중 오류 발생: $e');
+  //     return null;
+  //   }
+  // }
 
 }
