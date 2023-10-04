@@ -109,6 +109,7 @@ public class JwtTokenProvider {
         );
     }
 
+
     //토큰 유효한지 아닌지 검사하시오
     public boolean validateToken(String token) {
         try {

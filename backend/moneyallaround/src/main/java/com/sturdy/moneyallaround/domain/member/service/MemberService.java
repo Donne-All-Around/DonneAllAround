@@ -60,6 +60,7 @@ public class MemberService implements UserDetailsService {
         return loginResponse;
     }
 
+
     //로그인
     public LogInResponse logIn(LogInRequest request) {
         String firebaseToken = request.getFirebaseToken();

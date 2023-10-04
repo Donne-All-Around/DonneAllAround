@@ -53,10 +53,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // Firebase 토큰 검증
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseToken);
+            String uid = decodedToken.getUid();
             log.info("firebase 초기화하고 검증했어");
 
             // 검증에 성공하면 true 반환
-            return decodedToken != null;
+            return uid != null;
+
         } catch (Exception e) {
             // 검증에 실패하면 false 반환
             log.info("firebase 검증실패");
