@@ -7,12 +7,14 @@ import java.time.LocalDateTime;
 
 public record TradeReviewResponseDto(@NotNull Long reviewerId,
                                      @NotNull String reviewerNickname,
+                                     @NotNull String reviewerImageUrl,
                                      @NotNull String comment,
                                      @NotNull LocalDateTime createTime) {
     public static TradeReviewResponseDto from(TradeReview tradeReview) {
         return new TradeReviewResponseDto(
                 tradeReview.getReviewer().getId(),
                 tradeReview.getReviewer().getNickname(),
+                tradeReview.getReviewer().getImageUrl(),
                 tradeReview.getComment(),
                 tradeReview.getCreateTime()
         );

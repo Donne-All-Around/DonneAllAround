@@ -23,7 +23,7 @@ public class SecurityConfig {
             "/api/member/check/tel",
             "/api/member/join",
             "/api/member/sign-in",
-            "/api/member/firebase"
+            "/api/member/logout"
     };
 
     @Bean

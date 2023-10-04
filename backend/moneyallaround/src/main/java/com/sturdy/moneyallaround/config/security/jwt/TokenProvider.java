@@ -136,4 +136,12 @@ public class TokenProvider {
 
         return false;
     }
+
+    public TokenInfo generateAccessToken(Authentication authentication) {
+        String accessToken = createAccessToken(authentication);
+        return TokenInfo.builder()
+                .grantType("Bearer")
+                .accessToken(accessToken)
+                .build();
+    }
 }

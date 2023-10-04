@@ -10,6 +10,7 @@ public class FirebaseAuthResponse {
     boolean isMember;
     SignInResponse signInResponse;
 
+    @Getter
     @Builder
     public static class SignInResponse {
         Long id;

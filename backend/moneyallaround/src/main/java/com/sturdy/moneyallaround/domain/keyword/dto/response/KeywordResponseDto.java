@@ -5,7 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record KeywordResponseDto(@NotNull String countryCode,
+public record KeywordResponseDto(@NotNull Long id,
+                                 @NotNull String countryCode,
                                  String country,
                                  String administrativeArea,
                                  String subAdministrativeArea,
@@ -14,6 +15,7 @@ public record KeywordResponseDto(@NotNull String countryCode,
                                  String thoroughfare) {
     public static KeywordResponseDto from(Keyword keyword) {
         return KeywordResponseDto.builder()
+                .id(keyword.getId())
                 .countryCode(keyword.getCountryCode())
                 .country(keyword.getCountry())
                 .administrativeArea(keyword.getAdministrativeArea())

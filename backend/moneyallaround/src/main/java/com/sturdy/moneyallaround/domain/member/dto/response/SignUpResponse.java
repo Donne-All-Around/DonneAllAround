@@ -1,15 +1,12 @@
 package com.sturdy.moneyallaround.domain.member.dto.response;
 
-import com.sturdy.moneyallaround.domain.member.entity.Member;
+import com.sturdy.moneyallaround.config.security.jwt.TokenInfo;
+import lombok.Builder;
+import lombok.Getter;
 
+@Builder
 public record SignUpResponse(
-        String tel) {
-
-
-    public static SignUpResponse from(Member member){
-        return new SignUpResponse(
-                member.getTel()
-        );
-    }
-
+        Long id,
+        String tel,
+        TokenInfo token) {
 }

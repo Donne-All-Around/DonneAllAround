@@ -4,6 +4,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.sturdy.moneyallaround.Exception.message.ExceptionMessage;
+import com.sturdy.moneyallaround.Exception.model.TokenCheckFailException;
+import com.sturdy.moneyallaround.Exception.model.TokenNotFoundException;
 import com.sturdy.moneyallaround.Exception.model.UserAuthException;
 import com.sturdy.moneyallaround.Exception.model.UserException;
 //import com.sturdy.moneyallaround.config.security.jwt.JwtTokenProvider;
@@ -12,6 +14,7 @@ import com.sturdy.moneyallaround.config.security.jwt.TokenProvider;
 import com.sturdy.moneyallaround.domain.member.dto.request.*;
 import com.sturdy.moneyallaround.domain.member.dto.response.*;
 import com.sturdy.moneyallaround.domain.member.entity.Member;
+import com.sturdy.moneyallaround.domain.member.entity.Role;
 import com.sturdy.moneyallaround.domain.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -19,15 +22,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 //import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 //import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -42,6 +51,7 @@ public class MemberService implements UserDetailsService {
     private final RefreshTokenService refreshTokenService;
     private final FirebaseAuth firebaseAuth;
 
+    @Transactional
     public FirebaseAuthResponse signIn(FirebaseAuthRequest request) {
         log.info("memberservice - signin");
         log.info("request = {}", request);
@@ -62,12 +72,17 @@ public class MemberService implements UserDetailsService {
 
         log.info("사용자 찾음");
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(request.tel(), null);
-        authentication.setAuthenticated(true);
+        List<GrantedAuthority> roles = new ArrayList<>();
+        roles.add(new SimpleGrantedAuthority(Role.ROLE_USER.toString()));
 
-        log.info("authentication = {}", authentication);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(request.tel(), null, roles);
 
         TokenInfo tokenInfo = tokenProvider.generateToken(authentication);
+
+        member.get().setUid(request.uid());
+
+        // 토큰 저장
+        refreshTokenService.setValues(tokenInfo.getRefreshToken(), request.tel());
 
         return new FirebaseAuthResponse(true,
                 FirebaseAuthResponse.SignInResponse.builder()
@@ -75,6 +90,73 @@ public class MemberService implements UserDetailsService {
                         .tel(member.get().getTel())
                         .token(tokenInfo)
                         .build());
+    }
+
+    @Transactional
+    public SignUpResponse signUp(SignUpRequest signUpRequest) {
+        Member member = memberRepository.save(
+                new Member(signUpRequest.tel(), signUpRequest.nickname(), signUpRequest.uid(), signUpRequest.imageUrl()));
+
+        try {
+            memberRepository.flush();
+        } catch (DataIntegrityViolationException e) {
+            throw new UserAuthException(ExceptionMessage.FAIL_SAVE_DATA);
+        }
+
+        log.info("member 저장");
+
+        List<GrantedAuthority> roles = new ArrayList<>();
+        roles.add(new SimpleGrantedAuthority(Role.ROLE_USER.toString()));
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(member.getTel(), null, roles);
+
+        TokenInfo tokenInfo = tokenProvider.generateToken(authentication);
+
+        log.info("accessToken: {}", tokenInfo.getAccessToken());
+        log.info("refreshToken: {}", tokenInfo.getRefreshToken());
+        log.info("tel: {}", member.getTel());
+
+        // 토큰 저장
+        refreshTokenService.setValues(tokenInfo.getRefreshToken(), member.getTel());
+
+        return SignUpResponse.builder()
+                .id(member.getId())
+                .tel(member.getTel())
+                .token(tokenInfo)
+                .build();
+    }
+
+    public void logout(LogoutRequest logoutRequest, String memberTel) {
+        findByTel(memberTel).setUid(null);
+        refreshTokenService.delValues(logoutRequest.refreshToken());
+    }
+
+    public ReIssueResponse reissue(String refreshToken, Authentication authentication) {
+        if (authentication.getName() == null) {
+            throw new UserAuthException(ExceptionMessage.NOT_AUTHORIZED_ACCESS);
+        }
+
+        if (!tokenProvider.validateToken(refreshToken)) {
+            findByTel(authentication.getName()).setUid(null);
+            refreshTokenService.delValues(refreshToken);
+            throw new TokenNotFoundException(ExceptionMessage.TOKEN_VALID_TIME_EXPIRED);
+        }
+
+        String id = refreshTokenService.getValues(refreshToken);
+        if (id == null || !id.equals(authentication.getName())) {
+            throw new TokenCheckFailException(ExceptionMessage.MISMATCH_TOKEN);
+        }
+
+        return createAccessToken(refreshToken, authentication);
+    }
+
+    private ReIssueResponse createAccessToken(String refreshToken, Authentication authentication) {
+        if (tokenProvider.checkExpiredToken(refreshToken)) {
+            TokenInfo tokenInfo = tokenProvider.generateAccessToken(authentication);
+            return ReIssueResponse.from(tokenInfo.getAccessToken(), "SUCCESS");
+        }
+
+        return ReIssueResponse.from(tokenProvider.generateAccessToken(authentication).getAccessToken(), "GENERAL_FAILURE");
     }
 
     //registMember
@@ -132,9 +214,9 @@ public class MemberService implements UserDetailsService {
 
     //멤버 업데이트
     @Transactional
-    public UpdateProfileResponse updateProfile(UpdateProfileRequest request, Long memberId) {
+    public UpdateProfileResponse updateProfile(UpdateProfileRequest request, String memberTel) {
         try {
-            Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
+            Member member = memberRepository.findByTel(memberTel).orElseThrow(IllegalArgumentException::new);
             member.update(request);
             return UpdateProfileResponse.from(member);
         } catch (DataIntegrityViolationException e) {
@@ -148,10 +230,13 @@ public class MemberService implements UserDetailsService {
 
 
 
-    // 멤버 삭제
-    public String deleteMember(String memberId) {
+    @Transactional
+    public String deleteMember(LogoutRequest request, String memberTel) {
         try {
-            memberRepository.deleteById(memberId);
+            refreshTokenService.delValues(request.refreshToken());
+            Member member = findByTel(memberTel);
+            member.setUid(null);
+            member.delete();
         } catch (DataIntegrityViolationException e) {
             throw new UserAuthException(ExceptionMessage.FAIL_DELETE_DATA);
         }
@@ -214,6 +299,11 @@ public class MemberService implements UserDetailsService {
                 () -> new UserException(ExceptionMessage.USER_NOT_FOUND)
         );
         return member;
+    }
+
+    @Transactional
+    public Member findByTel(String memberTel) {
+        return memberRepository.findByTel(memberTel).orElseThrow(() -> new UserException(ExceptionMessage.USER_NOT_FOUND));
     }
 
     @Transactional

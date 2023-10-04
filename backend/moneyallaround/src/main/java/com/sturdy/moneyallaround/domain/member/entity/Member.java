@@ -44,6 +44,11 @@ public class Member extends BaseEntity implements UserDetails {
     @Column(name = "phonenumber")
     private String tel;
 
+    @Column(nullable = true)
+    private String uid;
+
+    private Boolean isDeleted;
+
 
     //멤버 엔티티 내의 컬랙션 속성 매핑 (Role 컬렉션 로딩)
     @ElementCollection(fetch = FetchType.EAGER)
@@ -70,6 +75,16 @@ public class Member extends BaseEntity implements UserDetails {
 //                .tel(request.tel())
 //                .build();
 //    }
+
+    public Member(String tel, String nickname, String uid, String imageUrl) {
+        this.tel = tel;
+        this.nickname = nickname;
+        this.uid = uid;
+        this.imageUrl = imageUrl;
+        point = 0;
+        rating = 500;
+        isDeleted = false;
+    }
 
     public void update(UpdateProfileRequest request){
         this.nickname = request.nickname();
@@ -108,6 +123,14 @@ public class Member extends BaseEntity implements UserDetails {
 //    public boolean isEnabled() {
 //        return true;
 //    }
+
+    public void delete() {
+        this.isDeleted = true;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
     public void updateRating(int reviewScore) {
         rating = (rating + (rating + reviewScore * 50) * 2) / 3;
