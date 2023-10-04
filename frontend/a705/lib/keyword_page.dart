@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Keyword {
+  final String keywordId;
   final String countryCurrency;
   final String location;
   final String flagImageUrl;
@@ -13,6 +14,7 @@ class Keyword {
   final String countryCode;
 
   Keyword({
+    required this.keywordId,
     required this.countryCurrency,
     required this.location,
     required this.flagImageUrl,
@@ -62,6 +64,7 @@ class KeywordPageState extends State<KeywordPage> {
             subLocality: keywordData['subLocality'],
             thoroughfare: keywordData['thoroughfare'],
             countryCode: keywordData['countryCode'],
+            keywordId: '',
           );
         }).toList();
 
@@ -138,8 +141,122 @@ class KeywordPageState extends State<KeywordPage> {
           itemCount: keywords.length,
           itemBuilder: (context, index) {
             final keyword = keywords[index];
-            return Container(
-              width: 350,
+            return Dismissible(
+                key: Key(keyword.countryCurrency), // 고유한 키 설정
+                direction: DismissDirection.endToStart,
+                confirmDismiss: (direction) async {
+                  if (direction == DismissDirection.endToStart) {
+                    bool? confirmExit = await showDialog<bool>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                15.0), // 원하는 Radius 값으로 설정
+                          ),
+                          title: Text("확인"),
+                          content: Text("채팅방을 나가시겠어요?"),
+                          actions: [
+                            TextButton(
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(15.0),
+                                  ),
+                                ),
+                                minimumSize:
+                                MaterialStateProperty.all<Size>(
+                                    Size(100, 50)),
+                                backgroundColor:
+                                MaterialStateProperty.all<Color>(
+                                    Colors.grey.shade200),
+                                foregroundColor:
+                                MaterialStateProperty.all<Color>(
+                                    Colors.black),
+                              ),
+                              child: Text(
+                                "취소",
+                                style: TextStyle(fontSize: 17),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop(false);
+                              },
+                            ),
+                            TextButton(
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(10.0),
+                                  ),
+                                ),
+                                minimumSize:
+                                MaterialStateProperty.all<Size>(
+                                    Size(100, 50)),
+                                backgroundColor:
+                                MaterialStateProperty.all<Color>(
+                                    Colors.red),
+                                foregroundColor:
+                                MaterialStateProperty.all<Color>(
+                                    Colors.white),
+                              ),
+                              child: Text(
+                                "나가기",
+                                style: TextStyle(fontSize: 17),
+                              ),
+                              onPressed: () async {
+                                // 서버에 삭제 요청을 보내는 코드
+                                const memberId = "1"; // memberId 설정
+                                final keywordId = keyword.keywordId; // 키워드의 고유 ID 가져오기
+                                final deleteUrl = 'https://j9a705.p.ssafy.io/api/keyword/$keywordId?memberId=$memberId';
+
+                                try {
+                                  final response = await http.delete(
+                                    Uri.parse(deleteUrl),
+                                    headers: {
+                                      "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
+                                    },
+                                  );
+
+                                  if (response.statusCode == 200) {
+                                    // 성공적으로 삭제되었을 때의 처리
+                                    // 삭제된 항목을 keywords 리스트에서 제거
+                                    setState(() {
+                                      keywords.remove(keyword);
+                                    });
+                                    Navigator.of(context).pop(true); // 대화 상자 닫기
+                                  } else {
+                                    // 삭제 실패 시의 처리
+                                    print('키워드 삭제 실패: ${response.statusCode}');
+                                  }
+                                } catch (e) {
+                                  // 오류 처리
+                                  print('오류: $e');
+                                }
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                    return confirmExit == true;
+                  }
+                  return false;
+                },
+                background: Container(
+                  color: Colors.red,
+                  alignment: Alignment.centerRight,
+                  padding: EdgeInsets.only(right: 20.0),
+                  child: Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                  ),
+                ),
+            child: Container(
+              width: 400,
               height: 80,
               margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               decoration: BoxDecoration(
@@ -197,6 +314,7 @@ class KeywordPageState extends State<KeywordPage> {
                   )
                 ]
               )
+            )
             );
           }
         ),
