@@ -1,10 +1,20 @@
 import 'package:a705/chatting_detail_page.dart';
+import 'package:a705/providers/exchange_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
+import 'models/BankDto.dart';
+
 class BankDetailPage extends StatefulWidget {
-  const BankDetailPage({super.key});
+  final int selectedIndex;
+  final String bankCode;
+
+  BankDetailPage({
+    required this.selectedIndex,
+    required this.bankCode,
+  });
+
 
   @override
   State<BankDetailPage> createState() => _BankDetailPageState();
@@ -12,19 +22,179 @@ class BankDetailPage extends StatefulWidget {
 
 class _BankDetailPageState extends State<BankDetailPage> {
 
-  int _idx = 0;
-  int _idx2 = 7;
+  List<String> currency = [
+    'USD',
+    'KRW',
+    'JPY',
+    'CNY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CAD',
+    'HKD',
+    'PHP',
+    'VND',
+    'TWD',
+    'SGD',
+    'CZK',
+    'NZD',
+    'RUB',
+  ];
+  List<String> sign = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
 
-  final _bankList = ['신한은행', '하나은행'];
-  var _selectedValue = '신한은행';
+  List<int> unit = [1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
+
+  late int _idx;
+  int _idx2 = 1;
+
+
+
+ Map<String, double>? exchangeRates; // 환율 데이터를 저장할 변수
+
+  @override
+  void initState() {
+    super.initState();
+    _idx = widget.selectedIndex == 0 ? 0 : widget.selectedIndex + 1;
+    _fetchExchangeRates();
+  }
+
+  Future<void> _fetchExchangeRates() async {
+    try {
+      final exchangeProvider = ExchangeRateProvider();
+      final response = await exchangeProvider.fetchCurrencyData();
+      // API 응답 데이터 파싱
+      final exchangeResponse = response;
+      if (exchangeResponse.success) {
+        setState(() {
+          // 성공적으로 데이터를 받아왔을 때만 exchangeRates 업데이트
+          exchangeRates = {
+            'USDKRW': exchangeResponse.quotes.usdKrw,
+            'USDJPY': exchangeResponse.quotes.usdJpy,
+            'USDCNY': exchangeResponse.quotes.usdCny,
+            'USDEUR': exchangeResponse.quotes.usdEur,
+            'USDGBP': exchangeResponse.quotes.usdGbp,
+            'USDAUD': exchangeResponse.quotes.usdAud,
+            'USDCAD': exchangeResponse.quotes.usdCad,
+            'USDHKD': exchangeResponse.quotes.usdHkd,
+            'USDPHP': exchangeResponse.quotes.usdPhp,
+            'USDVND': exchangeResponse.quotes.usdVnd,
+            'USDTWD': exchangeResponse.quotes.usdTwd,
+            'USDSGD': exchangeResponse.quotes.usdSgd,
+            'USDCZK': exchangeResponse.quotes.usdCzk,
+            'USDNZD': exchangeResponse.quotes.usdNzd,
+            'USDRUB': exchangeResponse.quotes.usdRub,
+
+          };
+          _moneyController2.text = exchangeResponse.quotes.usdKrw.toStringAsFixed(2);
+        });
+      } else {
+        // API 요청은 성공했지만, 응답이 실패한 경우에 대한 처리
+        print('API 요청 성공, 응답 실패: ${exchangeResponse.terms}');
+      }
+    } catch (e) {
+      // API 요청 중 오류 발생
+      print('Error fetching exchange rates: $e');
+    }
+  }
+  double? calculateRate(String baseCurrency, String targetCurrency) {
+    if (exchangeRates != null &&
+        exchangeRates!.containsKey(baseCurrency) &&
+        exchangeRates!.containsKey(targetCurrency)) {
+      final baseRate = exchangeRates![baseCurrency];
+      final targetRate = exchangeRates![targetCurrency];
+
+      if (baseCurrency == 'USDKRW' && targetCurrency == 'USDJPY') {
+        return baseRate! / targetRate! ;
+      }  else {
+        return baseRate! / targetRate!;
+      }
+
+    }
+    return null;
+  }
+
+
+  double? calculateUsd(String targetCurrency) {
+    if (exchangeRates != null && exchangeRates!.containsKey(targetCurrency)) {
+      return exchangeRates![targetCurrency];
+    }
+    return null;
+  }
+
+  void calculateExchangeRate(int baseIdx, int targetIdx) {
+    double? rate;
+    String base;
+    String target;
+
+
+    if (currency[baseIdx] != 'USD') {
+      base = currency1[targetIdx - 1];
+      target = currency1[baseIdx - 1];
+      rate = calculateRate(base, target);
+    } else if (currency[baseIdx] == 'USD') {
+      rate = calculateUsd(currency1[targetIdx - 1]);
+    } else if (currency[targetIdx] != 'USD'){
+      rate =  calculateUsd(currency1[targetIdx-1]);
+    }
+
+
+    if (rate != null) {
+      double amountToConvert = double.parse(
+          _moneyController1.text.replaceAll(',', ''));
+      double convertedAmount = amountToConvert * rate;
+      String formattedAmount = convertedAmount.toStringAsFixed(2);
+      setState(() {
+        // UI 업데이트를 수행
+        // _moneyController2.text = '${_moneyController1.text.isNotEmpty
+        //     ? (double.parse(_moneyController1.text.replaceAll(',', '')) * rate!).toStringAsFixed(2)
+        //     : '0.00'} ${sign[idx2]}';
+        _moneyController2.text = '$formattedAmount';
+      });
+    }
+  }
+
+
+
+
+
+  List<String> currency1 = [
+    'USDKRW',
+    'USDJPY',
+    'USDCNY',
+    'USDEUR',
+    'USDGBP',
+    'USDAUD',
+    'USDCAD',
+    'USDHKD',
+    'USDPHP',
+    'USDVND',
+    'USDTWD',
+    'USDSGD',
+    'USDCZK',
+    'USDNZD',
+    'USDRUB',
+
+  ];
+
 
   Map<String, Map<String, String>> bankInfo = {
-    '신한은행': {'imagePath': 'assets/images/flag/USD.png', 'currencyName': '신한은행'},
-    '하나은행': {
-      'imagePath': 'assets/images/flag/AUD.png',
-      'currencyName': '하나은행'
-    },
+    '하나은행': {'currencyName': '하나은행', 'bankCode': '081'},
+    '우리은행': {'currencyName': '우리은행', 'bankCode': '020'},
+    'KB국민은행': {'currencyName': 'KB국민은행', 'bankCode': '004'},
+    '신한은행': {'currencyName': '신한은행', 'bankCode': '088'},
+    'NH농협은행': {'currencyName': 'NH농협은행', 'bankCode': '011'},
+    'IBK기업은행': {'currencyName': 'IBK기업은행', 'bankCode': '003'},
+    'SC제일은행': {'currencyName': 'SC제일은행', 'bankCode': '023'},
+    '시티은행': {'currencyName': '시티은행', 'bankCode': '027'},
+    'Sh수협은행': {'currencyName': 'Sh수협은행', 'bankCode': '007'},
+    '부산은행': {'currencyName': '부산은행', 'bankCode': '032'},
+    'DGB대구은행': {'currencyName': 'DGB대구은행', 'bankCode': '031'},
   };
+
+
+
+
+
 
   String getToday() {
     DateTime now = DateTime.now();
@@ -41,7 +211,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
   // 텍스트 필드 컨트롤러
   final TextEditingController _moneyController1 = TextEditingController(text: "1 ");
   final TextEditingController _moneyController2 = TextEditingController(text: "1,300.00 ");
-  final TextEditingController _percentController = TextEditingController(text: "30");
+  final TextEditingController _percentController = TextEditingController(text: "우대율");
 
 
 
@@ -110,42 +280,11 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                       Container(
                                         margin:
                                         const EdgeInsets.fromLTRB(10, 10, 30, 10),
-                                        width: 170,
-                                        height: 55,
+                                        // width: 170,
+                                        height: 25,
                                         // color: Colors.red,
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton(
-                                            value: _selectedValue,
-                                            items: _bankList.map(
-                                                  (value) {
-                                                return DropdownMenuItem(
-                                                  value: value,
-                                                  child: Row(
-                                                    children: [
-                                                      Image.asset(
-                                                        bankInfo[value]![
-                                                        'imagePath']!,
-                                                        width: 20,
-                                                        height: 20,
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Text(bankInfo[value]![
-                                                      'currencyName']!,
-                                                        style: const TextStyle(fontWeight: FontWeight.bold),),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                            ).toList(),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _selectedValue = value.toString();
-                                              });
-                                            },
-                                          ),
-                                        ),
+                                        child: Image.asset(
+                                            'assets/images/banklogo/${widget.bankCode}.png'),
                                       ),
                                     ],
                                   ),
@@ -295,8 +434,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               CircleAvatar(
-                                                backgroundImage:
-                                                AssetImage('assets/images/flag/${currency[_idx]}.png'),
+                                                backgroundImage: AssetImage('assets/images/flag/${currency[_idx] == 'KRW' ? 'KRW' : currency[_idx] == 'USD' ? 'USDKRW' : 'USD${currency[_idx]}'}.png'),
                                                 radius: 15,
                                               ),
                                               const SizedBox(width: 5),
@@ -383,7 +521,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                     children: [
                                       GestureDetector(
                                         onTap: () async {
-                                          int idx2 = await showModalBottomSheet(
+                                          int idx = await showModalBottomSheet(
                                               context: context,
                                               isScrollControlled: true,
                                               shape: RoundedRectangleBorder(
@@ -410,14 +548,14 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                                                 fontSize: 20),
                                                           ),
                                                           SizedBox(height: 10),
-                                                          Expanded(child: CountryListViewBuilder2()),
+                                                          Expanded(child: CountryListViewBuilder()),
                                                         ],
                                                       ),
                                                     ));
                                               });
                                           setState(() {
-                                            _idx2 = idx2;
-                                            _moneyController2.text = (1 * unit2[_idx2]).toString();
+                                            _idx2 = idx;
+                                            _moneyController2.text = (1 * unit[_idx2]).toString();
                                           });
                                         },
                                         child: Container(
@@ -429,8 +567,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               CircleAvatar(
-                                                backgroundImage:
-                                                AssetImage('assets/images/flag/${currency2[_idx2]}.png'),
+                                                backgroundImage: AssetImage('assets/images/flag/${currency[_idx2] == 'KRW' ? 'KRW' : currency[_idx2] == 'USD' ? 'USDKRW' : 'USD${currency[_idx2]}'}.png'),
                                                 radius: 15,
                                               ),
                                               const SizedBox(width: 5),
@@ -477,7 +614,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                             enabledBorder: const UnderlineInputBorder(
                                                 borderSide: BorderSide(color: Colors.transparent)
                                             ),
-                                            suffixText: ' ${sign2[_idx2]}',
+                                            suffixText: ' ${sign[_idx2]}',
                                           ),
                                           textAlign: TextAlign.end,
                                           style: const TextStyle(
@@ -595,6 +732,9 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                 child:IconButton(
                                   padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
                                   onPressed: (){
+                                    setState(() {
+                                      calculateExchangeRate(_idx, _idx2);
+                                    });
                                   },
                                   icon: const Icon(Icons.drag_handle_rounded),
                                   iconSize: 50,
@@ -609,7 +749,10 @@ class _BankDetailPageState extends State<BankDetailPage> {
                     ),
                     // 나라별 환율
                     const SizedBox(height: 20,),
-                    const ListViewBuilder(),
+                    ListViewBuilder(
+                      exchangeRates: exchangeRates!,
+                      bankCode: widget.bankCode,
+                    ),
                   ],
                 ),
           ),
@@ -621,53 +764,91 @@ class _BankDetailPageState extends State<BankDetailPage> {
 }
 
 class ListViewBuilder extends StatefulWidget {
-  const ListViewBuilder({super.key});
+  final Map<String, double> exchangeRates;
+  final String bankCode;
+  const ListViewBuilder({required this.exchangeRates, required this.bankCode,});
 
   @override
   State<ListViewBuilder> createState() => _ListViewBuilderState();
 }
 
 class _ListViewBuilderState extends State<ListViewBuilder> {
+  Map<String, double> exchangeRates = {};
+
   final _valueList1 = [
     '미국(달러) USD',
     '일본(엔) JPY',
+    '중국(위안) CNY',
     '유럽(유로) EUR',
     '영국(파운드) GBP',
     '호주(달러) AUD',
-    '중국(위안) CNY',
-    '베트남(동) VND',
-    '한국(원) KRW',
-    '홍콩(달러) HKD',
     '캐나다(달러) CAD',
+    '홍콩(달러) HKD',
+    '필리핀(페소) PHP',
+    '베트남(동) VND',
+    '대만(달러) TWD',
+    '싱가폴(달러) SGD',
     '체코(코루나) CZK',
     '뉴질랜드(달러) NZD',
-    '필리핀(페소) PHP',
     '러시아(루블) RUB',
-    '싱가폴(달러) SGD',
-    '대만(달러) TWD',
   ];
-  var _selectedValue1 = '미국(달러) USD';
   int idx1 = 0;
 
   List<String> currency1 = [
-    'USD',
-    'JPY',
-    'EUR',
-    'GBP',
-    'AUD',
-    'CNY',
-    'VND',
-    'KRW',
-    'HKD',
-    'CAD',
-    'CZK',
-    'NZD',
-    'PHP',
-    'RUB',
-    'SGD',
-    'TWD',
+    'USDKRW',
+    'USDJPY',
+    'USDCNY',
+    'USDEUR',
+    'USDGBP',
+    'USDAUD',
+    'USDCAD',
+    'USDHKD',
+    'USDPHP',
+    'USDVND',
+    'USDTWD',
+    'USDSGD',
+    'USDCZK',
+    'USDNZD',
+    'USDRUB',
   ];
 
+  Map<String, Map<String, String>> bankInfo = {
+    '하나은행': {'currencyName': '하나은행', 'bankCode': '081'},
+    '우리은행': {'currencyName': '우리은행', 'bankCode': '020'},
+    'KB국민은행': {'currencyName': 'KB국민은행', 'bankCode': '004'},
+    '신한은행': {'currencyName': '신한은행', 'bankCode': '088'},
+    'NH농협은행': {'currencyName': 'NH농협은행', 'bankCode': '011'},
+    'IBK기업은행': {'currencyName': 'IBK기업은행', 'bankCode': '003'},
+    'SC제일은행': {'currencyName': 'SC제일은행', 'bankCode': '023'},
+    '시티은행': {'currencyName': '시티은행', 'bankCode': '027'},
+    'Sh수협은행': {'currencyName': 'Sh수협은행', 'bankCode': '007'},
+    '부산은행': {'currencyName': '부산은행', 'bankCode': '032'},
+    'DGB대구은행': {'currencyName': 'DGB대구은행', 'bankCode': '031'},
+  };
+
+  double? calculateRate(String baseCurrency, String targetCurrency) {
+    if (exchangeRates != null &&
+        exchangeRates!.containsKey(baseCurrency) &&
+        exchangeRates!.containsKey(targetCurrency)) {
+      final baseRate = exchangeRates![baseCurrency];
+      final targetRate = exchangeRates![targetCurrency];
+
+      if (baseCurrency == 'USDKRW' && targetCurrency == 'USDJPY') {
+        return baseRate! / targetRate! ;
+      }  else {
+        return baseRate! / targetRate!;
+      }
+
+    }
+    return null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // widget.exchangeRates에서 데이터를 가져와서 사용할 변수에 할당
+    exchangeRates = widget.exchangeRates ?? {};
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -677,6 +858,78 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
       shrinkWrap: true,
       itemCount: _valueList1.length,
       itemBuilder: (context, index) {
+        final selectedBankCode = widget.bankCode;
+        final bankInfoData = bankInfoMap[selectedBankCode];
+        //
+        // String buyingFee = '미제공';
+        // String sellingFee = '미제공';
+        // String sendingFee = '미제공';
+        //
+        // if (bankInfoData != null) {
+        //   final fees = bankInfoData.fees[currency1[index]];
+        //   if (fees != null) {
+        //     buyingFee = fees.buying?.toStringAsFixed(2) ?? '미제공';
+        //     sellingFee = fees.selling?.toStringAsFixed(2) ?? '미제공';
+        //     sendingFee = fees.sending?.toStringAsFixed(2) ?? '미제공';
+        //   }
+        // }
+
+        final currencyCode = currency1[index];
+        final feeInfo = bankInfoData?.fees[currencyCode];
+
+        String buyingFee = '미제공';
+        String sellingFee = '미제공';
+        String sendingFee = '미제공';
+
+        if (feeInfo != null) {
+          buyingFee = feeInfo.buying?.toStringAsFixed(2) ?? '미제공';
+          sellingFee = feeInfo.selling?.toStringAsFixed(2) ?? '미제공';
+          sendingFee = feeInfo.sending?.toStringAsFixed(2) ?? '미제공';
+        }
+
+//
+//         // 선택된 은행 코드와 일치하는 은행 정보 가져오기
+//         final bankInfoData = bankInfo[selectedBankCode];
+//         if (bankInfoData != null) {
+//           final fees = bankInfoData['fees'];
+//           if (fees != null) {
+//             final feeInfo = fees[currency1[index]!];
+//             if (feeInfo != null) {
+//               feeDescription = '${feeInfo}%';
+//             }
+//           }
+//         }
+//         // 현찰 살 때 수수료
+//         final buyingFee = bankInfoData['fees'][currency1[index]]['buyingFee'];
+// // 현찰 팔 때 수수료
+//         final sellingFee = bankInfoData['fees'][currency1[index]]['sellingFee'];
+// // 송금 보낼 때 수수료
+//         final sendingFee = bankInfoData['fees'][currency1[index]]['sendingFee'];
+
+        String formattedRate = 'N/A'; // 초기값 설정
+
+        if (exchangeRates != null) {
+          if (currency1[index] == 'USDKRW') {
+            // 미국 달러(USD)은 그대로 표시
+            final exchangeRate = exchangeRates![currency1[index]];
+            if (exchangeRate != null) {
+              formattedRate = exchangeRate.toStringAsFixed(2);
+            }
+          } else if(currency1[index]== 'USDJPY' ) {
+            final rate = calculateRate('USDKRW', currency1[index])! * 100;
+            if (rate != null) {
+              formattedRate = rate.toStringAsFixed(2);
+            }
+          }
+          else {
+            // 다른 국가의 환율 계산
+            final rate = calculateRate('USDKRW', currency1[index]);
+            if (rate != null) {
+              formattedRate = rate.toStringAsFixed(2);
+            }
+          }
+        }
+
         return Row(
           children: [
             Expanded(
@@ -705,8 +958,8 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                         Row(
                           children: [
                             CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'assets/images/flag/${currency1[index]}.png'),
+                              backgroundImage:
+                              AssetImage('assets/images/flag/${currency1[index]}.png'),
                               radius: 10,
                             ),
                             const SizedBox(width: 5),
@@ -716,23 +969,23 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                             ),
                           ],
                         ),
-                        const Row(
+                         Row(
                           children: [
                             Text(
-                              '1,300.00 원',
+                              '$formattedRate 원',
                               textAlign: TextAlign.end,
-                              style: TextStyle(fontSize: 17, color: Colors.red),
+                              style: const TextStyle(fontSize: 17, color: Colors.red),
                             ),
                           ],
                         )
                       ],
                     ),
                     const SizedBox(height: 10,),
-                    const Row(
+                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Column(
+                        const Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: 20),
@@ -756,7 +1009,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
 
                         Row(
                           children: [
-                            Column(
+                            const Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
@@ -803,21 +1056,21 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      '1.75%',
+                                    ' $buyingFee',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
                                           height: 1.532),
                                     ),
                                     Text(
-                                      '1.75%',
+                                      '$sellingFee',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
                                           height: 1.532),
                                     ),
                                     Text(
-                                      '1.75%',
+                                      '$sendingFee',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
@@ -845,41 +1098,41 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
 
 List<String> country = [
   '미국(달러)',
+  '한국(원)',
   '일본(엔)',
-  '유럽(유로)',
+  '중국(위안)',
+  '유럽(유로) ',
   '영국(파운드)',
   '호주(달러)',
-  '중국(위안)',
-  '베트남(동)',
-  '한국(원)',
-  '홍콩(달러)',
   '캐나다(달러)',
+  '홍콩(달러)',
+  '필리핀(페소)',
+  '베트남(동)',
+  '대만(달러)',
+  '싱가폴(달러)',
   '체코(코루나)',
   '뉴질랜드(달러)',
-  '필리핀(페소)',
   '러시아(루블)',
-  '싱가폴(달러)',
-  '대만(달러)',
 ];
 List<String> currency = [
   'USD',
+  'KRW',
   'JPY',
+  'CNY',
   'EUR',
   'GBP',
   'AUD',
-  'CNY',
-  'VND',
-  'KRW',
-  'HKD',
   'CAD',
+  'HKD',
+  'PHP',
+  'VND',
+  'TWD',
+  'SGD',
   'CZK',
   'NZD',
-  'PHP',
   'RUB',
-  'SGD',
-  'TWD',
 ];
-List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
+List<String> sign = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
 
 List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
 
@@ -921,8 +1174,7 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
                   children: [
                     const SizedBox(width: 20),
                     CircleAvatar(
-                      backgroundImage:
-                      AssetImage('assets/images/flag/${currency[index]}.png'),
+                      backgroundImage: AssetImage('assets/images/flag/${currency[index] == 'KRW' ? 'KRW' : currency[index] == 'USD' ? 'USDKRW' : 'USD${currency[index]}'}.png'),
                       radius: 10,
                     ),
                     const SizedBox(width: 10),
@@ -958,117 +1210,5 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
 }
 
 
-List<String> country2 = [
-  '미국(달러)',
-  '일본(엔)',
-  '유럽(유로)',
-  '영국(파운드)',
-  '호주(달러)',
-  '중국(위안)',
-  '베트남(동)',
-  '한국(원)',
-  '홍콩(달러)',
-  '캐나다(달러)',
-  '체코(코루나)',
-  '뉴질랜드(달러)',
-  '필리핀(페소)',
-  '러시아(루블)',
-  '싱가폴(달러)',
-  '대만(달러)',
-];
-List<String> currency2 = [
-  'USD',
-  'JPY',
-  'EUR',
-  'GBP',
-  'AUD',
-  'CNY',
-  'VND',
-  'KRW',
-  'HKD',
-  'CAD',
-  'CZK',
-  'NZD',
-  'PHP',
-  'RUB',
-  'SGD',
-  'TWD',
-];
-List<String> sign2 = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
 
-List<int> unit2 = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
-
-class CountryListViewBuilder2 extends StatefulWidget {
-  const CountryListViewBuilder2({super.key});
-
-  @override
-  State<CountryListViewBuilder2> createState() => _CountryListViewBuilderState2();
-}
-
-class _CountryListViewBuilderState2 extends State<CountryListViewBuilder2> {
-  int idx2 = 7;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: country.length,
-      itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          onTap: () {
-            setState(() {
-              idx2 = index;
-            });
-            Navigator.pop(context, idx2);
-          },
-          child: Container(
-            margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-            height: 50,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
-              color: Color(0xFFFFD954),
-            ),
-            child: Row(
-              children: [
-                Row(
-                  children: [
-                    const SizedBox(width: 20),
-                    CircleAvatar(
-                      backgroundImage:
-                      AssetImage('assets/images/flag/${currency2[index]}.png'),
-                      radius: 10,
-                    ),
-                    const SizedBox(width: 10),
-                  ],
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        country[index],
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        currency[index],
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 20),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
 

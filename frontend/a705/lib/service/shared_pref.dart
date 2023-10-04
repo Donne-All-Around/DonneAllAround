@@ -39,4 +39,15 @@ class SharedPreferenceHelper{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(userPicKey);
   }
+
+
+  Future<void> saveJwtToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('jwt_token', token);
+  }
+
+  Future<String?> getJwtToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('jwt_token');
+  }
 }

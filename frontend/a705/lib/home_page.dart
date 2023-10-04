@@ -33,6 +33,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
+
   @override
   void initState() {
     initTrade();
@@ -135,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       CircleAvatar(
                         backgroundImage: AssetImage(
-                            'assets/images/flag/${currency[_idx]}.png'),
+                            'assets/images/flag/${currency[_idx] == 'KRW' ? 'KRW' : currency[_idx] == 'USD' ? 'USDKRW' : 'USD${currency[_idx]}'}.png'),
                         radius: 10,
                       ),
                       const SizedBox(width: 5),
@@ -237,8 +238,7 @@ class _HomePageState extends State<HomePage> {
                                 child: Row(
                                   children: [
                                     CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          'assets/images/flag/${currency[_idx]}.png'),
+                                      backgroundImage: AssetImage('assets/images/flag/${currency[_idx] == 'KRW' ? 'KRW' : currency[_idx] == 'USD' ? 'USDKRW' : 'USD${currency[_idx]}'}.png'),
                                       radius: 15,
                                     ),
                                     const SizedBox(width: 5),
@@ -588,60 +588,44 @@ class _HomePageState extends State<HomePage> {
 
 List<String> country = [
   '미국(달러)',
+  '한국(원)',
   '일본(엔)',
-  '유럽(유로)',
+  '중국(위안)',
+  '유럽(유로) ',
   '영국(파운드)',
   '호주(달러)',
-  '중국(위안)',
-  '베트남(동)',
-  '한국(원)',
-  '홍콩(달러)',
   '캐나다(달러)',
+  '홍콩(달러)',
+  '필리핀(페소)',
+  '베트남(동)',
+  '대만(달러)',
+  '싱가폴(달러)',
   '체코(코루나)',
   '뉴질랜드(달러)',
-  '필리핀(페소)',
   '러시아(루블)',
-  '싱가폴(달러)',
-  '대만(달러)',
 ];
 List<String> currency = [
   'USD',
+  'KRW',
   'JPY',
+  'CNY',
   'EUR',
   'GBP',
   'AUD',
-  'CNY',
-  'VND',
-  'KRW',
-  'HKD',
   'CAD',
+  'HKD',
+  'PHP',
+  'VND',
+  'TWD',
+  'SGD',
   'CZK',
   'NZD',
-  'PHP',
   'RUB',
-  'SGD',
-  'TWD',
 ];
-List<String> sign = [
-  '\$',
-  '¥',
-  '€',
-  '£',
-  '\$',
-  '¥',
-  '₫',
-  '₩',
-  '\$',
-  '\$',
-  'Kč',
-  '\$',
-  '₱',
-  '₽',
-  '\$',
-  '\$'
-];
+List<String> sign = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
 
-List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
+List<int> unit = [1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
+
 
 class CountryListViewBuilder extends StatefulWidget {
   const CountryListViewBuilder({super.key});
@@ -681,8 +665,7 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
                   children: [
                     const SizedBox(width: 20),
                     CircleAvatar(
-                      backgroundImage: AssetImage(
-                          'assets/images/flag/${currency[index]}.png'),
+                      backgroundImage: AssetImage('assets/images/flag/${currency[index] == 'KRW' ? 'KRW' : currency[index] == 'USD' ? 'USDKRW' : 'USD${currency[index]}'}.png'),
                       radius: 10,
                     ),
                     const SizedBox(width: 10),
