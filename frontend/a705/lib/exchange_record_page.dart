@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'exchange_record_create_page.dart';
+import 'exchange_record_edit_page.dart';
 import 'profile_page.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert'; // JSON 파싱을 위해 추가
@@ -49,7 +50,14 @@ class CustomModalWidget extends StatelessWidget {
             const SizedBox(height: 5),
             InkWell(
               onTap: () {
-                // 수정하기 동작 구현
+                Navigator.of(context).pop(); // 모달 닫기
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ExchangeRecordEditPage(
+                      exchangeRecordId: exchangeRecordId, // exchangeRecordId를 전달
+                    ),
+                  ),
+                );
               },
               child: Container(
                 width: 270,
@@ -71,10 +79,15 @@ class CustomModalWidget extends StatelessWidget {
             ),
             const SizedBox(height: 15),
             InkWell(
-              onTap: () {
-                deleteExchangeRecord(exchangeRecordId);
-                Navigator.of(context).pop(); // 삭제 후 모달 닫기
-              },
+                onTap: () async {
+                  await deleteExchangeRecord(exchangeRecordId);
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ExchangeRecordPage(), // RecordPage로 돌아가도록 수정
+                    ),
+                  );
+                },
               child: Container(
                 width: 270,
                 height: 40,
@@ -156,6 +169,8 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
         // 서버 응답이 성공인 경우 JSON 데이터 파싱
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
         final List<dynamic> jsonData = jsonResponse['data']['exchangeRecordList']; // 주의: 'exchangeRecordList'의 오타 수정
+
+
         if (jsonData != null) {
           setState(() {
             exchangeDataList = List<Map<String, dynamic>>.from(jsonData.map((data) {
@@ -219,9 +234,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
               color: Colors.black
             ),
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ProfilePage()));
+              Navigator.of(context).pop();
             }
           ),
           elevation: 0,
@@ -363,7 +376,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                             )
                                           ),
                                           Text(
-                                            ' USD',
+                                            ' ${exchangeData['countryCode']}',
                                             style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold,
@@ -371,14 +384,11 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                             )
                                           ),
                                           SizedBox(width: 10),
-                                          Container(
-                                            width: 30,
-                                            height: 30,
-                                            decoration: const BoxDecoration(
-                                              color: Color(0xFF0984E3),
-                                              shape: BoxShape.circle,
-                                            )
-                                          )
+                                          CircleAvatar(
+                                            backgroundImage:
+                                            AssetImage('assets/images/flag/${exchangeData['countryCode']}.png'),
+                                            radius: 16,
+                                          ),
                                         ]
                                     ),
                                     const SizedBox(height: 6),

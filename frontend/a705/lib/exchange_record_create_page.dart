@@ -61,7 +61,14 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
     '호주(달러) AUD',
     '중국(위안) CNY',
     '베트남(동) VND',
-    '홍콩(달러) HKD'
+    '홍콩(달러) HKD',
+    '필리핀(페소) PHP',
+    '베트남(동) VND',
+    '대만(달러) TWD',
+    '싱가폴(달러) SGD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '러시아(루블) RUB',
   ];
   var _selectedValue = '미국(달러) USD';
   int idx = 0;
@@ -74,9 +81,16 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
     'AUD',
     'CNY',
     'VND',
-    'HKD'
+    'HKD',
+    'PHP',
+    'VND',
+    'TWD',
+    'SGD',
+    'CZK',
+    'NZD',
+    'RUB',
   ];
-  List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫', '\$'];
+  List<String> sign = ['\$',  '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
 
   final _bankList1 = [
     '하나은행',
@@ -184,10 +198,10 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
       'preferentialRate': _discountController.text,
       'tradingBaseRate': tradingBaseRateString,
     };
-    Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const ExchangeRecordPage()));
-
+    Navigator.of(context).pop();
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (BuildContext context) => const ExchangeRecordPage(), // RecordPage로 돌아가도록 수정
+    ));
   }
 
 
@@ -207,9 +221,7 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
                 color: Colors.black
               ),
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ExchangeRecordPage()));
+                Navigator.of(context).pop();
               }
             ),
             elevation: 0,
