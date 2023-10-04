@@ -3,6 +3,7 @@ package com.sturdy.moneyallaround.domain.member.controller;
 import com.sturdy.moneyallaround.common.ApiResponse;
 import com.sturdy.moneyallaround.domain.member.dto.request.CheckNicknameRequest;
 import com.sturdy.moneyallaround.domain.member.dto.request.CheckTelnumberRequest;
+import com.sturdy.moneyallaround.domain.member.dto.request.FirebaseAuthRequest;
 import com.sturdy.moneyallaround.domain.member.dto.request.SignUpRequest;
 import com.sturdy.moneyallaround.domain.member.service.MemberService;
 import com.sturdy.moneyallaround.domain.member.service.RefreshTokenService;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
     private final MemberService memberService;
     private final RefreshTokenService refreshTokenService;
-
 
     @Operation(summary = "닉네임 중복 확인", description = "닉네임 중복을 확인한다.")
     @ApiResponses({
@@ -50,6 +50,22 @@ public class MemberController {
         log.info("전화번호 중복 체크");
         return ApiResponse.success(memberService.checkTel(request));
     }
+
+    @PostMapping("/firebase")
+    public ApiResponse firebaseToken(@RequestBody FirebaseAuthRequest firebaseAuthRequest) {
+        log.info("파이어베이스 체크");
+        return ApiResponse.success("파이어베이스 조회 성공");
+    }
+
+    // 회원가입
+
+    // 로그인
+
+    // 로그아웃
+
+    // 회원탈퇴
+
+    // 회원 정보 수정
 
 //    @Operation(summary = "회원가입", description = "전화번호 인증을 통해 회원가입 한다.")
 //    @ApiResponses({

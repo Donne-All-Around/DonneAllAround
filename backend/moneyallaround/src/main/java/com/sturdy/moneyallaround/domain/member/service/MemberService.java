@@ -33,6 +33,7 @@ public class MemberService {
   //  private final PasswordEncoder encoder;
     private final RefreshTokenService refreshTokenService;
 
+    public
 
     //registMember
 //    @Transactional
