@@ -46,28 +46,20 @@ class _ChooseLocationPage2State extends State<ChooseLocationPage2> {
   final myController = TextEditingController();
 
   String addr = "";
-  Address address = Address(country: "", city: "", district: "", town: "");
-
-  @override
-  void initState() {
-    super.initState();
-    _getUserLocation();
-  }
+  Address address = Address(
+      country: null,
+      administrativeArea: null,
+      subAdministrativeArea: null,
+      locality: null,
+      subLocality: null,
+      thoroughfare: null,
+      latitude: 0,
+      longitude: 0);
 
   @override
   void dispose() {
     myController.dispose();
     super.dispose();
-  }
-
-  void _getUserLocation() async {
-    var position = await GeolocatorPlatform.instance.getCurrentPosition(
-        locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.bestForNavigation));
-
-    setState(() {
-      currentPosition = LatLng(position.latitude, position.longitude);
-    });
   }
 
   @override
@@ -105,7 +97,7 @@ class _ChooseLocationPage2State extends State<ChooseLocationPage2> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  if(addr.isNotEmpty) {
+                  if (addr.isNotEmpty) {
                     Navigator.pop(context, address);
                   }
                 },
@@ -214,12 +206,11 @@ class _ChooseLocationPage2State extends State<ChooseLocationPage2> {
                 onTap: () async {
                   LatLng _currentCenter = await getCenter();
                   List<Placemark> placemark = await placemarkFromCoordinates(
-                      _currentCenter.latitude, _currentCenter.longitude, localeIdentifier: "ko");
+                      _currentCenter.latitude, _currentCenter.longitude,
+                      localeIdentifier: "ko");
 
-                  String addressssss ='${placemark.first.thoroughfare!.isNotEmpty ? '${placemark.first.thoroughfare}, ' : ''}${placemark.first.subLocality!.isNotEmpty ? '${placemark.first.subLocality}, ' : ''}${placemark.first.locality!.isNotEmpty ? '${placemark.first.locality}, ' : ''}${placemark.first.subAdministrativeArea!.isNotEmpty ? '${placemark.first.subAdministrativeArea}, ' : ''}${placemark.first.administrativeArea!.isNotEmpty ? placemark.first.administrativeArea : ''}';
-
-
-                  print(addressssss);
+                  String addressssss =
+                      '${placemark.first.thoroughfare!.isNotEmpty ? '${placemark.first.thoroughfare}, ' : ''}${placemark.first.subLocality!.isNotEmpty ? '${placemark.first.subLocality}, ' : ''}${placemark.first.locality!.isNotEmpty ? '${placemark.first.locality}, ' : ''}${placemark.first.subAdministrativeArea!.isNotEmpty ? '${placemark.first.subAdministrativeArea}, ' : ''}${placemark.first.administrativeArea!.isNotEmpty ? placemark.first.administrativeArea : ''}';
 
                   // print('country: ${placemark.reversed.last.country}');
                   // print('locality: ${placemark.reversed.last.locality}');
@@ -235,14 +226,22 @@ class _ChooseLocationPage2State extends State<ChooseLocationPage2> {
                   //     'subAdministrativeArea: ${placemark.reversed.last.subAdministrativeArea}');
                   // print(
                   //     'subThoroughfare: ${placemark.reversed.last.subThoroughfare}');
-                  // print('thoroughfare: ${placemark.reversed.last.thoroughfare}');
+                  // print(
+                  //     'thoroughfare: ${placemark.reversed.last.thoroughfare}');
                   // print('hashCode: ${placemark.reversed.last.hashCode}');
 
                   setState(() {
-                    address = Address(country: placemark.reversed.last.country!,
-                    city: placemark.reversed.last.administrativeArea!,
-                    district: placemark.reversed.last.subLocality!,
-                    town: placemark.reversed.last.thoroughfare!);
+                    address = Address(
+                        country: placemark.reversed.last.country!,
+                        administrativeArea:
+                            placemark.reversed.last.administrativeArea!,
+                        subAdministrativeArea:
+                            placemark.reversed.last.subAdministrativeArea!,
+                        locality: placemark.reversed.last.locality!,
+                        subLocality: placemark.reversed.last.subLocality!,
+                        thoroughfare: placemark.reversed.last.thoroughfare!,
+                        latitude: _currentCenter.latitude,
+                        longitude: _currentCenter.longitude);
 
                     addr = addressssss;
                     // addr =

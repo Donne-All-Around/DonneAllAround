@@ -1,3 +1,4 @@
+import 'package:a705/keyword_page.dart';
 import 'package:a705/transaction_detail_page.dart';
 import 'package:flutter/material.dart';
 
@@ -50,13 +51,22 @@ class _NotificationPageState extends State<NotificationPage> {
                     Text('알림 받는 키워드 1개'),
                   ],
                 ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.amber,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return const KeywordPage();
+                      },
+                    ));
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.amber,
+                    ),
+                    child: const Text('설정'),
                   ),
-                  child: const Text('설정'),
                 )
               ],
             ),

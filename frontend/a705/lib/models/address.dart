@@ -1,13 +1,21 @@
 class Address {
-  final String country;
-  final String city;
-  final String district;
-  final String town;
+  final String? country;
+  final String? administrativeArea;
+  final String? subAdministrativeArea;
+  final String? locality;
+  final String? subLocality;
+  final String? thoroughfare;
+  final double latitude;
+  final double longitude;
 
   Address({
     required this.country,
-    required this.city,
-    required this.district,
-    required this.town,
+    required this.administrativeArea,
+    required this.subAdministrativeArea,
+    required this.locality,
+    required this.subLocality,
+    required this.thoroughfare,
+    required this.latitude,
+    required this.longitude,
   });
 }

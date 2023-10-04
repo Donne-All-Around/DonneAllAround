@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:a705/main_page.dart';
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -22,20 +23,49 @@ class _LoginPageState extends State<LoginPage> {
   late Timer _timer;
   final FocusNode _certificationFocus = FocusNode(); // 자동 포커스 주기 위해
   var _buttonText = '인증문자 받기';
+  late String _verificationId;
+
 
   bool _isValid(){
     final phoneNumber = _phoneNumberController.text.replaceAll('-', '');
-    final isValid = phoneNumber.length == 11;  // 하이픈을 제거하고 11자리인지 확인
+    final isValid = phoneNumber.length == 8;  // 하이픈을 제거하고 11자리인지 확인
     setState(() {
       _isButtonEnabled = isValid; // 버튼 활성화 상태 업데이트
     });
     return isValid;
   }
 
-  void _text() {
+  void _text() async {
     if (_isValid()) {
       // 버튼을 누르면 타이머를 시작합니다.
       startTimer();
+      if(_phoneNumberController.text.length == 11) {
+        String phoneNumber = _phoneNumberController.text;
+        String cleanPhoneNumeber = phoneNumber.replaceAll('-', '');
+        String phoneNumberCode = "+8210$cleanPhoneNumeber";
+        FirebaseAuth auth = FirebaseAuth.instance;
+        await auth.verifyPhoneNumber(
+          phoneNumber: phoneNumberCode,
+          verificationCompleted:(PhoneAuthCredential credential) async {
+            await auth
+                .signInWithCredential(credential)
+                .then((_) => Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const MainPage()),
+            ),);
+          },
+          verificationFailed: (FirebaseAuthException e) {
+            if (e.code == 'invalid-phone-number') {
+              print("유효하지 않은 번호임");
+            }
+          }, codeSent: (String verificationId, forceResendingToken) async {
+          setState(() {
+            _verificationId = verificationId;
+          });
+        }, codeAutoRetrievalTimeout: (verificationId){
+          print("timeout");
+        },
+        );
+      }
       // TODO: 인증문자 보내는 기능 구현
       // 인증번호를 받은 후에 버튼 비활성화
       // setState(() {  // 인증번호 받기 버튼 비활성화
@@ -156,8 +186,8 @@ class _LoginPageState extends State<LoginPage> {
                       keyboardType: TextInputType.number, // 키보드 숫자로 나타남
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly, //숫자만!
-                        NumberFormatter(), // 자동하이픈
-                        LengthLimitingTextInputFormatter(13),
+                        // NumberFormatter(), // 자동하이픈
+                        LengthLimitingTextInputFormatter(9),
                         //13자리만 입력받도록 하이픈 2개+숫자 11개
                       ],
                       style: const TextStyle(
@@ -186,7 +216,8 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 10,),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
+
                       if (_isValid()) {
                         // 버튼 누르면 입력창 보이도록 상태 업데이트
                         _showInput();
@@ -242,12 +273,19 @@ class _LoginPageState extends State<LoginPage> {
                           // key: certiKey, // 키 할당
                           // margin: const EdgeInsets.symmetric(horizontal: 30),
                           child: TextFormField(
+                            validator: (val){
+                              if (val!.isEmpty) {
+                                return 'The input is empty.';
+                              } else {
+                                return null;
+                              }
+                            },
                             focusNode: _isInputVisible ? _certificationFocus : null, // 입력창 나타나면 자동 포커스(삼항 연산자)
                             controller: _certificationController, // 인증번호 컨트롤러
                             keyboardType: TextInputType.number, // 키보드 숫자로 나타남
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly, //숫자만!
-                              LengthLimitingTextInputFormatter(5),
+                              LengthLimitingTextInputFormatter(6),
                               // 5자리 숫자만 입력받도록
                             ],
                             style: const TextStyle(
@@ -277,21 +315,42 @@ class _LoginPageState extends State<LoginPage> {
                         // 인증번호 받기 버튼 등을 여기에 추가
                         if (_isInputVisible)
                         GestureDetector(
-                          onTap: (){
+                          onTap: () async {
                             if (_isStart()) {
+                              FirebaseAuth auth = FirebaseAuth.instance;
+
+                              PhoneAuthCredential credential = PhoneAuthProvider.credential(
+                                verificationId:  _verificationId,
+                                  smsCode: _certificationController.text
+                              );
+
+                              try {
+                                final UserCredential userCredential =
+                                    await auth.signInWithCredential(credential);
+                                if (userCredential.user != null) {
+                                  // 인증 성공한 경우
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const MainPage()));
+                                } else {
+                                  // 인증 실패한 경우
+                                  // 처리할 내용 추가
+                                }
+                              } catch (e) {
+                                print("인증 오류: $e");
+                                // 처리할 내용 추가
+                              }
+                            }
+    },
                               // 버튼을 활성화하고 이벤트를 처리합니다.(인증문자 보내는 기능 넣어야 함)
 
-                              // 뒤에 페이지들 스택 존재.
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const MainPage()),
-                              );
-                              // 뒤에 페이지들 스택 없앰.
+                              // 뒤에 페이지들 스택 존재.(지우지 마셈)
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(builder: (context) => const MainPage()),
+                              // );
+                              // 뒤에 페이지들 스택 없앰.(지우지 마셈)
                               //   Navigator.of(context).pushAndRemoveUntil(
                               //   MaterialPageRoute(builder:(context) => const MainPage()),
                               //           (Route<dynamic> route) => false);
-                            }
-                          },
                           child: Container(
                             // margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                             height: 60,
