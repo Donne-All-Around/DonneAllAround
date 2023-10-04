@@ -285,7 +285,8 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                 ),
                  BankViewBuilder(
                     selectedIndex : widget.selectedIndex,
-                ),
+                   formattedRateText:  widget.formattedRateText,
+                 ),
 
               ],
             ),
@@ -296,10 +297,11 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
   }
 }
 
-// 계산기 눌렀을 때, 은행별 리스트 => 은행 목록과 사진으로 바꿔야 함!!
+
 class BankViewBuilder extends StatefulWidget {
   final int selectedIndex;
-  const BankViewBuilder( {required this.selectedIndex,});
+  final String formattedRateText;
+  const BankViewBuilder( {required this.selectedIndex, required this.formattedRateText});
 
   @override
   State<BankViewBuilder> createState() => _BankViewBuilderState();
@@ -355,6 +357,24 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
     '부산은행': {'currencyName': '부산은행', 'bankCode': '032'},
     'DGB대구은행': {'currencyName': 'DGB대구은행', 'bankCode': '031'},
   };
+
+  double calculateCashBuyingPrice(double baseRate, String? buyingFee) {
+    if (buyingFee == null || buyingFee == "서비스 미제공") {
+      return baseRate; // 서비스 미제공일 경우 기본값 반환
+    } else {
+      double feePercentage = double.tryParse(buyingFee.replaceAll('%', '')) ?? 0.0;
+      return baseRate + (baseRate * feePercentage / 100);
+    }
+  }
+
+  double calculateCashPrice(double baseRate, String? sellginFee) {
+    if (sellginFee == null || sellginFee == "서비스 미제공") {
+      return baseRate; // 서비스 미제공일 경우 기본값 반환
+    } else {
+      double feePercentage = double.tryParse(sellginFee.replaceAll('%', '')) ?? 0.0;
+      return baseRate - (baseRate * feePercentage / 100);
+    }
+  }
 
 
   @override
@@ -452,7 +472,7 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
 
                           Row(
                             children: [
-                              const Column(
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
@@ -463,21 +483,30 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
-                                        '1,354.29원',
+                                        '${calculateCashBuyingPrice(
+                                            double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0,
+                                            feeInfo?.buying.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
+                                        ).toStringAsFixed(2)}원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '1,354.29원',
+                                        '${calculateCashPrice(
+                                            double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0,
+                                            feeInfo?.selling.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
+                                        ).toStringAsFixed(2)}원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '1,354.29원',
+                                        '${calculateCashBuyingPrice(
+                                            double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0,
+                                            feeInfo?.sending.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
+                                        ).toStringAsFixed(2)}원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
