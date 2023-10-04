@@ -48,6 +48,7 @@ class UserProvider extends ChangeNotifier {
     if (response.statusCode == 200) {
       final responseBody = jsonDecode(response.body);
       return responseBody;
+      // id/ tel / token 나누거나 사용하는 곳에서 나눠도 됨.
     } else {
       // 서버로부터 오류 응답을 처리하는 코드
       throw Exception('Failed to sign up');
@@ -90,24 +91,24 @@ class UserProvider extends ChangeNotifier {
   }
 
   
-  // 이미지 firebasestore 에 업로드 및 url 변환
-  Future<String?> uploadImage(File imageFile) async {
-    try {
-      final String fileExtension = imageFile.path.split('.').last; // 파일 확장자 추출
-      final Reference storageReference = FirebaseStorage.instance
-          .ref()
-          .child('profile_images/${Uuid().v1()}.$fileExtension'); // 이미지 파일명을 고유하게 생성
-
-      final UploadTask uploadTask = storageReference.putFile(imageFile);
-      await uploadTask.whenComplete(() => null);
-
-      final imageUrl = await storageReference.getDownloadURL();
-      return imageUrl;
-    } catch (e) {
-      print('Error uploading image to Firebase Storage: $e');
-      return null;
-    }
-  }
+  // // 이미지 firebasestore 에 업로드 및 url 변환
+  // Future<String?> uploadImage(File imageFile) async {
+  //   try {
+  //     final String fileExtension = imageFile.path.split('.').last; // 파일 확장자 추출
+  //     final Reference storageReference = FirebaseStorage.instance
+  //         .ref()
+  //         .child('profile_images/${Uuid().v1()}.$fileExtension'); // 이미지 파일명을 고유하게 생성
+  //
+  //     final UploadTask uploadTask = storageReference.putFile(imageFile);
+  //     await uploadTask.whenComplete(() => null);
+  //
+  //     final imageUrl = await storageReference.getDownloadURL();
+  //     return imageUrl;
+  //   } catch (e) {
+  //     print('Error uploading image to Firebase Storage: $e');
+  //     return null;
+  //   }
+  // }
 
   // 파베 토큰 주고 jwt 토큰 받아오기
   Future<Map<String, dynamic>?> getJwtTokenFromFirebaseToken(String firebaseToken, String uid, String tel) async {

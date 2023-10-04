@@ -1,10 +1,13 @@
 import 'package:a705/main_page.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import '../models/JoinDto.dart';
 import '../providers/member_providers.dart';
+import '../storage.dart';
 
 class ProfileSettingPage extends StatefulWidget {
   final String phoneNumber; // 이전 페이지에서 전달된 전화번호
@@ -20,11 +23,19 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
   Color? _errorTextColor;
   final ImagePicker _picker = ImagePicker(); // ImagePicker 초기화
   File? _pickedFile; // 이미지 담을 변수 선언
+  String? profileImg;
   final ImageProvider<Object> _profileImage = const AssetImage('assets/images/wagon_don.png');
 
   final TextEditingController _nicknameController = TextEditingController(); // 닉네임 입력 필드 컨트롤러
 
   final UserProvider _userProvider = UserProvider();
+
+  SignUpDto  uploadSign = SignUpDto(
+      tel: widget.phoneNumber,
+    nickname: '',
+    imageUrl: '',
+    uid: widget.uid,
+  );
 
   bool isNicknameValid(String nickname) {
     // 정규표현식을 사용하여 닉네임 유효성 검사
@@ -227,11 +238,36 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                 const SizedBox(height: 20,),
                 // 시작하기 버튼
                 GestureDetector(
-                  onTap: (){
+                  onTap: () async {
                     if (_errorText == '사용 가능한 닉네임입니다.') {
                       // _registerUser();
-                      // 시작하기 버튼을 누를 때, uid, tel, img, nickname 으로 join 보내고 응답으로 받은 값(id, tel, token)을 storage 에 저장.하고 홈페이지이동
+                      // 시작하기 버튼을 누를 때, uid, tel, img, nickname 으로 join 백엔드에 저장 보내고 응답으로 받은 값(id, tel, token)을 storage 에 저장.하고 홈페이지이동
+                      uploadSign = SignUpDto(
+                          tel: widget.phoneNumber,
+                          nickname: _nicknameController.text,
+                          imageUrl: profileImg,
+                          uid: widget.uid);
 
+                      try {
+                        final responseBody = await _userProvider.signUp(uploadSign);
+
+                        if (responseBody != null) {
+                          final id = responseBody['id'];
+                          final tel = responseBody['tel'];
+                          final token = responseBody['token'];
+
+                          // 데이터를 저장하기 위한 함수 호출
+                          await saveUserInfo(id, tel, token);
+
+
+                        } else {
+                          // 응답이 null인 경우에 대한 처리
+                          print('user 확인 응답이 안옴.');
+                        }
+                      } catch (e) {
+                        // signUp 함수에서 예외가 발생한 경우 처리
+                        print('프로필 설정 signUp 함수 예외');
+                      }
                       // 이밑에 코드들은 지우지 마셈!!
                       //// 메인페이지에서 뒤로 가기 가능.
                       // Navigator.push(
@@ -332,6 +368,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
   Future<void> _takePhoto(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
+      uploadImageToFirebase(pickedFile.path);
       setState(() {
         _pickedFile = File(pickedFile.path);
       });
@@ -341,6 +378,27 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
       }
     }
   }
+
+  Future<String> uploadImageToFirebase(String imagePath) async {
+    final storage = FirebaseStorage.instance;
+    final Reference storageReference = storage.ref().child('profile');
+
+    final UploadTask uploadTask = storageReference.putFile(File(imagePath));
+
+    // uploadTask.then((TaskSnapshot snapshot) async {
+    //   // 업로드가 완료되면 이미지 URL을 얻어서 백엔드 서버로 전송하는 로직을 호출
+    //   final imageUrl = await snapshot.ref.getDownloadURL();
+    //   setState(() {
+    //     profileImg = imageUrl;
+    //   });
+    // });
+    final TaskSnapshot snapshot = await uploadTask;
+    final imageUrl = await snapshot.ref.getDownloadURL();
+
+    return imageUrl; // 이미지 URL 반환
+  }
+
+
 
   // 카메라에서 가져오기
   Future<void> takePhoto(ImageSource source) async {
