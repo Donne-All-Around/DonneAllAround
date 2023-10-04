@@ -726,7 +726,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                             enabledBorder: const UnderlineInputBorder(
                                                 borderSide: BorderSide(color: Colors.transparent)
                                             ),
-                                            suffixText: '${sign2[idx2]}',
+                                            suffixText: sign2[idx2],
                                             // suffixText: rate != null ? ' 1 USD = ${rate.toStringAsFixed(2)} ${sign[idx2]}' : '',
                                           ),
                                           textAlign: TextAlign.end,

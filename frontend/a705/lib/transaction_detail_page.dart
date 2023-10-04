@@ -118,8 +118,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                       pageSnapping: true,
                       itemBuilder: (context, index) {
                         return Image(
-                            image:
-                                NetworkImage(trade.imageUrlList[index]));
+                            image: NetworkImage(trade.imageUrlList[index]));
                       }),
                 ),
                 Container(height: 1, color: Colors.black26),
@@ -273,9 +272,9 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                   Row(
                                     children: [
                                       const SizedBox(width: 10),
-                                      const CircleAvatar(
+                                      CircleAvatar(
                                         backgroundImage: AssetImage(
-                                            'assets/images/flag/AUD.png'),
+                                            'assets/images/flag/${trade.countryCode == 'KRW' ? 'KRW' : trade.countryCode == 'USD' ? 'USDKRW' : 'USD${trade.countryCode}'}.png'),
                                         radius: 8,
                                       ),
                                       const SizedBox(width: 5),
