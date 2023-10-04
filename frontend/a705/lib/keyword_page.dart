@@ -25,11 +25,11 @@ class KeywordPageState extends State<KeywordPage> {
 
   // 가상의 키워드 데이터 목록
   final List<Keyword> keywords = [
-    Keyword(
-      countryCurrency: '호주(달러) AUD',
-      location: '서울특별시 강서구 화곡동',
-      flagImageUrl: 'assets/images/flag/USDAUD.png',
-    ),
+    // Keyword(
+    //   countryCurrency: '호주(달러) AUD',
+    //   location: '서울특별시 강서구 화곡동',
+    //   flagImageUrl: 'assets/images/flag/AUD.png',
+    // ),
     Keyword(
       countryCurrency: '호주(달러) AUD',
       location: '서울특별시 강서구 화곡동',
@@ -81,6 +81,7 @@ class KeywordPageState extends State<KeywordPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
           leading: IconButton(

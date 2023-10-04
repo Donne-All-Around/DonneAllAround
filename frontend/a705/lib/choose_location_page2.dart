@@ -1,20 +1,21 @@
 import 'dart:async';
+import 'package:a705/models/address.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class ChooseLocationPage extends StatefulWidget {
+class ChooseLocationPage2 extends StatefulWidget {
   final double lat;
   final double lng;
 
-  const ChooseLocationPage(this.lat, this.lng, {super.key});
+  const ChooseLocationPage2(this.lat, this.lng, {super.key});
 
   @override
-  State<ChooseLocationPage> createState() => _ChooseLocationPageState();
+  State<ChooseLocationPage2> createState() => _ChooseLocationPage2State();
 }
 
-class _ChooseLocationPageState extends State<ChooseLocationPage> {
+class _ChooseLocationPage2State extends State<ChooseLocationPage2> {
   late LatLng currentPosition = LatLng(widget.lat, widget.lng);
 
   final Completer<GoogleMapController> _controller = Completer();
@@ -32,7 +33,8 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
     LatLngBounds visibleRegion = await controller.getVisibleRegion();
     LatLng centerLatLng = LatLng(
       (visibleRegion.northeast.latitude + visibleRegion.southwest.latitude) / 2,
-      (visibleRegion.northeast.longitude + visibleRegion.southwest.longitude) / 2,
+      (visibleRegion.northeast.longitude + visibleRegion.southwest.longitude) /
+          2,
     );
 
     return centerLatLng;
@@ -44,28 +46,20 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
   final myController = TextEditingController();
 
   String addr = "";
-  String _text = "";
-
-  @override
-  void initState() {
-    super.initState();
-    _getUserLocation();
-  }
+  Address address = Address(
+      country: null,
+      administrativeArea: null,
+      subAdministrativeArea: null,
+      locality: null,
+      subLocality: null,
+      thoroughfare: null,
+      latitude: 0,
+      longitude: 0);
 
   @override
   void dispose() {
     myController.dispose();
     super.dispose();
-  }
-
-  void _getUserLocation() async {
-    var position = await GeolocatorPlatform.instance.getCurrentPosition(
-        locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.bestForNavigation));
-
-    setState(() {
-      currentPosition = LatLng(position.latitude, position.longitude);
-    });
   }
 
   @override
@@ -103,91 +97,9 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      builder: (BuildContext context) {
-                        return Container(
-                            height: MediaQuery.of(context).size.height / 5 * 4,
-                            color: Colors.transparent,
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.fromLTRB(30, 20, 30, 20),
-                              height:
-                                  MediaQuery.of(context).size.height / 5 * 4,
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    children: [
-                                      const SizedBox(height: 10),
-                                      const Text(
-                                        '상세 주소 입력',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      TextField(
-                                        controller: myController,
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: Colors.white,
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            borderSide: const BorderSide(
-                                                color: Colors.black87),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            borderSide: const BorderSide(
-                                                color: Colors.black87),
-                                          ),
-                                        ),
-                                        cursorColor: Colors.black87,
-                                        onChanged: (text) {
-                                          _text = text;
-                                        },
-                                      ),
-                                      const SizedBox(height: 20),
-                                      GestureDetector(
-                                        onTap: () {
-                                          addr += " ";
-                                          addr += _text;
-                                          Navigator.pop(context, addr);
-                                          Navigator.pop(context, addr);
-                                        },
-                                        child: Container(
-                                          height: 50,
-                                          width: double.infinity,
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(10),
-                                            ),
-                                            color: Color(0xFFFFD954),
-                                          ),
-                                          child: const Center(
-                                              child: Text(
-                                            '거래 장소 등록',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold),
-                                          )),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ));
-                      });
-                  // Navigator.pop(context, addr);
+                  if (addr.isNotEmpty) {
+                    Navigator.pop(context, address);
+                  }
                 },
               ),
             ],
@@ -198,7 +110,6 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
               padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
               child: Column(
                 children: [
-                  const SizedBox(height: 40),
                   const Text(
                     '거래하실 장소를 선택해 주세요.',
                     style: TextStyle(
@@ -295,9 +206,11 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
                 onTap: () async {
                   LatLng _currentCenter = await getCenter();
                   List<Placemark> placemark = await placemarkFromCoordinates(
-                      _currentCenter.latitude, _currentCenter.longitude);
+                      _currentCenter.latitude, _currentCenter.longitude,
+                      localeIdentifier: "ko");
 
-
+                  String addressssss =
+                      '${placemark.first.thoroughfare!.isNotEmpty ? '${placemark.first.thoroughfare}, ' : ''}${placemark.first.subLocality!.isNotEmpty ? '${placemark.first.subLocality}, ' : ''}${placemark.first.locality!.isNotEmpty ? '${placemark.first.locality}, ' : ''}${placemark.first.subAdministrativeArea!.isNotEmpty ? '${placemark.first.subAdministrativeArea}, ' : ''}${placemark.first.administrativeArea!.isNotEmpty ? placemark.first.administrativeArea : ''}';
 
                   // print('country: ${placemark.reversed.last.country}');
                   // print('locality: ${placemark.reversed.last.locality}');
@@ -313,12 +226,26 @@ class _ChooseLocationPageState extends State<ChooseLocationPage> {
                   //     'subAdministrativeArea: ${placemark.reversed.last.subAdministrativeArea}');
                   // print(
                   //     'subThoroughfare: ${placemark.reversed.last.subThoroughfare}');
-                  // print('thoroughfare: ${placemark.reversed.last.thoroughfare}');
+                  // print(
+                  //     'thoroughfare: ${placemark.reversed.last.thoroughfare}');
                   // print('hashCode: ${placemark.reversed.last.hashCode}');
 
                   setState(() {
-                    addr =
-                        "${placemark.reversed.last.subLocality} ${placemark.reversed.last.thoroughfare}";
+                    address = Address(
+                        country: placemark.reversed.last.country!,
+                        administrativeArea:
+                            placemark.reversed.last.administrativeArea!,
+                        subAdministrativeArea:
+                            placemark.reversed.last.subAdministrativeArea!,
+                        locality: placemark.reversed.last.locality!,
+                        subLocality: placemark.reversed.last.subLocality!,
+                        thoroughfare: placemark.reversed.last.thoroughfare!,
+                        latitude: _currentCenter.latitude,
+                        longitude: _currentCenter.longitude);
+
+                    addr = addressssss;
+                    // addr =
+                    //     "${placemark.reversed.last.subLocality} ${placemark.reversed.last.thoroughfare}";
                   });
                 },
                 child: Container(
