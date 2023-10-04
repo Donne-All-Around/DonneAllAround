@@ -5,7 +5,9 @@ import 'package:a705/notification_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'choose_location_page2.dart';
 import 'models/TradeDto.dart';
+import 'models/address.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -26,27 +28,9 @@ class _HomePageState extends State<HomePage> {
 
   Future initTrade() async {
     trade = await tradeProvider.getLatestTrade(
-        currency[_idx], 6, "KOREA", "SEOUL", "KANGNAM", "YEOKSAM");
+        currency[_idx], null, null, null, null, null, null, null);
     size = trade.length;
-    print("size: $size");
-    setState(() {
-
-    });
-  }
-
-  Future getLatestTrade() async {
-    trade = await tradeProvider.getLatestTrade(
-        currency[_idx], 6, "KOREA", "SEOUL", "GANGNAM", "YEOKSAM");
-  }
-
-  Future getLowestTrade() async {
-    trade = await tradeProvider.getLowestTrade(
-        currency[_idx], 6, "KOREA", "SEOUL", "GANGNAM", "YEOKSAM");
-  }
-
-  Future getLowestRateTrade() async {
-    trade = await tradeProvider.getLowestRateTrade(
-        currency[_idx], 6, "KOREA", "SEOUL", "GANGNAM", "YEOKSAM");
+    setState(() {});
   }
 
 
@@ -55,6 +39,17 @@ class _HomePageState extends State<HomePage> {
     initTrade();
     super.initState();
   }
+
+  String _addr = "강남구 역삼동";
+  Address _address = Address(
+      country: null,
+      administrativeArea: null,
+      subAdministrativeArea: null,
+      locality: null,
+      subLocality: null,
+      thoroughfare: null,
+      latitude: 37.5013068,
+      longitude: 127.0396597,);
 
   @override
   Widget build(BuildContext context) {
@@ -68,108 +63,27 @@ class _HomePageState extends State<HomePage> {
             children: [
               const SizedBox(width: 15),
               GestureDetector(
-                onTap: () {
-                  showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      builder: (BuildContext context) {
-                        return Container(
-                            height: MediaQuery.of(context).size.height / 5 * 4,
-                            color: Colors.transparent,
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.fromLTRB(30, 20, 30, 20),
-                              height:
-                                  MediaQuery.of(context).size.height / 5 * 4,
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    children: [
-                                      const SizedBox(height: 10),
-                                      const Text(
-                                        '지역 검색',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      TextField(
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: Colors.white,
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            borderSide: const BorderSide(
-                                                color: Colors.black87),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            borderSide: const BorderSide(
-                                                color: Colors.black87),
-                                          ),
-                                        ),
-                                        cursorColor: Colors.black87,
-                                      ),
-                                      const SizedBox(height: 20),
-                                      const Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '\'역삼동\' 검색 결과',
-                                            style: TextStyle(fontSize: 17),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Container(
-                                          height: 1, color: Colors.black38),
-                                      const SizedBox(height: 10),
-                                    ],
-                                  ),
-                                  Column(
-                                    children: [
-                                      Container(
-                                        height: 50,
-                                        width: double.infinity,
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10),
-                                          ),
-                                          color: Color(0xFFFFD954),
-                                        ),
-                                        child: const Center(
-                                            child: Text(
-                                          '현재 위치로 찾기',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
-                                        )),
-                                      ),
-                                      const SizedBox(height: 10),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ));
-                      });
+                onTap: () async {
+                  Address address = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ChooseLocationPage2(
+                              37.5013068, 127.0396597)));
+                  setState(() {
+                    _addr = "${address.subLocality} ${address.thoroughfare}";
+                    _address = address;
+                  });
                 },
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
-                  child: const Row(
+                  child: Row(
                     children: [
                       Text(
-                        '역삼동',
-                        style: TextStyle(color: Colors.black, fontSize: 17),
+                        _addr,
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 17),
                       ),
-                      Icon(
+                      const Icon(
                         Icons.keyboard_arrow_down_rounded,
                         color: Colors.black,
                       )
@@ -215,7 +129,6 @@ class _HomePageState extends State<HomePage> {
                   setState(() {
                     _idx = idx;
                   });
-
                 },
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -425,19 +338,40 @@ class _HomePageState extends State<HomePage> {
                           setState(() {
                             _selectedValue = value!;
                           });
-                          if(value == "최신순") {
-                            // trade = await tradeProvider.getLatestTrade(currency[_idx], 0, "", "", "", "");
-                            trade = await tradeProvider.getLatestTrade(currency[_idx], 6, "KOREA", "SEOUL", "KANGNAM", "YEOKSAM");
+                          if (value == "최신순") {
+                            trade = await tradeProvider.getLatestTrade(
+                                currency[_idx],
+                                null,
+                                _address.country,
+                                _address.administrativeArea,
+                                _address.subAdministrativeArea,
+                                _address.locality,
+                                _address.subLocality,
+                                _address.thoroughfare);
                             setState(() {});
                           }
-                          if(value == "낮은 가격순") {
-                            // trade = await tradeProvider.getLowestTrade(currency[_idx], 0, "", "", "", "");
-                            trade = await tradeProvider.getLowestTrade(currency[_idx], 6, "KOREA", "SEOUL", "KANGNAM", "YEOKSAM");
+                          else if (value == "낮은 가격순") {
+                            trade = await tradeProvider.getLowestTrade(
+                                currency[_idx],
+                                null,
+                                _address.country,
+                                _address.administrativeArea,
+                                _address.subAdministrativeArea,
+                                _address.locality,
+                                _address.subLocality,
+                                _address.thoroughfare);
                             setState(() {});
                           }
-                          if(value == "단위 당 낮은 가격순") {
-                            // trade = await tradeProvider.getLowestRateTrade(currency[_idx], 0, "", "", "", "");
-                            trade = await tradeProvider.getLowestRateTrade(currency[_idx], 6, "KOREA", "SEOUL", "KANGNAM", "YEOKSAM");
+                          else {
+                            trade = await tradeProvider.getLowestRateTrade(
+                                currency[_idx],
+                                null,
+                                _address.country,
+                                _address.administrativeArea,
+                                _address.subAdministrativeArea,
+                                _address.locality,
+                                _address.subLocality,
+                                _address.thoroughfare);
                             setState(() {});
                           }
                         },
@@ -491,11 +425,13 @@ class _HomePageState extends State<HomePage> {
                                         child: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(15),
-                                            child: const Image(
+                                            child: Image(
                                               height: 60,
-                                              image: AssetImage(
-                                                "assets/images/ausdollar.jpg",
-                                              ),
+                                              image: 
+                                                  NetworkImage(trade[index].thumbnailImageUrl),
+                                              // AssetImage(
+                                              //   "assets/images/ausdollar.jpg",
+                                              // ),
                                               fit: BoxFit.cover,
                                             )),
                                       ),
@@ -517,7 +453,7 @@ class _HomePageState extends State<HomePage> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    '${trade[index].preferredTradeDistrict} ${trade[index].preferredTradeTown}',
+                                                    '${trade[index].subLocality} ${trade[index].thoroughfare}',
                                                     style: const TextStyle(
                                                         color: Colors.black54),
                                                   ),
@@ -561,16 +497,25 @@ class _HomePageState extends State<HomePage> {
                                                     padding: const EdgeInsets
                                                         .fromLTRB(3, 2, 3, 2),
                                                     decoration: BoxDecoration(
-                                                      color: const Color(
-                                                          0xFFFFD954),
+                                                      color: trade[index]
+                                                                  .status ==
+                                                              "PROGRESS"
+                                                          ? const Color(
+                                                              0xFFFFD954)
+                                                          : Colors.transparent,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               5),
                                                     ),
                                                     child: Text(
-                                                        trade[index].status),
+                                                        trade[index].status ==
+                                                                "PROGRESS"
+                                                            ? "예약 중"
+                                                            : " "),
                                                   ),
                                                   Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
                                                     children: [
                                                       Text(
                                                         '${trade[index].koreanWonAmount}원',
@@ -587,17 +532,12 @@ class _HomePageState extends State<HomePage> {
                                                         children: [
                                                           const Icon(
                                                               Icons
-                                                                  .people_outline_rounded,
-                                                              size: 17),
-                                                          const SizedBox(width: 2),
-                                                          const Text("3"),
-                                                          const SizedBox(width: 3),
-                                                          const Icon(
-                                                              Icons
                                                                   .favorite_border_rounded,
                                                               size: 17),
-                                                          const SizedBox(width: 2),
-                                                          Text("${trade[index].tradeLikeCount}"),
+                                                          const SizedBox(
+                                                              width: 2),
+                                                          Text(
+                                                              "${trade[index].tradeLikeCount}"),
                                                         ],
                                                       ),
                                                     ],
