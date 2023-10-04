@@ -50,6 +50,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
 
 
  Map<String, double>? exchangeRates; // 환율 데이터를 저장할 변수
+
   @override
   void initState() {
     super.initState();
@@ -113,28 +114,18 @@ class _BankDetailPageState extends State<BankDetailPage> {
   }
 
 
+  double? calculateUsd(String targetCurrency) {
+    if (exchangeRates != null && exchangeRates!.containsKey(targetCurrency)) {
+      return exchangeRates![targetCurrency];
+    }
+    return null;
+  }
+
   void calculateExchangeRate(int baseIdx, int targetIdx) {
     double? rate;
     String base;
     String target;
-    // 기준 통화와 대상 통화를 가져옵니다.
-    // String baseCurrency = currency1[baseIdx-1];
-    // String targetCurrency = currency1[targetIdx-1];
 
-    // 기준 통화와 대상 통화가 같은 경우, 환율은 1.0입니다.
-    // if (baseCurrency == targetCurrency) {
-    //   rate = 1.0;
-    // } else {
-    //   // 환율을 계산합니다.
-    //   rate = calculateRate(targetCurrency, baseCurrency);
-    // }
-
-    double? calculateUsd(String targetCurrency) {
-      if (exchangeRates != null && exchangeRates!.containsKey(targetCurrency)) {
-        return exchangeRates![targetCurrency];
-      }
-      return null;
-    }
 
     if (currency[baseIdx] != 'USD') {
       base = currency1[targetIdx - 1];
@@ -220,7 +211,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
   // 텍스트 필드 컨트롤러
   final TextEditingController _moneyController1 = TextEditingController(text: "1 ");
   final TextEditingController _moneyController2 = TextEditingController(text: "1,300.00 ");
-  final TextEditingController _percentController = TextEditingController(text: "30");
+  final TextEditingController _percentController = TextEditingController(text: "우대율");
 
 
 
@@ -742,7 +733,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
                                   padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
                                   onPressed: (){
                                     setState(() {
-                                      // calculateExchangeRate( idx, idx2);
+                                      calculateExchangeRate(_idx, _idx2);
                                     });
                                   },
                                   icon: const Icon(Icons.drag_handle_rounded),
@@ -784,19 +775,20 @@ class ListViewBuilder extends StatefulWidget {
 class _ListViewBuilderState extends State<ListViewBuilder> {
   Map<String, double> exchangeRates = {};
 
-  double? calculateRate(String baseCurrency, String targetCurrency) {
-    if (exchangeRates.containsKey(baseCurrency) &&
-        exchangeRates.containsKey(targetCurrency)) {
-      final baseRate = exchangeRates[baseCurrency];
-      final targetRate = exchangeRates[targetCurrency];
 
-      if (baseRate != null && targetRate != null) {
-        if (baseCurrency == 'USDKRW' && targetCurrency == 'USDJPY') {
-          return baseRate / targetRate;
-        } else {
-          return baseRate / targetRate;
-        }
+  double? calculateRate(String baseCurrency, String targetCurrency) {
+    if (exchangeRates != null &&
+        exchangeRates!.containsKey(baseCurrency) &&
+        exchangeRates!.containsKey(targetCurrency)) {
+      final baseRate = exchangeRates![baseCurrency];
+      final targetRate = exchangeRates![targetCurrency];
+
+      if (baseCurrency == 'USDKRW' && targetCurrency == 'USDJPY') {
+        return baseRate! / targetRate! ;
+      }  else {
+        return baseRate! / targetRate!;
       }
+
     }
     return null;
   }
