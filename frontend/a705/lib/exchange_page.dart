@@ -16,6 +16,7 @@ class ExchangePage extends StatefulWidget {
 }
 
 class _ExchangePageState extends State<ExchangePage> {
+
   final _valueList1 = [
     '미국(달러) USD',
     '일본(엔) JPY',
@@ -1310,8 +1311,10 @@ class _ExchangePageState extends State<ExchangePage> {
                   if (_iscalculate)
                     BankViewBuilder(
                       key: UniqueKey(),
-                      idx1 : idx1,
-                    ),
+                      idx1: idx1,
+                      // exchangeRates: exchangeRates,
+                      moneyController2: double.tryParse(_moneyController2.text) ?? 0.0,
+                    )
                   ],
               ),
           ),
@@ -1435,15 +1438,28 @@ class _ExchangePageState extends State<ExchangePage> {
 
 class BankViewBuilder extends StatefulWidget {
   final int idx1;
-  const BankViewBuilder({Key? key, required this.idx1}) : super(key: key);
+  // Map<String, double>? exchangeRates;
+  // TextEditingController moneyController2 = TextEditingController();
+  final double moneyController2;
+  BankViewBuilder({
+    Key? key,
+    required this.idx1,
+    // required this.exchangeRates,
+    required this.moneyController2,
+  }) : super(key: key);
 
   @override
-  State<BankViewBuilder> createState() =>_BankViewBuilderState(idx1: idx1);
+  State<BankViewBuilder> createState() => _BankViewBuilderState(idx1: idx1, moneyController2: moneyController2);
 }
+
 
 class _BankViewBuilderState extends State<BankViewBuilder> {
   final int idx1; // idx1 값을 저장할 변수 추가
-  _BankViewBuilderState({required this.idx1});
+  final double moneyController2;
+  _BankViewBuilderState({
+    required this.idx1,
+    required this.moneyController2, // moneyController2 추가
+  });
 
 
   final _valueList1 = [
@@ -1495,12 +1511,31 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
     'DGB대구은행': {'currencyName': 'DGB대구은행', 'bankCode': '031'},
   };
 
+
+  double calculateCashBuyingPrice(double baseRate, String? buyingFee) { // 송금 보낼 때, 현찰 살 때,
+    if (buyingFee == null || buyingFee == "서비스 미제공") {
+      return baseRate; // 서비스 미제공일 경우 기본값 반환
+    } else {
+      double feePercentage = double.tryParse(buyingFee.replaceAll('%', '')) ?? 0.0;
+      return baseRate + (baseRate * feePercentage / 100);
+    }
+  }
+
+  double calculateCashPrice(double baseRate, String? sellginFee) {  // 현찰 팔 때,
+    if (sellginFee == null || sellginFee == "서비스 미제공") {
+      return baseRate; // 서비스 미제공일 경우 기본값 반환
+    } else {
+      double feePercentage = double.tryParse(sellginFee.replaceAll('%', '')) ?? 0.0;
+      return baseRate - (baseRate * feePercentage / 100);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (idx1 == 0) {
       _selectedIdx = 0;
     } else if (idx1 >= 2) {
-      _selectedIdx = idx1 - 1;
+      _selectedIdx = idx1;
     } else if (idx1 == 1) {
       _selectedIdx = 1;
     }
@@ -1604,7 +1639,7 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                           ),
                           Row(
                             children: [
-                              const Column(
+                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
@@ -1615,21 +1650,21 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
-                                        '1,354.29원',
+                                        '${calculateCashBuyingPrice(widget.moneyController2 as double, feeInfo?.buying.toString() ?? "서비스 미제공").toStringAsFixed(2)}원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '1,354.29원',
-                                        style: TextStyle(
+                                        '${calculateCashPrice(widget.moneyController2 as double, feeInfo?.selling.toString() ?? "서비스 미제공").toStringAsFixed(2)}원',
+                                        style:TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '1,354.29원',
+                                        '${calculateCashBuyingPrice(widget.moneyController2 as double, feeInfo?.sending.toString() ?? "서비스 미제공").toStringAsFixed(2)}원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
