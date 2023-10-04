@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'exchange_record_page.dart';
+import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -13,28 +15,25 @@ class ExchangeRecordCreatePage extends StatefulWidget {
 
 class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
 
-  // API 엔드포인트 URL
-  final String apiUrl = 'http://SERVER_URL/api/exchange/record';
-
-  // 사용자의 memberId
-  final String memberId = 'your_member_id';
-
   // POST 요청을 보낼 함수
-  Future<void> sendExchangeRecord() async {
+  Future<void> sendExchangeRecord(String tradingBaseRate, countryCode, bankCode) async {
     try {
       // POST 요청으로 보낼 데이터
+      const memberId = '1';
+
       final Map<String, dynamic> data = {
         'exchangeDate': selectedDate.toIso8601String(), // 환전 일시
         'countryCode': currency[idx], // 화폐 종류 코드
         'foreignCurrencyAmount': int.parse(_currencyController.text), // 화폐 종류에 해당하는 금액
         'koreanWonAmount': int.parse(_priceController.text), // 가격
-        'bankCode': _selectedBank, // 은행 코드
-        'preferentialRate': int.parse(_discountController.text), // 우대율
+        'bankCode': bankCode, // 은행 코드
+        'preferentialRate': int.parse(_discountController.text),
+        'tradingBaseRate': tradingBaseRate,
       };
 
       // POST 요청 보내기
       final response = await http.post(
-        Uri.parse('$apiUrl?memberId=$memberId'),
+        Uri.parse('https://j9a705.p.ssafy.io/api/exchange/record/create?memberId=$memberId'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -57,12 +56,19 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
   final _valueList = [
     '미국(달러) USD',
     '일본(엔) JPY',
+    '중국(위안) CNY',
     '유럽(유로) EUR',
     '영국(파운드) GBP',
     '호주(달러) AUD',
-    '중국(위안) CNY',
+    '캐나다(달러) CAD',
+    '홍콩(달러) HKD',
+    '필리핀(페소) PHP',
     '베트남(동) VND',
-    '홍콩(달러) HKD'
+    '대만(달러) TWD',
+    '싱가폴(달러) SGD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '러시아(루블) RUB',
   ];
   var _selectedValue = '미국(달러) USD';
   int idx = 0;
@@ -70,14 +76,21 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
   List<String> currency = [
     'USD',
     'JPY',
+    'CNY',
     'EUR',
     'GBP',
     'AUD',
-    'CNY',
+    'CAD',
+    'HKD',
+    'PHP',
     'VND',
-    'HKD'
+    'TWD',
+    'SGD',
+    'CZK',
+    'NZD',
+    'RUB',
   ];
-  List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫', '\$'];
+  List<String> sign = ['\$',  '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
 
   final _bankList1 = [
     '하나은행',
@@ -85,17 +98,29 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
     'KB국민은행',
     '신한은행',
     'NH농협은행',
-    '기업은행',
+    'IBK기업은행',
     'SC제일은행',
     '시티은행',
-    '수협은행',
+    'Sh수협은행',
     '부산은행',
-    '대구은행',
-    '전북은행',
-    '경남은행',
-    '제주은행',
+    'DGB대구은행',
   ];
   var _selectedBank = '신한은행';
+
+  final Map<String, Map<String, String>> bankInfo = {
+    '하나은행': {'currencyName': '하나은행', 'bankCode': '081'},
+    '우리은행': {'currencyName': '우리은행', 'bankCode': '020'},
+    'KB국민은행': {'currencyName': 'KB국민은행', 'bankCode': '004'},
+    '신한은행': {'currencyName': '신한은행', 'bankCode': '088'},
+    'NH농협은행': {'currencyName': 'NH농협은행', 'bankCode': '011'},
+    'IBK기업은행': {'currencyName': 'IBK기업은행', 'bankCode': '003'},
+    'SC제일은행': {'currencyName': 'SC제일은행', 'bankCode': '023'},
+    '시티은행': {'currencyName': '시티은행', 'bankCode': '027'},
+    'Sh수협은행': {'currencyName': 'Sh수협은행', 'bankCode': '007'},
+    '부산은행': {'currencyName': '부산은행', 'bankCode': '032'},
+    'DGB대구은행': {'currencyName': 'DGB대구은행', 'bankCode': '031'},
+  };
+
   DateTime selectedDate = DateTime.now();
 
 
@@ -147,51 +172,38 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
       );
       return;
     }
+
+    // KoreanWonAmount를 double로 변환
+    final koreanWonAmount = double.parse(_priceController.text);
+
+    // tradingBaseRate 계산
+    final tradingBaseRate = koreanWonAmount / double.parse(_currencyController.text);
+
+    // tradingBaseRate를 소수점 둘째 자리까지 반올림하여 문자열로 변환
+    final tradingBaseRateString = NumberFormat('0.00').format(tradingBaseRate);
+
+    final countryCode = _selectedValue.split(' ')[1].toUpperCase();
+
+    // 선택된 은행에 대한 bankCode 찾기
+    final bankCode = bankInfo[_selectedBank]?['bankCode'] ?? '';
+
     // 입력값이 모두 채워져 있다면 작성 완료 처리를 진행
-    sendExchangeRecord();
+    sendExchangeRecord(tradingBaseRateString, countryCode, bankCode);
     final data = {
-      'exchangeDate': '${selectedDate.year}년 ${selectedDate.month}월 ${selectedDate.day}일',
-      'countryCode': _selectedValue,
+      'exchangeDate': '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}',
+      'countryCode': countryCode,
       'foreignCurrencyAmount': _currencyController.text,
       'koreanWonAmount': _priceController.text,
-      'bankCode': _selectedBank,
+      'bankCode': bankCode,
       'preferentialRate': _discountController.text,
+      'tradingBaseRate': tradingBaseRateString,
     };
-
-    _showResultModal(data);
+    Navigator.of(context).pop();
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (BuildContext context) => const ExchangeRecordPage(), // RecordPage로 돌아가도록 수정
+    ));
   }
 
-  // 값이 서버로 잘 전송되나 확인 용, 확인 후 삭제할코드
-  void _showResultModal(Map<String, dynamic> data) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('입력한 데이터'),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('환전 일시: ${data['exchangeDate']}'),
-              Text('화폐 종류: ${data['countryCode']}'),
-              Text('화폐 종류에 해당하는 금액: ${data['foreignCurrencyAmount']}'),
-              Text('가격: ${data['koreanWonAmount']}'),
-              Text('은행 코드: ${data['bankCode']}'),
-              Text('우대율: ${data['preferentialRate']}%'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('확인'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {

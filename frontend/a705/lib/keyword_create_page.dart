@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'keyword_page.dart';
 
+
 class KeywordCreatePage extends StatefulWidget {
   const KeywordCreatePage({super.key});
 
@@ -13,13 +14,19 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
   final _valueList = [
     '미국(달러) USD',
     '일본(엔) JPY',
+    '중국(위안) CNY',
     '유럽(유로) EUR',
     '영국(파운드) GBP',
     '호주(달러) AUD',
-    '중국(위안) CNY',
+    '캐나다(달러) CAD',
+    '홍콩(달러) HKD',
+    '필리핀(페소) PHP',
     '베트남(동) VND',
-    '한국(원) KRW',
-    '홍콩(달러) HKD'
+    '대만(달러) TWD',
+    '싱가폴(달러) SGD',
+    '체코(코루나) CZK',
+    '뉴질랜드(달러) NZD',
+    '러시아(루블) RUB',
   ];
   var _selectedValue = '미국(달러) USD';
   int idx = 0;
@@ -27,13 +34,19 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
   List<String> currency = [
     'USD',
     'JPY',
+    'CNY',
     'EUR',
     'GBP',
     'AUD',
-    'CNY',
+    'CAD',
+    'HKD',
+    'PHP',
     'VND',
-    'KRW',
-    'HKD'
+    'TWD',
+    'SGD',
+    'CZK',
+    'NZD',
+    'RUB',
   ];
 
   final _locationController = TextEditingController();

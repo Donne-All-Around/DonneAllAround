@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'exchange_record_create_page.dart';
+import 'exchange_record_edit_page.dart';
+import 'profile_page.dart';
 import 'package:intl/intl.dart';
-// import 'dart:convert'; // JSON 파싱을 위해 추가
-// import 'package:http/http.dart' as http;
+import 'dart:convert'; // JSON 파싱을 위해 추가
+import 'package:http/http.dart' as http;
 
 
 class ExchangeRecordPage extends StatefulWidget {
@@ -14,7 +16,10 @@ class ExchangeRecordPage extends StatefulWidget {
 
 // 수정, 삭제 모달
 class CustomModalWidget extends StatelessWidget {
-  const CustomModalWidget({super.key});
+  final int exchangeRecordId;
+
+  const CustomModalWidget({Key? key, required this.exchangeRecordId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +50,14 @@ class CustomModalWidget extends StatelessWidget {
             const SizedBox(height: 5),
             InkWell(
               onTap: () {
-                // 수정하기 동작 구현
+                Navigator.of(context).pop(); // 모달 닫기
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ExchangeRecordEditPage(
+                      exchangeRecordId: exchangeRecordId, // exchangeRecordId를 전달
+                    ),
+                  ),
+                );
               },
               child: Container(
                 width: 270,
@@ -67,9 +79,15 @@ class CustomModalWidget extends StatelessWidget {
             ),
             const SizedBox(height: 15),
             InkWell(
-              onTap: () {
-                // 삭제하기 동작 구현
-              },
+                onTap: () async {
+                  await deleteExchangeRecord(exchangeRecordId);
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ExchangeRecordPage(), // RecordPage로 돌아가도록 수정
+                    ),
+                  );
+                },
               child: Container(
                 width: 270,
                 height: 40,
@@ -93,80 +111,116 @@ class CustomModalWidget extends StatelessWidget {
       )
     );
   }
+
+  // 삭제 API 호출 메서드
+  Future<void> deleteExchangeRecord(int exchangeRecordId) async {
+    const memberId = '1'; // memberId 설정
+    final apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/$exchangeRecordId?memberId=$memberId';
+
+    try {
+      final response = await http.delete(
+        Uri.parse(apiUrl),
+        headers: {
+          "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // 삭제 성공
+        print('삭제 성공');
+        // TODO: 필요한 처리를 추가할 수 있음
+      } else {
+        print('서버 오류: ${response.statusCode}');
+        // TODO: 실패 시 처리를 추가할 수 있음
+      }
+    } catch (e) {
+      print('오류: $e');
+      // TODO: 오류 처리를 추가할 수 있음
+    }
+  }
 }
+
+
 
 
 class ExchangeRecordPageState extends State<ExchangeRecordPage> {
 
+  // 서버에서 받아온 데이터를 저장할 리스트 일단 주석처리 나중에 백 연결되면 주석해제
+  List<Map<String, dynamic>> exchangeDataList = [];
 
-  // 임의의 데이터로 초기화한 exchangeDataList
-  List<Map<String, dynamic>> exchangeDataList = [
-    {
-      "id": 1,
-      "countryCode": "USD",
-      "bankCode": "081",
-      "koreanWonAmount": 992147,
-      "foreignCurrencyAmount": 740,
-      "tradingBaseRate": 1331.66,
-      "preferentialRate": 30,
-      "exchangeDate": "2022-09-20",
-    },
-    {
-      "id": 2,
-      "countryCode": "USD",
-      "bankCode": "081",
-      "koreanWonAmount": 992147,
-      "foreignCurrencyAmount": 740,
-      "tradingBaseRate": 1331.66,
-      "preferentialRate": 30,
-      "exchangeDate": "2022-09-21",
-    },
-    {
-      "id": 3,
-      "countryCode": "USD",
-      "bankCode": "081",
-      "koreanWonAmount": 992147,
-      "foreignCurrencyAmount": 740,
-      "tradingBaseRate": 1331.66,
-      "preferentialRate": 30,
-      "exchangeDate": "2022-08-21",
-    },
-    // 다른 임의의 데이터도 추가 가능
-  ];
-  // // 서버에서 받아온 데이터를 저장할 리스트 일단 주석처리 나중에 백 연결되면 주석해제
-  // List<Map<String, dynamic>> exchangeDataList = [];
-  //
-  // // 서버로부터 데이터를 가져오는 메서드
-  // Future<void> fetchExchangeData() async {
-  //   final apiUrl = 'http://SERVER_URL/api/exchange/records'; // 서버 URL로 변경
-  //
-  //   try {
-  //     final response = await http.get(Uri.parse(apiUrl));
-  //     if (response.statusCode == 200) {
-  //       // 서버 응답이 성공인 경우 JSON 데이터 파싱
-  //       final List<dynamic> jsonData = json.decode(response.body);
-  //       // JSON 데이터를 리스트에 저장
-  //       setState(() {
-  //         exchangeDataList = jsonData.cast<Map<String, dynamic>>();
-  //       });
-  //     } else {
-  //       // 서버 응답이 실패인 경우 예외 처리
-  //       print('서버 오류: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     // 오류 발생 시 예외 처리
-  //     print('오류: $e');
-  //   }
-  // }
-  //
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // 페이지가 로드될 때 서버로부터 데이터를 가져오도록 초기화 메서드 호출
-  //   fetchExchangeData();
-  // }
+  // 서버로부터 데이터를 가져오는 메서드
+  Future<void> fetchExchangeData() async {
+    const memberId = '1';
+    const apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list?memberId=$memberId';
+
+    try {
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
+        },
+      );
+      String responseBody = utf8.decode(response.bodyBytes);
+      final jsonString = response.body;
+      final decodedString = utf8.decode(jsonString.codeUnits);
+      final jsonResponse = json.decode(decodedString);
+
+      if (response.statusCode == 200) {
+        // 서버 응답이 성공인 경우 JSON 데이터 파싱
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        final List<dynamic> jsonData = jsonResponse['data']['exchangeRecordList']; // 주의: 'exchangeRecordList'의 오타 수정
+
+
+        if (jsonData != null) {
+          setState(() {
+            exchangeDataList = List<Map<String, dynamic>>.from(jsonData.map((data) {
+              // 은행 코드를 currencyName으로 변환하여 추가
+              final bankCode = data['bankCode'] as String;
+              final currencyName = getCurrencyName(bankCode);
+              data['currencyName'] = currencyName;
+              return data;
+            }));
+          });
+        } else {
+          print('서버 응답 데이터가 없습니다.');
+        }
+      } else {
+        print('서버 오류: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('오류: $e');
+    }
+  }
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    // 페이지가 로드될 때 서버로부터 데이터를 가져오도록 초기화 메서드 호출
+    fetchExchangeData();
+  }
 
   String? previousDate2;
+
+  String getCurrencyName(String bankCode) {
+    final bankInfo = {
+      '081': '하나은행',
+      '020': '우리은행',
+      '004': 'KB국민은행',
+      '088': '신한은행',
+      '011': 'NH농협은행',
+      '003': 'IBK기업은행',
+      '023': 'SC제일은행',
+      '027': '시티은행',
+      '007': 'Sh수협은행',
+      '032': '부산은행',
+      '031': 'DGB대구은행',
+    };
+
+    return bankInfo[bankCode] ?? ''; // 해당하는 은행 코드를 찾아 반환하거나 기본값으로 빈 문자열 반환
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -259,10 +313,11 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                     color: Colors.black,
                                   ),
                                   onPressed: () {
+                                    final exchangeRecordId = exchangeDataList[index]['id'] as int;
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return const CustomModalWidget();
+                                        return CustomModalWidget(exchangeRecordId: exchangeRecordId);
                                       }
                                     );
                                   }
@@ -291,7 +346,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          '신한은행',
+                                          exchangeData['currencyName'],
                                           style: TextStyle(
                                             fontSize: 17,
                                           )
@@ -321,7 +376,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                             )
                                           ),
                                           Text(
-                                            ' USD',
+                                            ' ${exchangeData['countryCode']}',
                                             style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold,
@@ -329,14 +384,11 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                             )
                                           ),
                                           SizedBox(width: 10),
-                                          Container(
-                                            width: 30,
-                                            height: 30,
-                                            decoration: const BoxDecoration(
-                                              color: Color(0xFF0984E3),
-                                              shape: BoxShape.circle,
-                                            )
-                                          )
+                                          CircleAvatar(
+                                            backgroundImage:
+                                            AssetImage('assets/images/flag/${exchangeData['countryCode']}.png'),
+                                            radius: 16,
+                                          ),
                                         ]
                                     ),
                                     const SizedBox(height: 6),
