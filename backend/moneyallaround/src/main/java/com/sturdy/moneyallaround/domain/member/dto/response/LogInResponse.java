@@ -18,4 +18,6 @@ public record LogInResponse(
 		// 멤버 정보와 토큰 정보를 사용하여 LogInResponse 객체 생성 후 반환
 		return new LogInResponse(tokenInfo);
 	}
+
+
 }

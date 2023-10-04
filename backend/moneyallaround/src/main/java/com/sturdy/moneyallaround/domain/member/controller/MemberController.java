@@ -1,6 +1,7 @@
 package com.sturdy.moneyallaround.domain.member.controller;
 
 import com.sturdy.moneyallaround.common.ApiResponse;
+import com.sturdy.moneyallaround.config.security.jwt.JwtAuthenticationFilter;
 import com.sturdy.moneyallaround.config.security.jwt.JwtTokenProvider;
 import com.sturdy.moneyallaround.config.security.jwt.TokenInfo;
 import com.sturdy.moneyallaround.domain.member.dto.request.*;
@@ -17,10 +18,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Slf4j
 @Tag(name = "Member API")
@@ -31,22 +35,26 @@ public class MemberController {
     private final MemberService memberService;
     private final RefreshTokenService refreshTokenService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-
-    @PostMapping("/api/member/verifyFirebaseToken") // 파이어베이스 검증
+    //// 파이어베이스 검증
+    @PostMapping("/verifyFirebaseToken")
     public ResponseEntity<ApiResponse> login(@RequestBody LogInRequest request, TokenRequest tokenRequest) {
+        log.info("들어왔니?");
         // SMS 인증 후 Firebase 토큰을 받아온다. (프론트엔드 코드에서 구현)
         String firebaseToken = tokenRequest.firebaseToken();
 
         // Firebase 토큰을 검증하고, 유효한 사용자인지 확인한다.
-        if (!jwtTokenProvider.isValidFirebaseToken(firebaseToken)) {
+        if (!jwtAuthenticationFilter.isValidFirebaseToken(firebaseToken)) {
             return ResponseEntity.badRequest().body(ApiResponse.error("Firebase 토큰 검증 실패"));
         }
+
         // Firebase 토큰이 유효하면, 해당 사용자를 데이터베이스에서 찾아온다.
         Member member = memberService.findByTel(request.tel());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(request.tel(), null);
 
         // 사용자 정보로 JWT 토큰을 생성한다.
-        TokenInfo tokenInfo = jwtTokenProvider.generateToken(request.tel(), firebaseToken, null);
+        TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
 
         // JWT 토큰을 응답으로 반환한다.
         return ResponseEntity.ok(ApiResponse.success(tokenInfo));
@@ -61,7 +69,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
     })
 
-    @PostMapping("/api/member/login") // 로그인 엔드포인트
+    @PostMapping("/login") // 로그인 엔드포인트
     public ResponseEntity<ApiResponse> login(@RequestBody LogInRequest request) {
         LogInResponse logInResponse = memberService.logIn(request);
         return ResponseEntity.ok(ApiResponse.success(logInResponse));
@@ -76,7 +84,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
     })
 
-    @PostMapping("/api/member/check/nickname")
+    @PostMapping("/check/nickname")
     public ApiResponse checkNickname(@RequestBody CheckNicknameRequest request){
         log.info("닉네임 전송 시작");
         return ApiResponse.success(memberService.checkNickname(request));
@@ -91,7 +99,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
     })
 
-    @PostMapping("/api/member/check/tel")
+    @PostMapping("/check/tel")
     public ApiResponse checkTel(@RequestBody CheckTelnumberRequest request ){
         log.info("전화번호 전송 시작");
         return ApiResponse.success(memberService.checkTel(request));
@@ -122,7 +130,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "사용자 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @PostMapping("/api/member/logout")
+    @PostMapping("/logout")
     public ApiResponse logout (@RequestBody LogoutRequest reqeust){
         log.info("로그아웃 시작");
         log.info("refreshToken={}", reqeust.refreshToken());
@@ -139,14 +147,20 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "사용자 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @DeleteMapping("/api/member/delete")
+    @DeleteMapping("/delete")
     public ApiResponse deleteMember (UserDetails principal){
         String memberId =  principal.getUsername();
         return ApiResponse.success(memberService.deleteMember(memberId));
     }
 
+    //멤버 업데이트
+//    @PostMapping("/api/member/edit")
+//    public ApiResponse updateProfile(UpdateProfileRequest request, Long memberId) {
+//
+//    }
 
     //회원 정보 추출
+
 
     // 토큰 재발급 부분
     @Operation(summary = "Token 재발급", description = "만료된 Token을 재발급 한다.")

@@ -21,38 +21,28 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
 
     private static final String[] AUTH_WHITELIST = {
-            "/",
-            "/swagger-resources",
-            "/swagger-resources/**",
-            "/configuration/ui",
-            "/configuration/security",
-            "/swagger-ui.html",
-            "/webjars/**",
-            "/v3/api-docs/**",
-            "/api/public/**",
-            "/api/public/authenticate",
-            "/actuator/*",
-            "/swagger-ui/**",
-            "/api-docs/**",
-            "/swagger*/**",
-            "/swagger-ui/index.html",
-            "/api/solution/detect",
+            "/api/member/check/nickname",
+            "/api/member/check/tel",
+            "/api/member/join",
+            "/api/member/login",
+            "/api/member/verifyFirebaseToken",
+            "/api/member/check/nickname"
     };
 
-    private static final String[] USER_LIST = {
-            "/api/member/login",
-            "/api/member/edit",
-            "/api/member/logout",
-            "/api/member/delete"
-    };
+//    private static final String[] USER_LIST = {
+//            "/api/member/login",
+//            "/api/member/edit",
+//            "/api/member/logout",
+//            "/api/member/delete"
+//    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        log.info("filterchain start!!!");
+        log.info("filter-chain start!!!");
         http
-                .authorizeHttpRequests((requests) -> requests
+                .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .requestMatchers(USER_LIST).hasRole("USER")
+                        //.requestMatchers(USER_LIST).hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
@@ -65,9 +55,5 @@ public class SecurityConfig {
         return (web) -> web.ignoring().requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/api-docs/json/**");
     }
 
-//    @Bean
-//    public BCryptPasswordEncoder bCryptPasswordEncoder(){
-//        return new BCryptPasswordEncoder();
-//    }
 
 }

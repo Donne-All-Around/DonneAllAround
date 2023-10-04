@@ -12,6 +12,7 @@ import com.sturdy.moneyallaround.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,57 +29,52 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
 
-
-    //registMember
+    //회원가입
     @Transactional
-    public LogInResponse registNewMember(SignUpRequest request){
+    public LogInResponse registNewMember(SignUpRequest request) {
         log.info(request.toString());
-        Member member = memberRepository.save(Member.from(request));
 
-        // Firebase 토큰 검증
-        String firebaseToken = request.getFirebaseToken();
-        if (!verifyFirebaseToken(firebaseToken)) {
-            throw new FirebaseTokenValidationException("Firebase 토큰 검증 실패");
+        // 회원가입 시에 해당 전화번호로 사용자가 이미 존재하는지 확인
+        Optional<Member> existingMember = memberRepository.findByTel(request.getTel());
+        if (existingMember.isPresent()) {
+            // 이미 존재하는 사용자인 경우에는 예외를 던져 클라이언트에게 알립니다.
+            throw new UserException(ExceptionMessage.USER_ALREADY_EXISTS);
         }
 
+        // Member 엔티티 생성 및 저장
+        Member member = memberRepository.save(Member.from(request));
+
         // 사용자 정보로 JWT 토큰을 생성하여 자동으로 로그인
-        TokenInfo tokenInfo = jwtTokenProvider.generateToken(member.getTel(), firebaseToken, null);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(request.getTel(), null);
+        TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
 
         // 로그인 응답을 생성하여 반환
-        LogInResponse loginResponse = LogInResponse.from(member, tokenInfo);
+        LogInResponse loginResponse = new LogInResponse(tokenInfo);
 
         return loginResponse;
     }
 
-
-    public boolean verifyFirebaseToken(String firebaseToken) {
-        return jwtTokenProvider.isValidFirebaseToken(firebaseToken);
-    }
-
-
-    // 로그인 로직
+    //로그인
     public LogInResponse logIn(LogInRequest request) {
         String firebaseToken = request.getFirebaseToken();
 
-        // Firebase 토큰을 검증하고, 유효한 사용자인지 확인한다.
-        if (!verifyFirebaseToken(firebaseToken)) {
-            throw new FirebaseTokenValidationException("Firebase 토큰 검증 실패");
-        }
+        // Firebase 토큰은 이미 JwtAuthenticationFilter에서 검증
 
-        // Firebase 토큰이 유효하면, 해당 사용자를 데이터베이스에서 찾아온다.
+        // Firebase 토큰이 유효하면, 해당 사용자를 데이터베이스에서 찾기
         Member member = memberRepository.findByTel(request.getTel())
                 .orElseThrow(() -> new UserException(ExceptionMessage.USER_NOT_FOUND));
 
-        // 사용자 정보로 JWT 토큰을 생성한다.
-        TokenInfo tokenInfo = jwtTokenProvider.generateToken(request.getTel(), firebaseToken, null);
+        // 사용자 정보로 JWT 토큰을 생성
+        // 사용자 이름과 비밀번호가 없는 UsernamePasswordAuthenticationToken 생성
+        Authentication authentication = new UsernamePasswordAuthenticationToken(null, null);
 
         // 로그인 응답을 생성하여 반환한다.
-        return LogInResponse.from(member, tokenInfo);
+        return LogInResponse.from(member, TokenInfo.builder().build());
     }
+
 
     //멤버 업데이트
     @Transactional
@@ -103,6 +99,7 @@ public class MemberService implements UserDetailsService {
 
         return "SUCCESS";
     }
+
 
     @Transactional
     public ReIssueResponse getAuthorize(String accessToken){

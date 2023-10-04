@@ -16,4 +16,8 @@ public record SignUpRequest(
 	public String getFirebaseToken() {
 		return firebaseToken;
 	}
+
+    public String getTel() {
+		return tel;
+    }
 }

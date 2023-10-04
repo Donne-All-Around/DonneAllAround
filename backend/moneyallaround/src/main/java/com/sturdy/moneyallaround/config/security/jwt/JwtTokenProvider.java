@@ -7,6 +7,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
+import com.google.rpc.context.AttributeContext;
 import com.sturdy.moneyallaround.Exception.message.ExceptionMessage;
 import com.sturdy.moneyallaround.Exception.model.FirebaseTokenValidationException;
 import com.sturdy.moneyallaround.Exception.model.TokenCheckFailException;
@@ -75,26 +76,6 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    //파이어베이스 토큰 유효성 검증
-    public boolean isValidFirebaseToken(String firebaseToken) {
-        try {
-            // Firebase Admin SDK 초기화
-            FileInputStream serviceAccount = new FileInputStream("donnearound-firebase-adminsdk.json"); // Firebase Admin SDK 설정 파일 경로
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .build();
-            FirebaseApp.initializeApp(options);
-
-            // Firebase 토큰 검증
-            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseToken);
-
-            // 검증에 성공하면 true 반환
-            return decodedToken != null;
-        } catch (Exception e) {
-            // 검증에 실패하면 false 반환
-            return false;
-        }
-    }
 
     /**
      * AccessToken : 4시간
@@ -103,20 +84,15 @@ public class JwtTokenProvider {
 
     // 유저 전화번호를 가지고 AccessToken, RefreshToken 을 생성하는 메서드
 
-    public TokenInfo generateToken(String phoneNumber, String firebaseToken, Authentication authentication) {
-        // Firebase 토큰 검증
-        if (isValidFirebaseToken(firebaseToken)) {
-            String accessToken = createAccessToken(authentication);
-            String refreshToken = createRefreshToken();
+    public TokenInfo generateToken(Authentication authentication) {
+        String accessToken = createAccessToken(authentication);
+        String refreshToken = createRefreshToken();
 
-            return TokenInfo.builder()
-                    .grantType("Bearer")
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .build();
-        } else {
-            throw new FirebaseTokenValidationException("Firebase 토큰 검증 실패");
-        }
+        return TokenInfo.builder()
+                .grantType("Bearer")
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     public TokenInfo generateAccessToken(Authentication authentication){
