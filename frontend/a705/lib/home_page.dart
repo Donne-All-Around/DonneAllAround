@@ -1,3 +1,4 @@
+import 'package:a705/providers/exchange_providers.dart';
 import 'package:a705/providers/trade_providers.dart';
 import 'package:a705/transaction_detail_page.dart';
 import 'package:a705/transaction_page.dart';
@@ -33,23 +34,62 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
-
   @override
   void initState() {
     initTrade();
+    _fetchExchangeRates();
     super.initState();
   }
 
   String _addr = "강남구 역삼동";
   Address _address = Address(
-      country: null,
-      administrativeArea: null,
-      subAdministrativeArea: null,
-      locality: null,
-      subLocality: null,
-      thoroughfare: null,
-      latitude: 37.5013068,
-      longitude: 127.0396597,);
+    country: null,
+    administrativeArea: null,
+    subAdministrativeArea: null,
+    locality: null,
+    subLocality: null,
+    thoroughfare: null,
+    latitude: 37.5013068,
+    longitude: 127.0396597,
+  );
+
+  Map<String, double>? exchangeRates;
+
+  Future<void> _fetchExchangeRates() async {
+    try {
+      final exchangeProvider = ExchangeRateProvider();
+      final response = await exchangeProvider.fetchCurrencyData();
+      // API 응답 데이터 파싱
+      final exchangeResponse = response;
+      if (exchangeResponse.success) {
+        setState(() {
+          exchangeRates = {
+            'USDKRW': exchangeResponse.quotes.usdKrw,
+            'USDJPY': exchangeResponse.quotes.usdJpy,
+            'USDCNY': exchangeResponse.quotes.usdCny,
+            'USDEUR': exchangeResponse.quotes.usdEur,
+            'USDGBP': exchangeResponse.quotes.usdGbp,
+            'USDAUD': exchangeResponse.quotes.usdAud,
+            'USDCAD': exchangeResponse.quotes.usdCad,
+            'USDHKD': exchangeResponse.quotes.usdHkd,
+            'USDPHP': exchangeResponse.quotes.usdPhp,
+            'USDVND': exchangeResponse.quotes.usdVnd,
+            'USDTWD': exchangeResponse.quotes.usdTwd,
+            'USDSGD': exchangeResponse.quotes.usdSgd,
+            'USDCZK': exchangeResponse.quotes.usdCzk,
+            'USDNZD': exchangeResponse.quotes.usdNzd,
+            'USDRUB': exchangeResponse.quotes.usdRub,
+          };
+        });
+      } else {
+        // API 요청은 성공했지만, 응답이 실패한 경우에 대한 처리
+        print('API 요청 성공, 응답 실패: ${exchangeResponse.terms}');
+      }
+    } catch (e) {
+      // API 요청 중 오류 발생
+      print('Error fetching exchange rates: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -238,7 +278,8 @@ class _HomePageState extends State<HomePage> {
                                 child: Row(
                                   children: [
                                     CircleAvatar(
-                                      backgroundImage: AssetImage('assets/images/flag/${currency[_idx] == 'KRW' ? 'KRW' : currency[_idx] == 'USD' ? 'USDKRW' : 'USD${currency[_idx]}'}.png'),
+                                      backgroundImage: AssetImage(
+                                          'assets/images/flag/${currency[_idx] == 'KRW' ? 'KRW' : currency[_idx] == 'USD' ? 'USDKRW' : 'USD${currency[_idx]}'}.png'),
                                       radius: 15,
                                     ),
                                     const SizedBox(width: 5),
@@ -300,11 +341,14 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   color: Colors.white,
                                 ),
-                                child: const Row(
+                                child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Text('1300 ₩',
-                                        style: TextStyle(fontSize: 15)),
+                                    Text(
+                                        currency[_idx] == "USD"
+                                            ? '${exchangeRates?['USDKRW']?.toStringAsFixed(2)} ₩'
+                                            : '${(exchangeRates!['USDKRW']! / exchangeRates!['USD${currency[_idx]}']! * unit[_idx]).toStringAsFixed(2)} ₩',
+                                        style: const TextStyle(fontSize: 15)),
                                   ],
                                 ),
                               ),
@@ -349,8 +393,7 @@ class _HomePageState extends State<HomePage> {
                                 _address.subLocality,
                                 _address.thoroughfare);
                             setState(() {});
-                          }
-                          else if (value == "낮은 가격순") {
+                          } else if (value == "낮은 가격순") {
                             trade = await tradeProvider.getLowestTrade(
                                 currency[_idx],
                                 null,
@@ -361,8 +404,7 @@ class _HomePageState extends State<HomePage> {
                                 _address.subLocality,
                                 _address.thoroughfare);
                             setState(() {});
-                          }
-                          else {
+                          } else {
                             trade = await tradeProvider.getLowestRateTrade(
                                 currency[_idx],
                                 null,
@@ -427,8 +469,8 @@ class _HomePageState extends State<HomePage> {
                                                 BorderRadius.circular(15),
                                             child: Image(
                                               height: 60,
-                                              image: 
-                                                  NetworkImage(trade[index].thumbnailImageUrl),
+                                              image: NetworkImage(trade[index]
+                                                  .thumbnailImageUrl),
                                               // AssetImage(
                                               //   "assets/images/ausdollar.jpg",
                                               // ),
@@ -473,7 +515,7 @@ class _HomePageState extends State<HomePage> {
                                                 children: [
                                                   CircleAvatar(
                                                     backgroundImage: AssetImage(
-                                                        'assets/images/flag/${trade[index].countryCode}.png'),
+                                                        'assets/images/flag/${trade[index].countryCode == 'KRW' ? 'KRW' : trade[index].countryCode == 'USD' ? 'USDKRW' : 'USD${trade[index].countryCode}'}.png'),
                                                     radius: 8,
                                                   ),
                                                   const SizedBox(width: 5),
@@ -588,7 +630,6 @@ class _HomePageState extends State<HomePage> {
 
 List<String> country = [
   '미국(달러)',
-  '한국(원)',
   '일본(엔)',
   '중국(위안)',
   '유럽(유로) ',
@@ -606,7 +647,6 @@ List<String> country = [
 ];
 List<String> currency = [
   'USD',
-  'KRW',
   'JPY',
   'CNY',
   'EUR',
@@ -622,10 +662,25 @@ List<String> currency = [
   'NZD',
   'RUB',
 ];
-List<String> sign = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
+List<String> sign = [
+  '\$',
+  '¥',
+  '¥',
+  '€',
+  '£',
+  '\$',
+  '\$',
+  '\$',
+  '₱',
+  '₫',
+  '\$',
+  '\$',
+  'Kč',
+  '\$',
+  '₽'
+];
 
-List<int> unit = [1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
-
+List<int> unit = [1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
 
 class CountryListViewBuilder extends StatefulWidget {
   const CountryListViewBuilder({super.key});
@@ -644,6 +699,7 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           onTap: () {
+            // 검색 다시 되게 하기
             setState(() {
               idx = index;
             });
@@ -665,7 +721,8 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
                   children: [
                     const SizedBox(width: 20),
                     CircleAvatar(
-                      backgroundImage: AssetImage('assets/images/flag/${currency[index] == 'KRW' ? 'KRW' : currency[index] == 'USD' ? 'USDKRW' : 'USD${currency[index]}'}.png'),
+                      backgroundImage: AssetImage(
+                          'assets/images/flag/${currency[index] == 'KRW' ? 'KRW' : currency[index] == 'USD' ? 'USDKRW' : 'USD${currency[index]}'}.png'),
                       radius: 10,
                     ),
                     const SizedBox(width: 10),
