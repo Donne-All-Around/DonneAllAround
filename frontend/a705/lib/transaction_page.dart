@@ -581,7 +581,7 @@ class _TransactionPageState extends State<TransactionPage> {
                           description: _contentEditController.text,
                           thumbnailImageUrl: uploadTrade.imageUrlList[0],
                           status: uploadTrade.status,
-                          countryCode: _selectedValue,
+                          countryCode: currency[idx],
                           foreignCurrencyAmount:
                               int.parse(_currencyEditController.text),
                           koreanWonAmount: int.parse(_krwEditController.text),
@@ -664,7 +664,6 @@ class _TransactionPageState extends State<TransactionPage> {
         final String _urlString =
             await FirebaseStorage.instance.ref(_path).getDownloadURL();
         uploadTrade.imageUrlList.add(_urlString);
-        print(_urlString);
       }
     }
   }

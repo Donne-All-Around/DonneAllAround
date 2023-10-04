@@ -176,38 +176,36 @@ class TradeProviders {
 
   // 거래 글 생성
   Future<void> postTrade(TradeDto tradeDto) async {
-    var response =
-        await http.post(Uri.parse('$url/api/trade/create?memberId=1'),
-            // headers: <String, String>{
-            //   'Content-Type': 'applcation/json',
-            // },
-            body: jsonEncode({
-              "title": tradeDto.title,
-              "description": tradeDto.description,
-              "thumbnailImageUrl": tradeDto.thumbnailImageUrl,
-              "countryCode": tradeDto.countryCode,
-              "foreignCurrencyAmount": tradeDto.foreignCurrencyAmount,
-              "koreanWonAmount": tradeDto.koreanWonAmount,
-              "latitude": tradeDto.latitude,
-              "longitude": tradeDto.longitude,
-              "country": tradeDto.country,
-              "administrativeArea": tradeDto.administrativeArea,
-              "subAdministrativeArea": tradeDto.subAdministrativeArea,
-              "locality": tradeDto.locality,
-              "subLocality": tradeDto.subLocality,
-              "thoroughfare": tradeDto.thoroughfare,
-              "imageUrlList": tradeDto.imageUrlList
-            }));
-    // Response response = await dio.post(
-    //   '$url/api/trade/create?memberId=1',
-    //   data: tradeDto.toJson(),
-    //   options: Options(
-    //     headers: {'Content-Type': 'application/json'}, // Content-Type 설정
-    //   ),
-    // );
-
-    print(response.body);
-    print(response.statusCode);
+    String jsonData = jsonEncode({
+      "title": tradeDto.title,
+      "description": tradeDto.description,
+      "thumbnailImageUrl": tradeDto.thumbnailImageUrl,
+      "countryCode": tradeDto.countryCode,
+      "foreignCurrencyAmount": tradeDto.foreignCurrencyAmount,
+      "koreanWonAmount": tradeDto.koreanWonAmount,
+      "latitude": tradeDto.latitude,
+      "longitude": tradeDto.longitude,
+      "country": tradeDto.country,
+      "administrativeArea": tradeDto.administrativeArea,
+      "subAdministrativeArea": tradeDto.subAdministrativeArea,
+      "locality": tradeDto.locality,
+      "subLocality": tradeDto.subLocality,
+      "thoroughfare": tradeDto.thoroughfare,
+      "imageUrlList": tradeDto.imageUrlList
+    });
+    try {
+      http.Response response = await http.post(Uri.parse('$url/api/trade/create?memberId=1'),
+          headers: {
+            "Accept": "application/json",
+            "Content-Type":"application/json"
+          },
+          body: jsonData);
+      if(response.statusCode == 200) {
+        print("SUCCESS!");
+      }
+    } catch (e) {
+      print('등록 실패: $e');
+    }
   }
 
   Future<void> likeTrade(int tradeId) async {
