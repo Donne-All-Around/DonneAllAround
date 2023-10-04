@@ -33,14 +33,27 @@ class _CalculatePageState extends State<CalculatePage> {
     '수협은행',
     '부산은행',
     '대구은행',
-    '전북은행',
-    '경남은행',
-    '제주은행',
   ];
   var _selectedBank = '신한은행';
 
+  Map<String, Map<String, String>> bankInfo = {
+    '하나은행': {'currencyName': '하나은행', 'bankCode': '081'},
+    '우리은행': {'currencyName': '우리은행', 'bankCode': '020'},
+    'KB국민은행': {'currencyName': 'KB국민은행', 'bankCode': '004'},
+    '신한은행': {'currencyName': '신한은행', 'bankCode': '088'},
+    'NH농협은행': {'currencyName': 'NH농협은행', 'bankCode': '011'},
+    'IBK기업은행': {'currencyName': 'IBK기업은행', 'bankCode': '003'},
+    'SC제일은행': {'currencyName': 'SC제일은행', 'bankCode': '023'},
+    '시티은행': {'currencyName': '시티은행', 'bankCode': '027'},
+    'Sh수협은행': {'currencyName': 'Sh수협은행', 'bankCode': '007'},
+    '부산은행': {'currencyName': '부산은행', 'bankCode': '032'},
+    'DGB대구은행': {'currencyName': 'DGB대구은행', 'bankCode': '031'},
+  };
+
+
   int idx1 = 0;
-  final TextEditingController _percentController = TextEditingController(text: "30");
+  final TextEditingController _percentController = TextEditingController(text: "우대율");
+  final TextEditingController _answerController = TextEditingController(text: "7,853");
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +195,7 @@ class _CalculatePageState extends State<CalculatePage> {
                               children: [
                                 Expanded(
                                   child: Container(
-                                    margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                    margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                                     padding: const EdgeInsets.fromLTRB(0, 5, 10, 5),
                                     width: double.infinity,
                                     height: 60,
@@ -198,10 +211,10 @@ class _CalculatePageState extends State<CalculatePage> {
                                             offset: const Offset(0, 0),
                                           ),
                                         ]),
-                                    child: const Text(
-                                      '7,853원',
+                                    child: Text(
+                                      _answerController.text,
                                       textAlign: TextAlign.end,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 40,
                                       ),
                                     ),
@@ -735,38 +748,6 @@ class CustomModalWidget extends StatelessWidget {
 }
 
 
-// 환전기록 리스트뷰 (모달)
-class RecordViewBuilder extends StatefulWidget {
-  const RecordViewBuilder({super.key});
-
-  @override
-  State<RecordViewBuilder> createState() => _RecordViewBuilderState();
-
-}
-
-class _RecordViewBuilderState extends State<RecordViewBuilder> {
-
-  final _recordList = ['1331.66'];
-
-  Map<String, Map<String, String>> recordInfo = {
-    '1331.66' : {
-      'currencyName' : 'USD' , 'targetPrice' : '740', 'percent' : '30', 'exchange' : '1331.66', 'krw' : '992.147', 'date' : '2022.09.20', 'bank' : '신한은행'
-    }
-  };
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      primary: false,
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      itemBuilder: (BuildContext context, int index) {
-
-      },
-
-    );
-  }
-}
 
 
 // 환전 차이 그래프
