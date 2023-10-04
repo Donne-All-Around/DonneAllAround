@@ -49,7 +49,7 @@ public class MemberController {
         return ApiResponse.success("회원 정보 수정 성공", memberService.updateProfile(request, principal.getUsername()));
     }
 
-    @PutMapping("/delete")
+    @PostMapping("/delete")
     public ApiResponse<Object> deleteMember(@RequestBody LogoutRequest request, @AuthenticationPrincipal  UserDetails principal) {
         memberService.deleteMember(request, principal.getUsername());
         return ApiResponse.success("회원 탈퇴 성공", null);
@@ -60,7 +60,7 @@ public class MemberController {
         return ApiResponse.success("회원 정보 조회 성공", MemberInfoResponse.from(memberService.findByTel(principal.getUsername())));
     }
 
-    @GetMapping("/reissue")
+    @PostMapping("/reissue")
     public ApiResponse<ReIssueResponse> reissue(@RequestBody ReIssueRequest request) {
         return ApiResponse.success("토큰 재발급 성공", memberService.reissue(request.refreshToken(), SecurityContextHolder.getContext().getAuthentication()));
     }
