@@ -3,8 +3,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert'; // JSON 디코딩을 위해 추가
 
 
-
-
 class ReviewPage extends StatefulWidget {
   const ReviewPage({super.key});
 

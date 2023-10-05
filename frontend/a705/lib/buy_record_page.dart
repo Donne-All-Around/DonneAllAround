@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:a705/transaction_detail_page.dart';
+import 'review_create_page.dart';
 import 'dart:convert'; // JSON 파싱을 위해 추가
 import 'package:http/http.dart' as http;
 
@@ -169,14 +170,13 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image(
-                              height: 60,
-                              image: AssetImage(
-                                'assets/images/trade${['thumbnailImageUrl']}',
-                              ),
-                              fit: BoxFit.cover,
-                            )),
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.network(
+                            trade['thumbnailImageUrl'],
+                            height: 60,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                       Flexible(
                         flex: 1,
@@ -201,7 +201,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                 children: [
                                   Text(
                                     trade['type'] == 'DIRECT'
-                                      ? '${trade['preferredTradeCity']} ${trade['preferredTradeDistrict']} ${trade['preferredTradeTown']}'
+                                      ? '${trade['administrativeArea']} ${trade['subLocality']} ${trade['thoroughfare']}'
                                       : '택배거래',
                                     style: const TextStyle(color: Colors.black54),
                                   ),
@@ -254,7 +254,10 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                         ? null // false 일 때는 아무것도 반환하지 않음
                         : ElevatedButton(
                       onPressed: () {
-                        // '후기 작성' 버튼을 눌렀을 때 수행할 동작 추가
+                        final tradeID = trade['id'];
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ReviewCreatePage(tradeID: tradeID)));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFFFD954),

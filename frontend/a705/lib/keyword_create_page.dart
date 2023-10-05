@@ -196,6 +196,7 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
           ),
           body: SingleChildScrollView(
             child: Container(
+              color: Colors.white,
               margin: const EdgeInsets.fromLTRB(30, 20, 30, 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

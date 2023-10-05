@@ -155,7 +155,7 @@ class KeywordPageState extends State<KeywordPage> {
                                 15.0), // 원하는 Radius 값으로 설정
                           ),
                           title: Text("확인"),
-                          content: Text("채팅방을 나가시겠어요?"),
+                          content: Text("키워드를 삭제하시겠어요?"),
                           actions: [
                             TextButton(
                               style: ButtonStyle(
@@ -204,7 +204,7 @@ class KeywordPageState extends State<KeywordPage> {
                                     Colors.white),
                               ),
                               child: Text(
-                                "나가기",
+                                "삭제하기",
                                 style: TextStyle(fontSize: 17),
                               ),
                               onPressed: () async {

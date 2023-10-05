@@ -38,7 +38,7 @@ class TradeLikePageState extends State<TradeLikePage> {
         setState(() {
           tradeList = List<Map<String, dynamic>>.from(tradeListData);
         });
-        print('구매내역 잘 들어온다');
+        print('관심목록 잘 들어온다');
       } else {
         // 서버 응답이 실패인 경우
         print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
@@ -185,7 +185,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                 children: [
                                   Text(
                                     trade['title'],
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -194,11 +194,40 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                     width: 30,
                                     height: 30,
                                     child : IconButton(
-                                      icon : Icon(Icons.favorite, color: Colors.red),
-                                      onPressed: null,
-                                      // onPressed: () {
-                                      //   IconButton 클릭 시 관심목록 제거 로직
-                                      // },
+                                      icon : const Icon(Icons.favorite, color: Colors.red),
+                                      onPressed: () async {
+                                        // tradeId와 memberId 설정
+                                        final tradeId = trade['id']; // trade['id'] 또는 다른 필드에 해당하는 값으로 변경
+                                        const memberId = '1'; // 사용자의 memberId로 변경
+
+                                        // DELETE 요청 보내기
+                                        final deleteUrl = 'https://j9a705.p.ssafy.io/api/trade/$tradeId/unlike?memberId=$memberId';
+
+                                        try {
+                                          final response = await http.delete(
+                                            Uri.parse(deleteUrl),
+                                            headers: {
+                                              "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
+                                            },
+                                          );
+
+                                          if (response.statusCode == 200) {
+                                            setState(() {
+                                              // tradeList에서 해당 항목 제거
+                                              widget.tradeLikePageState.tradeList.removeWhere((element) => element['id'] == tradeId);
+                                            });
+                                            print('관심목록 삭제 성공');
+                                          } else {
+                                            // 삭제 실패 시의 처리
+                                            print('관심목록 제거 실패: ${response.statusCode}');
+                                            // 실패한 경우 사용자에게 알림을 표시하는 등의 처리 추가 가능
+                                          }
+                                        } catch (e) {
+                                          // 오류 처리
+                                          print('오류: $e');
+                                          // 오류 발생 시 사용자에게 알림을 표시하는 등의 처리 추가 가능
+                                        }
+                                      },
                                       iconSize: 30,
                                     )
                                   )
@@ -207,11 +236,12 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                               Row(
                                 children: [
                                   Text(
-                              '${trade['preferredTradeCity']} ${trade['preferredTradeDistrict']} ${trade['preferredTradeTown']}',
+                              '${trade['administrativeArea']} ${trade['subLocality']} ${trade['thoroughfare']}',
                                     style: TextStyle(color: Colors.black54),
                                   ),
                                 ],
                               ),
+                              const SizedBox(height: 3),
                               Row(
                                 children: [
                                   CircleAvatar(
@@ -219,16 +249,17 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                     AssetImage('assets/images/flag/${trade['countryCode'] == 'KRW' ? 'KRW' : trade['countryCode'] == 'USD' ? 'USDKRW' : 'USD${trade['countryCode']}'}.png'),
                                     radius: 8,
                                   ),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
                                     '${trade['foreignCurrencyAmount']} ${trade['countryCode']}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.blueAccent),
                                   ),
                                 ],
                               ),
+                              const SizedBox(height: 3),
                               Row(
                                 mainAxisAlignment:
                                 MainAxisAlignment.spaceBetween,
@@ -240,13 +271,15 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                       color: const Color(0xFFFFD954),
                                       borderRadius: BorderRadius.circular(5),
                                     ),
-                                    child: const Text('예약중'),
+                                    child: Text(
+                                      trade['status'] == 'WAIT' ? '예약중' : trade['status'] == 'COMPLETE' ? '거래완료' : '',
+                                    ),
                                   ),
                                   Column(
                                     children: [
                                       Text(
                                         '${trade['koreanWonAmount']}원',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold),
                                       ),
