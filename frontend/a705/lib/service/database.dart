@@ -29,7 +29,6 @@ class DatabaseMethods {
   // 채팅 메시지 추가 + 유저 정보 추가
   Future addMessageUser(
     String chatRoomId,
-    String messageId,
     Map<String, dynamic> messageInfoMap,
     String otherRole,
     String myRole,
@@ -91,17 +90,17 @@ class DatabaseMethods {
     // user에 chatlist 저장
 
     // "chats" 추가
-    await chatRoomDocRef.collection("chats").doc(messageId).set(messageInfoMap);
+    await chatRoomDocRef.collection("chats").doc().set(messageInfoMap);
   }
 
   // 채팅 메시지 추가
-  Future addMessage(String chatRoomId, String messageId,
+  Future addMessage(String chatRoomId,
       Map<String, dynamic> messageInfoMap) async {
     return FirebaseFirestore.instance
         .collection("chatrooms")
         .doc(chatRoomId)
         .collection("chats")
-        .doc(messageId)
+        .doc()
         .set(messageInfoMap);
   }
 
@@ -282,29 +281,57 @@ class DatabaseMethods {
     }
   }
 
+  // 거래 약속 잡기 기본 정보 저장
+  setDefaultTradeInfo(String sellerId, String tradeId){
+    Map<String, dynamic> tradeInfo = {
+      "type": "DIRECT",
+      "directTradeTime": null,
+      "directTradeLocationDetail": null,
+      "sellerAccountBankCode": null,
+      "sellerAccountNumber": null,
+      "deliveryRecipientName": null,
+      "deliveryRecipientTel": null,
+      "deliveryAddressZipCode": null,
+      "deliveryAddressDetail": null,
+      "deliveryAddress": null,
+      "trackingNumber": null,
+      "buyerId": null,
+      "sellerId": sellerId,
+      "status": "WAIT",
+      "method": "ACCOUNT",
+      "isRemittance": false,
+      "sellerReview": false,
+      "buyerReview": false,
+    };
+    try {
+      FirebaseFirestore.instance
+          .collection("trade")
+          .doc(tradeId)
+          .set(tradeInfo);
+    } catch (e) {
+      print('FireStore 저장 실패: $e');
+    }
+
+  }
+
   // 거래 약속잡기 정보 저장
   setTradeInfo(String tradeId, Map<String, dynamic> tradeInfoMap) {
-    // Map<String, dynamic> tradeInfo = {
-    //   "type": "DIRECT",
-    //   "directTradeTime": null,
-    //   "directTradeLocationDetail": null,
-    //   "sellerAccountBankCode": null,
-    //   "sellerAccountNumber": null,
-    //   "deliveryRecipientName": null,
-    //   "deliveryRecipientTel": null,
-    //   "deliveryAddressZipCode": null,
-    //   "deliveryAddressDetail": null,
-    //   "deliveryAddress": null,
-    //   "trackingNumber": null,
-    //   "buyerId": null,
-    //   "sellerId": "3",
-    //   "status": "WAIT",
-    // };
     try {
       FirebaseFirestore.instance
           .collection("trade")
           .doc(tradeId)
           .set(tradeInfoMap);
+    } catch (e) {
+      print('FireStore 저장 실패: $e');
+    }
+  }
+
+  updateTradeInfo(String tradeId, Map<String, dynamic> tradeInfoMap) {
+    try {
+      FirebaseFirestore.instance
+          .collection("trade")
+          .doc(tradeId)
+          .update(tradeInfoMap);
     } catch (e) {
       print('FireStore 저장 실패: $e');
     }
@@ -324,4 +351,6 @@ class DatabaseMethods {
       }
     });
   }
+
+
 }

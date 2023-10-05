@@ -1,5 +1,6 @@
 import 'package:a705/chatting_page.dart';
 import 'package:a705/service/database.dart';
+import 'package:a705/service/spring_api.dart';
 import 'package:bottom_picker/bottom_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -72,7 +73,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
             centerTitle: true,
             actions: [
               IconButton(
-                  onPressed: () {
+                  onPressed: isSelectedAddr() ? () {
                     setState(() {
                       appt += DateFormat('yy.MM.dd a hh:mm', 'ko').format(appointmentDate);
                       appt += " ";
@@ -83,6 +84,25 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
 
                     Navigator.pop(context, appt);
                     Navigator.pop(context, appt);
+                  } : (){
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          // title: Text("안내"),
+                          content: Text("약속 장소를 선택해주세요."),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(
+                                    context); // Close the dialog
+                              },
+                              child: Text("확인"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                   icon: const Icon(
                     Icons.check_rounded,
@@ -330,10 +350,26 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
       "trackingNumber": null,
       "buyerId": widget.tradeInfoMap?['buyerId'],
       "sellerId": myUserId,
+      "method": null,
+      "isRemittance": null,
       "status": "PROGRESS",
     };
-    // 백엔드에 type 전달 method 구현 필요
+
+    /**
+     * buyerId 수정 필요
+     */
+    Map<String, dynamic> setDirectAppointmentMap = { "buyerId" : 2};
+    SpringApi().setDirectAppointment(setDirectAppointmentMap, widget.tradeInfoMap?['tradeId'], myUserId!);
+
     DatabaseMethods().setTradeInfo(widget.tradeInfoMap?['tradeId'], tradeInfo);
     print(tradeInfo.toString());
+  }
+
+  bool isSelectedAddr(){
+    if(_addr == "장소 선택"){
+      return false;
+    }else{
+      return true;
+    }
   }
 }

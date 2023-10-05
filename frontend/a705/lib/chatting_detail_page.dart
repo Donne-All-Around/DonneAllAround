@@ -7,7 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:a705/transaction_info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:random_string/random_string.dart';
 
 import 'delivery_transaction_page.dart';
 
@@ -36,19 +35,24 @@ enum AppointmentType {
   waitSeller, // 예약 전, 판매자
   progressBuyerDirect, // 예약 중, 구매자, 직거래
   progressSellerDirect, // 예약 중, 판매자, 직거래
-  progressBuyerDeliveryBefore, // 예약 중, 구매자, 택배 거래, 송장 번호 입력 전
-  progressBuyerDeliveryAfter, // 예약 중, 구매자, 택배 거래, 송장 번호 입력 후
-  progressSellerDeliveryBefore, // 예약 중, 판매자, 택배 거래, 송장 번호 입력 전
-  progressSellerDeliveryAfter, // 예약 중, 판매자, 택배 거래, 송장 번호 입력 후
+  progressBuyerDeliveryAccount, // 예약 중, 구매자, 택배 거래, 계좌 송금
+  progressSellerDeliveryAccount, // 예약 중, 판매자, 택배 거래, 계좌 송금
+  progressBuyerDeliveryBefore, // 예약 중, 구매자, 택배 거래, 동네 페이, 송금 전
+  progressBuyerDeliveryAfter, // 예약 중, 구매자, 택배 거래, 동네 페이, 송금 전
+  progressSellerDeliveryBefore, // 예약 중, 판매자, 택배 거래, 동네 페이, 송금 전
+  progressSellerDeliveryAfter, // 예약 중, 판매자, 택배 거래, 동네 페이, 송금 전
   progressOther, // 예약 중, 타 사용자
-  completeSeller, // 거래 완료, 판매자
-  completeBuyer, // 거래 완료, 구매자
+  completeDirectSeller, // 거래 완료, 직거래, 판매자
+  completeDeliverySeller, // 거래 완료, 택배 거래, 판매자
+  completeDirectBuyer, // 거래 완료, 직거래, 구매자
+  completeDeliveryBuyer, // 거래 완료, 택배 거래, 구매자
   completeOther, // 거래 완료, 타 사용자
 }
 
 class _ChattingDetailPageState extends State<ChattingDetailPage> {
   ScrollController _scrollController = ScrollController();
   bool isVisible = false;
+  bool showHeader = false;
   TextEditingController messageController = new TextEditingController();
   String? messageId, // 메시지 아이디
       myUserName, // 내 닉네임
@@ -78,11 +82,16 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
       deliveryAddressZipCode, // 택버거래 주소 우편번호
       deliveryAddress, // 택배거래 주소
       deliveryAddressDetail, // 택배거래 상세 주소
-      trackingNumber; // 송장번호
+      trackingNumber, // 송장번호
+      method; // 송금 방법
   int foreignCurrencyAmount = 0, koreanWonAmount = 0;
   String? _appt;
   Stream? messageStream, apptStream;
-  bool? isSellerExit, isBuyerExit;
+  bool? isSellerExit,
+      isBuyerExit,
+      isRemittance,
+      sellerReview,
+      buyerReview; // 동네 페이 송금 여부
   bool isBlank = false;
   AppointmentType appointmentType = AppointmentType.waitBuyer;
 
@@ -102,6 +111,9 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     }
     print("I'm $myRole");
     await getAndSetMessages(); // 채팅 내역 가져오기
+
+    // 거래글 생성할 때 실행
+    // DatabaseMethods().setDefaultTradeInfo(sellerId!, tradeId!);
     setState(() {});
   }
 
@@ -122,7 +134,9 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
 
   bool _shouldShowTradeInfo(AppointmentType appointmentType) {
     if (appointmentType == AppointmentType.waitBuyer ||
-        appointmentType == AppointmentType.waitSeller) {
+        appointmentType == AppointmentType.waitSeller ||
+        appointmentType == AppointmentType.progressOther ||
+        appointmentType == AppointmentType.completeOther) {
       return false;
     } else {
       return true;
@@ -166,19 +180,23 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
           buyer = otherUserName;
         }
 
-        // 거래글 정보 가져오기
+        // 백엔드 거래글 정보 가져오기
         Map<String, dynamic> data =
             await SpringApi().getChatTransactionInfo(sellerId!, tradeId!);
         TradeAppointmentDto trade = TradeAppointmentDto.fromJson(data);
-        tradeId = trade.id.toString();
-        tradeTitle = trade.title;
-        countryCode = trade.countryCode;
-        type = trade.type;
-        status = trade.status;
-        thumbnailImageUrl = trade.thumbnailImage;
-        koreanWonAmount = trade.koreanWonAmount;
-        foreignCurrencyAmount = trade.foreignCurrencyAmount;
+        // Firestore 거래글 상세 정보 가져오기
         apptStream = await DatabaseMethods().getTradeInfo(tradeId!);
+        setState(() {
+          tradeId = trade.id.toString();
+          tradeTitle = trade.title;
+          countryCode = trade.countryCode;
+          type = trade.type;
+          status = trade.status;
+          thumbnailImageUrl = trade.thumbnailImage;
+          koreanWonAmount = trade.koreanWonAmount;
+          foreignCurrencyAmount = trade.foreignCurrencyAmount;
+        });
+
         break;
 
       /**
@@ -201,17 +219,19 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         Map<String, dynamic> data =
             await SpringApi().getChatTransactionInfo(sellerId, tradeId);
         TradeAppointmentDto trade = TradeAppointmentDto.fromJson(data);
-        tradeTitle = trade.title;
-        countryCode = trade.countryCode;
-        type = trade.type;
-        status = trade.status;
-        thumbnailImageUrl = trade.thumbnailImage;
-        koreanWonAmount = trade.koreanWonAmount;
-        foreignCurrencyAmount = trade.foreignCurrencyAmount;
 
+        setState(() {
+          tradeTitle = trade.title;
+          countryCode = trade.countryCode;
+          type = trade.type;
+          status = trade.status;
+          thumbnailImageUrl = trade.thumbnailImage;
+          koreanWonAmount = trade.koreanWonAmount;
+          foreignCurrencyAmount = trade.foreignCurrencyAmount;
+        });
         chatRoomId = "${tradeId!}_${sellerId!}_${buyerId!}";
 
-          apptStream = await DatabaseMethods().getTradeInfo(tradeId!);
+        apptStream = await DatabaseMethods().getTradeInfo(tradeId!);
 
         // user 정보에 새 채팅방 목록 추가
         Map<String, dynamic> chatRoomListInfoMap = {
@@ -221,6 +241,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         print("user에 chatlist update: ${tradeId}");
         DatabaseMethods().setUserChatList(
             sellerId!, buyerId!, chatRoomId!, chatRoomListInfoMap);
+
+
         break;
 
       case InfoType.NONE:
@@ -230,85 +252,161 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   }
 
   // 채팅 메시지 타일
-  Widget chatMessageTile(
-      String message, bool sendByMe, String ts, bool showTs, bool showProfile) {
-    return Row(
-        mainAxisAlignment:
-            sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-        children: [
-          sendByMe
-              ? Container(
-                  margin: EdgeInsets.only(left: 16.0),
-                  child: showTs
-                      ? Text(
-                          ts,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey,
-                          ),
-                        )
-                      : Text(""),
-                )
-              : Row(
-                  children: [
-                    showProfile
-                        ? const Padding(
-                            padding: EdgeInsets.only(left: 16.0),
-                            child: CircleAvatar(
-                              backgroundImage:
-                                  AssetImage('assets/images/profile.jpg'),
-                              radius: 25,
+  Widget chatMessageTile(String message, bool sendByMe, String ts, bool showTs,
+      bool showProfile, bool showNotice) {
+    return showNotice
+        ? Container(
+            child: Row(
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                    border: Border.fromBorderSide(
+                      BorderSide(
+                        color: Color(0xFFFFD954),
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                  width: MediaQuery.of(context).size.width - 50,
+                  margin: EdgeInsets.symmetric(vertical: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("${otherUserName} 님",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w900, fontSize: 16)),
+                          Text("과의 거래는 어떠셨나요?", style: TextStyle(fontSize: 16)),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 3,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("거래 후기",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w900, fontSize: 16)),
+                          Text("를 남겨보아요.", style: TextStyle(fontSize: 16)),
+                        ],
+                      ),
+                      GestureDetector(
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(10, 7, 10, 7),
+                          margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+                          height: 40,
+                          width: double.infinity,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(25),
                             ),
-                          )
-                        : const Padding(padding: EdgeInsets.only(left: 66.0)),
-                    const SizedBox(height: 10)
-                  ],
-                ),
-          Flexible(
-            child: Container(
-              padding: EdgeInsets.all(16),
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft:
-                          sendByMe ? Radius.circular(18) : Radius.circular(0),
-                      bottomRight: Radius.circular(18),
-                      topRight:
-                          sendByMe ? Radius.circular(0) : Radius.circular(18),
-                      bottomLeft: Radius.circular(18)),
-                  color: sendByMe
-                      ? const Color(0xFFFFE897)
-                      : Colors.grey.shade200),
-              // : Colors.grey.shade200),
-              child: Text(
-                message,
-                style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.w500),
-                maxLines: 6, // 텍스트 줄 수 제한 없음
-                softWrap: true, // 자동 줄 바꿈 활성화
-                overflow: TextOverflow.clip, // 잘린 부분은 보이도록 함
-              ),
-            ),
-          ),
-          sendByMe
-              ? const Text("")
-              : Container(
-                  margin: EdgeInsets.only(right: 16.0), // 왼쪽 마진 설정
-                  child: showTs
-                      ? Text(
-                          ts,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey,
+                            color: Color(0xFFFFD954),
                           ),
-                        )
-                      : Text(""),
-                )
-        ]);
+                          child: Center(
+                              child: Text(
+                            "거래 후기 남기러 가기",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.black87),
+                            textAlign: TextAlign.center,
+                          )),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+        : Row(
+            mainAxisAlignment:
+                sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+            children: [
+                sendByMe
+                    ? Container(
+                        margin: EdgeInsets.only(left: 16.0),
+                        child: showTs
+                            ? Text(
+                                ts,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.grey,
+                                ),
+                              )
+                            : Text(""),
+                      )
+                    : Row(
+                        children: [
+                          showProfile
+                              ? const Padding(
+                                  padding: EdgeInsets.only(left: 16.0),
+                                  child: CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage('assets/images/profile.jpg'),
+                                    radius: 25,
+                                  ),
+                                )
+                              : const Padding(
+                                  padding: EdgeInsets.only(left: 66.0)),
+                          const SizedBox(height: 10)
+                        ],
+                      ),
+                Flexible(
+                  child: Container(
+                    padding: EdgeInsets.all(16),
+                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: sendByMe
+                                ? Radius.circular(18)
+                                : Radius.circular(0),
+                            bottomRight: Radius.circular(18),
+                            topRight: sendByMe
+                                ? Radius.circular(0)
+                                : Radius.circular(18),
+                            bottomLeft: Radius.circular(18)),
+                        color: sendByMe
+                            ? const Color(0xFFFFE897)
+                            : Colors.grey.shade200),
+                    // : Colors.grey.shade200),
+                    child: Text(
+                      message,
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w500),
+                      maxLines: 6, // 텍스트 줄 수 제한 없음
+                      softWrap: true, // 자동 줄 바꿈 활성화
+                      overflow: TextOverflow.clip, // 잘린 부분은 보이도록 함
+                    ),
+                  ),
+                ),
+                sendByMe
+                    ? const Text("")
+                    : Container(
+                        margin: EdgeInsets.only(right: 16.0), // 왼쪽 마진 설정
+                        child: showTs
+                            ? Text(
+                                ts,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.grey,
+                                ),
+                              )
+                            : Text(""),
+                      )
+              ]);
   }
 
   // 채팅 메시지
@@ -334,6 +432,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
 
                     bool showProfile = false;
                     bool showTs = false;
+
+                    bool showNotice = ds["type"] == "NOTICE";
 
                     if (snapshot.data.docs.length != index + 1) {
                       if (snapshot.data.docs[index + 1]["sendBy"] !=
@@ -366,6 +466,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       ds["ts"],
                       showTs,
                       showProfile,
+                      showNotice,
                     );
                   },
                 )
@@ -378,7 +479,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   }
 
   // 거래 상태 헤더 Stream
-  Widget header() {
+  Widget _header() {
     return StreamBuilder(
       stream: apptStream,
       builder: (context, snapshot) {
@@ -416,40 +517,96 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
               // 직거래 약속 정보 수정 페이지
               else if (appointmentType ==
                   AppointmentType.progressSellerDirect) {
-
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TransactionInfoPage(
+                      tradeInfoMap: {
+                        "tradeId": tradeId,
+                        "tradeTitle": tradeTitle,
+                        "countryCode": countryCode,
+                        "thumbnailImageUrl": thumbnailImageUrl,
+                        "foreignCurrencyAmount": foreignCurrencyAmount,
+                        "koreanWonAmount": koreanWonAmount,
+                        "buyerId": buyerId,
+                        "directTradeLocationDetail": directTradeLocationDetail,
+                        "directTradeTime": directTradeTime,
+                        "appointmentType": appointmentType,
+                      },
+                    ),
+                  ),
+                );
+                setState(() {});
               }
-              // 택배거래 송장번호 입력 페이지
+              // 택배거래 거래 정보 페이지
               else if (appointmentType ==
-                  AppointmentType.progressSellerDeliveryBefore) {
+                      AppointmentType.progressSellerDeliveryBefore ||
+                  appointmentType ==
+                      AppointmentType.progressSellerDeliveryAfter ||
+                  appointmentType ==
+                      AppointmentType.progressBuyerDeliveryAccount) {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DeliveryTransactionPage(
+                      tradeInfoMap: {
+                        "tradeId": tradeId,
+                        "tradeTitle": tradeTitle,
+                        "countryCode": countryCode,
+                        "thumbnailImageUrl": thumbnailImageUrl,
+                        "foreignCurrencyAmount": foreignCurrencyAmount,
+                        "koreanWonAmount": koreanWonAmount,
+                        "buyerId": buyerId,
+                        "deliveryAddress": deliveryAddress,
+                        "deliveryAddressDetail": deliveryAddressDetail,
+                        "deliveryAddressZipCode": deliveryAddressZipCode,
+                        "deliveryRecipientName": deliveryRecipientName,
+                        "deliveryRecipientTel": deliveryRecipientTel,
+                        "sellerAccountBankCode": sellerAccountBankCode,
+                        "sellerAccountNumber": sellerAccountNumber,
+                        "sellerId": sellerId,
+                        "trackingNumber": trackingNumber,
+                        "appointmentType": appointmentType,
+                      },
+                    ),
+                  ),
+                );
               }
-              // 택배거래 송장번호 수정 페이지
+              // 거래 완료 메소드 실행
               else if (appointmentType ==
-                  AppointmentType.progressSellerDeliveryAfter) {
+                  AppointmentType.progressSellerDeliveryAccount) {
+                setCompleteAppointment();
               }
-              // 택배거래 수령확인 액션
+              // 송금 페이지로 이동
+              else if (appointmentType ==
+                  AppointmentType.progressBuyerDeliveryBefore) {
+              }
+              // 판매자에게 송금 메소드 실행
               else if (appointmentType ==
                   AppointmentType.progressBuyerDeliveryAfter) {
-              } else {}
+              } else {
+                // 이동 X
+              }
 
-              setState(() {
-                // _appt = appt!;
-              });
+              setState(() {});
             },
             child: Container(
-              padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+              padding: EdgeInsets.fromLTRB(10, 7, 10, 7),
               margin: const EdgeInsets.fromLTRB(20, 0, 20, 15),
               height: _appt == "약속 잡기" ? 40 : null,
               width: double.infinity,
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(
-                  Radius.circular(10),
+                  Radius.circular(25),
                 ),
                 color: Color(0xFFFFD954),
               ),
               child: Center(
                   child: Text(
                 _appt ?? "",
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                textAlign: TextAlign.center,
               )),
             ),
           ),
@@ -466,6 +623,17 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     directTradeLocationDetail = tradeDetailInfo['directTradeLocationDetail'];
     directTradeTime = tradeDetailInfo['directTradeTime'];
     finalBuyerId = tradeDetailInfo['buyerId'];
+    method = tradeDetailInfo['method'];
+    isRemittance = tradeDetailInfo['isRemittance'];
+    sellerReview = tradeDetailInfo['sellerReview'];
+    buyerReview = tradeDetailInfo['buyerReview'];
+    deliveryAddress = tradeDetailInfo['deliveryAddress'];
+    deliveryAddressDetail = tradeDetailInfo['deliveryAddressDetail'];
+    deliveryAddressZipCode = tradeDetailInfo['deliveryAddressZipCode'];
+    deliveryRecipientName = tradeDetailInfo['deliveryRecipientName'];
+    deliveryRecipientTel = tradeDetailInfo['deliveryRecipientTel'];
+    sellerAccountBankCode = tradeDetailInfo['sellerAccountBankCode'];
+    sellerAccountNumber = tradeDetailInfo['sellerAccountNumber'];
 
     switch (status) {
       case "WAIT":
@@ -484,19 +652,31 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         if (myRole == "buyer" && finalBuyerId == myUserId) {
           // 직거래
           if (type == "DIRECT") {
-            _appt = "${directTradeLocationDetail} ${directTradeTime}";
-            return AppointmentType.progressBuyerDirect;
+            if (isComplete(directTradeTime)) {
+              // 약속 일시 후
+              // 거래 완료로 바꾸는 메소드 실행
+              setCompleteAppointment();
+              _appt = "거래 완료";
+              return AppointmentType.completeDirectBuyer;
+            } else {
+              // 약속 일시 전
+              _appt = "${directTradeLocationDetail}\n${directTradeTime}";
+              return AppointmentType.progressBuyerDirect;
+            }
           }
           // 택배거래
           else if (type == "DELIVERY") {
-            if (trackingNumber == null || trackingNumber == "") {
-              // 송장번호 입력 전
-              _appt = "아직 배송 전이에요.";
-              return AppointmentType.progressBuyerDeliveryBefore;
+            if (method == "ACCOUNT") {
+              _appt = "거래 정보"; // 거래 정보 페이지로 이동
+              return AppointmentType.progressBuyerDeliveryAccount;
             } else {
-              // 송장번호 입력 후
-              _appt = "수령확인";
-              return AppointmentType.progressBuyerDeliveryAfter;
+              if (isRemittance == true) {
+                _appt = "수령 확인"; // 판매자에게 송금
+                return AppointmentType.progressBuyerDeliveryAfter;
+              } else if (isRemittance == false) {
+                _appt = "동네 페이 송금"; // 송금 페이지로 이동
+                return AppointmentType.progressBuyerDeliveryBefore;
+              }
             }
           }
         }
@@ -504,37 +684,62 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         else if (myRole == "seller") {
           // 직거래
           if (type == "DIRECT") {
-            _appt = "${directTradeLocationDetail} ${directTradeTime}";
-            return AppointmentType.progressSellerDirect;
+            if (isComplete(directTradeTime)) {
+              setCompleteAppointment();
+              _appt = "거래 완료";
+              return AppointmentType.completeDirectSeller;
+            } else {
+              _appt = "${directTradeLocationDetail}\n${directTradeTime}";
+              return AppointmentType.progressSellerDirect;
+            }
           }
           // 택배거래
           else if (type == "DELIVERY") {
-            if (trackingNumber == null || trackingNumber == "") {
-              // 송장번호 입력 전
-              _appt = "송장번호 입력";
-              return AppointmentType.progressSellerDeliveryBefore;
+            if (method == "ACCOUNT") {
+              _appt = "거래 완료 하기"; // yellow background, 거래 완료 실행
+              return AppointmentType.progressSellerDeliveryAccount;
             } else {
-              // 송장번호 입력 후
-              _appt = "$trackingNumber";
-              return AppointmentType.progressSellerDeliveryAfter;
+              if (isRemittance == true) {
+                _appt = "아직 수령하지 않았어요"; // 안내
+                return AppointmentType.progressSellerDeliveryAfter;
+              } else if (isRemittance == false) {
+                _appt = "아직 송금하지 않았어요"; // 안내
+                return AppointmentType.progressSellerDeliveryBefore;
+              }
             }
           }
         }
         // 타 사용자
         else {
-          _appt = "거래 중";
+          _appt = "거래 중"; // 안내
           return AppointmentType.progressOther;
         }
         break;
       case "COMPLETE":
-        _appt = "거래완료";
+        _appt = "거래 완료"; // white background, 안내
         // 구매자
         if (myRole == "buyer" && finalBuyerId == myUserId) {
-          return AppointmentType.completeBuyer;
+          if (buyerReview != true) {
+            // 메시지에 거래 후기 작성 안내 알림 추가
+            setNotificationRiview();
+          }
+          if (type == "DIRECT") {
+            return AppointmentType.completeDirectBuyer;
+          } else {
+            return AppointmentType.completeDeliveryBuyer;
+          }
         }
         // 판매자
         else if (myRole == "seller") {
-          return AppointmentType.completeSeller;
+          if (sellerReview != true) {
+            // 메시지에 거래 후기 작성 안내 알림 추가
+            setNotificationRiview();
+          }
+          if (type == "DIRECT") {
+            return AppointmentType.completeDirectSeller;
+          } else {
+            return AppointmentType.completeDeliverySeller;
+          }
         }
         // 타 사용자
         else {
@@ -560,6 +765,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         "ts": formattedDate, // timestamp
         "time": FieldValue.serverTimestamp(),
         "imgUrl": myProfilePic,
+        "type": "MESSAGE",
       };
 
       // user 정보 업데이트
@@ -583,15 +789,10 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         "unRead": FieldValue.increment(1), // 안 읽음 수 증가
       };
 
-      /**
-       * 메시지 ID가 null이면 랜덤 10 ID 부여
-       * if(messageId == null){messageId = randomAlphaNumeric(10);}
-       */
-      messageId ??= randomAlphaNumeric(10);
       // 마지막 메시지
       DatabaseMethods()
-          .addMessageUser(chatRoomId!, messageId!, messageInfoMap, otherRole!,
-              myRole!, sellerInfoMap, buyerInfoMap)
+          .addMessageUser(chatRoomId!, messageInfoMap, otherRole!, myRole!,
+              sellerInfoMap, buyerInfoMap)
           .then((value) {
         Map<String, dynamic> lastMessageInfoMap = {
           "lastMessage": message,
@@ -625,6 +826,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     setState(() {});
   }
 
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -651,7 +853,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
             ),
             elevation: 0,
             title: Text(
-              otherUserName ?? "알수없음",
+              otherUserName ?? "",
               style:
                   TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
             ),
@@ -702,12 +904,65 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  // "",
-                                  tradeTitle ?? "",
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                                Container(
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        // "",
+                                        tradeTitle ?? "",
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Spacer(),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.more_horiz,
+                                          color: Colors.black87,
+                                          size: 30,
+                                        ),
+                                        onPressed: () {
+                                          showModalBottomSheet(
+                                            context: context,
+                                            builder: (context) {
+                                              return Container(
+                                                  height: 220,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color: Colors.white,
+                                                    // 모달 배경색
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(25),
+                                                      topRight:
+                                                          Radius.circular(25),
+                                                    ),
+                                                  ),
+                                                  child: Center(
+                                                    child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          _cancelDialog(),
+                                                          _declarationDialog(),
+                                                        ]),
+                                                  ));
+                                            },
+                                            backgroundColor: Colors
+                                                .transparent, // 앱 <=> 모달의 여백 부분을 투명하게 처리
+                                          );
+                                          setState(() {});
+                                        },
+                                        padding: EdgeInsets.zero,
+                                        constraints: const BoxConstraints(),
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      )
+                                    ],
                                   ),
                                 ),
                                 Row(
@@ -725,7 +980,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                             ),
                                             SizedBox(width: 5),
                                             Text(
-                                              '${NumberFormat.decimalPattern().format(foreignCurrencyAmount.toInt())} ${countryCode}',
+                                              '${NumberFormat.decimalPattern().format(foreignCurrencyAmount.toInt())} ${countryCode}' ?? "" ,
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
@@ -744,7 +999,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                               MainAxisAlignment.end,
                                           children: [
                                             Text(
-                                              '${NumberFormat.decimalPattern().format(koreanWonAmount.toInt())}원',
+                                              '${NumberFormat.decimalPattern().format(koreanWonAmount.toInt())}원' ?? "",
                                               style: TextStyle(
                                                   fontSize: 17,
                                                   fontWeight: FontWeight.bold),
@@ -762,23 +1017,26 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         )
                       ],
                     ),
-                    header(),
+                    _header(),
                   ],
                 ),
               ),
-
               Expanded(
                 child: chatMessage(),
               ),
-              // const Expanded(
-              //   child: ListViewBuilder(),
-              // ),
               Container(
                 color: const Color(0xFFFFD954),
                 child: Row(
                   children: [
+                    SizedBox(
+                      width: 12,
+                    ),
                     IconButton(
-                      icon: const Icon(Icons.add),
+                      icon: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                        size: 25,
+                      ),
                       onPressed: () {
                         setState(() {
                           FocusManager.instance.primaryFocus?.unfocus();
@@ -788,10 +1046,13 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),
+                    SizedBox(
+                      width: 12,
+                    ),
                     Flexible(
                       flex: 2,
                       child: Container(
-                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
                         child: TextField(
                           controller: messageController,
                           // 메시지 전송 컨트롤러
@@ -827,13 +1088,19 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         ),
                       ),
                     ),
+                    SizedBox(
+                      width: 12,
+                    ),
                     IconButton(
                       onPressed: () {
                         addMessage(true);
                       },
-                      icon: Icon(Icons.send),
+                      icon: Icon(Icons.send, color: Colors.white),
                       padding: EdgeInsets.zero,
                       constraints: BoxConstraints(),
+                    ),
+                    SizedBox(
+                      width: 12,
                     ),
                   ],
                 ),
@@ -906,73 +1173,103 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         GestureDetector(
                           onTap: () async {
                             if (_shouldShowTradeInfo(appointmentType)) {
-                              if(appointmentType == AppointmentType.progressSellerDirect){
-                                String appt = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>  TransactionInfoPage(
-                                      tradeInfoMap: {
-                                        "tradeId": tradeId,
-                                        "tradeTitle": tradeTitle,
-                                        "countryCode": countryCode,
-                                        "thumbnailImageUrl": thumbnailImageUrl,
-                                        "foreignCurrencyAmount": foreignCurrencyAmount,
-                                        "koreanWonAmount": koreanWonAmount,
-                                        "buyerId": buyerId,
-                                        "directTradeLocationDetail": directTradeLocationDetail,
-                                        "directTradeTime": directTradeTime,
-                                      },
-                                    ),
-                                  ),
-                                );
-                                setState(() {
-
-                                });
-                              }else if(appointmentType == AppointmentType.progressSellerDeliveryBefore ||
-                              appointmentType == AppointmentType.progressSellerDeliveryAfter ||
-                              appointmentType == AppointmentType.progressBuyerDeliveryBefore ||
-                              appointmentType == AppointmentType.progressBuyerDeliveryAfter){
+                              if (appointmentType ==
+                                      AppointmentType.progressSellerDirect ||
+                                  appointmentType ==
+                                      AppointmentType.completeDirectBuyer ||
+                                  appointmentType ==
+                                      AppointmentType.completeDirectSeller) {
                                 await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>  DeliveryTransactionPage(
+                                    builder: (context) => TransactionInfoPage(
                                       tradeInfoMap: {
                                         "tradeId": tradeId,
                                         "tradeTitle": tradeTitle,
                                         "countryCode": countryCode,
                                         "thumbnailImageUrl": thumbnailImageUrl,
-                                        "foreignCurrencyAmount": foreignCurrencyAmount,
+                                        "foreignCurrencyAmount":
+                                            foreignCurrencyAmount,
                                         "koreanWonAmount": koreanWonAmount,
                                         "buyerId": buyerId,
-                                        "deliveryAddress": deliveryAddress,
-                                        "deliveryAddressDetail": deliveryAddressDetail,
-                                        "deliveryAddressZipCode": deliveryAddressZipCode,
-                                        "deliveryRecipientName": deliveryRecipientName,
-                                        "deliveryRecipientTel": deliveryRecipientTel,
-                                        "sellerAccountBankCode": sellerAccountBankCode,
-                                        "sellerAccountNumber": sellerAccountNumber,
-                                        "sellerId": sellerId,
-                                        "trackingNumber": trackingNumber,
+                                        "directTradeLocationDetail":
+                                            directTradeLocationDetail,
+                                        "directTradeTime": directTradeTime,
+                                        "appointmentType": appointmentType,
                                       },
                                     ),
                                   ),
                                 );
-                                setState(() {
-
-                                });
+                                setState(() {});
+                              } else if (appointmentType ==
+                                  AppointmentType.progressBuyerDirect) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      // title: Text("안내"),
+                                      content: Text("판매자가 거래 정보를 입력중이에요."),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(
+                                                context); // Close the dialog
+                                          },
+                                          child: Text("확인"),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              } else {
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DeliveryTransactionPage(
+                                      tradeInfoMap: {
+                                        "tradeId": tradeId,
+                                        "tradeTitle": tradeTitle,
+                                        "countryCode": countryCode,
+                                        "thumbnailImageUrl": thumbnailImageUrl,
+                                        "foreignCurrencyAmount":
+                                            foreignCurrencyAmount,
+                                        "koreanWonAmount": koreanWonAmount,
+                                        "buyerId": buyerId,
+                                        "deliveryAddress": deliveryAddress,
+                                        "deliveryAddressDetail":
+                                            deliveryAddressDetail,
+                                        "deliveryAddressZipCode":
+                                            deliveryAddressZipCode,
+                                        "deliveryRecipientName":
+                                            deliveryRecipientName,
+                                        "deliveryRecipientTel":
+                                            deliveryRecipientTel,
+                                        "sellerAccountBankCode":
+                                            sellerAccountBankCode,
+                                        "sellerAccountNumber":
+                                            sellerAccountNumber,
+                                        "sellerId": sellerId,
+                                        "trackingNumber": trackingNumber,
+                                        "appointmentType": appointmentType,
+                                      },
+                                    ),
+                                  ),
+                                );
+                                setState(() {});
                               }
-
                             } else {
                               showDialog(
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
                                     // title: Text("안내"),
-                                    content: Text("아직 거래 약속을 잡지 않았어요."),
+                                    content: Text("거래 약속을 잡지 않았어요."),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
-                                          Navigator.pop(context); // Close the dialog
+                                          Navigator.pop(
+                                              context); // Close the dialog
                                         },
                                         child: Text("확인"),
                                       ),
@@ -1016,4 +1313,311 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
           )),
     ));
   }
+
+  bool isComplete(String? directTradeTime) {
+    String dateString = directTradeTime!;
+    DateTime parsedDateTime = parseKoreanDateTime(dateString);
+    DateTime now = DateTime.now().add(Duration(hours: 9));
+    // 비교
+    if (now.isBefore(parsedDateTime)) {
+      print("약속 시간이 지나지 않았습니다.");
+      return false;
+    } else {
+      print("약속 시간이 지났습니다.");
+      return true;
+    }
+  }
+
+  DateTime parseKoreanDateTime(String dateString) {
+    return DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko').parseLoose(dateString);
+  }
+
+  void setCompleteAppointment() {
+    Map<String, dynamic> tradeInfo = {
+      "status": "COMPLETE",
+    };
+
+    // 백엔드에 거래완료 status 전달 method 구현 필요
+
+    // 직거래 판매자 or 구매자 시간 경과 후 거래 완료 v
+    // 택배거래 (계좌) 판매자 거래완료 v
+    // 택배거래 (페이) 구매자 수령확인 거래완료
+    SpringApi().setCompleteAppointment(tradeId!, myUserId!);
+    DatabaseMethods().updateTradeInfo(tradeId!, tradeInfo);
+    print(tradeInfo.toString());
+  }
+
+  void setNotificationRiview() {
+    // chatrooms 메시지에 안내 메시지 추가
+    DateTime now = DateTime.now();
+    String formattedDate =
+        DateFormat('h:mma').format(now.add(Duration(hours: 9))); // UT
+    Map<String, dynamic> noticeInfoMap = {
+      "message": "",
+      "sendBy": "admin",
+      "ts": formattedDate, // timestamp
+      "time": FieldValue.serverTimestamp(),
+      "imgUrl": "",
+      "type": "NOTICE",
+    };
+    DatabaseMethods().addMessage(chatRoomId!, noticeInfoMap);
+    // trade review true로 변경
+    Map<String, dynamic> tradeInfoMap = {"${myRole}Review": true};
+    DatabaseMethods().updateTradeInfo(tradeId!, tradeInfoMap);
+  }
+
+  cancelAppointment() {
+    SpringApi().cancelAppointment(tradeId!, myUserId!);
+    DatabaseMethods().setDefaultTradeInfo(sellerId!, tradeId!);
+  }
+
+  bool showMoreModal() {
+    if (appointmentType == AppointmentType.progressSellerDeliveryAccount ||
+        appointmentType == AppointmentType.progressSellerDeliveryBefore ||
+        appointmentType == AppointmentType.progressSellerDirect) {
+      return false;
+    }
+    return true;
+  }
+
+  // 취소하기
+  Widget _cancelDialog() {
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context:
+          context,
+          builder:
+              (context) {
+            return showMoreModal()
+                ? AlertDialog(
+              // title: Text("안내"),
+              content:
+              Text("약속을 취소할 수가 없어요."),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close the dialog
+                  },
+                  child: Text("확인"),
+                ),
+              ],
+            )
+                : AlertDialog(
+              shape:
+              RoundedRectangleBorder(
+                borderRadius:
+                BorderRadius.circular(15.0),
+              ),
+              content:
+              Text("거래 약속을 취소하시겠어요?"),
+              actions: [
+                TextButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                    ),
+                    minimumSize: MaterialStateProperty.all<Size>(Size(100, 50)),
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade200),
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                  ),
+                  child: Text(
+                    "아니요",
+                    style: TextStyle(fontSize: 17),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                TextButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    minimumSize: MaterialStateProperty.all<Size>(Size(100, 50)),
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  ),
+                  child: Text(
+                    "취소",
+                    style: TextStyle(fontSize: 17),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    // 약속 취소 메소드 실행
+                    cancelAppointment();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: Container(
+        padding:
+        const EdgeInsets
+            .fromLTRB(
+            10,
+            17,
+            10,
+            17),
+        margin: EdgeInsets
+            .fromLTRB(
+            20,
+            25,
+            20,
+            0),
+        width: double
+            .infinity,
+        decoration:
+        BoxDecoration(
+          borderRadius:
+          BorderRadius
+              .all(
+            Radius
+                .circular(
+                20),
+          ),
+          border: Border.all(
+              color: Colors
+                  .black26,
+              width: 2.0),
+        ),
+        child: Center(
+            child: Text(
+              "약속 취소",
+              style: const TextStyle(
+                  fontWeight:
+                  FontWeight
+                      .bold,
+                  fontSize:
+                  18,
+                  color: Colors
+                      .blueAccent),
+              textAlign:
+              TextAlign
+                  .center,
+            )),
+      ),
+    );
+  }
+
+  // 신고하기
+  Widget _declarationDialog() {
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context:
+          context,
+          builder:
+              (context) {
+            return
+              AlertDialog(
+                shape:
+                RoundedRectangleBorder(
+                  borderRadius:
+                  BorderRadius.circular(15.0),
+                ),
+                content:
+                Text("신고하시겠습니까?"),
+                actions: [
+                  TextButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                      ),
+                      minimumSize: MaterialStateProperty.all<Size>(Size(100, 50)),
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade200),
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                    ),
+                    child: Text(
+                      "아니요",
+                      style: TextStyle(fontSize: 17),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  TextButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      minimumSize: MaterialStateProperty.all<Size>(Size(100, 50)),
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                    ),
+                    child: Text(
+                      "신고하기",
+                      style: TextStyle(fontSize: 17),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              );
+          },
+        );
+      },
+      child: Container(
+        padding:
+        EdgeInsets
+            .fromLTRB(
+            10,
+            17,
+            10,
+            17),
+        margin: EdgeInsets
+            .fromLTRB(
+            20,
+            20,
+            20,
+            0),
+        width: double
+            .infinity,
+        decoration:
+        BoxDecoration(
+          borderRadius:
+          BorderRadius
+              .all(
+            Radius
+                .circular(
+                20),
+          ),
+          border: Border.all(
+              color: Colors
+                  .black26,
+              width: 2.0),
+        ),
+        child: Center(
+            child: Text(
+              "신고하기",
+              style: const TextStyle(
+                  fontWeight:
+                  FontWeight
+                      .bold,
+                  fontSize:
+                  18,
+                  color: Colors
+                      .redAccent),
+              textAlign:
+              TextAlign
+                  .center,
+            )),
+      ),
+    );
+  }
 }
+
+
+
+
