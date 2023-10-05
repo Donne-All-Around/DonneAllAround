@@ -16,7 +16,6 @@ class TransactionDetailPage extends StatefulWidget {
 }
 
 class _TransactionDetailPageState extends State<TransactionDetailPage> {
-
   @override
   void initState() {
     getTradeDetail();
@@ -117,13 +116,30 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                       pageSnapping: true,
                       itemBuilder: (context, index) {
                         return Image(
-                            image: NetworkImage(trade.imageUrlList[index]));
+                          image:
+                              // NetworkImage(trade.imageUrlList[index])
+                              AssetImage('assets/images/profile.jpg'),
+                        );
                       }),
                 ),
-                Container(height: 1, color: Colors.black26),
+                // Container(height: 1, color: Colors.black26),
                 Container(
-                  padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-                  color: Colors.white,
+                  padding: EdgeInsets.fromLTRB(30, 18, 30, 13),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(25.0),
+                      topRight: Radius.circular(25.0),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        spreadRadius: 1,
+                        blurRadius: 1,
+                        offset: const Offset(0, 0),
+                      ),
+                    ],
+                    color: Colors.white,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -150,9 +166,8 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                     ],
                   ),
                 ),
-                Container(height: 1, color: Colors.black26),
                 Container(
-                    padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                    padding: const EdgeInsets.fromLTRB(30, 15, 30, 10),
                     child: Column(
                       children: [
                         Row(
@@ -169,7 +184,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                             const Text('1시간 전'),
                           ],
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 14),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -181,7 +196,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 15),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -206,16 +221,20 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                         Container(
                           margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                           height: 350,
-                          child: GoogleMap(
-                            initialCameraPosition: CameraPosition(
-                              target: latlng,
-                              zoom: 17,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20.0),
+                            // 원하는 둥글기 반경 설정
+                            child: GoogleMap(
+                              initialCameraPosition: CameraPosition(
+                                target: latlng,
+                                zoom: 17,
+                              ),
+                              zoomControlsEnabled: false,
+                              myLocationButtonEnabled: false,
+                              myLocationEnabled: true,
+                              markers: Set<Marker>(),
+                              mapToolbarEnabled: false,
                             ),
-                            zoomControlsEnabled: false,
-                            myLocationButtonEnabled: false,
-                            myLocationEnabled: true,
-                            markers: Set<Marker>.of(_marker),
-                            mapToolbarEnabled: false,
                           ),
                         )
                       ],
@@ -228,15 +247,22 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
             bottom: 0,
             child: Column(
               children: [
+
                 Container(
-                    height: 1,
-                    width: MediaQuery.of(context).size.width,
-                    color: Colors.black26),
-                Container(
+
                     padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                     height: 75,
                     width: MediaQuery.of(context).size.width,
-                    color: Colors.white,
+                    decoration: BoxDecoration(color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 1,
+                          offset: const Offset(0, 0),
+                        ),
+                      ],
+                    ),
                     child: Row(
                       children: [
                         IconButton(
@@ -298,13 +324,11 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                 onTap: () {
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
-                                      return  ChattingDetailPage(
-                                          tradeInfoMap :{
-                                            "tradeId" : "1",
-                                            "seller" : "신짱구",
-                                            "sellerId" : "3",
-                                          }
-                                      );
+                                      return ChattingDetailPage(tradeInfoMap: {
+                                        "tradeId": trade.id.toString(),
+                                        "seller": trade.sellerNickname,
+                                        "sellerId": trade.sellerId.toString(),
+                                      });
                                     },
                                   ));
                                 },

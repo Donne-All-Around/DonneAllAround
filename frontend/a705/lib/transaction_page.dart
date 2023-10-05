@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:a705/choose_location_page2.dart';
 import 'package:a705/main_page.dart';
 import 'package:a705/models/address.dart';
+import 'package:a705/providers/database.dart';
 import 'package:a705/providers/exchange_providers.dart';
 import 'package:a705/providers/trade_providers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -88,7 +89,7 @@ class _TransactionPageState extends State<TransactionPage> {
     '\$'
   ];
 
-  List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
+  List<int> unit = [1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
 
   List<File> selectedImages = [];
   final picker = ImagePicker();
@@ -317,7 +318,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         filled: true,
-                        fillColor: const Color(0xFFF2F2F2),
+                        fillColor: const Color(0xFFF3F3F3),
                         hintText: '글 제목',
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -349,7 +350,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10),
                       ),
-                      color: Color(0xFFF2F2F2),
+                      color: Color(0xFFF3F3F3),
                     ),
                     child: Row(
                       children: [
@@ -399,7 +400,7 @@ class _TransactionPageState extends State<TransactionPage> {
                             bottomRight: Radius.circular(10),
                           ),
                           borderSide:
-                              BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                              BorderSide(color: Color(0xFFF3F3F3), width: 3),
                         ),
                         focusedBorder: const OutlineInputBorder(
                           borderRadius: BorderRadius.only(
@@ -407,7 +408,7 @@ class _TransactionPageState extends State<TransactionPage> {
                             bottomRight: Radius.circular(10),
                           ),
                           borderSide:
-                              BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                              BorderSide(color: Color(0xFFF3F3F3), width: 3),
                         ),
                         suffixText: ' ${sign[idx]}',
                       ),
@@ -440,7 +441,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10),
                       ),
-                      color: Color(0xFFF2F2F2),
+                      color: Color(0xFFF3F3F3),
                     ),
                     child: const Row(
                       children: [
@@ -477,7 +478,7 @@ class _TransactionPageState extends State<TransactionPage> {
                             bottomRight: Radius.circular(10),
                           ),
                           borderSide:
-                              BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                              BorderSide(color: Color(0xFFF3F3F3), width: 3),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.only(
@@ -485,7 +486,7 @@ class _TransactionPageState extends State<TransactionPage> {
                             bottomRight: Radius.circular(10),
                           ),
                           borderSide:
-                              BorderSide(color: Color(0xFFF2F2F2), width: 3),
+                              BorderSide(color: Color(0xFFF3F3F3), width: 3),
                         ),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         suffixText: ' ₩',
@@ -522,7 +523,7 @@ class _TransactionPageState extends State<TransactionPage> {
                     decoration: InputDecoration(
                       hintText: '설명을 입력하세요',
                       filled: true,
-                      fillColor: const Color(0xFFF2F2F2),
+                      fillColor: const Color(0xFFF3F3F3),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: const BorderSide(color: Colors.transparent),
@@ -562,7 +563,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       height: _addr == "장소 선택" ? 50 : null,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: const Color(0xFFF2F2F2),
+                        color: const Color(0xFFF3F3F3),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -645,6 +646,7 @@ class _TransactionPageState extends State<TransactionPage> {
                         );
 
                         tradeProvider.postTrade(uploadTrade);
+
 
                         if (!mounted) return;
                         Navigator.pushAndRemoveUntil(
