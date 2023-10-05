@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
 
   Future initTrade() async {
     trade = await tradeProvider.getLatestTrade(
-        currency[_idx], null, null, null, null, null, null, null);
+        currency[_idx], null, null, null, null, null, "강남구", "역삼동");
     size = trade.length;
     setState(() {});
   }
@@ -91,6 +91,8 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  int idx = 0;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -113,6 +115,40 @@ class _HomePageState extends State<HomePage> {
                     _addr = "${address.subLocality} ${address.thoroughfare}";
                     _address = address;
                   });
+                  if (_selectedValue == "최신순") {
+                    trade = await tradeProvider.getLatestTrade(
+                        currency[_idx],
+                        null,
+                        _address.country,
+                        _address.administrativeArea,
+                        _address.subAdministrativeArea,
+                        _address.locality,
+                        _address.subLocality,
+                        _address.thoroughfare);
+                    setState(() {});
+                  } else if (_selectedValue == "낮은 가격순") {
+                    trade = await tradeProvider.getLowestTrade(
+                        currency[_idx],
+                        null,
+                        _address.country,
+                        _address.administrativeArea,
+                        _address.subAdministrativeArea,
+                        _address.locality,
+                        _address.subLocality,
+                        _address.thoroughfare);
+                    setState(() {});
+                  } else {
+                    trade = await tradeProvider.getLowestRateTrade(
+                        currency[_idx],
+                        null,
+                        _address.country,
+                        _address.administrativeArea,
+                        _address.subAdministrativeArea,
+                        _address.locality,
+                        _address.subLocality,
+                        _address.thoroughfare);
+                    setState(() {});
+                  }
                 },
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
@@ -149,19 +185,129 @@ class _HomePageState extends State<HomePage> {
                                   const EdgeInsets.fromLTRB(30, 20, 30, 20),
                               height:
                                   MediaQuery.of(context).size.height / 5 * 4,
-                              child: const Column(
+                              child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  SizedBox(height: 10),
-                                  Text(
+                                  const SizedBox(height: 10),
+                                  const Text(
                                     '통화 선택',
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20),
                                   ),
-                                  SizedBox(height: 10),
-                                  Expanded(child: CountryListViewBuilder()),
+                                  const SizedBox(height: 10),
+                                  Expanded(
+                                      child: ListView.builder(
+                                    itemCount: country.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return GestureDetector(
+                                        onTap: () async {
+                                          if (_selectedValue == "최신순") {
+                                            trade = await tradeProvider
+                                                .getLatestTrade(
+                                                    currency[index],
+                                                    null,
+                                                    _address.country,
+                                                    _address.administrativeArea,
+                                                    _address
+                                                        .subAdministrativeArea,
+                                                    _address.locality,
+                                                    _address.subLocality,
+                                                    _address.thoroughfare);
+                                            setState(() {});
+                                          } else if (_selectedValue ==
+                                              "낮은 가격순") {
+                                            trade = await tradeProvider
+                                                .getLowestTrade(
+                                                    currency[index],
+                                                    null,
+                                                    _address.country,
+                                                    _address.administrativeArea,
+                                                    _address
+                                                        .subAdministrativeArea,
+                                                    _address.locality,
+                                                    _address.subLocality,
+                                                    _address.thoroughfare);
+                                            setState(() {});
+                                          } else {
+                                            trade = await tradeProvider
+                                                .getLowestRateTrade(
+                                                    currency[index],
+                                                    null,
+                                                    _address.country,
+                                                    _address.administrativeArea,
+                                                    _address
+                                                        .subAdministrativeArea,
+                                                    _address.locality,
+                                                    _address.subLocality,
+                                                    _address.thoroughfare);
+                                            setState(() {});
+                                          }
+                                          setState(() {
+                                            _idx = index;
+                                          });
+                                          if (!mounted) return;
+                                          Navigator.pop(context, _idx);
+                                        },
+                                        child: Container(
+                                          margin: const EdgeInsets.fromLTRB(
+                                              0, 0, 0, 20),
+                                          height: 50,
+                                          width: double.infinity,
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(10),
+                                            ),
+                                            color: Color(0xFFFFD954),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  const SizedBox(width: 20),
+                                                  CircleAvatar(
+                                                    backgroundImage: AssetImage(
+                                                        'assets/images/flag/${currency[index] == 'KRW' ? 'KRW' : currency[index] == 'USD' ? 'USDKRW' : 'USD${currency[index]}'}.png'),
+                                                    radius: 10,
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                ],
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      country[index],
+                                                      style: const TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    Text(
+                                                      currency[index],
+                                                      style: const TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              const SizedBox(width: 20),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  )),
                                 ],
                               ),
                             ));
@@ -681,78 +827,3 @@ List<String> sign = [
 ];
 
 List<int> unit = [1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
-
-class CountryListViewBuilder extends StatefulWidget {
-  const CountryListViewBuilder({super.key});
-
-  @override
-  State<CountryListViewBuilder> createState() => _CountryListViewBuilderState();
-}
-
-class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
-  int idx = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: country.length,
-      itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          onTap: () {
-            // 검색 다시 되게 하기
-            setState(() {
-              idx = index;
-            });
-            Navigator.pop(context, idx);
-          },
-          child: Container(
-            margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-            height: 50,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
-              color: Color(0xFFFFD954),
-            ),
-            child: Row(
-              children: [
-                Row(
-                  children: [
-                    const SizedBox(width: 20),
-                    CircleAvatar(
-                      backgroundImage: AssetImage(
-                          'assets/images/flag/${currency[index] == 'KRW' ? 'KRW' : currency[index] == 'USD' ? 'USDKRW' : 'USD${currency[index]}'}.png'),
-                      radius: 10,
-                    ),
-                    const SizedBox(width: 10),
-                  ],
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        country[index],
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        currency[index],
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 20),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
