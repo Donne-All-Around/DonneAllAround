@@ -6,8 +6,14 @@ import 'package:intl/intl.dart';
 import 'dart:convert'; // JSON 파싱을 위해 추가
 import 'package:http/http.dart' as http;
 
+
 class ExchangeRecordPage extends StatefulWidget {
-  const ExchangeRecordPage({super.key});
+  final String? type;
+
+
+  const ExchangeRecordPage({    Key? key,
+  this.type
+}) : super(key: key);
 
   @override
   State<ExchangeRecordPage> createState() => ExchangeRecordPageState();
@@ -204,10 +210,8 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
         final List<dynamic> jsonData = jsonResponse['data']
             ['exchangeRecordList']; // 주의: 'exchangeRecordList'의 오타 수정
 
-        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         if (jsonData != null) {
           setState(() {
-            print("@@@@@@@@@@@@@@@저장시작@@@@@@@@@@@@@@@@@@");
             exchangeDataList =
                 List<Map<String, dynamic>>.from(jsonData.map((data) {
               // 은행 코드를 currencyName으로 변환하여 추가
@@ -228,12 +232,16 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
     }
   }
 
+  bool isCalculate = false;
   @override
   void initState() {
 
     super.initState();
     // 페이지가 로드될 때 서버로부터 데이터를 가져오도록 초기화 메서드 호출
     fetchExchangeData();
+    if(widget.type == "calculate"){
+      isCalculate = true;
+    }
   }
 
   String? previousDate2;
@@ -312,9 +320,11 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                   )),
                             const SizedBox(height: 4),
                             GestureDetector(
-                              // onTap: () {
-                              //   Navigator.of(context).pop(exchangeDataList[index]);
-                              // },
+                              onTap: () {
+                                if (isCalculate) {
+                                  Navigator.of(context).pop(exchangeDataList[index]);
+                                }
+                              },
                               child: Container(
                                   width: 350,
                                   height: 150,
@@ -334,8 +344,9 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Container(
-                                            margin: const EdgeInsets.fromLTRB(
-                                                16, 4, 16, 4),
+
+                                            margin: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+
                                             child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
@@ -360,6 +371,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                                 as int;
                                                         showDialog(
                                                             context: context,
+
                                                             builder:
                                                                 (BuildContext
                                                                     context) {
@@ -444,6 +456,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                       })
                                                 ])),
                                         const SizedBox(height: 10),
+
                                         Container(
                                             margin: const EdgeInsets.symmetric(
                                                 horizontal: 16),
@@ -467,6 +480,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                                   FontWeight
                                                                       .bold,
                                                               fontSize: 30,
+
                                                             )),
                                                         const SizedBox(
                                                             height: 5),
@@ -485,6 +499,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                                   )),
                                                               const SizedBox(
                                                                   width: 3),
+
                                                               Text(
                                                                   '우대율${exchangeData['preferentialRate']}%',
                                                                   style:
@@ -535,6 +550,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                                     AssetImage(
                                                                         'assets/images/flag/USD${exchangeData['countryCode'] == 'USD' ? 'KRW' : exchangeData['countryCode']}.png'),
                                                                 radius: 16,
+
                                                               ),
                                                             ]),
                                                         const SizedBox(
@@ -563,6 +579,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                                     AssetImage(
                                                                         'assets/images/flag/KRW.png'),
                                                                 radius: 16,
+
                                                               ),
                                                             ])
                                                       ])

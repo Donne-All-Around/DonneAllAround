@@ -1,9 +1,5 @@
-
-import 'package:a705/Login/profilesetting_page.dart';
 import 'package:a705/main_page.dart';
-import 'package:a705/storage.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:a705/Login/start_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:a705/providers/member_providers.dart';
@@ -52,6 +48,7 @@ class MyApp extends StatelessWidget {
         Locale('ko', 'KR'),
       ],
       locale: const Locale('ko'),
+      // home: ProfileSettingPage(phoneNumber: '01063139114', uid: 'jtBaAfz6KEPOXzZoB97VS4FRWap2'),
       // home: const StartPage(),
       home: const MainPage(),
       // home: ProfileSettingPage(phoneNumber: '01099999999', uid: 'akjg4464HLSH'),

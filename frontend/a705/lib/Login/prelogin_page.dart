@@ -257,82 +257,77 @@ class _PreLoginPageState extends State<PreLoginPage> {
   }
 
   // OTP 값 확인하고 메인페이지 가는 기능
+
   void verifyCode() async {
     try {
-    PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId:verificationIDReceived, smsCode: optCodeController.text );
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId:verificationIDReceived, smsCode: optCodeController.text );
 
-    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-    // Firebase 인증 토큰 얻기
-    String? firebaseToken = await userCredential.user!.getIdToken();
-    String? uid = userCredential.user!.uid;
-    String? tel = phoneController.text;
-    print("Firebase 토큰: $firebaseToken");
-    print("uid : $uid");
-    print("tel : $tel");
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      // Firebase 인증 토큰 얻기
+      String? firebaseToken = await userCredential.user!.getIdToken();
+      // String? uid = userCredential.user!.uid;
+      String? uid = userCredential.user!.uid;
+      String? tel = phoneController.text;
+      print("Firebase 토큰: $firebaseToken");
+      print("uid : $uid");
+      print("tel : $tel");
 
-    // Firebase 토큰을 백엔드 서버로 전송하여 JWT 토큰을 가져옴
-    Map<String, dynamic>? signInResponse = await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!, uid, tel);
-    if (signInResponse != null) {
-      String? id = signInResponse['id'];
-      String? tel = signInResponse['tel'];
-      String? token = signInResponse['token'];
+      // Firebase 토큰을 백엔드 서버로 전송하여 JWT 토큰을 가져옴
+      String? signInResponse =
+      await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!, uid, tel);
 
-      if (id != null && tel != null && token != null) {
-        String jwtToken = '$id|$tel|$token'; // 예제에서 사용하는 방식으로 JWT 토큰 구성
-        print("토큰 : $jwtToken");
-
-        // 스토리지 저장 및 헤더에 토큰 값 할당 구현.!!!!!!!
-        saveUserInfo('$id','$tel','$token');
+      if (signInResponse == 'SUCCESS') {
+        if (!mounted) return;
         Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
+      } else {
+        if (!mounted) return;
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProfileSettingPage(phoneNumber: tel, uid: uid)));
       }
-    }
-    if (signInResponse == null) {
-      // null  인 경우,  uid 와 tel 갖고 프로필페이지로 이동.
-      Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfileSettingPage(phoneNumber: '$tel', uid: '$uid')));
-    }
-    // print("토큰 : $jwtToken");
-    print("파베로그인 성공!");
+      print("파베로그인 성공!");
     } catch (e) {
-    print("파베로그인 실패: $e");
+      print("파베로그인 실패: $e");
     }
 
   }
 
-  // 백엔드에서 사용자가 존재하는지 확인하는 함수
-  Future<void> checkUserExistenceAndNavigate() async {
-    final phoneNumber = phoneController.text; // 사용자가 입력한 전화번호
-    final userExists = await UserProvider().checkUserExists(phoneNumber);
-    // final userProvider = UserProvider();
-    if (userExists) {
-      // 이미 등록된 사용자인 경우
-      print('가라 메인페이지');
-      Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const MainPage()));
-    } else {
-      // await userProvider.registerUser(phoneNumber: phoneNumber, nickname: "", profileImg: "");
-      // 백엔드에 등록되지 않은 사용자인 경우
-      print('뉴멤버 환영');
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('회원 가입을 해주세요!'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const JoinPage()));
-                  // 기존 사용자 처리 로직 추가
-                },
-                child: Text('회원가입하러 이동'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-  }
+  // // 백엔드에서 사용자가 존재하는지 확인하는 함수
+  // Future<void> checkUserExistenceAndNavigate() async {
+  //   final phoneNumber = phoneController.text; // 사용자가 입력한 전화번호
+  //   final userExists = await UserProvider().checkUserExists(phoneNumber);
+  //   // final userProvider = UserProvider();
+  //   if (userExists) {
+  //     // 이미 등록된 사용자인 경우
+  //     print('가라 메인페이지');
+  //     Navigator.push(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => const MainPage()));
+  //   } else {
+  //     // await userProvider.registerUser(phoneNumber: phoneNumber, nickname: "", profileImg: "");
+  //     // 백엔드에 등록되지 않은 사용자인 경우
+  //     print('뉴멤버 환영');
+  //     showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           title: Text('회원 가입을 해주세요!'),
+  //           actions: [
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.push(
+  //                     context,
+  //                     MaterialPageRoute(builder: (context) => const JoinPage()));
+  //                 // 기존 사용자 처리 로직 추가
+  //               },
+  //               child: Text('회원가입하러 이동'),
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     );
+  //   }
+  // }
 }

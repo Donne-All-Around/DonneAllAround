@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../models/JoinDto.dart';
+import '../models/JoinResponseDto.dart';
 import '../providers/member_providers.dart';
 import '../storage.dart';
 
@@ -250,16 +251,21 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
 
                       try {
                         final responseBody = await _userProvider.signUp(uploadSign);
-
                         if (responseBody != null) {
-                          final id = responseBody['id'];
-                          final tel = responseBody['tel'];
-                          final token = responseBody['token'];
+                          final apiResponse = ApiResponse.fromJson(responseBody);
+                          int id = apiResponse.data.id;
+                          String tel = apiResponse.data.tel;
+                          String nickname = apiResponse.data.nickname;
+                          String accessToken = apiResponse.data.token.accessToken;
+                          String refreshToken = apiResponse.data.token.refreshToken;
+                          print('프로필 설정 할 때 받은 id: $id');
+                          print('프로필 설정 할 때 받은 tel: $tel');
+                          print('프로필 설정 할 때 받은 nickname: $nickname');
+                          print('프로필 설정 할 때 받은 token: $accessToken');
+                          print('프로필 설정 할 때 받은 token: $refreshToken');
 
                           // 데이터를 저장하기 위한 함수 호출
-                          await saveUserInfo(id, tel, token);
-
-
+                          await saveUserInfo(id, tel, nickname,accessToken, refreshToken);
                         } else {
                           // 응답이 null인 경우에 대한 처리
                           print('user 확인 응답이 안옴.');
@@ -268,6 +274,28 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                         // signUp 함수에서 예외가 발생한 경우 처리
                         print('프로필 설정 signUp 함수 예외');
                       }
+                      // try {
+                      //   final responseBody = await _userProvider.signUp(uploadSign);
+                      //   print('프로필 설정 페이지에서 받는 jwt : $responseBody');
+                      //   if (responseBody != null) {
+                      //     int id = responseBody['data']['id'];
+                      //     String tel = responseBody['data']['tel'];
+                      //     String token = responseBody['data']['token'];
+                      //     print('프로필 설정 할 때 받은 id: $id');
+                      //     print('프로필 설정 할 때 받은 tel: $tel');
+                      //     print('프로필 설정 할 때 받은 token: $token');
+                      //     // 데이터를 저장하기 위한 함수 호출
+                      //     await saveUserInfo(id, tel, token);
+                      //
+                      //
+                      //   } else {
+                      //     // 응답이 null인 경우에 대한 처리
+                      //     print('user 확인 응답이 안옴.');
+                      //   }
+                      // } catch (e) {
+                      //   // signUp 함수에서 예외가 발생한 경우 처리
+                      //   print('프로필 설정 signUp 함수 예외');
+                      // }
                       // 이밑에 코드들은 지우지 마셈!!
                       //// 메인페이지에서 뒤로 가기 가능.
                       // Navigator.push(
@@ -369,7 +397,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
     final pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
       // uploadImageToFirebase(pickedFile.path);
-      String _path = "profile/image.jpg";
+      String _path = "profile/image${widget.phoneNumber}.jpg";
       File _file = File(pickedFile.path);
       await FirebaseStorage.instance.ref(_path).putFile(_file);
       final String _urlString =

@@ -1,12 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import '../models/JoinDto.dart';
+import '../models/LoginDto.dart';
 import '../models/MemberDto.dart'; // MemberDto 클래스를 가져옵니다.
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
+
+import '../storage.dart';
 
 class UserProvider extends ChangeNotifier {
   MemberDto? _user; // 사용자 데이터를 저장
@@ -46,7 +50,9 @@ class UserProvider extends ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
-      final responseBody = jsonDecode(response.body);
+      // final responseBody = jsonDecode(response.body); 한글 깨져서
+      final responseBody = jsonDecode(utf8.decode(response.bodyBytes));
+      print('회원가입 후 백엔드에서 받는 응답확인: $responseBody');
       return responseBody;
       // id/ tel / token 나누거나 사용하는 곳에서 나눠도 됨.
     } else {
@@ -58,9 +64,11 @@ class UserProvider extends ChangeNotifier {
 
 // 닉네임 체크 
   Future<String> checkNickname(String nickname) async {
+    final url = "$baseUrl/api/member/check/nickname";
+
     try {
       final response = await http.post(
-        Uri.parse(baseUrl),
+        Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -68,7 +76,7 @@ class UserProvider extends ChangeNotifier {
           'nickname': nickname,
         }),
       );
-
+      print('응답: $response');
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         final String checkedNickname = data['data']['checkedNickname'];
@@ -90,7 +98,7 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  
+
   // // 이미지 firebasestore 에 업로드 및 url 변환
   // Future<String?> uploadImage(File imageFile) async {
   //   try {
@@ -110,17 +118,21 @@ class UserProvider extends ChangeNotifier {
   //   }
   // }
 
-  // 파베 토큰 주고 jwt 토큰 받아오기
-  Future<Map<String, dynamic>?> getJwtTokenFromFirebaseToken(String firebaseToken, String uid, String tel) async {
+
+
+  Future<String?> getJwtTokenFromFirebaseToken(String firebaseToken, String uid,
+      String tel) async {
     final url = "$baseUrl/api/member/sign-in";
 
     // Prepare the request body with the firebaseToken, uid, and tel
     final requestBody = {
-      'firebaseToken': firebaseToken,
-      'uid': uid,
-      'tel': tel,
+      "idToken": firebaseToken,
+      "uid": uid,
+      "tel": tel,
     };
-
+    print('보내는 파베토큰 : ${requestBody['idToken']}');
+    print('보내는 uid : ${requestBody['uid']}');
+    print('보내는 tel : ${requestBody['tel']}');
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -129,35 +141,49 @@ class UserProvider extends ChangeNotifier {
         },
         body: jsonEncode(requestBody),
       );
+      print('파베보내고 jwt 받는 응답: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        if (responseData['member'] == true) {
-          final signInResponse = responseData['signInResponse'];
-          if (signInResponse is Map<String, dynamic>) {
-            final id = signInResponse['id'];
-            final tel = signInResponse['tel'];
-            final token = signInResponse['token'];
-            print('$id');
-            print('$tel');
-            print('$token');
-            return {
-              'id': id,
-              'tel': tel,
-              'token': token,
-            };
+
+        // 파이어베이스 토큰 인증 성공
+        if (responseData['firebaseAuthStatus'] == true) {
+          print("파이어베이스 토큰 인증 성공");
+
+          final signInResponseJson = responseData['signInResponse'];
+
+          if (signInResponseJson != null) {
+            final signInResponse = LoginResponse.fromJson(signInResponseJson);
+            int id = signInResponse.signInResponse.id;
+            String tel = signInResponse.signInResponse.tel;
+            String accessToken = signInResponse.signInResponse.token.accessToken;
+            String refreshToken = signInResponse.signInResponse.token.refreshToken;
+            String nickname = signInResponse.signInResponse.nickname;
+
+            print('너의 member id : $id');
+            print('너의 전번 : $tel');
+            print('너의 accessToken 토큰 값: $accessToken');
+            print('너의 refreshToken 토큰 값: $refreshToken');
+            print('너의 닉네임 : $nickname');
+
+            // 스토리지에 저장.
+            await saveUserInfo(id, tel, nickname, accessToken, refreshToken);
+
+            return 'SUCCESS';
+          } else {
+            print("기존 멤버가 아니라서 회원가입페이지로 갈거야!");
+            // 스타트펭지 또는 예외 처리 추가
+            return null; // 예외 처리에 따라 반환값을 수정
           }
-        } else {
-          print('뉴멤버환영');
-          return null;
         }
       }
-      throw Exception('Firebase 토큰으로부터 회원 정보를 가져오지 못했습니다');
     } catch (e) {
-      print('Firebase 토큰으로부터 회원 정보를 가져오는 중 오류 발생: $e');
-      return null;
+      print('백엔드서버에서 토큰 가져오는 중 오류 발생: $e');
+      // 스타트페이지
     }
   }
+}
+
   //
   // Future<SignInResponse?> getSignInResponseFromFirebaseToken(String firebaseToken, String uid, String tel) async {
   //   final url = "$baseUrl/api/member/verifyFirebaseToken";
@@ -203,4 +229,4 @@ class UserProvider extends ChangeNotifier {
   //   }
   // }
 
-}
+
