@@ -20,7 +20,7 @@ class ReviewCreatePageState extends State<ReviewCreatePage> {
   bool isGoodDonSelected = false;
   bool isBestDonSelected = false;
 
-  String revieweeId = ''; //
+  String revieweeId = '';
   String revieweeNickname = '';
 
   void selectBadDon() {
@@ -57,31 +57,28 @@ class ReviewCreatePageState extends State<ReviewCreatePage> {
 
   Future<void> fetchTradeData() async {
     final url = 'https://j9a705.p.ssafy.io/api/trade/detail/${widget.tradeID}';
+    const accessToken =
+        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(
+          Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',
+        },
+      );
 
       if (response.statusCode == 200) {
-        // 서버 응답이 성공적일 때 데이터를 파싱하여 저장합니다.
-        final parsedData = json.decode(response.body);
+        final responseData = utf8.decode(response.bodyBytes); // 한글 디코딩
+        final parsedData = json.decode(responseData);
         final data = parsedData['data'];
+
         setState(() {
           tradeData = data;
         });
-        // 리뷰 대상자의 아이디와 닉네임 설정
-        final memberId = '1'; // 현재 사용자의 아이디
-        final sellerId = tradeData?['sellerId'];
-        final sellerNickname = tradeData?['sellerNickname'];
-        final buyerId = tradeData?['buyerId'];
-        final buyerNickname = tradeData?['buyerNickname'];
 
-        if (sellerId == memberId && sellerNickname != null) {
-          revieweeId = buyerId;
-          revieweeNickname = buyerNickname;
-        } else if (buyerId == memberId && buyerNickname != null) {
-          revieweeId = sellerId;
-          revieweeNickname = sellerNickname;
-        }
         print('거래데이터 잘 받아옴');
 
       } else {
@@ -126,8 +123,9 @@ class ReviewCreatePageState extends State<ReviewCreatePage> {
     } else {
 
       // 정보가 모두 입력되었을 떄 서버로 전송
-      const memberId = '1'; // memberId 설정 (원하는 값으로 변경)
-      final url = 'https://j9a705.p.ssafy.io/api/trade/review/${widget.tradeID}?memberId=$memberId';
+      final url = 'https://j9a705.p.ssafy.io/api/trade/review/${widget.tradeID}';
+      const accessToken =
+          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 
       final requestData = {
         'revieweeId' : revieweeId,
@@ -139,8 +137,9 @@ class ReviewCreatePageState extends State<ReviewCreatePage> {
         final response = await http.post(
           Uri.parse(url),
           headers: <String, String>{
+            'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json; charset=UTF-8',
-          },
+            'Accept-Charset': 'UTF-8',          },
           body: jsonEncode(requestData),
         );
 
