@@ -20,7 +20,7 @@ import java.util.List;
 public class FirebaseConfig {
     @Value("${fcm.service-account-file}")
     private String serviceAccountFilePath;
-            //= "src/main/resources/firebase/donnearound-java-access-key.json";
+    //        = "src/main/resources/firebase/donnearound-java-access-key.json";
 
     private String scope = "https://www.googleapis.com/auth/cloud-platform";
 
