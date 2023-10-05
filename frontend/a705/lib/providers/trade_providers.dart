@@ -1,10 +1,14 @@
 import 'dart:convert';
 
 import 'package:a705/models/TradeDto.dart';
+import 'package:a705/providers/database.dart';
 import 'package:http/http.dart' as http;
 
 class TradeProviders {
   String url = "https://j9a705.p.ssafy.io";
+
+  String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtNzk3OS03OTc5IiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4ODk5M30.6tfXpAfYuARNQUcMBC7nVY-vgoX-8gDHI8zUx_1GQs0";
+
 
   // 거래 목록 조회(최신순)
   Future<List<TradeDto>> getLatestTrade(
@@ -17,16 +21,15 @@ class TradeProviders {
       String? subLocality,
       String? thoroughfare) async {
     List<TradeDto> trade = [];
-
+    print("거래 조회 시작");
     final response = await http.post(
       lastTradeId == null
           ? Uri.parse('$url/api/trade/list?lastTradeId=&sort=createTime')
           : Uri.parse(
               '$url/api/trade/list?lastTradeId=$lastTradeId&sort=createTime'),
       headers: {
-        "Accept": "application/json",
-        "content-type": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
+        'Content-Type': 'application/json',
+        'Authorization' : 'Bearer ${accessToken}',
       },
       body: jsonEncode({
         "countryCode": countryCode,
@@ -43,12 +46,11 @@ class TradeProviders {
       List<dynamic> body =
           json.decode(utf8.decode(response.bodyBytes))['data']['tradeList'];
       trade = body.map((trades) => TradeDto.fromJson(trades)).toList();
-      // print(trade);
+      print(trade);
     } else {
       print(response.statusCode);
       print(response.body);
     }
-
     return trade;
   }
 
@@ -70,9 +72,8 @@ class TradeProviders {
           : Uri.parse(
               '$url/api/trade/list?lastTradeId=$lastTradeId&sort=koreanWonAmount'),
       headers: {
-        "Accept": "application/json",
-        "content-type": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
+        'Content-Type': 'application/json',
+        'Authorization' : 'Bearer ${accessToken}',
       },
       body: jsonEncode({
         "countryCode": countryCode,
@@ -114,9 +115,8 @@ class TradeProviders {
           : Uri.parse(
               '$url/api/trade/list?lastTradeId=$lastTradeId&sort=koreanWonPerForeignCurrency'),
       headers: {
-        "Accept": "application/json",
-        "content-type": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
+        'Content-Type': 'application/json',
+        'Authorization' : 'Bearer ${accessToken}',
       },
       body: jsonEncode({
         "countryCode": countryCode,
@@ -145,8 +145,8 @@ class TradeProviders {
       Uri.parse(
           '$url/api/trade/history/sell/complete?lastTradeId=$lastTradeId'),
       headers: <String, String>{
-        'Content-Type': 'applcation/json',
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
+        'Content-Type': 'application/json',
+        'Authorization' : 'Bearer ${accessToken}',
       },
     );
     if (response.statusCode == 200) {
@@ -163,8 +163,8 @@ class TradeProviders {
     var response = await http.get(
       Uri.parse('$url/api/trade/detail/$tradeId'),
       headers: <String, String>{
-        'Content-Type': 'applcation/json',
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
+        'Content-Type': 'application/json',
+        'Authorization' : 'Bearer ${accessToken}',
       },
     );
     if (response.statusCode == 200) {
@@ -199,12 +199,20 @@ class TradeProviders {
     try {
       http.Response response = await http.post(Uri.parse('$url/api/trade/create'),
           headers: {
-            "Accept": "application/json",
-            "Content-Type":"application/json",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
+            'Content-Type': 'application/json',
+            'Authorization' : 'Bearer ${accessToken}',
           },
           body: jsonData);
       if(response.statusCode == 200) {
+        print("SUCCESS!");
+        String responseBody = utf8.decode(response.bodyBytes); // utf-8로 변환
+        Map<String, dynamic> jsonData = json.decode(responseBody);
+        // "data" 객체 추출
+        Map<String, dynamic> data = jsonData['data'];
+        print(responseBody);
+        // myUserId
+        String sellerId = "1";
+        DatabaseMethods().setDefaultTradeInfo(sellerId, data['id'].toString());
       }
     } catch (e) {
       print('등록 실패: $e');
@@ -264,7 +272,11 @@ class TradeProviders {
 
   Future<void> unlikeTrade(int tradeId) async {
     final response = await http.delete(
-      Uri.parse('$url/api/trade/$tradeId/unlike'),
+      Uri.parse('$url/api/trade/$tradeId/unlike?memberId=1'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization' : 'Bearer ${accessToken}',
+      }
     );
   }
 
@@ -274,7 +286,10 @@ class TradeProviders {
     print('sellerId: $sellerId, tradeId: $tradeId');
     try {
       http.Response _response = await http.get(Uri.parse(
-          "https://j9a705.p.ssafy.io/api/trade/chat/$tradeId?memberId=$sellerId"));
+          "https://j9a705.p.ssafy.io/api/trade/chat/${tradeId}"),headers: {
+        'Content-Type': 'application/json',
+        'Authorization' : 'Bearer ${accessToken}',
+      },);
       if (_response.statusCode == 200) {
         String responseBody = utf8.decode(_response.bodyBytes); // utf-8로 변환
         Map<String, dynamic> jsonData = json.decode(responseBody);
@@ -300,11 +315,11 @@ class TradeProviders {
     try {
       http.Response _response = await http.put(
         Uri.parse(
-            "https://j9a705.p.ssafy.io/api/trade/promise/direct/${tradeId}?memberId=${memberId}"),
+            "https://j9a705.p.ssafy.io/api/trade/promise/direct/${tradeId}"),
         body: jsonData,
         headers: {
           'Content-Type': 'application/json',
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
+          'Authorization' : 'Bearer ${accessToken}',
         },
       );
       if (_response.statusCode == 200) {
@@ -329,11 +344,11 @@ class TradeProviders {
     try {
       http.Response _response = await http.put(
         Uri.parse(
-            "https://j9a705.p.ssafy.io/api/trade/promise/delivery/${tradeId}?memberId=${memberId}"),
+            "https://j9a705.p.ssafy.io/api/trade/promise/delivery/${tradeId}"),
         body: jsonData,
         headers: {
           'Content-Type': 'application/json',
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
+          'Authorization' : 'Bearer ${accessToken}',
         },
       );
       if (_response.statusCode == 200) {
@@ -357,10 +372,10 @@ class TradeProviders {
     try {
       http.Response _response = await http.put(
         Uri.parse(
-            "https://j9a705.p.ssafy.io/api/trade/promise/complete/${tradeId}?memberId=${memberId}"),
+            "https://j9a705.p.ssafy.io/api/trade/promise/complete/${tradeId}"),
         headers: {
           'Content-Type': 'application/json',
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
+          'Authorization' : 'Bearer ${accessToken}',
         },
       );
       if (_response.statusCode == 200) {
@@ -385,10 +400,10 @@ class TradeProviders {
     try {
       http.Response _response = await http.put(
         Uri.parse(
-            "https://j9a705.p.ssafy.io/api/trade/promise/cancel/${tradeId}?memberId=${memberId}"),
+            "https://j9a705.p.ssafy.io/api/trade/promise/cancel/${tradeId}"),
         headers: {
           'Content-Type': 'application/json',
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
+          'Authorization' : 'Bearer ${accessToken}',
         },
       );
       if (_response.statusCode == 200) {

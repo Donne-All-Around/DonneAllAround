@@ -154,15 +154,17 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
 
   // 서버로부터 데이터를 가져오는 메서드
   Future<void> fetchExchangeData() async {
-    const memberId = '1';
-    const apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list?memberId=$memberId';
+
+    const apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list';
+    const accessToken =
+        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 
     try {
       final response = await http.get(
         Uri.parse(apiUrl),
-        headers: {
-          "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
-        },
+        headers: {'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',},
       );
       String responseBody = utf8.decode(response.bodyBytes);
       final jsonString = response.body;
@@ -441,8 +443,8 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                   borderRadius: BorderRadius.circular(40),
                 ),
                 child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
+                    onPressed: () async {
+                      await Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const ExchangeRecordCreatePage()));
                     },

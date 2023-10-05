@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:a705/transaction_detail_page.dart';
+import 'review_create_page.dart';
 import 'dart:convert'; // JSON 파싱을 위해 추가
 import 'package:http/http.dart' as http;
 
@@ -37,10 +38,18 @@ class SellRecordPageState extends State<SellRecordPage> {
 
   void fetchWaitHistory() async {
     try {
-      const memberId = '1'; // 원하는 회원 ID를 여기에 넣어주세요.
-      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/wait?memberId=$memberId');
+      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/sale');
 
-      http.Response response = await http.get(url);
+      const accessToken =
+          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+
+      http.Response response = await http.get(
+        url,
+        headers: {'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',
+        },
+      );
       String responseBody = utf8.decode(response.bodyBytes);
 
       if (response.statusCode == 200) {
@@ -64,10 +73,18 @@ class SellRecordPageState extends State<SellRecordPage> {
 
   void fetchCompleteHistory() async {
     try {
-      const memberId = '1'; // 원하는 회원 ID를 여기에 넣어주세요.
-      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/complete?memberId=$memberId');
+       // 원하는 회원 ID를 여기에 넣어주세요.
+      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/complete');
+      const accessToken =
+          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 
-      http.Response response = await http.get(url);
+      http.Response response = await http.get(
+        url,
+        headers: {'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',
+        },
+      );
       String responseBody = utf8.decode(response.bodyBytes);
 
       if (response.statusCode == 200) {
@@ -479,6 +496,31 @@ class SellRecordPageState extends State<SellRecordPage> {
                           ),
                         )
                       ],
+                    ),
+                    Container(
+                      width: 350,
+                      height: 35,
+                      margin: const EdgeInsets.fromLTRB(15, 0, 0, 10),
+                      child: complete['hasReview'] != false
+                          ? null // false 일 때는 아무것도 반환하지 않음
+                          : ElevatedButton(
+                        onPressed: () {
+                          final tradeID = complete['id'];
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ReviewCreatePage(tradeID: tradeID)));
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFFD954),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        child: const Text(
+                          '후기 작성',
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ),
                   ],
                 ),

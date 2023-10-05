@@ -3,6 +3,7 @@ import 'package:a705/providers/trade_providers.dart';
 import 'package:a705/transaction_detail_page.dart';
 import 'package:a705/transaction_page.dart';
 import 'package:a705/notification_page.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -25,12 +26,15 @@ class _HomePageState extends State<HomePage> {
   TradeProviders tradeProvider = TradeProviders();
   List<TradeDto> trade = [];
 
+  ScrollController _scrollController = ScrollController();
+
   int size = -1;
 
   Future initTrade() async {
     trade = await tradeProvider.getLatestTrade(
         currency[_idx], null, null, null, null, null, "강남구", "역삼동");
     size = trade.length;
+    print(trade);
     setState(() {});
   }
 
@@ -53,6 +57,19 @@ class _HomePageState extends State<HomePage> {
     initTrade();
     _fetchExchangeRates();
     super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        // Reached the bottom, load more data
+        loadMoreData();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   String _addr = "강남구 역삼동";
@@ -70,6 +87,7 @@ class _HomePageState extends State<HomePage> {
   Map<String, double>? exchangeRates;
 
   Future<void> _fetchExchangeRates() async {
+    exchangeRates = {'USDKRW': 0};
     try {
       final exchangeProvider = ExchangeRateProvider();
       final response = await exchangeProvider.fetchCurrencyData();
@@ -103,6 +121,47 @@ class _HomePageState extends State<HomePage> {
       // API 요청 중 오류 발생
       print('Error fetching exchange rates: $e');
     }
+  }
+
+  void loadMoreData() async {
+    List<TradeDto> newItems;
+    if (_selectedValue == "최신순") {
+      int lastListIdx = trade[trade.length - 1].id;
+      newItems = await tradeProvider.getLatestTrade(
+          currency[_idx],
+          lastListIdx,
+          _address.country,
+          _address.administrativeArea,
+          _address.subAdministrativeArea,
+          _address.locality,
+          _address.subLocality,
+          _address.thoroughfare);
+    } else if (_selectedValue == "낮은 가격순") {
+      int lastListIdx = trade[trade.length - 1].id;
+      newItems = await tradeProvider.getLowestTrade(
+          currency[_idx],
+          lastListIdx,
+          _address.country,
+          _address.administrativeArea,
+          _address.subAdministrativeArea,
+          _address.locality,
+          _address.subLocality,
+          _address.thoroughfare);
+    } else {
+      int lastListIdx = trade[trade.length - 1].id;
+      newItems = await tradeProvider.getLowestRateTrade(
+          currency[_idx],
+          lastListIdx,
+          _address.country,
+          _address.administrativeArea,
+          _address.subAdministrativeArea,
+          _address.locality,
+          _address.subLocality,
+          _address.thoroughfare);
+    }
+    setState(() {
+      trade.addAll(newItems);
+    });
   }
 
   int idx = 0;
@@ -506,8 +565,8 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     Text(
                                         currency[_idx] == "USD"
-                                            ? '${exchangeRates?['USDKRW']?.toStringAsFixed(2)} ₩'
-                                            : '${(exchangeRates!['USDKRW']! / exchangeRates!['USD${currency[_idx]}']! * unit[_idx]).toStringAsFixed(2)} ₩',
+                                            ? '${NumberFormat("#,##0.00").format(exchangeRates!['USDKRW'])} ₩'
+                                            : '${NumberFormat("#,##0.00").format(exchangeRates!['USDKRW']! / exchangeRates!['USD${currency[_idx]}']! * unit[_idx])} ₩',
                                         style: const TextStyle(fontSize: 15)),
                                   ],
                                 ),
@@ -584,6 +643,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Expanded(
                     child: ListView.builder(
+                        controller: _scrollController,
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
                         itemCount: trade.length,
@@ -627,15 +687,22 @@ class _HomePageState extends State<HomePage> {
                                         child: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(15),
-                                            child: Image(
-                                              height: 60,
-                                              image: NetworkImage(trade[index]
-                                                  .thumbnailImageUrl),
-                                              // AssetImage(
-                                              //   "assets/images/ausdollar.jpg",
-                                              // ),
-                                              fit: BoxFit.cover,
-                                            )),
+                                            child: ExtendedImage.network(
+                                                trade[index].thumbnailImageUrl,
+                                                height: 60,
+                                                fit: BoxFit.cover)
+                                            // Image(
+                                            //   height: 60,
+                                            //   image:
+                                            //   NetworkImage(trade[index]
+                                            //       .thumbnailImageUrl,
+                                            //   ),
+                                            //   // AssetImage(
+                                            //   //   "assets/images/ausdollar.jpg",
+                                            //   // ),
+                                            //   fit: BoxFit.cover,
+                                            // )
+                                            ),
                                       ),
                                       Flexible(
                                         flex: 1,
@@ -680,7 +747,7 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                   const SizedBox(width: 5),
                                                   Text(
-                                                    '${trade[index].foreignCurrencyAmount} ${trade[index].countryCode}',
+                                                    '${NumberFormat("#,##0").format(trade[index].foreignCurrencyAmount)} ${trade[index].countryCode}',
                                                     style: const TextStyle(
                                                         fontSize: 15,
                                                         fontWeight:
@@ -720,7 +787,7 @@ class _HomePageState extends State<HomePage> {
                                                         CrossAxisAlignment.end,
                                                     children: [
                                                       Text(
-                                                        '${trade[index].koreanWonAmount}원',
+                                                        '${NumberFormat("#,##0").format(trade[index].koreanWonAmount)}원',
                                                         style: const TextStyle(
                                                             fontSize: 17,
                                                             fontWeight:
@@ -749,7 +816,7 @@ class _HomePageState extends State<HomePage> {
                                             ],
                                           ),
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ],
