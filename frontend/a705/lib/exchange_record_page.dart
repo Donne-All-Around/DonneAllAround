@@ -117,13 +117,14 @@ class CustomModalWidget extends StatelessWidget {
   // 삭제 API 호출 메서드
   Future<void> deleteExchangeRecord(int exchangeRecordId) async {
     const memberId = '1'; // memberId 설정
-    final apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/$exchangeRecordId?memberId=$memberId';
+    final apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/$exchangeRecordId';
 
     try {
       final response = await http.delete(
         Uri.parse(apiUrl),
         headers: {
           "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
         },
       );
 
@@ -152,14 +153,14 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
 
   // 서버로부터 데이터를 가져오는 메서드
   Future<void> fetchExchangeData() async {
-    const memberId = '1';
-    const apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list?memberId=$memberId';
+    const apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list';
 
     try {
       final response = await http.get(
         Uri.parse(apiUrl),
         headers: {
           "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
         },
       );
       String responseBody = utf8.decode(response.bodyBytes);
@@ -301,7 +302,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Container(
-                                            margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                                            margin: const EdgeInsets.fromLTRB(16, 4, 16, 0),
                                             child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
@@ -329,7 +330,6 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                 ]
                                             )
                                         ),
-                                        const SizedBox(height: 10),
                                         Container(
                                             margin: const EdgeInsets.symmetric(horizontal: 16),
                                             child: Row(
@@ -345,9 +345,8 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                               fontSize: 30,
                                                             )
                                                         ),
-                                                        const SizedBox(height: 5),
-                                                        Row(
-                                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                                        Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
                                                               Text(
                                                                   exchangeData['currencyName'],
@@ -355,7 +354,6 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                                     fontSize: 17,
                                                                   )
                                                               ),
-                                                              const SizedBox(width: 3),
                                                               Text(
                                                                   '우대율${exchangeData['preferentialRate']}%',
                                                                   style: const TextStyle(
@@ -375,7 +373,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                               Text(
                                                                   exchangeData['foreignCurrencyAmount'].toString(),
                                                                   style: const TextStyle(
-                                                                    fontSize: 20,
+                                                                    fontSize: 18,
                                                                     fontWeight: FontWeight.bold,
                                                                     color: Color(0xFF0984E3),
                                                                   )
@@ -383,7 +381,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                               Text(
                                                                   ' ${exchangeData['countryCode']}',
                                                                   style: const TextStyle(
-                                                                      fontSize: 20,
+                                                                      fontSize: 18,
                                                                       fontWeight: FontWeight.bold,
                                                                       color: Color(0xFF0984E3)
                                                                   )
@@ -392,7 +390,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                               CircleAvatar(
                                                                 backgroundImage:
                                                                 AssetImage('assets/images/flag/USD${exchangeData['countryCode'] == 'USD' ? 'KRW' : exchangeData['countryCode']}.png'),
-                                                                radius: 16,
+                                                                radius: 15,
                                                               ),
                                                             ]
                                                         ),
@@ -403,7 +401,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                               Text(
                                                                   '${exchangeData['koreanWonAmount']} KRW',
                                                                   style: const TextStyle(
-                                                                    fontSize: 20,
+                                                                    fontSize: 18,
                                                                     fontWeight: FontWeight.bold,
                                                                     color: Color(0xFFFF5656),
                                                                   )
@@ -412,7 +410,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                               const CircleAvatar(
                                                                 backgroundImage:
                                                                 AssetImage('assets/images/flag/KRW.png'),
-                                                                radius: 16,
+                                                                radius: 15,
                                                               ),
                                                             ]
                                                         )

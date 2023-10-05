@@ -122,6 +122,13 @@ class _ExchangePageState extends State<ExchangePage> {
     return null;
   }
 
+  // 이중환전
+  double calculateDoubleExchange() {
+
+
+    return 1.2;
+  }
+
   List<String> currency = [
     'USD',
     'JPY',
@@ -1230,11 +1237,10 @@ class _ExchangePageState extends State<ExchangePage> {
                               ),
                             ),
                             Container(
-                              margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                              margin:
+                              const EdgeInsets.fromLTRB(0, 0, 10, 0),
                               width: 100,
                               height: 50,
-                              // color: Colors.red,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
                                   color: Colors.white,
@@ -1251,7 +1257,8 @@ class _ExchangePageState extends State<ExchangePage> {
                                 cursorColor: Colors.black38,
                                 keyboardType: TextInputType.number,
                                 inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(2),
                                 ],
                                 decoration: InputDecoration(
                                   filled: true,
@@ -1263,16 +1270,18 @@ class _ExchangePageState extends State<ExchangePage> {
                                         color: Colors.transparent),
                                   ),
                                   focusedBorder: const OutlineInputBorder(
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                                    borderSide:
-                                    BorderSide(color: Colors.transparent),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(20)),
+                                    borderSide: BorderSide(
+                                        color: Colors.transparent),
                                   ),
                                   suffixText: '%',
                                 ),
                                 textAlign: TextAlign.end,
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 25),
+                                    fontWeight: FontWeight.bold,
+                                    height: 1,
+                                    fontSize: 25),
                               ),
                             ),
                           ],
