@@ -7,5 +7,6 @@ import lombok.Builder;
 public record SignUpResponse(
         Long id,
         String tel,
+        String nickname,
         TokenInfo token) {
 }

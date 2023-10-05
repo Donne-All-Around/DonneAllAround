@@ -71,6 +71,7 @@ public class MemberService implements UserDetailsService {
                 FirebaseAuthResponse.SignInResponse.builder()
                         .id(member.get().getId())
                         .tel(member.get().getTel())
+                        .nickname(member.get().getNickname())
                         .token(tokenInfo)
                         .build());
     }
@@ -98,6 +99,7 @@ public class MemberService implements UserDetailsService {
         return SignUpResponse.builder()
                 .id(member.getId())
                 .tel(member.getTel())
+                .nickname(member.getNickname())
                 .token(tokenInfo)
                 .build();
     }

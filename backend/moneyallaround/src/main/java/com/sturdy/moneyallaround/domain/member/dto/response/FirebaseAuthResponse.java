@@ -15,6 +15,7 @@ public class FirebaseAuthResponse {
     public static class SignInResponse {
         Long id;
         String tel;
+        String nickname;
         TokenInfo token;
     }
 
