@@ -29,14 +29,15 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
         'preferentialRate': int.parse(_discountController.text),
         'tradingBaseRate': tradingBaseRate,
       };
+      const accessToken =
+          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 
       // POST 요청 보내기
       final response = await http.post(
         Uri.parse('https://j9a705.p.ssafy.io/api/exchange/record/create'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
-
+          'Authorization': 'Bearer $accessToken',
         },
         body: jsonEncode(data),
       );
@@ -199,10 +200,13 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
       'preferentialRate': _discountController.text,
       'tradingBaseRate': tradingBaseRateString,
     };
-    Navigator.of(context).pop();
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-      builder: (BuildContext context) => const ExchangeRecordPage(), // RecordPage로 돌아가도록 수정
-    ));
+    // Navigator.push(context, MaterialPageRoute(
+    //     builder: (context) => ExchangeRecordPage()))
+    //     .then((value) => setState(() {}));
+    Navigator.pop(context);
+   // setState(() {
+   //
+   // });
   }
 
 
@@ -222,7 +226,7 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
                 color: Colors.black
               ),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context);
               }
             ),
             elevation: 0,

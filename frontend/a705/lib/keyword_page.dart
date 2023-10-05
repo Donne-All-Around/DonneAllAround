@@ -38,14 +38,18 @@ class KeywordPageState extends State<KeywordPage> {
   List<Keyword> keywords = [];
 
   Future<void> fetchKeywords() async {
-    const memberId = "1";
-    const url = 'https://j9a705.p.ssafy.io/api/keyword?memberId=$memberId';
+
+    const url = 'https://j9a705.p.ssafy.io/api/keyword';
+    const accessToken =
+        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 
     try {
       final response = await http.get(
         Uri.parse(url),
         headers: {
-          "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',
         },
       );
 
@@ -56,6 +60,7 @@ class KeywordPageState extends State<KeywordPage> {
         final newKeywords = keywordList.map<Keyword>((keywordData) {
           final countryCode = keywordData['countryCode'];
           final countryCurrency = getCurrencyName(countryCode);
+          final keywordId = keywordData['id'] != null ? keywordData['id'].toString() : ''; // "id" 필드가 null이 아닌 경우 가져오고, 아니면 빈 문자열로 초기화
           return Keyword(
             countryCurrency: countryCurrency,
             location: '${keywordData['administrativeArea']} ${keywordData['subLocality']} ${keywordData['thoroughfare']}',
@@ -64,7 +69,7 @@ class KeywordPageState extends State<KeywordPage> {
             subLocality: keywordData['subLocality'],
             thoroughfare: keywordData['thoroughfare'],
             countryCode: keywordData['countryCode'],
-            keywordId: '',
+            keywordId: keywordId,
           );
         }).toList();
 
@@ -151,30 +156,20 @@ class KeywordPageState extends State<KeywordPage> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                15.0), // 원하는 Radius 값으로 설정
+                            borderRadius: BorderRadius.circular(15.0), // 원하는 Radius 값으로 설정
                           ),
                           title: Text("확인"),
                           content: Text("키워드를 삭제하시겠어요?"),
                           actions: [
                             TextButton(
                               style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(15.0),
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0),
                                   ),
                                 ),
-                                minimumSize:
-                                MaterialStateProperty.all<Size>(
-                                    Size(100, 50)),
-                                backgroundColor:
-                                MaterialStateProperty.all<Color>(
-                                    Colors.grey.shade200),
-                                foregroundColor:
-                                MaterialStateProperty.all<Color>(
-                                    Colors.black),
+                                minimumSize: MaterialStateProperty.all<Size>(Size(100, 50)),
+                                backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade200),
+                                foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
                               ),
                               child: Text(
                                 "취소",
@@ -186,22 +181,13 @@ class KeywordPageState extends State<KeywordPage> {
                             ),
                             TextButton(
                               style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(10.0),
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0),
                                   ),
                                 ),
-                                minimumSize:
-                                MaterialStateProperty.all<Size>(
-                                    Size(100, 50)),
-                                backgroundColor:
-                                MaterialStateProperty.all<Color>(
-                                    Colors.red),
-                                foregroundColor:
-                                MaterialStateProperty.all<Color>(
-                                    Colors.white),
+                                minimumSize: MaterialStateProperty.all<Size>(Size(100, 50)),
+                                backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
                               ),
                               child: Text(
                                 "삭제하기",
@@ -209,15 +195,18 @@ class KeywordPageState extends State<KeywordPage> {
                               ),
                               onPressed: () async {
                                 // 서버에 삭제 요청을 보내는 코드
-                                const memberId = "1"; // memberId 설정
-                                final keywordId = keyword.keywordId; // 키워드의 고유 ID 가져오기
-                                final deleteUrl = 'https://j9a705.p.ssafy.io/api/keyword/$keywordId?memberId=$memberId';
+                                final keywordId = keyword.keywordId;
+                                final deleteUrl = 'https://j9a705.p.ssafy.io/api/keyword/$keywordId';
+                                const accessToken =
+                                    'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 
                                 try {
                                   final response = await http.delete(
                                     Uri.parse(deleteUrl),
                                     headers: {
-                                      "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
+                                      'Authorization': 'Bearer $accessToken',
+                                      'Content-Type': 'application/json; charset=UTF-8',
+                                      'Accept-Charset': 'UTF-8',
                                     },
                                   );
 
@@ -231,6 +220,8 @@ class KeywordPageState extends State<KeywordPage> {
                                   } else {
                                     // 삭제 실패 시의 처리
                                     print('키워드 삭제 실패: ${response.statusCode}');
+                                    print(keywordId);
+                                    print(deleteUrl);
                                   }
                                 } catch (e) {
                                   // 오류 처리

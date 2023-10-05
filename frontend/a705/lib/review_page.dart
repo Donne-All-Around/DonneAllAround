@@ -34,11 +34,18 @@ class ReviewPageState extends State<ReviewPage> {
 
   void fetchBuyReviews() async {
     try {
-      const memberId = '1'; // 원하는 회원 ID를 여기에 넣어주세요.
       final url = Uri.parse(
-          'https://j9a705.p.ssafy.io/api/trade/review/list/buy?memberId=$memberId');
+          'https://j9a705.p.ssafy.io/api/trade/review/list/buy');
+      const accessToken =
+          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 
-      http.Response response = await http.get(url);
+      http.Response response = await http.get(
+          url,
+        headers: {'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',},
+      );
+
       String responseBody = utf8.decode(response.bodyBytes);
 
       if (response.statusCode == 200) {
@@ -48,7 +55,7 @@ class ReviewPageState extends State<ReviewPage> {
         setState(() {
           buyReviews = List<Map<String, dynamic>>.from(data);
         });
-        print('구매 서버 요청 성공');
+        print('리뷰 요청 성공');
       } else {
         // 서버 응답이 실패인 경우
         print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
@@ -60,11 +67,17 @@ class ReviewPageState extends State<ReviewPage> {
 
   void fetchSellReviews() async {
     try {
-      const memberId = '1'; // 원하는 회원 ID를 여기에 넣어주세요.
       final url = Uri.parse(
-          'https://j9a705.p.ssafy.io/api/trade/review/list/sell?memberId=$memberId');
+          'https://j9a705.p.ssafy.io/api/trade/review/list/sell');
+      const accessToken =
+          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 
-      http.Response response = await http.get(url);
+      http.Response response = await http.get(
+          url,
+        headers: {'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',},
+      );
       String responseBody = utf8.decode(response.bodyBytes);
 
       if (response.statusCode == 200) {
@@ -86,10 +99,16 @@ class ReviewPageState extends State<ReviewPage> {
 
   void fetchReviewCounts() async {
     try {
-      const memberId = '1'; // 원하는 회원 ID를 여기에 넣어주세요.
-      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/review/score?memberId=$memberId');
+      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/review/score');
+      const accessToken =
+          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 
-      http.Response response = await http.get(url);
+      http.Response response = await http.get(
+          url,
+        headers: {'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',},
+      );
       String responseBody = utf8.decode(response.bodyBytes);
 
       if (response.statusCode == 200) {
