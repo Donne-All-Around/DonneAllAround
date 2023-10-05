@@ -14,6 +14,7 @@ import java.util.List;
 public record TradeDetailResponseDto(@NotNull Long id,
                                      @NotNull String title,
                                      @NotNull String description,
+                                     @NotNull String thumbnailImageUrl,
                                      @NotNull TradeStatus status,
                                      @NotNull String countryCode,
                                      @NotNull Integer foreignCurrencyAmount,
@@ -33,6 +34,8 @@ public record TradeDetailResponseDto(@NotNull Long id,
                                      @NotNull String sellerNickname,
                                      @NotNull String sellerImageUrl,
                                      @NotNull Integer sellerRating,
+                                     Long buyerId,
+                                     String buyerNickname,
                                      @NotNull Boolean isLike,
                                      @NotNull LocalDateTime createTime) {
     public static TradeDetailResponseDto from(Trade trade, Boolean isLike) {
@@ -40,6 +43,7 @@ public record TradeDetailResponseDto(@NotNull Long id,
                 .id(trade.getId())
                 .title(trade.getTitle())
                 .description(trade.getDescription())
+                .thumbnailImageUrl(trade.getThumbnailImageUrl())
                 .status(trade.getStatus())
                 .countryCode(trade.getCountryCode())
                 .foreignCurrencyAmount(trade.getForeignCurrencyAmount())
@@ -59,6 +63,8 @@ public record TradeDetailResponseDto(@NotNull Long id,
                 .sellerNickname(trade.getSeller().getNickname())
                 .sellerImageUrl(trade.getSeller().getImageUrl())
                 .sellerRating(trade.getSeller().getRating())
+                .buyerId(trade.getBuyer() == null ? null : trade.getBuyer().getId())
+                .buyerNickname(trade.getBuyer() == null ? null : trade.getBuyer().getNickname())
                 .isLike(isLike)
                 .createTime(trade.getCreateTime())
                 .build();

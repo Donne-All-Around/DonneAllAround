@@ -20,7 +20,7 @@ spring:
   data:
     redis:
       host: docker-redis
-      port: 6380
+      port: 6379
 
 fcm:
   service-account-file: /app/donnearound-java-access-key.json #비밀 키 경로
