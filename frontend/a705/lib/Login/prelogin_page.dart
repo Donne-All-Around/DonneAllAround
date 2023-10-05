@@ -257,51 +257,39 @@ class _PreLoginPageState extends State<PreLoginPage> {
   }
 
   // OTP 값 확인하고 메인페이지 가는 기능
+
   void verifyCode() async {
     try {
-    PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId:verificationIDReceived, smsCode: optCodeController.text );
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId:verificationIDReceived, smsCode: optCodeController.text );
 
-    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-    // Firebase 인증 토큰 얻기
-    String? firebaseToken = await userCredential.user!.getIdToken();
-    String? uid = userCredential.user!.uid;
-    String? tel = phoneController.text;
-    print("Firebase 토큰: $firebaseToken");
-    print("uid : $uid");
-    print("tel : $tel");
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      // Firebase 인증 토큰 얻기
+      String? firebaseToken = await userCredential.user!.getIdToken();
+      // String? uid = userCredential.user!.uid;
+      String? uid = userCredential.user!.uid;
+      String? tel = phoneController.text;
+      print("Firebase 토큰: $firebaseToken");
+      print("uid : $uid");
+      print("tel : $tel");
 
-    // Firebase 토큰을 백엔드 서버로 전송하여 JWT 토큰을 가져옴
-    Map<String, dynamic>? signInResponse = await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!, uid, tel);
-    print('사인응답 체크!: $signInResponse');
+      // Firebase 토큰을 백엔드 서버로 전송하여 JWT 토큰을 가져옴
+      String? signInResponse =
+      await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!, uid, tel);
 
-    if (signInResponse != null) {
-      print("dfsldfjsdlf");
-      print('signInResponse: $signInResponse');
-      int id = signInResponse['id'];
-      String? tel = signInResponse['tel'];
-      String? token = signInResponse['token'];
-      print('로그인 화면에서 id: $id');
-      print('로그인 화면에서  tel: $tel');
-      print('로그인 화면에서 token: $token');
-
-      if (id != null && tel != null && token != null) {
-
-        // 스토리지 저장 및 헤더에 토큰 값 할당 구현.!!!!!!!
-        saveUserInfo(id,tel,token);
+      if (signInResponse == 'SUCCESS') {
         if (!mounted) return;
         Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
+      } else {
+        if (!mounted) return;
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProfileSettingPage(phoneNumber: tel, uid: uid)));
       }
-    }
-    if (signInResponse == null) {
-      // null  인 경우,  uid 와 tel 갖고 프로필페이지로 이동.
-      if (!mounted) return;
-      Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfileSettingPage(phoneNumber: phoneController.text, uid: userCredential.user!.uid)));
-    }
-    // print("토큰 : $jwtToken");
-    print("파베로그인 성공!");
+      print("파베로그인 성공!");
     } catch (e) {
-    print("파베로그인 실패: $e");
+      print("파베로그인 실패: $e");
     }
 
   }

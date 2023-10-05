@@ -9,26 +9,28 @@ import 'main.dart';
 
 const storage = FlutterSecureStorage();
 
-Future<void> saveUserInfo(int id, String tel, String token) async {
+Future<void> saveUserInfo(int id, String tel, String nickname, String accessToken, String refreshToken) async {
   await storage.write(key: 'userId', value: id.toString());
   await storage.write(key: 'userTel', value: tel);
-  await storage.write(key: 'jwtToken', value: token);
+  await storage.write(key: 'userNickname', value: nickname);
+  await storage.write(key: 'accessToken', value: accessToken);
+  await storage.write(key: 'refreshToken', value: refreshToken);
 
-  final jwtToken = await storage.read(key: 'jwtToken');
-  print(await storage.read(key: 'jwtToken'));
-  print('스토리지 저장 확인: $jwtToken');
-  if (jwtToken != null) {
-    final tokenData = jsonDecode(jwtToken);
-
-    // "accessToken"과 "refreshToken" 추출
-    final accessToken = tokenData['accessToken'];
-    final refreshToken = tokenData['refreshToken'];
-    print('스토리지 accessToken파싱된 것 : $accessToken');
-    print('스토리지 refreshToken파싱된 것 : $refreshToken');
-    // 각각의 값을 저장
-    await storage.write(key: 'jwtAccessToken', value: accessToken);
-    await storage.write(key: 'jwtRefreshToken', value: refreshToken);
-  }
+  // final jwtToken = await storage.read(key: 'jwtToken');
+  // print(await storage.read(key: 'jwtToken'));
+  // print('스토리지 저장 확인: $jwtToken');
+  // if (jwtToken != null) {
+  //   final tokenData = jsonDecode(jwtToken);
+  //
+  //   // "accessToken"과 "refreshToken" 추출
+  //   final accessToken = tokenData['accessToken'];
+  //   final refreshToken = tokenData['refreshToken'];
+  //   print('스토리지 accessToken파싱된 것 : $accessToken');
+  //   print('스토리지 refreshToken파싱된 것 : $refreshToken');
+  //   // 각각의 값을 저장
+  //   await storage.write(key: 'jwtAccessToken', value: accessToken);
+  //   await storage.write(key: 'jwtRefreshToken', value: refreshToken);
+  // }
 }
 
 Future<int> getUserId() async {
@@ -40,16 +42,17 @@ Future<String?> getUserTel() async {
   return await storage.read(key: 'userTel');
 }
 
-Future<String?> getJwtToken() async {
-  return await storage.read(key: 'jwtToken');
+
+Future<String?> getUserNickname() async {
+  return await storage.read(key: 'userNickname');
 }
 
 Future<String?> getJwtAccessToken() async {
-  return await storage.read(key: 'jwtAccessToken');
+  return await storage.read(key: 'accessToken');
 }
 
 Future<String?> getJwtRefreshToken() async {
-  return await storage.read(key: 'jwtRefreshToken');
+  return await storage.read(key: 'refreshToken');
 }
 
 
