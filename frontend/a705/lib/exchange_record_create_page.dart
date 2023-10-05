@@ -19,7 +19,6 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
   Future<void> sendExchangeRecord(String tradingBaseRate, countryCode, bankCode) async {
     try {
       // POST 요청으로 보낼 데이터
-      const memberId = '1';
 
       final Map<String, dynamic> data = {
         'exchangeDate': selectedDate.toIso8601String(), // 환전 일시
@@ -33,9 +32,11 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
 
       // POST 요청 보내기
       final response = await http.post(
-        Uri.parse('https://j9a705.p.ssafy.io/api/exchange/record/create?memberId=$memberId'),
+        Uri.parse('https://j9a705.p.ssafy.io/api/exchange/record/create'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
+
         },
         body: jsonEncode(data),
       );
