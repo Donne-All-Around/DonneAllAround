@@ -1,30 +1,53 @@
-import 'package:a705/chatting_page.dart';
 import 'package:a705/service/database.dart';
-import 'package:a705/service/spring_api.dart';
 import 'package:bottom_picker/bottom_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
 import 'package:a705/choose_location_page.dart';
 
-class DirectTransactionPage extends StatefulWidget {
+import 'chatting_page.dart';
+
+class TransactionDeliveryInfoPage extends StatefulWidget {
   final Map<String, dynamic>? tradeInfoMap;
-  const DirectTransactionPage({Key? key, required this.tradeInfoMap}) : super(key: key);
+  TransactionDeliveryInfoPage({Key? key, required this.tradeInfoMap}) : super(key: key);
 
   @override
-  State<DirectTransactionPage> createState() => _DirectTransactionPageState();
+  State<TransactionDeliveryInfoPage> createState() => _TransactionInfoPageState();
 }
 
-class _DirectTransactionPageState extends State<DirectTransactionPage> {
+class _TransactionInfoPageState extends State<TransactionDeliveryInfoPage> {
 
   var appointmentDate = DateTime.now().add(Duration(hours: 9));
   String _addr = "장소 선택";
   String appt = "";
 
+  Future<Position> getCurrentLocation() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+    Position position =
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return position;
+  }
+
   @override
   void initState() {
     super.initState();
+    _addr = "${widget.tradeInfoMap?['directTradeLocationDetail']}";
+    // _getUserLocation();
   }
+
+  void _getUserLocation() async {
+    var position = await GeolocatorPlatform.instance.getCurrentPosition(
+        locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.bestForNavigation));
+
+    setState(() {
+      currentPosition = LatLng(position.latitude, position.longitude);
+    });
+  }
+
+  late LatLng currentPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -44,42 +67,21 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
             ),
             elevation: 0,
             title: const Text(
-              '약속 잡기',
+              '거래 정보',
               style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
             ),
             centerTitle: true,
             actions: [
               IconButton(
-                  onPressed: isSelectedAddr() ? () {
+                  onPressed: () {
                     setState(() {
-                      appt += DateFormat('yy.MM.dd a hh:mm', 'ko').format(appointmentDate);
+                      appt += DateFormat('yy.MM.dd HH:mm').format(appointmentDate);
                       appt += " ";
                       appt += _addr;
                     });
-                    // 직거래 약속 data 추가
                     addDirectApptData();
 
-                    Navigator.pop(context, appt);
-                    Navigator.pop(context, appt);
-                  } : (){
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          // title: Text("안내"),
-                          content: Text("약속 장소를 선택해주세요."),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(
-                                    context); // Close the dialog
-                              },
-                              child: Text("확인"),
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                    Navigator.pop(context, appt!);
                   },
                   icon: const Icon(
                     Icons.check_rounded,
@@ -116,16 +118,15 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                           ),
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(15),
-                              child:  Image(
+                              child: const Image(
                                 height: 60,
                                 image: AssetImage(
-                                  // widget.tradeInfoMap?['thumbnailImageUrl'] ??
                                   'assets/images/ausdollar.jpg',
                                 ),
                                 fit: BoxFit.cover,
                               )),
                         ),
-                        Flexible(
+                         Flexible(
                           flex: 1,
                           child: SizedBox(
                             height: 70,
@@ -148,7 +149,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                                           children: [
                                             CircleAvatar(
                                               backgroundImage: AssetImage(
-                                    'assets/images/flag/USDAUD.png'),
+                                                  'assets/images/flag/AUD.png'),
                                               radius: 8,
                                             ),
                                             SizedBox(width: 5),
@@ -226,7 +227,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
                   child: Row(
                     children: [
                       Text(
-                        DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko').format(appointmentDate),
+                        "${widget.tradeInfoMap?['directTradeTime']}",
                         style: const TextStyle(fontSize: 16),
                       ),
                     ],
@@ -315,7 +316,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
   void addDirectApptData() {
     Map<String, dynamic> tradeInfo = {
       "type": "DIRECT",
-      "directTradeTime":  DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko').format(appointmentDate),
+      "directTradeTime": DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko').format(appointmentDate),
       "directTradeLocationDetail": _addr,
       "sellerAccountBankCode": null,
       "sellerAccountNumber": null,
@@ -327,26 +328,13 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
       "trackingNumber": null,
       "buyerId": widget.tradeInfoMap?['buyerId'],
       "sellerId": myUserId,
-      "method": null,
-      "isRemittance": null,
       "status": "PROGRESS",
     };
 
-    /**
-     * buyerId 수정 필요
-     */
-    Map<String, dynamic> setDirectAppointmentMap = { "buyerId" : 2};
-    SpringApi().setDirectAppointment(setDirectAppointmentMap, widget.tradeInfoMap?['tradeId'], myUserId!);
-
+    print("거래일시: ${DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko').format(appointmentDate)}");
+    print("거래 장소: $_addr");
+    // 백엔드에 type 전달 method 구현 필요
     DatabaseMethods().setTradeInfo(widget.tradeInfoMap?['tradeId'], tradeInfo);
     print(tradeInfo.toString());
-  }
-
-  bool isSelectedAddr(){
-    if(_addr == "장소 선택"){
-      return false;
-    }else{
-      return true;
-    }
   }
 }
