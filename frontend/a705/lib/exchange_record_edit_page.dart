@@ -26,15 +26,17 @@ class ExchangeRecordEditPageState extends State<ExchangeRecordEditPage> {
 
   Future<void> fetchExchangeRecord() async {
     try {
-      const memberId = '1'; // 사용자 ID
-      const apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list?memberId=$memberId';
+
+      const apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list';
+      const accessToken =
+          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 
       http.Response response = await http.get(
         Uri.parse(apiUrl),
         headers: {
-          'Content-Type': 'application/json',
-          // 여기에 필요한 인증 헤더를 추가하세요 (예: 'Authorization': 'Bearer YourAccessToken')
-        },
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',},
       );
 
       if (response.statusCode == 200) {
@@ -79,8 +81,10 @@ class ExchangeRecordEditPageState extends State<ExchangeRecordEditPage> {
   }
 
   Future<void> sendExchangeRecord(String tradingBaseRate, String countryCode, String bankCode) async {
-    const memberId = '1';
-    final apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/${widget.exchangeRecordId}?memberId=$memberId';
+
+    final apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/${widget.exchangeRecordId}';
+    const accessToken =
+        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 
     final Map<String, dynamic> requestData = {
       "countryCode": currency[idx],
@@ -96,9 +100,9 @@ class ExchangeRecordEditPageState extends State<ExchangeRecordEditPage> {
       final response = await http.put(
         Uri.parse(apiUrl),
         headers: {
-          'Content-Type': 'application/json',
-          // 여기에 필요한 인증 헤더를 추가하세요 (예: 'Authorization': 'Bearer YourAccessToken')
-        },
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',},
         body: jsonEncode(requestData),
       );
 

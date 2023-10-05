@@ -102,8 +102,10 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
       final countryCode = _selectedValue.split(' ')[1].toUpperCase();
 
       // 정보가 모두 입력되었을 떄 서버로 전송
-      final memberId = '1'; // memberId 설정 (원하는 값으로 변경)
-      final url = 'https://j9a705.p.ssafy.io/api/keyword?memberId=$memberId';
+       // memberId 설정 (원하는 값으로 변경)
+      final url = 'https://j9a705.p.ssafy.io/api/keyword';
+      const accessToken =
+          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 
       final requestData = {
         'countryCode': countryCode, // 여기에 나라 코드 설정
@@ -119,7 +121,9 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
         final response = await http.post(
           Uri.parse(url),
           headers: <String, String>{
+            'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json; charset=UTF-8',
+            'Accept-Charset': 'UTF-8',
           },
           body: jsonEncode(requestData),
         );

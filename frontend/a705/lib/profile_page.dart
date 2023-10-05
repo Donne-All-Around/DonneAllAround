@@ -31,9 +31,11 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       final response = await http.get(
         url,
-        headers: {'Authorization': 'Bearer $accessToken',
+        headers: {
+          'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json; charset=UTF-8',
-          'Accept-Charset': 'UTF-8',},
+          'Accept-Charset': 'UTF-8',
+        },
       );
 
       if (response.statusCode == 200) {
