@@ -56,6 +56,10 @@ class _BankDetailPageState extends State<BankDetailPage> {
     super.initState();
     _idx = widget.selectedIndex == 0 ? 0 : widget.selectedIndex + 1;
     _fetchExchangeRates();
+    int initialBaseIdx = _idx; // 초기 기준 통화 인덱스
+    int initialTargetIdx = 1; // 초기 대상 통화 인덱스
+    calculateExchangeRate(initialBaseIdx, initialTargetIdx);
+
   }
 
   Future<void> _fetchExchangeRates() async {
@@ -85,7 +89,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
             'USDRUB': exchangeResponse.quotes.usdRub,
 
           };
-          _moneyController2.text = exchangeResponse.quotes.usdKrw.toStringAsFixed(2);
+          // _moneyController2.text = exchangeResponse.quotes.usdKrw.toStringAsFixed(2);
         });
       } else {
         // API 요청은 성공했지만, 응답이 실패한 경우에 대한 처리
@@ -121,7 +125,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
     return null;
   }
 
-  void calculateExchangeRate(int baseIdx, int targetIdx) {
+void calculateExchangeRate(int baseIdx, int targetIdx) {
     double? rate;
     String base;
     String target;
@@ -144,11 +148,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
       double convertedAmount = amountToConvert * rate;
       String formattedAmount = convertedAmount.toStringAsFixed(2);
       setState(() {
-        // UI 업데이트를 수행
-        // _moneyController2.text = '${_moneyController1.text.isNotEmpty
-        //     ? (double.parse(_moneyController1.text.replaceAll(',', '')) * rate!).toStringAsFixed(2)
-        //     : '0.00'} ${sign[idx2]}';
-        _moneyController2.text = '$formattedAmount';
+        _moneyController2.text = formattedAmount;
       });
     }
   }
@@ -210,7 +210,7 @@ class _BankDetailPageState extends State<BankDetailPage> {
 
   // 텍스트 필드 컨트롤러
   final TextEditingController _moneyController1 = TextEditingController(text: "1 ");
-  final TextEditingController _moneyController2 = TextEditingController(text: "1,300.00 ");
+  final TextEditingController _moneyController2 = TextEditingController(text: "");
   final TextEditingController _percentController = TextEditingController(text: "우대율");
 
 
