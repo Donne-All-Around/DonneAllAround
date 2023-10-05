@@ -1,7 +1,7 @@
+import 'package:a705/models/ExchangeRecordDto.dart';
 import 'package:flutter/material.dart';
 import 'exchange_record_create_page.dart';
 import 'exchange_record_edit_page.dart';
-import 'profile_page.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert'; // JSON 파싱을 위해 추가
 import 'package:http/http.dart' as http;
@@ -24,12 +24,14 @@ class CustomModalWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
       content: Container(
         width: 330,
         height: 170,
+        color: Colors.white,
         child: Column(
           children: [
             Row(
@@ -170,7 +172,6 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
         final List<dynamic> jsonData = jsonResponse['data']['exchangeRecordList']; // 주의: 'exchangeRecordList'의 오타 수정
 
-
         if (jsonData != null) {
           setState(() {
             exchangeDataList = List<Map<String, dynamic>>.from(jsonData.map((data) {
@@ -261,8 +262,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
             previousDate2 = formattedDate2; // 현재 항목의 formattedDate2를 이전 항목으로 설정
 
               return Container(
-                margin: EdgeInsets.fromLTRB(16, showFormattedDate2 ? 20 : 0, 16, 0),
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                padding: EdgeInsets.fromLTRB(32, showFormattedDate2 ? 20 : 0, 32, 10),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10.0),
@@ -273,151 +273,157 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                     if (showFormattedDate2)
                     Text(
                       formattedDate2,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 17,
                       )
                     ),
                     const SizedBox(height: 4),
-                    Container(
-                      width: 350,
-                      height: 150,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            spreadRadius: 1,
-                            blurRadius: 3,
-                            offset: const Offset(0, 0),
-                          ),
-                        ]),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  formattedDate1,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.more_horiz,
-                                    color: Colors.black,
-                                  ),
-                                  onPressed: () {
-                                    final exchangeRecordId = exchangeDataList[index]['id'] as int;
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return CustomModalWidget(exchangeRecordId: exchangeRecordId);
-                                      }
-                                    );
-                                  }
-                                )
-                              ]
-                            )
-                          ),
-                          const SizedBox(height: 10),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      exchangeData['tradingBaseRate'].toString(),
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 30,
-                                      )
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop(exchangeDataList[index]);
+                      },
+                      child: Container(
+                        width: 350,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              spreadRadius: 1,
+                              blurRadius: 3,
+                              offset: const Offset(0, 0),
+                            ),
+                          ]),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    formattedDate1,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    SizedBox(height: 5),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          exchangeData['currencyName'],
-                                          style: TextStyle(
-                                            fontSize: 17,
-                                          )
-                                        ),
-                                        Text(
-                                          '우대율${exchangeData['preferentialRate']}%',
-                                          style: TextStyle(
-                                          fontSize: 13,
-                                          )
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.more_horiz,
+                                      color: Colors.black,
+                                    ),
+                                    onPressed: () {
+                                      final exchangeRecordId = exchangeDataList[index]['id'] as int;
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return CustomModalWidget(exchangeRecordId: exchangeRecordId);
+                                        }
+                                      );
+                                    }
+                                  )
+                                ]
+                              )
+                            ),
+                            const SizedBox(height: 10),
+                            Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        exchangeData['tradingBaseRate'].toString(),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 30,
                                         )
-                                      ]
-                                    )
-                                  ]
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
                                         children: [
                                           Text(
-                                            exchangeData['foreignCurrencyAmount'].toString(),
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(0xFF0984E3),
+                                            exchangeData['currencyName'],
+                                            style: const TextStyle(
+                                              fontSize: 17,
                                             )
                                           ),
+                                          const SizedBox(width: 3),
                                           Text(
-                                            ' ${exchangeData['countryCode']}',
-                                            style: TextStyle(
+                                            '우대율${exchangeData['preferentialRate']}%',
+                                            style: const TextStyle(
+                                            fontSize: 13,
+                                            )
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              exchangeData['foreignCurrencyAmount'].toString(),
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF0984E3),
+                                              )
+                                            ),
+                                            Text(
+                                              ' ${exchangeData['countryCode']}',
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF0984E3)
+                                              )
+                                            ),
+                                            const SizedBox(width: 10),
+                                            CircleAvatar(
+                                              backgroundImage:
+                                              AssetImage('assets/images/flag/USD${exchangeData['countryCode'] == 'USD' ? 'KRW' : exchangeData['countryCode']}.png'),
+                                              radius: 16,
+                                            ),
+                                          ]
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            '${exchangeData['koreanWonAmount']} KRW',
+                                            style: const TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold,
-                                              color: Color(0xFF0984E3)
+                                              color: Color(0xFFFF5656),
                                             )
                                           ),
-                                          SizedBox(width: 10),
-                                          CircleAvatar(
+                                          const SizedBox(width: 10),
+                                          const CircleAvatar(
                                             backgroundImage:
-                                            AssetImage('assets/images/flag/${exchangeData['countryCode']}.png'),
+                                            AssetImage('assets/images/flag/KRW.png'),
                                             radius: 16,
                                           ),
                                         ]
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          exchangeData['koreanWonAmount'].toString() + ' KRW',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xFFFF5656),
-                                          )
-                                        ),
-                                        SizedBox(width: 10),
-                                        CircleAvatar(
-                                          backgroundImage:
-                                          AssetImage('assets/images/flag/KRW.png'),
-                                          radius: 16,
-                                        ),
-                                      ]
-                                    )
-                                  ]
-                                )
-                              ]
+                                      )
+                                    ]
+                                  )
+                                ]
+                              )
                             )
-                          )
-                        ]
-                      )
+                          ]
+                        )
+                      ),
                     )
                   ]
                 )

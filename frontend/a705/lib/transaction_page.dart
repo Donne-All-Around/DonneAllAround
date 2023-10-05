@@ -104,6 +104,8 @@ class _TransactionPageState extends State<TransactionPage> {
       latitude: 0,
       longitude: 0);
 
+  final String _dateTime = DateFormat('yyMMdd-HHmmss').format(DateTime.now());
+
   @override
   void initState() {
     super.initState();
@@ -201,7 +203,13 @@ class _TransactionPageState extends State<TransactionPage> {
                 Icons.arrow_back_ios_new_rounded,
                 color: Colors.black,
               ),
-              onPressed: () {
+              onPressed: () async {
+                for(int i = 0; i < uploadTrade.imageUrlList.length; i++) {
+                  String path = "trade/${uploadTrade.sellerId}/image_${_dateTime}_$i.jpg";
+                  final desertRef = FirebaseStorage.instance.ref().child(path);
+                  await desertRef.delete();
+                }
+                if(!mounted) return;
                 Navigator.pop(context);
               },
             ),
@@ -683,8 +691,7 @@ class _TransactionPageState extends State<TransactionPage> {
   Future getImages() async {
     final pickedFile = await picker.pickMultiImage();
     List<XFile> xfilePick = pickedFile;
-    DateTime now = DateTime.now();
-    final String _dateTime = DateFormat('yyMMdd-HHmmss').format(now);
+
     setState(() {
       if (xfilePick.isNotEmpty) {
         for (var i = 0; i < xfilePick.length; i++) {

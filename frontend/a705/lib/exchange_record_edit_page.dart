@@ -280,6 +280,7 @@ class ExchangeRecordEditPageState extends State<ExchangeRecordEditPage> {
           FocusManager.instance.primaryFocus?.unfocus();
         },
         child: Scaffold(
+          backgroundColor: Colors.white,
           appBar: AppBar(
             backgroundColor: Colors.white,
             leading: IconButton(
