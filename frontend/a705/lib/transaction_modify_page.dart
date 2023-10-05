@@ -83,7 +83,9 @@ class _TransactionModifyPageState extends State<TransactionModifyPage> {
 
   List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
 
-  List<File> selectedImages = [];
+  List<dynamic> selectedImages = [];
+  bool isSelected = false;
+
   final picker = ImagePicker();
 
   String _addr = "";
@@ -150,6 +152,7 @@ class _TransactionModifyPageState extends State<TransactionModifyPage> {
     _krwEditController.text = trade.koreanWonAmount.toString();
     _contentEditController.text = trade.description;
     _addr = "${trade.subLocality} ${trade.thoroughfare}";
+    selectedImages = trade.imageUrlList;
   }
 
   final _titleEditController = TextEditingController();
@@ -242,8 +245,10 @@ class _TransactionModifyPageState extends State<TransactionModifyPage> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          if (selectedImages.isEmpty) {
+                          if (!isSelected) {
                             getImages();
+                            isSelected = true;
+                            setState(() {});
                           }
                         },
                         child: Container(
@@ -257,7 +262,7 @@ class _TransactionModifyPageState extends State<TransactionModifyPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Icon(Icons.camera_alt_outlined),
-                              Text("${selectedImages.length}/10"),
+                              Text("${trade.imageUrlList.length}/10"),
                             ],
                           ),
                         ),
@@ -268,14 +273,14 @@ class _TransactionModifyPageState extends State<TransactionModifyPage> {
                           width: double.infinity,
                           // To show images in particular area only
                           height: 80,
-                          child: selectedImages
+                          child: trade.imageUrlList
                                   .isEmpty // If no images is selected
                               ? const Center(child: Text('사진을 선택하세요'))
                               // If at least 1 images is selected
                               : GridView.builder(
                                   scrollDirection: Axis.horizontal,
                                   physics: const ScrollPhysics(),
-                                  itemCount: selectedImages.length,
+                                  itemCount: trade.imageUrlList.length,
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 1,
@@ -294,17 +299,11 @@ class _TransactionModifyPageState extends State<TransactionModifyPage> {
                                       child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(10),
-                                          child: kIsWeb
-                                              ? Image.network(
-                                                  selectedImages[index].path,
-                                                  width: 80,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : Image.file(
-                                                  selectedImages[index],
-                                                  width: 80,
-                                                  fit: BoxFit.cover,
-                                                )),
+                                          child: Image.network(
+                                            trade.imageUrlList[index],
+                                            width: 80,
+                                            fit: BoxFit.cover,
+                                          )),
                                     );
                                   },
                                 ),
@@ -659,7 +658,7 @@ class _TransactionModifyPageState extends State<TransactionModifyPage> {
                           isLike: trade.isLike,
                           createTime: trade.createTime,
                           koreanWonPerForeignCurrency:
-                          trade.koreanWonPerForeignCurrency,
+                              trade.koreanWonPerForeignCurrency,
                           imageUrlList: trade.imageUrlList,
                         );
 
@@ -700,21 +699,21 @@ class _TransactionModifyPageState extends State<TransactionModifyPage> {
   }
 
   Future getImages() async {
+    trade.imageUrlList.clear();
     final pickedFile = await picker.pickMultiImage();
     List<XFile> xfilePick = pickedFile;
 
-    setState(() {
-      if (xfilePick.isNotEmpty) {
-        for (var i = 0; i < xfilePick.length; i++) {
-          File _file = File(xfilePick[i].path);
-          selectedImages.add(_file);
-        }
-      }
-    });
+    // setState(() {
+    //   // if (xfilePick.isNotEmpty) {
+    //   //   for (var i = 0; i < xfilePick.length; i++) {
+    //   //     File _file = File(xfilePick[i].path);
+    //   //     selectedImages.add(_file);
+    //   //   }
+    //   // }
+    // });
     if (xfilePick.isNotEmpty) {
-      for (var i = 0; i < selectedImages.length; i++) {
-        String _path =
-            "trade/${trade.sellerId}/image_${_dateTime}_$i.jpg";
+      for (var i = 0; i < xfilePick.length; i++) {
+        String _path = "trade/${trade.sellerId}/image_${_dateTime}_$i.jpg";
         File _file = File(xfilePick[i].path);
         await FirebaseStorage.instance.ref(_path).putFile(_file);
         final String _urlString =
@@ -722,5 +721,7 @@ class _TransactionModifyPageState extends State<TransactionModifyPage> {
         trade.imageUrlList.add(_urlString);
       }
     }
+
+    setState(() {});
   }
 }
