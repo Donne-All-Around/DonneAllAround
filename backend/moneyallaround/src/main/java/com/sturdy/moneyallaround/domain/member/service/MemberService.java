@@ -44,11 +44,11 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public FirebaseAuthResponse signIn(FirebaseAuthRequest request) {
-        try {
-            firebaseAuth.verifyIdToken(request.idToken());
-        } catch (FirebaseAuthException e) {
-            return new FirebaseAuthResponse();
-        }
+//        try {
+//            firebaseAuth.verifyIdToken(request.idToken());
+//        } catch (FirebaseAuthException e) {
+//            return new FirebaseAuthResponse();
+//        }
 
         Optional<Member> member = memberRepository.findByTel(request.tel());
         if (member.isEmpty()) {
