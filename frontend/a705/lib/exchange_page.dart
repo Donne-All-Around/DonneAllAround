@@ -223,8 +223,8 @@ class _ExchangePageState extends State<ExchangePage> {
 
   int idx1 = 0;
   int idx2 = 1;
-  int idx3 = 3;
-  int idx4 = 4;
+  int idx3 = 8;
+  int idx4 = 1;
 
   String calculateExchangeRate(int baseIdx, int targetIdx) {
     double? rate;
@@ -279,11 +279,32 @@ class _ExchangePageState extends State<ExchangePage> {
 
   String selectedButton = '직접'; // 선택된 버튼
 
-  final _bankList = ['신한은행', '하나은행'];
+  final _bankList = [
+    '하나은행', 
+    '우리은행',
+    'KB국민은행',
+    '신한은행',
+    'NH농협은행',
+    'IBK기업은행',
+    'SC제일은행',
+    '시티은행',
+    'Sh수협은행',
+    '부산은행',
+    'DGB대구은행',];
+
   var _selectedValue5 = '신한은행';
   Map<String, Map<String, String>> bankInfo = {
-    '신한은행': {'currencyName': '신한은행'},
-    '하나은행': {'currencyName': '하나은행'},
+    '하나은행': {'currencyName': '하나은행', 'bankCode': '081'},
+    '우리은행': {'currencyName': '우리은행', 'bankCode': '020'},
+    'KB국민은행': {'currencyName': 'KB국민은행', 'bankCode': '004'},
+    '신한은행': {'currencyName': '신한은행', 'bankCode': '088'},
+    'NH농협은행': {'currencyName': 'NH농협은행', 'bankCode': '011'},
+    'IBK기업은행': {'currencyName': 'IBK기업은행', 'bankCode': '003'},
+    'SC제일은행': {'currencyName': 'SC제일은행', 'bankCode': '023'},
+    '시티은행': {'currencyName': '시티은행', 'bankCode': '027'},
+    'Sh수협은행': {'currencyName': 'Sh수협은행', 'bankCode': '007'},
+    '부산은행': {'currencyName': '부산은행', 'bankCode': '032'},
+    'DGB대구은행': {'currencyName': 'DGB대구은행', 'bankCode': '031'},
   };
 
   // 텍스트 필드 컨트롤러
@@ -292,11 +313,11 @@ class _ExchangePageState extends State<ExchangePage> {
   final TextEditingController _moneyController2 =
   TextEditingController(text: "");
   final TextEditingController _moneyController3 =
-  TextEditingController(text: "2 ");
+  TextEditingController(text: " ");
   final TextEditingController _moneyController4 =
-  TextEditingController(text: "600.00 ");
+  TextEditingController(text: "");
   final TextEditingController _percentController =
-  TextEditingController(text: "30");
+  TextEditingController(text: "0");
   bool _isDouble = false;
   bool _isdoublecalculate = false;
   bool _iscalculate = false;
@@ -1117,7 +1138,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                           children: [
                                             CircleAvatar(
                                               backgroundImage: AssetImage(
-                                                  'assets/images/flag/${currency[idx4] == 'KRW' ? 'KRW' : currency[idx4] == 'USD' ? 'USDKRW' : 'USD${currency[idx4]}'}.png'),
+                                                  'assets/images/flag/${currency2[idx4] == 'KRW' ? 'KRW' : currency2[idx4] == 'USD' ? 'USDKRW' : 'USD${currency2[idx4]}'}.png'),
                                               radius: 15,
                                             ),
                                             const SizedBox(width: 5),
@@ -1128,12 +1149,12 @@ class _ExchangePageState extends State<ExchangePage> {
                                               MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  country[idx4],
+                                                  country2[idx4],
                                                   style: const TextStyle(
                                                       fontSize: 15),
                                                 ),
                                                 Text(
-                                                  currency[idx4],
+                                                  currency2[idx4],
                                                   style: const TextStyle(
                                                       fontSize: 15),
                                                 ),
@@ -1174,7 +1195,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                               borderSide: BorderSide(
                                                   color:
                                                   Colors.transparent)),
-                                          suffixText: ' ${sign[idx4]}',
+                                          suffixText: ' ${sign2[idx4]}',
                                         ),
                                         textAlign: TextAlign.end,
                                         style: const TextStyle(

@@ -266,6 +266,7 @@ class _CertificationPageState extends State<CertificationPage> {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
       // Firebase 인증 토큰 얻기
       String? firebaseToken = await userCredential.user!.getIdToken();
+      // String? uid = userCredential.user!.uid;
       String? uid = userCredential.user!.uid;
       String? tel = phoneController.text;
       print("Firebase 토큰: $firebaseToken");
@@ -273,26 +274,19 @@ class _CertificationPageState extends State<CertificationPage> {
       print("tel : $tel");
 
       // Firebase 토큰을 백엔드 서버로 전송하여 JWT 토큰을 가져옴
-      Map<String, dynamic>? signInResponse = await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!, uid, tel);
-      if (signInResponse != null) {
-        String? id = signInResponse['id'];
-        String? tel = signInResponse['tel'];
-        String? token = signInResponse['token'];
+      String? signInResponse =
+      await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!, uid, tel);
 
-        if (id != null && tel != null && token != null) {
-          String jwtToken = '$id|$tel|$token'; // 예제에서 사용하는 방식으로 JWT 토큰 구성
-          print("토큰 : $jwtToken");
-
-          // 스토리지 저장 및 헤더에 토큰 값 할당 구현.!!!!!!!
-          saveUserInfo('$id','$tel','$token');
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
-        }
+      if (signInResponse == 'SUCCESS') {
+        if (!mounted) return;
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
+      } else {
+        if (!mounted) return;
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProfileSettingPage(phoneNumber: tel, uid: uid)));
       }
-      if (signInResponse == null) {
-        // null  인 경우,  uid 와 tel 갖고 프로필페이지로 이동.
-        Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfileSettingPage(phoneNumber: '$tel', uid: '$uid')));
-      }
-      // print("토큰 : $jwtToken");
       print("파베로그인 성공!");
     } catch (e) {
       print("파베로그인 실패: $e");
