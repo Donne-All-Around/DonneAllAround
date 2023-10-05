@@ -1,6 +1,5 @@
 package com.sturdy.moneyallaround.domain.keyword.service;
 
-import com.google.firebase.messaging.FirebaseMessagingException;
 import com.sturdy.moneyallaround.config.firebase.FCMService;
 import com.sturdy.moneyallaround.domain.keyword.entity.KeywordNotification;
 import com.sturdy.moneyallaround.domain.keyword.repository.KeywordNotificationRepository;
@@ -26,18 +25,15 @@ public class KeywordNotificationService {
         List<KeywordNotification> notificationList = keywordNotificationRepository.saveAll(keywordService.findByTrade(trade)
                 .stream().map(keyword -> new KeywordNotification(trade, keyword.getMember())).toList());
 
-        StringBuilder body = new StringBuilder();
-        body.append("키워드 거래 알림 테스트");
+        String title = "[돈네한바퀴 키워드 알림]";
+        String body = "희망 거래가 등록되었어요!";
 
-        /*
-            수정 필요
-            추후 전화번호가 아닌 멤버 엔티티 안에 fcm 토큰으로 변경하기
-         */
-//        try {
-//            fcmService.sendMulticastMessageTo("돈네한바퀴", body.toString(), notificationList.stream().map(notification -> notification.getMember().getTel()).toList());
-//        } catch (Exception e) {
-//            log.error(e.getMessage());
-//        }
+        for (KeywordNotification keywordNotification : notificationList) {
+            String deviceToken = keywordNotification.getMember().getDeviceToken();
+            if (deviceToken != null) {
+                fcmService.sendNotificationByToken(title, body, deviceToken);
+            }
+        }
     }
 
     @Transactional

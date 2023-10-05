@@ -63,6 +63,7 @@ public class MemberService implements UserDetailsService {
         TokenInfo tokenInfo = tokenProvider.generateToken(authentication);
 
         member.get().setUid(request.uid());
+        member.get().setDeviceToken(request.deviceToken());
 
         refreshTokenService.setValues(tokenInfo.getRefreshToken(), request.tel());
 
@@ -77,7 +78,7 @@ public class MemberService implements UserDetailsService {
     @Transactional
     public SignUpResponse signUp(SignUpRequest signUpRequest) {
         Member member = memberRepository.save(
-                new Member(signUpRequest.tel(), signUpRequest.nickname(), signUpRequest.uid(), signUpRequest.imageUrl()));
+                new Member(signUpRequest.tel(), signUpRequest.nickname(), signUpRequest.uid(), signUpRequest.imageUrl(), signUpRequest.deviceToken()));
 
         try {
             memberRepository.flush();
@@ -103,7 +104,9 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public void logout(LogoutRequest logoutRequest, String memberTel) {
-        findByTel(memberTel).setUid(null);
+        Member member = findByTel(memberTel);
+        member.setUid(null);
+        member.setDeviceToken(null);
         refreshTokenService.delValues(logoutRequest.refreshToken());
     }
 
@@ -114,7 +117,9 @@ public class MemberService implements UserDetailsService {
         }
 
         if (!tokenProvider.validateToken(refreshToken)) {
-            findByTel(authentication.getName()).setUid(null);
+            Member member = findByTel(authentication.getName());
+            member.setUid(null);
+            member.setDeviceToken(null);
             refreshTokenService.delValues(refreshToken);
             throw new TokenNotFoundException(ExceptionMessage.TOKEN_VALID_TIME_EXPIRED);
         }
@@ -153,6 +158,7 @@ public class MemberService implements UserDetailsService {
             refreshTokenService.delValues(request.refreshToken());
             Member member = findByTel(memberTel);
             member.setUid(null);
+            member.setDeviceToken(null);
             member.delete();
         } catch (DataIntegrityViolationException e) {
             throw new UserAuthException(ExceptionMessage.FAIL_DELETE_DATA);

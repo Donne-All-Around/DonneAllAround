@@ -8,22 +8,22 @@ import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Builder
-public record TradeSimpleResponseDto(@NotNull Long id,
-                                     @NotNull String title,
-                                     @NotNull String thumbnailImageUrl,
-                                     @NotNull TradeStatus status,
-                                     @NotNull String countryCode,
-                                     @NotNull Integer foreignCurrencyAmount,
-                                     @NotNull Integer koreanWonAmount,
-                                     @NotNull Double koreanWonPerForeignCurrency,
+public record TradeSimpleResponseDto(Long id,
+                                     String title,
+                                     String thumbnailImageUrl,
+                                     TradeStatus status,
+                                     String countryCode,
+                                     Integer foreignCurrencyAmount,
+                                     Integer koreanWonAmount,
+                                     Double koreanWonPerForeignCurrency,
                                      String country,
                                      String administrativeArea,
                                      String subAdministrativeArea,
                                      String locality,
                                      String subLocality,
                                      String thoroughfare,
-                                     @NotNull Integer tradeLikeCount,
-                                     @NotNull LocalDateTime createTime) {
+                                     Integer tradeLikeCount,
+                                     LocalDateTime createTime) {
     public static TradeSimpleResponseDto from(Trade trade) {
         return TradeSimpleResponseDto.builder()
                 .id(trade.getId())

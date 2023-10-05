@@ -2,8 +2,6 @@ package com.sturdy.moneyallaround.domain.exchange.controller;
 
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.sturdy.moneyallaround.config.firebase.FCMService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,13 +11,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -31,19 +26,6 @@ import java.util.*;
 public class ExchangeController {
     @Value("${exchange.key}")
     private String API_KEY;
-
-    private final FCMService fcmService;
-
-    @PostMapping("/token")
-    public ResponseEntity<Object> FCMTest(@RequestBody String token) {
-        try {
-            fcmService.sendMessageTo(token);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return ResponseEntity.ok().build();
-    }
 
     @Getter
     static class ExchangeInfo {

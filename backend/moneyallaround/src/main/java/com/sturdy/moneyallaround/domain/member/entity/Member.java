@@ -41,6 +41,9 @@ public class Member extends BaseEntity implements UserDetails {
     @Column(nullable = true)
     private String uid;
 
+    @Column(nullable = true)
+    private String deviceToken;
+
     private Boolean isDeleted;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -48,11 +51,12 @@ public class Member extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private List<Role> roles = new ArrayList<>(List.of(Role.ROLE_USER));
 
-    public Member(String tel, String nickname, String uid, String imageUrl) {
+    public Member(String tel, String nickname, String uid, String imageUrl, String deviceToken) {
         this.tel = tel;
         this.nickname = nickname;
         this.uid = uid;
         this.imageUrl = imageUrl;
+        this.deviceToken = deviceToken;
         point = 0;
         rating = 500;
         isDeleted = false;
@@ -68,11 +72,17 @@ public class Member extends BaseEntity implements UserDetails {
     }
 
     public void delete() {
+        this.uid = null;
+        this.deviceToken = null;
         this.isDeleted = true;
     }
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
     }
 
     public void updateRating(int reviewScore) {

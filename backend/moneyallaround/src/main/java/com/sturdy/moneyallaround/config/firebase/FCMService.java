@@ -16,7 +16,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,15 +34,25 @@ public class FCMService {
 
     private final ObjectMapper objectMapper;
 
-    /*
-        두 버전 테스트 후 확정
-     */
+    public void sendNotificationByToken(String title, String body, String token) {
+        Notification notification = Notification.builder()
+                .setTitle(title)
+                .setBody(body)
+                .build();
 
-    /*
-        단체 알림 전송 ver
-     */
+        Message message = Message.builder()
+                .setToken(token)
+                .setNotification(notification)
+                .build();
 
-    public void sendMulticastMessageTo(String title, String body, List<String> tokenList) throws IOException, FirebaseMessagingException {
+        try {
+            FirebaseMessaging.getInstance().send(message);
+        } catch (FirebaseMessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendMulticastMessageTo(String title, String body, List<String> tokenList)  {
         MulticastMessage message = MulticastMessage.builder()
                 .putData("fcm_type", "NOTIFICATION")
                 .putData("title", title)
@@ -51,9 +60,14 @@ public class FCMService {
                 .addAllTokens(tokenList)
                 .build();
 
-        BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
+        try {
+            BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
+            log.info("응답 확인 = {}", response);
+        } catch (FirebaseMessagingException e) {
+            e.printStackTrace();
+        }
 
-        failMessage(tokenList, response);
+        //failMessage(tokenList, response);
     }
 
     // 토큰이 유효하지 않아 fcm 발송이 실패한 데이터 추출

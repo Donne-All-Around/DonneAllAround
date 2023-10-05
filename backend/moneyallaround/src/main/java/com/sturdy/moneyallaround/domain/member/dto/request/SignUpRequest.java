@@ -7,7 +7,8 @@ public record SignUpRequest(
         @NotNull String tel,
         @NotNull String nickname,
         String imageUrl,
-        String uid
+        String uid,
+        String deviceToken
 
 
 ) {
