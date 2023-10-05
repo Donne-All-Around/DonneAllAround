@@ -1,10 +1,15 @@
 import 'package:a705/delivery_transaction_page.dart';
+import 'package:a705/service/database.dart';
+import 'package:a705/service/spring_api.dart';
 import 'package:flutter/material.dart';
 
 import 'package:a705/direct_transaction_page.dart';
 
+import 'chatting_page.dart';
+
 class AppointmentPage extends StatefulWidget {
-  const AppointmentPage({super.key});
+  final Map<String, dynamic>? tradeInfoMap;
+  AppointmentPage({Key? key, required this.tradeInfoMap}) : super(key: key);
 
   @override
   State<AppointmentPage> createState() => _AppointmentPageState();
@@ -95,7 +100,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
-                              return const DirectTransactionPage();
+                              return  DirectTransactionPage(
+                               tradeInfoMap : widget.tradeInfoMap,
+                              );
                             },
                           ));
                         },
@@ -132,11 +139,15 @@ class _AppointmentPageState extends State<AppointmentPage> {
                       const SizedBox(width: 30),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return const DeliveryTransactionPage();
-                            },
-                          ));
+                          addDeliveryApptData();
+                          Navigator.pop(context);
+                          // Navigator.push(context, MaterialPageRoute(
+                          //   builder: (context) {
+                          //     return DeliveryTransactionPage(
+                          //       tradeInfoMap : widget.tradeInfoMap,
+                          //     );
+                          //   },
+                          // ));
                         },
                         child: Column(
                           children: [
@@ -288,5 +299,34 @@ class _AppointmentPageState extends State<AppointmentPage> {
                 ],
               ),
             )));
+  }
+
+  void addDeliveryApptData() {
+    Map<String, dynamic> tradeInfo = {
+      "type": "DELIVERY",
+      "directTradeTime": null,
+      "directTradeLocationDetail": null,
+      "sellerAccountBankCode": null,
+      "sellerAccountNumber": null,
+      "deliveryRecipientName": null,
+      "deliveryRecipientTel": null,
+      "deliveryAddressZipCode": null,
+      "deliveryAddressDetail": null,
+      "deliveryAddress": null,
+      "trackingNumber": null,
+      "buyerId": widget.tradeInfoMap?['buyerId'],
+      "sellerId": myUserId,
+      "status": "PROGRESS",
+      "method": "ACCOUNT",
+      "isRemittance": false,
+      "sellerReview": false,
+      "buyerReview": false,
+    };
+
+    // 백엔드에 type 전달 method 구현 필요
+    Map<String, dynamic> setDeliveryAppointmentMap = {"buyerId":2};
+    SpringApi().setDeliveryAppointment(setDeliveryAppointmentMap, widget.tradeInfoMap?['tradeId'], myUserId!);
+    DatabaseMethods().setTradeInfo(widget.tradeInfoMap?['tradeId'], tradeInfo);
+    print("택배 거래 업데이트 완료");
   }
 }

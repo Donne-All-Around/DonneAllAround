@@ -4,7 +4,8 @@ import 'package:a705/models/ExchangeDto.dart';
 
 class ExchangeRateProvider {
   final String baseUrl = 'http://api.currencylayer.com/live';
-  final String accessKey = '801421925fd59c4a9b9fb2fa00a51d2c';
+  // final String accessKey = '801421925fd59c4a9b9fb2fa00a51d2c';
+  final String accessKey = '528ac9fb6c6fa1c649da1db532cf09e7';
   // final String accessKey = '';
   final String currencies = 'KRW,JPY,AUD,CAD,CNY,CZK,EUR,GBP,HKD,NZD,PHP,RUB,SGD,TWD,VND';
 

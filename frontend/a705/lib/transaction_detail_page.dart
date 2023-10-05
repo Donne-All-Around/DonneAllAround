@@ -1,10 +1,6 @@
-import 'dart:typed_data';
-
 import 'package:a705/chatting_detail_page.dart';
-import 'package:a705/chatting_page.dart';
 import 'package:a705/models/TradeDto.dart';
 import 'package:a705/providers/trade_providers.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -20,6 +16,7 @@ class TransactionDetailPage extends StatefulWidget {
 }
 
 class _TransactionDetailPageState extends State<TransactionDetailPage> {
+
   @override
   void initState() {
     getTradeDetail();
@@ -29,7 +26,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
 
   final List<Marker> _marker = <Marker>[];
   String image = 'assets/images/marker.png';
-  final LatLng latlng = const LatLng(37.5013068, 127.0396597);
+  late LatLng latlng;
 
   Future<Uint8List> getImages(String path, int width) async {
     ByteData data = await rootBundle.load(path);
@@ -85,7 +82,9 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
   Future getTradeDetail() async {
     trade = await tradeProvider.getTradeDetail(widget.id);
     print("trade id: ${trade.id}");
-    setState(() {});
+    setState(() {
+      latlng = LatLng(trade.latitude, trade.longitude);
+    });
   }
 
   @override
@@ -118,8 +117,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                       pageSnapping: true,
                       itemBuilder: (context, index) {
                         return Image(
-                            image:
-                                NetworkImage(trade.imageUrlList[index]));
+                            image: NetworkImage(trade.imageUrlList[index]));
                       }),
                 ),
                 Container(height: 1, color: Colors.black26),
@@ -210,7 +208,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                           height: 350,
                           child: GoogleMap(
                             initialCameraPosition: CameraPosition(
-                              target: LatLng(trade.latitude, trade.longitude),
+                              target: latlng,
                               zoom: 17,
                             ),
                             zoomControlsEnabled: false,
@@ -273,9 +271,9 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                   Row(
                                     children: [
                                       const SizedBox(width: 10),
-                                      const CircleAvatar(
+                                      CircleAvatar(
                                         backgroundImage: AssetImage(
-                                            'assets/images/flag/AUD.png'),
+                                            'assets/images/flag/${trade.countryCode == 'KRW' ? 'KRW' : trade.countryCode == 'USD' ? 'USDKRW' : 'USD${trade.countryCode}'}.png'),
                                         radius: 8,
                                       ),
                                       const SizedBox(width: 5),
@@ -300,19 +298,13 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                 onTap: () {
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
-                                      return const ChattingDetailPage(
-                                          transactionInfoMap: {
-                                            "transactionId": "board2",
-                                            "transactionTitle": "싸게싸게팔아요",
-                                            "seller": "신짱구",
-                                            "sellerId": "098765",
-                                            "countryCode": "USD",
-                                            "transactionUrl": "",
-                                            "koreanWonAmount": 50000,
-                                            "foreignCurrencyAmount": 5000,
-                                            "type": "DIRECT",
-                                            "status": "WAIT"
-                                          });
+                                      return  ChattingDetailPage(
+                                          tradeInfoMap :{
+                                            "tradeId" : "1",
+                                            "seller" : "신짱구",
+                                            "sellerId" : "3",
+                                          }
+                                      );
                                     },
                                   ));
                                 },

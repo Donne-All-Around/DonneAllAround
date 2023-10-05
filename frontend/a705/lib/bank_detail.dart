@@ -1034,11 +1034,11 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                 ),
                               ],
                             ),
-                            SizedBox(width: 20),
+                            const SizedBox(width: 20),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(
+                                const Text(
                                   '수수료',
                                   style: TextStyle(fontSize: 15),
                                 ),
@@ -1047,21 +1047,21 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                   children: [
                                     Text(
                                     ' $buyingFee',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
                                           height: 1.532),
                                     ),
                                     Text(
-                                      '$sellingFee',
-                                      style: TextStyle(
+                                      sellingFee,
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
                                           height: 1.532),
                                     ),
                                     Text(
-                                      '$sendingFee',
-                                      style: TextStyle(
+                                      sendingFee,
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
                                           height: 1.532),
