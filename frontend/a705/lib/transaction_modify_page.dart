@@ -9,18 +9,21 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:a705/models/TradeDto.dart';
 import 'package:intl/intl.dart';
 
-class TransactionPage extends StatefulWidget {
-  const TransactionPage({super.key});
+class TransactionModifyPage extends StatefulWidget {
+  final int id;
+
+  const TransactionModifyPage({required this.id, super.key});
 
   @override
-  State<TransactionPage> createState() => _TransactionPageState();
+  State<TransactionModifyPage> createState() => _TransactionModifyPageState();
 }
 
-class _TransactionPageState extends State<TransactionPage> {
+class _TransactionModifyPageState extends State<TransactionModifyPage> {
   final _valueList = [
     '미국(달러) USD',
     '일본(엔) JPY',
@@ -80,10 +83,12 @@ class _TransactionPageState extends State<TransactionPage> {
 
   List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
 
-  List<File> selectedImages = [];
+  List<dynamic> selectedImages = [];
+  bool isSelected = false;
+
   final picker = ImagePicker();
 
-  String _addr = "장소 선택";
+  String _addr = "";
   Address _address = Address(
       country: "",
       administrativeArea: "",
@@ -100,11 +105,12 @@ class _TransactionPageState extends State<TransactionPage> {
   void initState() {
     super.initState();
     _fetchExchangeRates();
+    getTradeDetail();
   }
 
   TradeProviders tradeProvider = TradeProviders();
 
-  TradeDto uploadTrade = TradeDto(
+  TradeDto trade = TradeDto(
     id: 0,
     sellerId: 0,
     title: "",
@@ -132,6 +138,22 @@ class _TransactionPageState extends State<TransactionPage> {
     koreanWonPerForeignCurrency: 0,
     imageUrlList: [],
   );
+
+  late LatLng latlng;
+
+  Future getTradeDetail() async {
+    trade = await tradeProvider.getTradeDetail(widget.id);
+    print("trade id: ${trade.id}");
+    setState(() {
+      latlng = LatLng(trade.latitude, trade.longitude);
+    });
+    _titleEditController.text = trade.title;
+    _currencyEditController.text = trade.foreignCurrencyAmount.toString();
+    _krwEditController.text = trade.koreanWonAmount.toString();
+    _contentEditController.text = trade.description;
+    _addr = "${trade.subLocality} ${trade.thoroughfare}";
+    selectedImages = trade.imageUrlList;
+  }
 
   final _titleEditController = TextEditingController();
   final _currencyEditController = TextEditingController();
@@ -194,17 +216,18 @@ class _TransactionPageState extends State<TransactionPage> {
                 color: Colors.black,
               ),
               onPressed: () async {
-                for(int i = 0; i < uploadTrade.imageUrlList.length; i++) {
-                  String path = "trade/${uploadTrade.sellerId}/image_${_dateTime}_$i.jpg";
+                for (int i = 0; i < trade.imageUrlList.length; i++) {
+                  String path =
+                      "trade/${trade.sellerId}/image_${_dateTime}_$i.jpg";
                   final desertRef = FirebaseStorage.instance.ref().child(path);
                   await desertRef.delete();
                 }
-                if(!mounted) return;
+                if (!mounted) return;
                 Navigator.pop(context);
               },
             ),
             title: const Text(
-              '판매글 등록',
+              '판매글 수정',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
@@ -222,8 +245,10 @@ class _TransactionPageState extends State<TransactionPage> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          if (selectedImages.isEmpty) {
+                          if (!isSelected) {
                             getImages();
+                            isSelected = true;
+                            setState(() {});
                           }
                         },
                         child: Container(
@@ -237,7 +262,7 @@ class _TransactionPageState extends State<TransactionPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Icon(Icons.camera_alt_outlined),
-                              Text("${selectedImages.length}/10"),
+                              Text("${trade.imageUrlList.length}/10"),
                             ],
                           ),
                         ),
@@ -248,14 +273,14 @@ class _TransactionPageState extends State<TransactionPage> {
                           width: double.infinity,
                           // To show images in particular area only
                           height: 80,
-                          child: selectedImages
+                          child: trade.imageUrlList
                                   .isEmpty // If no images is selected
                               ? const Center(child: Text('사진을 선택하세요'))
                               // If at least 1 images is selected
                               : GridView.builder(
                                   scrollDirection: Axis.horizontal,
                                   physics: const ScrollPhysics(),
-                                  itemCount: selectedImages.length,
+                                  itemCount: trade.imageUrlList.length,
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 1,
@@ -274,17 +299,11 @@ class _TransactionPageState extends State<TransactionPage> {
                                       child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(10),
-                                          child: kIsWeb
-                                              ? Image.network(
-                                                  selectedImages[index].path,
-                                                  width: 80,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : Image.file(
-                                                  selectedImages[index],
-                                                  width: 80,
-                                                  fit: BoxFit.cover,
-                                                )),
+                                          child: Image.network(
+                                            trade.imageUrlList[index],
+                                            width: 80,
+                                            fit: BoxFit.cover,
+                                          )),
                                     );
                                   },
                                 ),
@@ -593,9 +612,8 @@ class _TransactionPageState extends State<TransactionPage> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-
                                 content: Container(
-                                  height: 200,
+                                    height: 200,
                                     padding: const EdgeInsets.fromLTRB(
                                         20, 20, 20, 0),
                                     child: const Text(
@@ -612,13 +630,13 @@ class _TransactionPageState extends State<TransactionPage> {
                               );
                             });
                       } else {
-                        uploadTrade = TradeDto(
-                          id: uploadTrade.id,
-                          sellerId: uploadTrade.sellerId,
+                        trade = TradeDto(
+                          id: trade.id,
+                          sellerId: trade.sellerId,
                           title: _titleEditController.text,
                           description: _contentEditController.text,
-                          thumbnailImageUrl: uploadTrade.imageUrlList[0],
-                          status: uploadTrade.status,
+                          thumbnailImageUrl: trade.imageUrlList[0],
+                          status: trade.status,
                           countryCode: currency[idx],
                           foreignCurrencyAmount:
                               int.parse(_currencyEditController.text),
@@ -632,19 +650,19 @@ class _TransactionPageState extends State<TransactionPage> {
                           locality: _address.locality!,
                           subLocality: _address.subLocality!,
                           thoroughfare: _address.thoroughfare!,
-                          type: uploadTrade.type,
-                          tradeLikeCount: uploadTrade.tradeLikeCount,
-                          sellerNickname: uploadTrade.sellerNickname,
-                          sellerImgUrl: uploadTrade.sellerImgUrl,
-                          sellerRating: uploadTrade.sellerRating,
-                          isLike: uploadTrade.isLike,
-                          createTime: uploadTrade.createTime,
+                          type: trade.type,
+                          tradeLikeCount: trade.tradeLikeCount,
+                          sellerNickname: trade.sellerNickname,
+                          sellerImgUrl: trade.sellerImgUrl,
+                          sellerRating: trade.sellerRating,
+                          isLike: trade.isLike,
+                          createTime: trade.createTime,
                           koreanWonPerForeignCurrency:
-                              uploadTrade.koreanWonPerForeignCurrency,
-                          imageUrlList: uploadTrade.imageUrlList,
+                              trade.koreanWonPerForeignCurrency,
+                          imageUrlList: trade.imageUrlList,
                         );
 
-                        tradeProvider.postTrade(uploadTrade);
+                        tradeProvider.postTrade(trade);
 
                         if (!mounted) return;
                         Navigator.pushAndRemoveUntil(
@@ -681,27 +699,29 @@ class _TransactionPageState extends State<TransactionPage> {
   }
 
   Future getImages() async {
+    trade.imageUrlList.clear();
     final pickedFile = await picker.pickMultiImage();
     List<XFile> xfilePick = pickedFile;
 
-    setState(() {
-      if (xfilePick.isNotEmpty) {
-        for (var i = 0; i < xfilePick.length; i++) {
-          File _file = File(xfilePick[i].path);
-          selectedImages.add(_file);
-        }
-      }
-    });
+    // setState(() {
+    //   // if (xfilePick.isNotEmpty) {
+    //   //   for (var i = 0; i < xfilePick.length; i++) {
+    //   //     File _file = File(xfilePick[i].path);
+    //   //     selectedImages.add(_file);
+    //   //   }
+    //   // }
+    // });
     if (xfilePick.isNotEmpty) {
-      for (var i = 0; i < selectedImages.length; i++) {
-        String _path =
-            "trade/${uploadTrade.sellerId}/image_${_dateTime}_$i.jpg";
+      for (var i = 0; i < xfilePick.length; i++) {
+        String _path = "trade/${trade.sellerId}/image_${_dateTime}_$i.jpg";
         File _file = File(xfilePick[i].path);
         await FirebaseStorage.instance.ref(_path).putFile(_file);
         final String _urlString =
             await FirebaseStorage.instance.ref(_path).getDownloadURL();
-        uploadTrade.imageUrlList.add(_urlString);
+        trade.imageUrlList.add(_urlString);
       }
     }
+
+    setState(() {});
   }
 }

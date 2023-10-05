@@ -1,10 +1,13 @@
 import 'package:a705/chatting_detail_page.dart';
 import 'package:a705/models/TradeDto.dart';
 import 'package:a705/providers/trade_providers.dart';
+import 'package:a705/transaction_modify_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:ui' as ui;
+
+import 'home_page.dart';
 
 class TransactionDetailPage extends StatefulWidget {
   final int id;
@@ -36,6 +39,20 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
         .buffer
         .asUint8List();
+  }
+
+  String formatDate(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+    if (difference.inMinutes < 1) {
+      return '방금 전';
+    } else if (difference.inHours < 1) {
+      return '${difference.inMinutes}분전';
+    } else if (difference.inDays < 1) {
+      return '${difference.inHours}시간 전';
+    } else {
+      return '${date.year}.${date.month}.${date.day}';
+    }
   }
 
   loadData() async {
@@ -104,6 +121,42 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
               Navigator.pop(context);
             },
           ),
+          actions: [
+            IconButton(onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return ConstrainedBox(
+                      constraints: const BoxConstraints(maxHeight: 200.0),
+                      child: AlertDialog(
+                        content: Container(
+                            padding: const EdgeInsets.fromLTRB(
+                                20, 20, 20, 0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextButton(onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) {
+                                      return TransactionModifyPage(id: trade.id);
+                                    },
+                                  ));
+                                }, child: const Text('수정하기', style: TextStyle(fontSize: 18, color: Colors.blue),)),
+                                TextButton(onPressed: () {
+                                  tradeProvider.deleteTrade(trade.id);
+                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          const HomePage()), (route) => false);
+                                }, child: const Text('삭제하기', style: TextStyle(fontSize: 18, color: Colors.red),)),
+                              ],
+                            )),
+                      ),
+                    );
+                  });
+            },
+            icon: const Icon(Icons.menu_rounded, size: 30, color: Colors.black,)),
+            SizedBox(width: 20),
+          ],
         ),
         body: Stack(children: [
           SingleChildScrollView(
@@ -142,10 +195,10 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                           ),
                         ],
                       ),
-                      Container(
+                      SizedBox(
                         height: 50,
                         width: 50,
-                        color: Colors.yellow,
+                        child: Image.asset('assets/images/level/${trade.sellerRating}.png'),
                       )
                     ],
                   ),
@@ -166,7 +219,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                               ),
                             ),
                             const SizedBox(width: 10),
-                            const Text('1시간 전'),
+                            Text(formatDate(DateTime.parse(trade.createTime))),
                           ],
                         ),
                         const SizedBox(height: 10),

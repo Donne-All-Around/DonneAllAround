@@ -1,5 +1,5 @@
 import 'package:a705/chatting_detail_page.dart';
-import 'package:a705/service/database.dart';
+import 'package:a705/providers/database.dart';
 import 'package:bottom_picker/bottom_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';

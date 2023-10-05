@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:a705/transaction_detail_page.dart';
+import 'dart:convert'; // JSON 파싱을 위해 추가
+import 'package:http/http.dart' as http;
 
 class TradeLikePage extends StatefulWidget {
   const TradeLikePage({super.key});
@@ -9,6 +11,47 @@ class TradeLikePage extends StatefulWidget {
 }
 
 class TradeLikePageState extends State<TradeLikePage> {
+
+  List<Map<String, dynamic>> tradeList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // initState에서 서버로 GET 요청을 보냅니다.
+    fetchTradeLikeHistory();
+  }
+
+  void fetchTradeLikeHistory() async {
+    try {
+      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/like');
+
+      final headers = {
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
+        'Content-Type': 'application/json', // 필요에 따라 다른 헤더를 추가할 수 있습니다.
+      };
+
+      http.Response response = await http.get(url, headers: headers);
+      String responseBody = utf8.decode(response.bodyBytes);
+
+      if (response.statusCode == 200) {
+        // 서버 응답이 성공인 경우
+        final responseData = json.decode(responseBody);
+        final data = responseData['data'];
+        final tradeListData = data['tradeList'];
+
+        setState(() {
+          tradeList = List<Map<String, dynamic>>.from(tradeListData);
+        });
+        print('관심목록 잘 들어온다');
+      } else {
+        // 서버 응답이 실패인 경우
+        print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('서버 요청 중 오류 발생: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -39,9 +82,9 @@ class TradeLikePageState extends State<TradeLikePage> {
             height: double.infinity,
             width: double.infinity,
             color: Colors.white,
-            child: const Column(
+            child: Column(
               children: [
-                Expanded(child: ListViewBuilder()),
+                Expanded(child: ListViewBuilder(tradeLikePageState: this)),
               ]
             )
           )
@@ -51,23 +94,35 @@ class TradeLikePageState extends State<TradeLikePage> {
   }
 }
 
-List<String> transactions = ['옹골찬', '김싸피', '박싸피', '정현아', '문요환', '별의 커비', '뽀로로'];
-
 class ListViewBuilder extends StatefulWidget {
-  const ListViewBuilder({super.key});
+  final TradeLikePageState tradeLikePageState;
+
+  const ListViewBuilder({Key? key, required this.tradeLikePageState}) : super(key: key);
 
   @override
   State<ListViewBuilder> createState() => _ListViewBuilderState();
 }
 
 class _ListViewBuilderState extends State<ListViewBuilder> {
+
+  String formatDate(String dateTimeString) {
+    final dateTime = DateTime.parse(dateTimeString);
+    final year = dateTime.year;
+    final month = dateTime.month;
+    final day = dateTime.day;
+
+    return '$year년 $month월 $day일';
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        itemCount: transactions.length,
+        itemCount: widget.tradeLikePageState.tradeList.length,
         itemBuilder: (BuildContext context, int index) {
+          final trade = widget.tradeLikePageState.tradeList[index];
+
           return GestureDetector(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(
@@ -93,6 +148,17 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                   ]),
               child: Column(
                 children: [
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                    child: Row(
+                      children: [
+                        Text(
+                          formatDate(trade['createTime']),
+                          style: const TextStyle(color: Colors.black54),
+                        ),
+                      ],
+                    ),
+                  ),
                   Row(
                     children: [
                       Container(
@@ -104,13 +170,12 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                         ),
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(15),
-                            child: const Image(
-                              height: 60,
-                              image: AssetImage(
-                                'assets/images/ausdollar.jpg',
+                            child: Image.network(
+                              trade['thumbnailImageUrl'],
+                                height: 60,
+                                fit: BoxFit.cover,
                               ),
-                              fit: BoxFit.cover,
-                            )),
+                            ),
                       ),
                       Flexible(
                         flex: 1,
@@ -119,12 +184,12 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Row(
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    '호주 달러 50달러 팔아요',
-                                    style: TextStyle(
+                                    trade['title'],
+                                    style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -133,49 +198,74 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                     width: 30,
                                     height: 30,
                                     child : IconButton(
-                                      icon : Icon(Icons.favorite, color: Colors.red),
-                                      onPressed: null,
-                                      // onPressed: () {
-                                      //   IconButton 클릭 시 관심목록 제거 로직
-                                      // },
+                                      icon : const Icon(Icons.favorite, color: Colors.red),
+                                      onPressed: () async {
+                                        // tradeId와 memberId 설정
+                                        final tradeId = trade['id']; // trade['id'] 또는 다른 필드에 해당하는 값으로 변경
+
+                                        // DELETE 요청 보내기
+                                        final deleteUrl = 'https://j9a705.p.ssafy.io/api/trade/$tradeId/unlike';
+
+
+                                        try {
+                                          final response = await http.delete(
+                                            Uri.parse(deleteUrl),
+                                            headers: {
+                                              "Accept-Charset": "utf-8",
+                                              'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
+                                              'Content-Type': 'application/json',// 문자 인코딩을 UTF-8로 설정
+                                            },
+                                          );
+
+                                          if (response.statusCode == 200) {
+                                            setState(() {
+                                              // tradeList에서 해당 항목 제거
+                                              widget.tradeLikePageState.tradeList.removeWhere((element) => element['id'] == tradeId);
+                                            });
+                                            print('관심목록 삭제 성공');
+                                          } else {
+                                            // 삭제 실패 시의 처리
+                                            print('관심목록 제거 실패: ${response.statusCode}');
+                                            // 실패한 경우 사용자에게 알림을 표시하는 등의 처리 추가 가능
+                                          }
+                                        } catch (e) {
+                                          // 오류 처리
+                                          print('오류: $e');
+                                          // 오류 발생 시 사용자에게 알림을 표시하는 등의 처리 추가 가능
+                                        }
+                                      },
                                       iconSize: 30,
                                     )
                                   )
                                 ]
                               ),
-                              const Row(
+                              Row(
                                 children: [
                                   Text(
-                                    '강남구 역삼동',
-                                    style: TextStyle(color: Colors.black54),
-                                  ),
-                                  Text(
-                                    ' · ',
-                                    style: TextStyle(color: Colors.black54),
-                                  ),
-                                  Text(
-                                    '1시간 전',
+                              '${trade['administrativeArea']} ${trade['subLocality']} ${trade['thoroughfare']}',
                                     style: TextStyle(color: Colors.black54),
                                   ),
                                 ],
                               ),
-                              const Row(
+                              const SizedBox(height: 3),
+                              Row(
                                 children: [
                                   CircleAvatar(
                                     backgroundImage:
-                                    AssetImage('assets/images/USDAUD.png'),
+                                    AssetImage('assets/images/flag/${trade['countryCode'] == 'KRW' ? 'KRW' : trade['countryCode'] == 'USD' ? 'USDKRW' : 'USD${trade['countryCode']}'}.png'),
                                     radius: 8,
                                   ),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
-                                    '50 AUD',
-                                    style: TextStyle(
+                                    '${trade['foreignCurrencyAmount']} ${trade['countryCode']}',
+                                    style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.blueAccent),
                                   ),
                                 ],
                               ),
+                              const SizedBox(height: 3),
                               Row(
                                 mainAxisAlignment:
                                 MainAxisAlignment.spaceBetween,
@@ -187,13 +277,15 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                       color: const Color(0xFFFFD954),
                                       borderRadius: BorderRadius.circular(5),
                                     ),
-                                    child: const Text('예약중'),
+                                    child: Text(
+                                      trade['status'] == 'WAIT' ? '예약중' : trade['status'] == 'COMPLETE' ? '거래완료' : '',
+                                    ),
                                   ),
-                                  const Column(
+                                  Column(
                                     children: [
                                       Text(
-                                        '42,000원',
-                                        style: TextStyle(
+                                        '${trade['koreanWonAmount']}원',
+                                        style: const TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold),
                                       ),

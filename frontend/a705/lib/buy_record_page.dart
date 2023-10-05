@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:a705/transaction_detail_page.dart';
+import 'review_create_page.dart';
 import 'dart:convert'; // JSON 파싱을 위해 추가
 import 'package:http/http.dart' as http;
 
@@ -25,10 +26,14 @@ class BuyRecordPageState extends State<BuyRecordPage> {
 
   void fetchBuyHistory() async {
     try {
-      const memberId = '1'; // 원하는 회원 ID를 여기에 넣어주세요.
-      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/buy?memberId=$memberId');
+      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/buy');
 
-      http.Response response = await http.get(url);
+      final headers = {
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
+        'Content-Type': 'application/json', // 필요에 따라 다른 헤더를 추가할 수 있습니다.
+      };
+
+      http.Response response = await http.get(url, headers: headers);
       String responseBody = utf8.decode(response.bodyBytes);
 
       if (response.statusCode == 200) {
@@ -169,14 +174,13 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image(
-                              height: 60,
-                              image: AssetImage(
-                                'assets/images/trade${['thumbnailImageUrl']}',
-                              ),
-                              fit: BoxFit.cover,
-                            )),
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.network(
+                            trade['thumbnailImageUrl'],
+                            height: 60,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                       Flexible(
                         flex: 1,
@@ -201,7 +205,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                 children: [
                                   Text(
                                     trade['type'] == 'DIRECT'
-                                      ? '${trade['preferredTradeCity']} ${trade['preferredTradeDistrict']} ${trade['preferredTradeTown']}'
+                                      ? '${trade['administrativeArea']} ${trade['subLocality']} ${trade['thoroughfare']}'
                                       : '택배거래',
                                     style: const TextStyle(color: Colors.black54),
                                   ),
@@ -211,7 +215,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                 children: [
                                   CircleAvatar(
                                     backgroundImage:
-                                    AssetImage('assets/images/flag/${trade['countryCode']}.png'),
+                                    AssetImage('assets/images/flag/${trade['countryCode'] == 'KRW' ? 'KRW' : trade['countryCode'] == 'USD' ? 'USDKRW' : 'USD${trade['countryCode']}'}.png'),
                                     radius: 8,
                                   ),
                                   const SizedBox(width: 5),
@@ -254,7 +258,10 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                         ? null // false 일 때는 아무것도 반환하지 않음
                         : ElevatedButton(
                       onPressed: () {
-                        // '후기 작성' 버튼을 눌렀을 때 수행할 동작 추가
+                        final tradeID = trade['id'];
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ReviewCreatePage(tradeID: tradeID)));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFFFD954),
