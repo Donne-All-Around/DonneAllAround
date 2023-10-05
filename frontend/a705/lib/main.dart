@@ -1,9 +1,5 @@
-
-import 'package:a705/Login/profilesetting_page.dart';
 import 'package:a705/main_page.dart';
-import 'package:a705/storage.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:a705/Login/start_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:a705/providers/member_providers.dart';
