@@ -1,4 +1,7 @@
+import 'package:a705/storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'Login/start_page.dart';
 import 'trade_like_page.dart';
 import 'sell_record_page.dart';
 import 'buy_record_page.dart';
@@ -66,11 +69,16 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> logout() async {
     final url = Uri.parse('https://j9a705.p.ssafy.io/api/member/logout');
-    const accessToken =
-        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+    final storage = FlutterSecureStorage();
+    final refreshToken =  await getJwtRefreshToken(); // 리프레시 토큰 가져오기
+    final accessToken =  await getJwtAccessToken(); // 액세스 토큰 가져오기
 
-    final refreshToken = 'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTc2NDYyNTF9.SHw9gvdoSj4i9wmYYcKxaY4B5xEpOGv9Onq6TLpNJMo';
+    // const accessToken =
+    //     'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 
+    // final refreshToken = 'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTc2NDYyNTF9.SHw9gvdoSj4i9wmYYcKxaY4B5xEpOGv9Onq6TLpNJMo';
+    print('로그아웃을 위한 refreshToken 값; $refreshToken');
+    print('로그아웃을 위한 refreshToken 값; $accessToken');
     try {
       final response = await http.post(
         url,
@@ -82,7 +90,11 @@ class _ProfilePageState extends State<ProfilePage> {
         final jsonData = jsonDecode(response.body);
         final message = jsonData['message'];
         // 로그아웃 성공 메시지 처리
+        await storage.deleteAll();
         print('로그아웃 성공');
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) =>
+            const StartPage()), (Route<dynamic> route) => false);
 
         // 로그아웃 후 필요한 작업을 수행하실 수 있습니다.
       } else {

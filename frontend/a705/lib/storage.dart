@@ -33,7 +33,7 @@ Future<void> saveUserInfo(int id, String tel, String nickname, String accessToke
   // }
 }
 
-Future<int> getUserId() async {
+Future<int?> getUserId() async {
   String? id = await storage.read(key: 'userId');
   return int.parse(id!);
 }

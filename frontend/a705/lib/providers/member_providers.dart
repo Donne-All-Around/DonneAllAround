@@ -98,7 +98,7 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  
+
   // // 이미지 firebasestore 에 업로드 및 url 변환
   // Future<String?> uploadImage(File imageFile) async {
   //   try {
@@ -118,8 +118,10 @@ class UserProvider extends ChangeNotifier {
   //   }
   // }
 
-  // 파베 토큰 주고 jwt 토큰 받아오기
-  Future<String?> getJwtTokenFromFirebaseToken(String firebaseToken, String uid, String tel) async {
+
+
+  Future<String?> getJwtTokenFromFirebaseToken(String firebaseToken, String uid,
+      String tel) async {
     final url = "$baseUrl/api/member/sign-in";
 
     // Prepare the request body with the firebaseToken, uid, and tel
@@ -128,9 +130,9 @@ class UserProvider extends ChangeNotifier {
       "uid": uid,
       "tel": tel,
     };
-    // print('보내는 파베토큰 : ${requestBody['idToken']}');
-    // print('보내는 uid : ${requestBody['uid']}');
-    // print('보내는 tel : ${requestBody['tel']}');
+    print('보내는 파베토큰 : ${requestBody['idToken']}');
+    print('보내는 uid : ${requestBody['uid']}');
+    print('보내는 tel : ${requestBody['tel']}');
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -148,15 +150,14 @@ class UserProvider extends ChangeNotifier {
         if (responseData['firebaseAuthStatus'] == true) {
           print("파이어베이스 토큰 인증 성공");
 
-          if (responseData["member"] == true) {
-            final signInResponse = LoginResponse.fromJson(
-                responseData['signInResponse']);
+          final signInResponseJson = responseData['signInResponse'];
+
+          if (signInResponseJson != null) {
+            final signInResponse = LoginResponse.fromJson(signInResponseJson);
             int id = signInResponse.signInResponse.id;
             String tel = signInResponse.signInResponse.tel;
-            String accessToken = signInResponse.signInResponse.token
-                .accessToken;
-            String refreshToken = signInResponse.signInResponse.token
-                .refreshToken;
+            String accessToken = signInResponse.signInResponse.token.accessToken;
+            String refreshToken = signInResponse.signInResponse.token.refreshToken;
             String nickname = signInResponse.signInResponse.nickname;
 
             print('너의 member id : $id');
@@ -170,12 +171,10 @@ class UserProvider extends ChangeNotifier {
 
             return 'SUCCESS';
           } else {
-            print("비회원");
-            return null;
+            print("기존 멤버가 아니라서 회원가입페이지로 갈거야!");
+            // 스타트펭지 또는 예외 처리 추가
+            return null; // 예외 처리에 따라 반환값을 수정
           }
-        } else {
-          print("파이어베이스 토큰 인증 오류 - 토큰이 이상한 거야! 아냐 회원가입페이지로 갈거야!");
-          // 스타트펭지
         }
       }
     } catch (e) {
@@ -183,6 +182,8 @@ class UserProvider extends ChangeNotifier {
       // 스타트페이지
     }
   }
+}
+
   //
   // Future<SignInResponse?> getSignInResponseFromFirebaseToken(String firebaseToken, String uid, String tel) async {
   //   final url = "$baseUrl/api/member/verifyFirebaseToken";
@@ -228,4 +229,4 @@ class UserProvider extends ChangeNotifier {
   //   }
   // }
 
-}
+
