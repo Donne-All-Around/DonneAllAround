@@ -6,6 +6,8 @@ import 'withdrawal_page.dart';
 import 'keyword_page.dart';
 import 'exchange_record_page.dart';
 import 'review_page.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -15,6 +17,81 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
+  int selectedScreen = 1; // 1은 '내 주머니', 2는 '내 계좌'
+
+  Map<String, dynamic> userData = {};
+
+  // 서버에 GET 요청을 보내는 함수
+  Future<void> fetchData() async {
+    final url = Uri.parse('https://j9a705.p.ssafy.io/api/member/info');
+    const accessToken =
+        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',},
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(utf8.decode(response.bodyBytes));
+        final data = jsonData['data'];
+
+        setState(() {
+          userData = data; // 응답 데이터를 저장
+
+          print(data);
+          // "rating" 값을 정수로 변환
+
+        });
+      } else {
+        print('요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('에러 발생: $error');
+      // 에러 처리를 원하는 방식으로 수행할 수 있습니다.
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> logout() async {
+    final url = Uri.parse('https://j9a705.p.ssafy.io/api/member/logout');
+    const accessToken =
+        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+
+    final refreshToken = 'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTc2NDYyNTF9.SHw9gvdoSj4i9wmYYcKxaY4B5xEpOGv9Onq6TLpNJMo';
+
+    try {
+      final response = await http.post(
+        url,
+        body: jsonEncode({'refreshToken': refreshToken}),
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $accessToken'},
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        final message = jsonData['message'];
+        // 로그아웃 성공 메시지 처리
+        print('로그아웃 성공');
+
+        // 로그아웃 후 필요한 작업을 수행하실 수 있습니다.
+      } else {
+        print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('에러 발생: $error');
+      // 에러 처리를 원하는 방식으로 수행할 수 있습니다.
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -55,10 +132,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                       color: Colors.white,
                                       width: 2.0,
                                     ),
-                                    // image: DecoraionImage(
-                                    // image: AssetImage('assets/profile_image.jpg'),
-                                    // fit: BoxFit.cover,
-                                    // )
+                                  ),
+                                  child: ClipOval(
+                                    child: Image.network(
+                                      userData['imageUrl'], // 이미지 URL을 여기에 넣으세요.
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
                                 Positioned(
@@ -86,10 +167,10 @@ class _ProfilePageState extends State<ProfilePage> {
                               ]
                             ),
                             const SizedBox(width: 25.0),
-                            // 닉네임
-                            const Text(
-                              '닉네임',
-                              style: TextStyle(
+                            Text(
+                              // '닉네임',
+                              userData['nickname'],
+                              style: const TextStyle(
                                 fontSize: 24.0,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -99,55 +180,61 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       // 중단 부분 : 버튼들
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Container(
-                              width: 95.0,
+                              width: 105.0,
                               height: 40.0,
                               child: ElevatedButton(
                                 onPressed: () {
                                   // '내 주머니' 버튼 클릭 시 동작
+                                  setState(() {
+                                    selectedScreen = 1;
+                                  });
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
+                                  backgroundColor: selectedScreen == 1 ? const Color(0xFFE0AE00) : Colors.white,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                 ),
-                                child: const Text(
-                                  '내 주머니',
+                                child: Text(
+                                  '내 점수',
                                   style: TextStyle(
                                     fontSize: 15.0,
                                     fontFamily: 'Inter',
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFFA6A6A6),
+                                    color: selectedScreen == 1 ? Colors.white : const Color(0xFFA6A6A6),
                                   ),
                                 ),
                               ),
                             ),
                             const SizedBox(width: 16.0),
                             Container(
-                              width: 95.0,
+                              width: 105.0,
                               height: 40.0,
                               child: ElevatedButton(
                                 onPressed: () {
                                   // '내 계좌' 버튼 클릭 시 동작
+                                  setState(() {
+                                    selectedScreen = 2;
+                                  });
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFE0AE00),
+                                  backgroundColor: selectedScreen == 2 ? const Color(0xFFE0AE00) : Colors.white,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                 ),
-                                child: const Text(
+                                child: Text(
                                   '내 계좌',
                                   style: TextStyle(
                                     fontSize: 15.0,
                                     fontFamily: 'Inter',
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                    color: selectedScreen == 2 ? Colors.white : const Color(0xFFA6A6A6),
                                   )
                                 ),
                               ),
@@ -155,22 +242,100 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                       ),
-                      Center(
-                        child: Container(
-                          margin: const EdgeInsets.all(16.0),
-                          width: 360.0,
-                          height: 80.0,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15.0),
+                      if (selectedScreen == 1)
+                        Center(
+                          child: Container(
+                            margin: const EdgeInsets.all(16.0),
+                            width: 360.0,
+                            height: 80.0,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            child: Stack(
+                              children: [
+                                Positioned(
+                                  left: (360.0 - 270.0) / 2, // 수평 중앙 정렬
+                                  top: (80.0 - 30.0) / 2,   // 수직 중앙 정렬
+                                  width: 270.0,
+                                  height: 30.0,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFFFCE51), // 배경색
+                                      borderRadius: BorderRadius.circular(30.0), // BorderRadius 설정
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: (360.0 - 270.0) / 2, // 수평 중앙 정렬
+                                  top: (80.0 - 30.0) / 2,                   // 수직 중앙 정렬
+                                  width: 270.0 * userData['rating'] / 1000,
+                                  // width: 270.0 * 400 / 1000,
+                                  height: 30.0,
+                                  child: Container(
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFF3B14E), // 배경색
+                                        borderRadius: BorderRadius.circular(30.0), // BorderRadius 설정
+                                      ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: (360.0 - 100.0) / 2,
+                                  top: (80.0 - 30.0) / 2,
+                                  width: 100,
+                                  height: 30,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child : Text(
+                                      '${userData['rating']}/1000',
+                                      style: TextStyle(
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                    ),
+                                  )
+                                )
+                              ],
+                            ),
                           ),
-                          // child: const Text(
-                          //   '24,310 원',
-                          //   style: TextStyle(fontSize: 24.0),
-                          // )
+                        ),
+                      if (selectedScreen == 2)
+                        Center(
+                          child: Container(
+                            margin: const EdgeInsets.all(16.0),
+                            width: 360.0,
+                            height: 80.0,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 30.0),
+                                  child: Text(
+                                    '${userData['point']}원',
+                                    style: TextStyle(
+                                      fontSize: 24.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.arrow_forward_ios_outlined),
+                                  onPressed: () {
+                                    // '>' 버튼 클릭 시 동작
+                                  },
+                                ),
+                              ],
+                            ),
+                          )
                         )
-                      )
                     ],
                   ),
                 ),
@@ -414,30 +579,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ),
-                      // InkWell(
-                      //  onTap: () {
-                      //    Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
-                      //  },
-                      //   child: Container(
-                      //     height: 35.0,
-                      //     child: const Row(
-                      //       children: [
-                      //         Icon(
-                      //           Icons.monetization_on,
-                      //         ),
-                      //         SizedBox(width: 8.0),
-                      //         Text(
-                      //           "환율",
-                      //           style: TextStyle(
-                      //             color: Colors.black,
-                      //             fontFamily: "Inter",
-                      //             fontSize: 15.0,
-                      //             )
-                      //         )
-                      //       ]
-                      //     ),
-                      //   ),
-                      // )
                     ]
                   )
                 ),
@@ -586,7 +727,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             const SizedBox(width: 30.0),
                                             ElevatedButton(
                                               onPressed: () {
-                                                // 로그아웃 버튼 로직
+                                                logout();
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: const Color(0xFFFFD954),

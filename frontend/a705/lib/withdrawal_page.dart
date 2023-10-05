@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:a705/Login/start_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class WithdrawalPage extends StatefulWidget {
   const WithdrawalPage({super.key});
@@ -8,6 +11,65 @@ class WithdrawalPage extends StatefulWidget {
 }
 
 class _WithdrawalPageState extends State<WithdrawalPage> {
+
+  Future<void> withdraw() async {
+    final url = Uri.parse('https://j9a705.p.ssafy.io/api/member/delete');
+    const accessToken =
+        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTc2NDYyNTF9.SHw9gvdoSj4i9wmYYcKxaY4B5xEpOGv9Onq6TLpNJMo"
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        final status = jsonData['status'];
+        final message = jsonData['message'];
+
+        if (status == "SUCCESS") {
+          // 회원 탈퇴 성공 시 처리
+          // 예: 로그아웃 후 다른 화면으로 이동
+          Navigator.of(context).pop(); // 현재 페이지 닫기
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => StartPage(), // 탈퇴 후 이동할 페이지
+          ));
+        } else {
+          // 회원 탈퇴 실패 시 처리
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('탈퇴 실패'),
+                content: Text(message),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('확인'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      } else {
+        print('요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('에러 발생: $error');
+      // 에러 처리를 원하는 방식으로 수행할 수 있습니다.
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -223,8 +285,8 @@ class _WithdrawalPageState extends State<WithdrawalPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      // 회원탈퇴 로직
+                    onPressed: () async {
+                      await withdraw(); // withdraw 함수 호출
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,

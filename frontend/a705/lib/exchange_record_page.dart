@@ -116,14 +116,16 @@ class CustomModalWidget extends StatelessWidget {
 
   // 삭제 API 호출 메서드
   Future<void> deleteExchangeRecord(int exchangeRecordId) async {
-    const memberId = '1'; // memberId 설정
-    final apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/$exchangeRecordId?memberId=$memberId';
+
+    final apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/$exchangeRecordId';
 
     try {
       final response = await http.delete(
         Uri.parse(apiUrl),
         headers: {
           "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
+          'Content-Type': 'application/json', // 필요에 따라 다른 헤더를 추가할 수 있습니다.
         },
       );
 
