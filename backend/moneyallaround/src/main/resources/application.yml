@@ -13,14 +13,14 @@ spring:
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://ssafy-db:3306/donnearound?useUnicode=true
+    url: jdbc:mariadb://localhost:3306/donnearound?useUnicode=true
     username: ssafy
     password: ssafy
 
   data:
     redis:
-      host: docker-redis
-      port: 6380
+      host: localhost
+      port: 6379
 
 fcm:
   service-account-file: firebase/donnearound-java-access-key.json #비밀 키 경로

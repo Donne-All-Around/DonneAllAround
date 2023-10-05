@@ -29,6 +29,7 @@ public class FCMService {
 
     @Value("${fcm.service-account-file}")
     private String serviceAccountFilePath;
+            //= "/firebase/donnearound-java-access-key.json";
 
     private String API_URL = "https://fcm.googleapis.com/v1/projects/donnearroundfirebase/messages:send";
 
