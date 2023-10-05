@@ -860,9 +860,8 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
       itemBuilder: (context, index) {
         final selectedBankCode = widget.bankCode;
         final bankName = bankInfo[selectedBankCode]?['currencyName'];
-
-        final currencyCode = currency1[index];
         final bankInfoData = bankInfoMap[bankName];
+        final currencyCode = currency1[index];
 
         String buyingFee = '미제공';
         String sellingFee = '미제공';
