@@ -27,3 +27,6 @@ fcm:
 
 jwt:
   secret: o79wfnSC9mNCkN6xKfAinMH4Zh9WZCnby/zNpPa9Yi2FiXy+cbqZUho6/gWNWVWj
+
+exchange:
+  key: 801421925fd59c4a9b9fb2fa00a51d2c

@@ -22,7 +22,8 @@ public class SecurityConfig {
             "/api/member/check/nickname",
             "/api/member/check/tel",
             "/api/member/join",
-            "/api/member/sign-in"
+            "/api/member/sign-in",
+            "/api/exchange/history"
     };
 
     @Bean

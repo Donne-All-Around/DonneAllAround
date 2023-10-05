@@ -4,8 +4,8 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +25,7 @@ public class FirebaseConfig {
         FileInputStream token = new FileInputStream(serviceAccountFilePath);
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(token))
+                .setDatabaseUrl("https://donnearroundfirebase.firebaseio.com")
                 .build();
 
         FirebaseApp firebaseApp = FirebaseApp.initializeApp(options);
