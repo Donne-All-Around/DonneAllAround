@@ -386,7 +386,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                           SizedBox(width: 10),
                                           CircleAvatar(
                                             backgroundImage:
-                                            AssetImage('assets/images/flag/${exchangeData['countryCode']}.png'),
+                                            AssetImage('assets/images/flag/${exchangeData['countryCode'] == 'KRW' ? 'KRW' : exchangeData['countryCode'] == 'USD' ? 'USDKRW' : 'USD${exchangeData['countryCode']}'}.png'),
                                             radius: 16,
                                           ),
                                         ]

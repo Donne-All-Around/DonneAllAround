@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:a705/transaction_detail_page.dart';
+import 'dart:convert'; // JSON 파싱을 위해 추가
+import 'package:http/http.dart' as http;
 
 class SellRecordPage extends StatefulWidget {
   const SellRecordPage({super.key});
@@ -12,6 +14,80 @@ class SellRecordPageState extends State<SellRecordPage> {
 
   // 현재 선택된 버튼 (디폴트 : 판매)
   String selectedButton = '판매 중';
+
+  List<Map<String, dynamic>> waitList = [];
+  List<Map<String, dynamic>> completeList = [];
+
+  String formatDate(String dateTimeString) {
+    final dateTime = DateTime.parse(dateTimeString);
+    final year = dateTime.year;
+    final month = dateTime.month;
+    final day = dateTime.day;
+
+    return '$year년 $month월 $day일';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // initState에서 서버로 GET 요청을 보냅니다.
+    fetchWaitHistory();
+    fetchCompleteHistory();
+  }
+
+  void fetchWaitHistory() async {
+    try {
+      const memberId = '1'; // 원하는 회원 ID를 여기에 넣어주세요.
+      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/wait?memberId=$memberId');
+
+      http.Response response = await http.get(url);
+      String responseBody = utf8.decode(response.bodyBytes);
+
+      if (response.statusCode == 200) {
+        // 서버 응답이 성공인 경우
+        final responseData = json.decode(responseBody);
+        final data = responseData['data'];
+        final tradeListData = data['tradeList'];
+
+        setState(() {
+          waitList = List<Map<String, dynamic>>.from(tradeListData);
+        });
+        print('판매중내역 잘 들어온다');
+      } else {
+        // 서버 응답이 실패인 경우
+        print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('서버 요청 중 오류 발생: $e');
+    }
+  }
+
+  void fetchCompleteHistory() async {
+    try {
+      const memberId = '1'; // 원하는 회원 ID를 여기에 넣어주세요.
+      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/complete?memberId=$memberId');
+
+      http.Response response = await http.get(url);
+      String responseBody = utf8.decode(response.bodyBytes);
+
+      if (response.statusCode == 200) {
+        // 서버 응답이 성공인 경우
+        final responseData = json.decode(responseBody);
+        final data = responseData['data'];
+        final tradeListData = data['tradeList'];
+
+        setState(() {
+          completeList = List<Map<String, dynamic>>.from(tradeListData);
+        });
+        print('판완내역 잘 들어온다');
+      } else {
+        // 서버 응답이 실패인 경우
+        print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('서버 요청 중 오류 발생: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,8 +173,8 @@ class SellRecordPageState extends State<SellRecordPage> {
                   // 상태에 따라 표시되는 내용
                   const SizedBox(height: 20),
                   selectedButton == '판매 중'
-                      ? _buildSellWait()
-                      : _buildSellComplete(),
+                      ? _buildSellWaitListView()
+                      : _buildSellCompleteListView(),
                 ]
               )
             )
@@ -107,176 +183,309 @@ class SellRecordPageState extends State<SellRecordPage> {
     );
   }
 
-  Widget _buildSellWait() {
-    return const Expanded(
-      child: ListViewBuilder()
-    );
-  }
+  Widget _buildSellWaitListView() {
+    return Expanded(
+      child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: waitList.length,
+          itemBuilder: (BuildContext context, int index) {
+            final wait = waitList[index];
 
-  Widget _buildSellComplete() {
-    return const Expanded(
-      child: ListViewBuilder()
-    );
-  }
-
-}
-
-List<String> transactions = ['옹골찬', '문요환', '별의 커비', '뽀로로'];
-class ListViewBuilder extends StatefulWidget {
-  const ListViewBuilder({super.key});
-
-  @override
-  State<ListViewBuilder> createState() => _ListViewBuilderState();
-}
-
-
-
-class _ListViewBuilderState extends State<ListViewBuilder> {
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemCount: transactions.length,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) {
-                  return const TransactionDetailPage(1);
-                },
-              ));
-            },
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(15, 2, 15, 10),
-              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 3,
-                      offset: const Offset(0, 0),
-                    ),
-                  ]),
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                    child: Row(
-                      children: [
-                        Text(
-                          '2022년 2월 25일',
-                          style: TextStyle(color: Colors.black54),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        height: 100,
-                        width: 100,
-                        margin: const EdgeInsets.fromLTRB(15, 5, 15, 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: const Image(
-                              height: 60,
-                              image: AssetImage(
-                                'assets/images/ausdollar.jpg',
-                              ),
-                              fit: BoxFit.cover,
-                            )),
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return const TransactionDetailPage(1);
+                  },
+                ));
+              },
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(15, 2, 15, 10),
+                padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        spreadRadius: 1,
+                        blurRadius: 3,
+                        offset: const Offset(0, 0),
                       ),
-                      Flexible(
-                        flex: 1,
-                        child: SizedBox(
-                          // height: 100,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text(
-                                      '호주 달러 50달러 팔아요',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ]
-                              ),
-                              const SizedBox(height:3),
-                              const Row(
-                                children: [
-                                  Text(
-                                    '강남구 역삼동',
-                                    style: TextStyle(color: Colors.black54),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height:3),
-                              const Row(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundImage:
-                                    AssetImage('assets/images/USDAUD.png'),
-                                    radius: 8,
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    '50 AUD',
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blueAccent),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height:3),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    padding:
-                                    const EdgeInsets.fromLTRB(3, 2, 3, 2),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFFFD954),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: const Text('예약중'),
-                                  ),
-                                  const Column(
-                                    children: [
-                                      Text(
-                                        '42,000원',
-                                        style: TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ],
+                    ]),
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                      child: Row(
+                        children: [
+                          Text(
+                            formatDate(wait['createTime']),
+                            style: const TextStyle(color: Colors.black54),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          height: 100,
+                          width: 100,
+                          margin: const EdgeInsets.fromLTRB(15, 5, 15, 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Image.network(
+                              wait['thumbnailImageUrl'],
+                              height: 60,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                      )
-                    ],
-                  ),
-                ],
+                        Flexible(
+                          flex: 1,
+                          child: SizedBox(
+                            // height: 100,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        wait['title'],
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]
+                                ),
+                                const SizedBox(height:3),
+                                Row(
+                                  children: [
+                                    Text(
+                                      wait['type'] == 'DIRECT'
+                                          ? '${wait['administrativeArea']} ${wait['subLocality']} ${wait['thoroughfare']}'
+                                          : '택배거래',
+                                      style: const TextStyle(color: Colors.black54),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height:3),
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundImage:
+                                      AssetImage('assets/images/flag/${wait['countryCode'] == 'KRW' ? 'KRW' : wait['countryCode'] == 'USD' ? 'USDKRW' : 'USD${wait['countryCode']}'}.png'),
+                                      radius: 8,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Text(
+                                      '${wait['foreignCurrencyAmount']} ${wait['countryCode']}',
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueAccent),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height:3),
+                                Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      padding:
+                                      const EdgeInsets.fromLTRB(3, 2, 3, 2),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFFD954),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Text(
+                                        wait['status'] == 'WAIT' ? '판매중' : wait['status'] == 'PROGRESS' ? '예약중' : '',
+                                      ),
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          '${wait['koreanWonAmount']}원',
+                                          style: const TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        });
+            );
+          })
+    );
+  }
+
+
+
+  Widget _buildSellCompleteListView() {
+    return Expanded(
+      child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: completeList.length,
+          itemBuilder: (BuildContext context, int index) {
+            final complete = completeList[index];
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return const TransactionDetailPage(1);
+                  },
+                ));
+              },
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(15, 2, 15, 10),
+                padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        spreadRadius: 1,
+                        blurRadius: 3,
+                        offset: const Offset(0, 0),
+                      ),
+                    ]),
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                      child: Row(
+                        children: [
+                          Text(
+                            formatDate(complete['createTime']),
+                            style: const TextStyle(color: Colors.black54),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          height: 100,
+                          width: 100,
+                          margin: const EdgeInsets.fromLTRB(15, 5, 15, 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Image.network(
+                              complete['thumbnailImageUrl'],
+                              height: 60,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          flex: 1,
+                          child: SizedBox(
+                            // height: 100,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        complete['title'],
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]
+                                ),
+                                const SizedBox(height:3),
+                                Row(
+                                  children: [
+                                    Text(
+                                      complete['type'] == 'DIRECT'
+                                          ? '${complete['administrativeArea']} ${complete['subLocality']} ${complete['thoroughfare']}'
+                                          : '택배거래',
+                                      style: TextStyle(color: Colors.black54),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height:3),
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundImage:
+                                      AssetImage('assets/images/flag/${complete['countryCode'] == 'KRW' ? 'KRW' : complete['countryCode'] == 'USD' ? 'USDKRW' : 'USD${complete['countryCode']}'}.png'),
+                                      radius: 8,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Text(
+                                      '${complete['foreignCurrencyAmount']} ${complete['countryCode']}',
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueAccent),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height:3),
+                                Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      padding:
+                                      const EdgeInsets.fromLTRB(3, 2, 3, 2),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFFD954),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: const Text('판매완료'),
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          '${complete['koreanWonAmount']}원',
+                                          style: const TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          })
+    );
   }
 }
+
