@@ -6,6 +6,7 @@ import 'package:a705/models/TradeAppointmentDto.dart';
 import 'package:a705/providers/trade_providers.dart';
 import 'package:a705/providers/database.dart';
 import 'package:a705/appointment_page.dart';
+import 'package:a705/review_create_page.dart';
 import 'package:async/async.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:a705/transaction_info_page.dart';
@@ -99,8 +100,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
       buyerReview; // 동네 페이 송금 여부
   bool isBlank = false;
   AppointmentType appointmentType = AppointmentType.waitBuyer;
-
-  Future tradeData = Future(() => null);
+  Future? tradeData;
 
   // 채팅방 정보 가져오기
   getUserInfo() async {
@@ -116,11 +116,15 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
       await _initializeInfo(
           widget.tradeInfoMap, widget.chatRoomListInfoMap); // 거래글 가져오기
     }
-    print("I'm $myRole");
+
+    print("init 1. 채팅 내역 가져오기");
     await getAndSetMessages(); // 채팅 내역 가져오기
+    tradeData = _fatchTradeData();
+    print("init 3. 거래 상세 정보 가져오기");
     apptStream = await DatabaseMethods().getTradeInfo(tradeId!);
     // 거래글 생성할 때 실행
     // DatabaseMethods().setDefaultTradeInfo(sellerId!, tradeId!);
+    print("I'm $myRole");
     setState(() {});
   }
 
@@ -129,10 +133,10 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   void initState() {
     super.initState();
     ontheload();
-    tradeData = _fatchTradeData();
   }
 
   _fatchTradeData() async {
+    print("init 2. 거래 정보 가져오기");
     Map<String, dynamic> data =
         await TradeProviders().getChatTransactionInfo(sellerId!, tradeId!);
     TradeAppointmentDto trade = TradeAppointmentDto.fromJson(data);
@@ -144,10 +148,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     status = trade.status;
     thumbnailImageUrl = trade.thumbnailImage;
     koreanWonAmount = trade.koreanWonAmount;
-    await Future.delayed(Duration(milliseconds: 500));
+    // await Future.delayed(Duration(milliseconds: 500));
     return data;
-
-// 비동기 작업을 수행하여 데이터를 가져옴
   }
 
   bool _shouldShowHeader(AppointmentType appointmentType) {
@@ -288,12 +290,15 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         ],
                       ),
                       GestureDetector(
-                        // onTap: (){
-                        //   final tradeID = tradeId;
-                        //   Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(builder: (context) => ReviewCreatePage(tradeID: tradeID)));
-                        // },
+                        onTap: (){
+                          int tradeID = 0;
+                          if(tradeId != null){
+                            tradeID = int.parse(tradeId ?? "0");
+                          }
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ReviewCreatePage(tradeID: tradeID)));
+                        },
                         child: Container(
                           padding: EdgeInsets.fromLTRB(10, 7, 10, 7),
                           margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
@@ -514,7 +519,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
           appointmentType = calculateAppointmentType(tradeDetailInfo);
           print('거래 상태 변경: ${tradeDetailInfo['type']}');
         }
-        print('$appointmentType');
+        print('현재 약속 타입: $appointmentType');
         return Visibility(
           visible: _shouldShowHeader(appointmentType),
           child: GestureDetector(
@@ -1022,7 +1027,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return _errorPage();
+                    return Text("error");
                   } else {
                     return Container(
                       margin: const EdgeInsets.fromLTRB(20, 2, 20, 10),
@@ -1140,9 +1145,9 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                             children: [
                                               Row(
                                                 children: [
-                                                  const CircleAvatar(
+                                                   CircleAvatar(
                                                     backgroundImage: AssetImage(
-                                                        'assets/images/flag/USDAUD.png'),
+                                                        'assets/images/flag/${countryCode == 'KRW' ? 'KRW' : countryCode == 'USD' ? 'USDKRW' : 'USD${countryCode}'}.png'),
                                                     radius: 8,
                                                   ),
                                                   SizedBox(width: 5),
