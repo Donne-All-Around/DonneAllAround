@@ -145,6 +145,7 @@ class CustomModalWidget extends StatelessWidget {
 }
 
 
+String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtNzk3OS03OTc5IiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4ODk5M30.6tfXpAfYuARNQUcMBC7nVY-vgoX-8gDHI8zUx_1GQs0";
 
 
 class ExchangeRecordPageState extends State<ExchangeRecordPage> {
@@ -155,27 +156,42 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
   // 서버로부터 데이터를 가져오는 메서드
   Future<void> fetchExchangeData() async {
     const memberId = '1';
-    const apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list?memberId=$memberId';
+    const apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list';
 
     try {
-      final response = await http.get(
+      http.Response response = await http.get(
         Uri.parse(apiUrl),
         headers: {
-          "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
+          // "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
+          'Content-Type': 'application/json',
+          'Authorization' : 'Bearer ${accessToken}',
         },
       );
-      String responseBody = utf8.decode(response.bodyBytes);
-      final jsonString = response.body;
-      final decodedString = utf8.decode(jsonString.codeUnits);
-      final jsonResponse = json.decode(decodedString);
+
+      // String responseBody = utf8.decode(response.bodyBytes);
+      // final jsonString = response.body;
+      // final decodedString = utf8.decode(jsonString.codeUnits);
+      // final jsonResponse = json.decode(decodedString);
 
       if (response.statusCode == 200) {
+        print("SUCCESS!");
+
+        String responseBody = utf8.decode(response.bodyBytes); // utf-8로 변환
+        Map<String, dynamic> _jsonData = json.decode(responseBody);
+        // "data" 객체 추출
+        Map<String, dynamic> data = _jsonData['data'];
+        print(responseBody);
+
+
+
         // 서버 응답이 성공인 경우 JSON 데이터 파싱
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
         final List<dynamic> jsonData = jsonResponse['data']['exchangeRecordList']; // 주의: 'exchangeRecordList'의 오타 수정
 
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         if (jsonData != null) {
           setState(() {
+            print("@@@@@@@@@@@@@@@저장시작@@@@@@@@@@@@@@@@@@");
             exchangeDataList = List<Map<String, dynamic>>.from(jsonData.map((data) {
               // 은행 코드를 currencyName으로 변환하여 추가
               final bankCode = data['bankCode'] as String;
