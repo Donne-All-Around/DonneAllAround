@@ -21,6 +21,7 @@ public class RedisConfig {
         return new LettuceConnectionFactory(host, port);
     }
 
+    @Bean
     // RedisTemplate : Redis 데이터를 저장하고 검색하는 데 사용되는 핵심 클래스
     // 키(key)와 값(value)의 직렬화(serializer) 방식을 설정
     public RedisTemplate<?, ?> redisTemplate() {
