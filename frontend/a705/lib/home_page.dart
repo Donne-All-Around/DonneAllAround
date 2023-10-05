@@ -38,6 +38,20 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
+  String formatDate(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+    if (difference.inMinutes < 1) {
+      return '방금 전';
+    } else if (difference.inHours < 1) {
+      return '${difference.inMinutes}분전';
+    } else if (difference.inDays < 1) {
+      return '${difference.inHours}시간 전';
+    } else {
+      return '${date.year}.${date.month}.${date.day}';
+    }
+  }
+
   @override
   void initState() {
     initTrade();
@@ -717,9 +731,9 @@ class _HomePageState extends State<HomePage> {
                                                     style: TextStyle(
                                                         color: Colors.black54),
                                                   ),
-                                                  const Text(
-                                                    '1시간 전',
-                                                    style: TextStyle(
+                                                  Text(
+                                                    formatDate(DateTime.parse(trade[index].createTime)),
+                                                    style: const TextStyle(
                                                         color: Colors.black54),
                                                   ),
                                                 ],

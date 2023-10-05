@@ -26,10 +26,14 @@ class BuyRecordPageState extends State<BuyRecordPage> {
 
   void fetchBuyHistory() async {
     try {
-      const memberId = '2'; // 원하는 회원 ID를 여기에 넣어주세요.
-      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/buy?memberId=$memberId');
+      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/buy');
 
-      http.Response response = await http.get(url);
+      final headers = {
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
+        'Content-Type': 'application/json', // 필요에 따라 다른 헤더를 추가할 수 있습니다.
+      };
+
+      http.Response response = await http.get(url, headers: headers);
       String responseBody = utf8.decode(response.bodyBytes);
 
       if (response.statusCode == 200) {

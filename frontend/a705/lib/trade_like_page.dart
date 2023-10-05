@@ -23,10 +23,14 @@ class TradeLikePageState extends State<TradeLikePage> {
 
   void fetchTradeLikeHistory() async {
     try {
-      const memberId = '1'; // 원하는 회원 ID를 여기에 넣어주세요.
-      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/like?memberId=$memberId');
+      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/like');
 
-      http.Response response = await http.get(url);
+      final headers = {
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
+        'Content-Type': 'application/json', // 필요에 따라 다른 헤더를 추가할 수 있습니다.
+      };
+
+      http.Response response = await http.get(url, headers: headers);
       String responseBody = utf8.decode(response.bodyBytes);
 
       if (response.statusCode == 200) {
@@ -198,16 +202,18 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                       onPressed: () async {
                                         // tradeId와 memberId 설정
                                         final tradeId = trade['id']; // trade['id'] 또는 다른 필드에 해당하는 값으로 변경
-                                        const memberId = '1'; // 사용자의 memberId로 변경
 
                                         // DELETE 요청 보내기
-                                        final deleteUrl = 'https://j9a705.p.ssafy.io/api/trade/$tradeId/unlike?memberId=$memberId';
+                                        final deleteUrl = 'https://j9a705.p.ssafy.io/api/trade/$tradeId/unlike';
+
 
                                         try {
                                           final response = await http.delete(
                                             Uri.parse(deleteUrl),
                                             headers: {
-                                              "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
+                                              "Accept-Charset": "utf-8",
+                                              'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
+                                              'Content-Type': 'application/json',// 문자 인코딩을 UTF-8로 설정
                                             },
                                           );
 

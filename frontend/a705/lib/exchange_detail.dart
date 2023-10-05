@@ -388,6 +388,7 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
         final bankName = bankInfo.keys.elementAt(index); // 은행 이름
         final bankData = bankInfo[bankName]; // 은행 정보 맵
         final bankCode = bankData?['bankCode'];
+        final currencyName = bankData?['currencyName'];
         FeeInfo? feeInfo = bankInfoMap[bankName]?.fees[currency1[widget.selectedIndex]];
         return Row(
           children: [
@@ -398,7 +399,7 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                     context,
                     MaterialPageRoute(builder: (context) => BankDetailPage(
                         selectedIndex : widget.selectedIndex,
-                        bankCode: bankCode!,
+                        bankCode: bankCode!, currencyName: currencyName!,
                     )),
                   );
                 },

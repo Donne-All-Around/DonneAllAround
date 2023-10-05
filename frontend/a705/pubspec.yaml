@@ -137,6 +137,17 @@ flutter:
      - assets/images/banklogo/048.png
      - assets/images/banklogo/081.png
      - assets/images/banklogo/088.png
+     - assets/images/level/0.png
+     - assets/images/level/100.png
+     - assets/images/level/200.png
+     - assets/images/level/300.png
+     - assets/images/level/400.png
+     - assets/images/level/500.png
+     - assets/images/level/600.png
+     - assets/images/level/700.png
+     - assets/images/level/800.png
+     - assets/images/level/900.png
+     - assets/images/level/1000.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

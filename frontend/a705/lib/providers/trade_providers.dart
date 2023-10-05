@@ -47,13 +47,10 @@ class TradeProviders {
           json.decode(utf8.decode(response.bodyBytes))['data']['tradeList'];
       trade = body.map((trades) => TradeDto.fromJson(trades)).toList();
       print(trade);
-      print("dsffskdlfjdsklfjdsklfjsdkl");
     } else {
-      print("거래 조회 시작");
       print(response.statusCode);
       print(response.body);
     }
-
     return trade;
   }
 
@@ -146,7 +143,7 @@ class TradeProviders {
     List<TradeDto> trade = [];
     var response = await http.get(
       Uri.parse(
-          '$url/api/trade/history/sell/complete?lastTradeId=$lastTradeId?memberId=1'),
+          '$url/api/trade/history/sell/complete?lastTradeId=$lastTradeId'),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization' : 'Bearer ${accessToken}',
@@ -164,7 +161,7 @@ class TradeProviders {
   // 거래 상세 조회
   Future<TradeDto> getTradeDetail(int tradeId) async {
     var response = await http.get(
-      Uri.parse('$url/api/trade/detail/$tradeId?memberId=1'),
+      Uri.parse('$url/api/trade/detail/$tradeId'),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization' : 'Bearer ${accessToken}',
@@ -200,7 +197,7 @@ class TradeProviders {
       "imageUrlList": tradeDto.imageUrlList
     });
     try {
-      http.Response response = await http.post(Uri.parse('$url/api/trade/create?memberId=1'),
+      http.Response response = await http.post(Uri.parse('$url/api/trade/create'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization' : 'Bearer ${accessToken}',
@@ -222,12 +219,57 @@ class TradeProviders {
     }
   }
 
+  // 거래 글 수정
+  Future<void> modifyTrade(TradeDto tradeDto) async {
+    String jsonData = jsonEncode({
+      "title": tradeDto.title,
+      "description": tradeDto.description,
+      "thumbnailImageUrl": tradeDto.thumbnailImageUrl,
+      "countryCode": tradeDto.countryCode,
+      "foreignCurrencyAmount": tradeDto.foreignCurrencyAmount,
+      "koreanWonAmount": tradeDto.koreanWonAmount,
+      "latitude": tradeDto.latitude,
+      "longitude": tradeDto.longitude,
+      "country": tradeDto.country,
+      "administrativeArea": tradeDto.administrativeArea,
+      "subAdministrativeArea": tradeDto.subAdministrativeArea,
+      "locality": tradeDto.locality,
+      "subLocality": tradeDto.subLocality,
+      "thoroughfare": tradeDto.thoroughfare,
+      "imageUrlList": tradeDto.imageUrlList
+    });
+    try {
+      http.Response response = await http.put(Uri.parse('$url/api/trade/edit/${tradeDto.id}'),
+          headers: {
+            "Accept": "application/json",
+            "Content-Type":"application/json",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
+          },
+          body: jsonData);
+      if(response.statusCode == 200) {
+        print("Modify Success");
+      }
+    } catch (e) {
+      print('수정 실패: $e');
+    }
+  }
+
+  // 거래 글 삭제
+  Future<void> deleteTrade(int tradeId) async {
+    final response = await http.put(
+      Uri.parse('$url/api/trade/delete/$tradeId'),
+      headers: {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
+      },
+    );
+  }
+
   Future<void> likeTrade(int tradeId) async {
     final response = await http.post(
-      Uri.parse('$url/api/trade/$tradeId/like?memberId=1'),
+      Uri.parse('$url/api/trade/$tradeId/like'),
     );
-    print(response.statusCode);
   }
+
   Future<void> unlikeTrade(int tradeId) async {
     final response = await http.delete(
       Uri.parse('$url/api/trade/$tradeId/unlike?memberId=1'),
@@ -236,7 +278,6 @@ class TradeProviders {
         'Authorization' : 'Bearer ${accessToken}',
       }
     );
-    print(response.statusCode);
   }
 
   // 채팅방 내 거래글 정보 가져오기
