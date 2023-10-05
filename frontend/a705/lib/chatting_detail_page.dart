@@ -1,12 +1,17 @@
+import 'dart:async';
+
 import 'package:a705/chatting_page.dart';
+import 'package:a705/models/ChatsDto.dart';
 import 'package:a705/models/TradeAppointmentDto.dart';
-import 'package:a705/service/database.dart';
+import 'package:a705/providers/trade_providers.dart';
+import 'package:a705/providers/database.dart';
 import 'package:a705/appointment_page.dart';
-import 'package:a705/service/spring_api.dart';
+import 'package:async/async.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:a705/transaction_info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'delivery_transaction_page.dart';
 
@@ -95,6 +100,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   bool isBlank = false;
   AppointmentType appointmentType = AppointmentType.waitBuyer;
 
+  Future tradeData = Future(() => null);
+
   // 채팅방 정보 가져오기
   getUserInfo() async {
     myUserName = "신짱구";
@@ -111,7 +118,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     }
     print("I'm $myRole");
     await getAndSetMessages(); // 채팅 내역 가져오기
-
+    apptStream = await DatabaseMethods().getTradeInfo(tradeId!);
     // 거래글 생성할 때 실행
     // DatabaseMethods().setDefaultTradeInfo(sellerId!, tradeId!);
     setState(() {});
@@ -122,6 +129,25 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   void initState() {
     super.initState();
     ontheload();
+    tradeData = _fatchTradeData();
+  }
+
+  _fatchTradeData() async {
+    Map<String, dynamic> data =
+        await TradeProviders().getChatTransactionInfo(sellerId!, tradeId!);
+    TradeAppointmentDto trade = TradeAppointmentDto.fromJson(data);
+
+    tradeId = trade.id.toString();
+    tradeTitle = trade.title;
+    countryCode = trade.countryCode;
+    type = trade.type;
+    status = trade.status;
+    thumbnailImageUrl = trade.thumbnailImage;
+    koreanWonAmount = trade.koreanWonAmount;
+    await Future.delayed(Duration(milliseconds: 500));
+    return data;
+
+// 비동기 작업을 수행하여 데이터를 가져옴
   }
 
   bool _shouldShowHeader(AppointmentType appointmentType) {
@@ -179,24 +205,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
           seller = myUserName;
           buyer = otherUserName;
         }
-
-        // 백엔드 거래글 정보 가져오기
-        Map<String, dynamic> data =
-            await SpringApi().getChatTransactionInfo(sellerId!, tradeId!);
-        TradeAppointmentDto trade = TradeAppointmentDto.fromJson(data);
-        // Firestore 거래글 상세 정보 가져오기
-        apptStream = await DatabaseMethods().getTradeInfo(tradeId!);
-        setState(() {
-          tradeId = trade.id.toString();
-          tradeTitle = trade.title;
-          countryCode = trade.countryCode;
-          type = trade.type;
-          status = trade.status;
-          thumbnailImageUrl = trade.thumbnailImage;
-          koreanWonAmount = trade.koreanWonAmount;
-          foreignCurrencyAmount = trade.foreignCurrencyAmount;
-        });
-
         break;
 
       /**
@@ -215,23 +223,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         otherRole = "seller";
         myRole = "buyer";
 
-        // 거래글 정보 가져오기
-        Map<String, dynamic> data =
-            await SpringApi().getChatTransactionInfo(sellerId, tradeId);
-        TradeAppointmentDto trade = TradeAppointmentDto.fromJson(data);
-
-        setState(() {
-          tradeTitle = trade.title;
-          countryCode = trade.countryCode;
-          type = trade.type;
-          status = trade.status;
-          thumbnailImageUrl = trade.thumbnailImage;
-          koreanWonAmount = trade.koreanWonAmount;
-          foreignCurrencyAmount = trade.foreignCurrencyAmount;
-        });
         chatRoomId = "${tradeId!}_${sellerId!}_${buyerId!}";
-
-        apptStream = await DatabaseMethods().getTradeInfo(tradeId!);
 
         // user 정보에 새 채팅방 목록 추가
         Map<String, dynamic> chatRoomListInfoMap = {
@@ -241,10 +233,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         print("user에 chatlist update: ${tradeId}");
         DatabaseMethods().setUserChatList(
             sellerId!, buyerId!, chatRoomId!, chatRoomListInfoMap);
-
-
         break;
-
       case InfoType.NONE:
         // 아무 작업도 수행하지 않습니다.
         break;
@@ -299,6 +288,12 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                         ],
                       ),
                       GestureDetector(
+                        // onTap: (){
+                        //   final tradeID = tradeId;
+                        //   Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(builder: (context) => ReviewCreatePage(tradeID: tradeID)));
+                        // },
                         child: Container(
                           padding: EdgeInsets.fromLTRB(10, 7, 10, 7),
                           margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
@@ -410,6 +405,36 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   }
 
   // 채팅 메시지
+  // Widget chatMessage() {
+  //   return NotificationListener<ScrollUpdateNotification>(
+  //     child: StreamBuilder<QuerySnapshot>(
+  //       stream: _stream,
+  //       builder: (context, snapshot) {
+  //         if (snapshot.connectionState == ConnectionState.waiting) {
+  //           return Center(child: CircularProgressIndicator());
+  //         }
+  //
+  //         if (snapshot.hasError) {
+  //           return Center(child: Text('Error: ${snapshot.error}'));
+  //         }
+  //
+  //         List<DocumentSnapshot> documents = snapshot.data!.docs;
+  //
+  //         return ListView.builder(
+  //           controller: scrollController,
+  //           itemCount: documents.length,
+  //           itemBuilder: (context, index) {
+  //             final data = documents[index].data() as Map<String, dynamic>;
+  //             return ListTile(
+  //               title: Text(data['message']),
+  //             );
+  //           },
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
+
   Widget chatMessage() {
     return NotificationListener<ScrollUpdateNotification>(
       child: StreamBuilder(
@@ -489,17 +514,14 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
           appointmentType = calculateAppointmentType(tradeDetailInfo);
           print('거래 상태 변경: ${tradeDetailInfo['type']}');
         }
-
         print('$appointmentType');
-
         return Visibility(
           visible: _shouldShowHeader(appointmentType),
           child: GestureDetector(
             onTap: () async {
-              String? appt;
               // 약속 잡기
               if (appointmentType == AppointmentType.waitSeller) {
-                appt = await Navigator.push(
+                await Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => AppointmentPage(
@@ -587,7 +609,6 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
               } else {
                 // 이동 X
               }
-
               setState(() {});
             },
             child: Container(
@@ -605,7 +626,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                   child: Text(
                 _appt ?? "",
                 style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 textAlign: TextAlign.center,
               )),
             ),
@@ -826,17 +847,16 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     setState(() {});
   }
 
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: GestureDetector(
-      onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus();
-        setState(() {
-          isVisible = false;
-        });
-      },
+      //   child: GestureDetector(
+      // onTap: () {
+      //   // FocusManager.instance.primaryFocus?.unfocus();
+      //   // setState(() {
+      //   //   isVisible = false;
+      //   // });
+      // },
       child: Scaffold(
           resizeToAvoidBottomInset: true,
           backgroundColor: Colors.white,
@@ -862,164 +882,319 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
           body: Column(
             // mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
-                margin: const EdgeInsets.fromLTRB(20, 2, 20, 10),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: const Offset(0, 0),
-                      ),
-                    ]),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 70,
-                          width: 70,
-                          margin: const EdgeInsets.fromLTRB(20, 15, 10, 15),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
-                              child: const Image(
-                                height: 60,
-                                image: AssetImage(
-                                  'assets/images/ausdollar.jpg',
-                                ),
-                                fit: BoxFit.cover,
-                              )),
-                        ),
-                        Flexible(
-                          flex: 1,
-                          child: SizedBox(
-                            height: 70,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  child: Row(
+              FutureBuilder(
+                future: tradeData,
+                // 비동기 작업을 호출하는 Future를 지정
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Container(
+                      margin: const EdgeInsets.fromLTRB(20, 2, 20, 10),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              spreadRadius: 1,
+                              blurRadius: 3,
+                              offset: const Offset(0, 0),
+                            ),
+                          ]),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Shimmer.fromColors(
+                                  child: Container(
+                                    height: 70,
+                                    width: 70,
+                                    margin: const EdgeInsets.fromLTRB(
+                                        20, 15, 10, 15),
+                                    decoration: BoxDecoration(
+                                      color: Color.fromRGBO(240, 240, 240, 1),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: Column(),
+                                  ),
+                                  baseColor: Color.fromRGBO(240, 240, 240, 1),
+                                  highlightColor: Colors.white),
+                              Flexible(
+                                flex: 1,
+                                child: SizedBox(
+                                  height: 70,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        // "",
-                                        tradeTitle ?? "",
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      Row(
+                                        children: [
+                                          Shimmer.fromColors(
+                                              child: Container(
+                                                height: 25,
+                                                width: 150,
+                                                decoration: BoxDecoration(
+                                                  color: Color.fromRGBO(
+                                                      240, 240, 240, 1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                ),
+                                              ),
+                                              baseColor: Color.fromRGBO(
+                                                  240, 240, 240, 1),
+                                              highlightColor: Colors.white)
+                                        ],
                                       ),
-                                      Spacer(),
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.more_horiz,
-                                          color: Colors.black87,
-                                          size: 30,
-                                        ),
-                                        onPressed: () {
-                                          showModalBottomSheet(
-                                            context: context,
-                                            builder: (context) {
-                                              return Container(
-                                                  height: 220,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    color: Colors.white,
-                                                    // 모달 배경색
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(25),
-                                                      topRight:
-                                                          Radius.circular(25),
-                                                    ),
-                                                  ),
-                                                  child: Center(
-                                                    child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          _cancelDialog(),
-                                                          _declarationDialog(),
-                                                        ]),
-                                                  ));
-                                            },
-                                            backgroundColor: Colors
-                                                .transparent, // 앱 <=> 모달의 여백 부분을 투명하게 처리
-                                          );
-                                          setState(() {});
-                                        },
-                                        padding: EdgeInsets.zero,
-                                        constraints: const BoxConstraints(),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Shimmer.fromColors(
+                                                      child: Container(
+                                                        margin:
+                                                            EdgeInsets.fromLTRB(
+                                                                0, 3, 0, 3),
+                                                        height: 20,
+                                                        width: 100,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Color.fromRGBO(
+                                                              240, 240, 240, 1),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                        ),
+                                                      ),
+                                                      baseColor:
+                                                          const Color.fromRGBO(
+                                                              240, 240, 240, 1),
+                                                      highlightColor:
+                                                          Colors.white)
+                                                ],
+                                              ),
+                                              SizedBox(height: 15),
+                                            ],
+                                          ),
+                                          Column(
+                                            children: [
+                                              SizedBox(height: 10),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Shimmer.fromColors(
+                                                      child: Container(
+                                                        margin:
+                                                            EdgeInsets.fromLTRB(
+                                                                0, 10, 20, 3),
+                                                        height: 20,
+                                                        width: 80,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Color.fromRGBO(
+                                                              240, 240, 240, 1),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                        ),
+                                                      ),
+                                                      baseColor: Color.fromRGBO(
+                                                          240, 240, 240, 1),
+                                                      highlightColor:
+                                                          Colors.white)
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(
-                                        width: 20,
-                                      )
                                     ],
                                   ),
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            CircleAvatar(
-                                              backgroundImage: AssetImage(
-                                                  'assets/images/flag/USDAUD.png'),
-                                              radius: 8,
-                                            ),
-                                            SizedBox(width: 5),
-                                            Text(
-                                              '${NumberFormat.decimalPattern().format(foreignCurrencyAmount.toInt())} ${countryCode}' ?? "" ,
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.blueAccent),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 15),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        SizedBox(height: 15),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            Text(
-                                              '${NumberFormat.decimalPattern().format(koreanWonAmount.toInt())}원' ?? "",
-                                              style: TextStyle(
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            SizedBox(width: 20),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                              )
+                            ],
                           ),
-                        )
-                      ],
-                    ),
-                    _header(),
-                  ],
-                ),
+                        ],
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return _errorPage();
+                  } else {
+                    return Container(
+                      margin: const EdgeInsets.fromLTRB(20, 2, 20, 10),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              spreadRadius: 1,
+                              blurRadius: 3,
+                              offset: const Offset(0, 0),
+                            ),
+                          ]),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                height: 70,
+                                width: 70,
+                                margin:
+                                    const EdgeInsets.fromLTRB(20, 15, 10, 15),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: const Image(
+                                      height: 60,
+                                      image: AssetImage(
+                                        'assets/images/ausdollar.jpg',
+                                      ),
+                                      fit: BoxFit.cover,
+                                    )),
+                              ),
+                              Flexible(
+                                flex: 1,
+                                child: SizedBox(
+                                  height: 70,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              // "",
+                                              tradeTitle ?? "",
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Spacer(),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.more_horiz,
+                                                color: Colors.black87,
+                                                size: 30,
+                                              ),
+                                              onPressed: () {
+                                                showModalBottomSheet(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return Container(
+                                                        height: 220,
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                          color: Colors.white,
+                                                          // 모달 배경색
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                            topLeft:
+                                                                Radius.circular(
+                                                                    25),
+                                                            topRight:
+                                                                Radius.circular(
+                                                                    25),
+                                                          ),
+                                                        ),
+                                                        child: Center(
+                                                          child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                _cancelDialog(),
+                                                                _declarationDialog(),
+                                                              ]),
+                                                        ));
+                                                  },
+                                                  backgroundColor: Colors
+                                                      .transparent, // 앱 <=> 모달의 여백 부분을 투명하게 처리
+                                                );
+                                                setState(() {});
+                                              },
+                                              padding: EdgeInsets.zero,
+                                              constraints:
+                                                  const BoxConstraints(),
+                                            ),
+                                            const SizedBox(
+                                              width: 20,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  const CircleAvatar(
+                                                    backgroundImage: AssetImage(
+                                                        'assets/images/flag/USDAUD.png'),
+                                                    radius: 8,
+                                                  ),
+                                                  SizedBox(width: 5),
+                                                  Text(
+                                                    '${NumberFormat.decimalPattern().format(foreignCurrencyAmount.toInt())} ${countryCode}' ??
+                                                        "",
+                                                    style: const TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color:
+                                                            Colors.blueAccent),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 15),
+                                            ],
+                                          ),
+                                          Column(
+                                            children: [
+                                              SizedBox(height: 15),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    '${NumberFormat.decimalPattern().format(koreanWonAmount.toInt())}원' ??
+                                                        "",
+                                                    style: TextStyle(
+                                                        fontSize: 17,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  SizedBox(width: 20),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          _header(),
+                        ],
+                      ),
+                    );
+                  }
+                },
               ),
               Expanded(
                 child: chatMessage(),
@@ -1028,7 +1203,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                 color: const Color(0xFFFFD954),
                 child: Row(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 12,
                     ),
                     IconButton(
@@ -1046,7 +1221,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 12,
                     ),
                     Flexible(
@@ -1311,7 +1486,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
               )
             ],
           )),
-    ));
+      // )
+    );
   }
 
   bool isComplete(String? directTradeTime) {
@@ -1336,13 +1512,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     Map<String, dynamic> tradeInfo = {
       "status": "COMPLETE",
     };
-
-    // 백엔드에 거래완료 status 전달 method 구현 필요
-
-    // 직거래 판매자 or 구매자 시간 경과 후 거래 완료 v
-    // 택배거래 (계좌) 판매자 거래완료 v
-    // 택배거래 (페이) 구매자 수령확인 거래완료
-    SpringApi().setCompleteAppointment(tradeId!, myUserId!);
+    TradeProviders().setCompleteAppointment(tradeId!, myUserId!);
     DatabaseMethods().updateTradeInfo(tradeId!, tradeInfo);
     print(tradeInfo.toString());
   }
@@ -1366,8 +1536,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     DatabaseMethods().updateTradeInfo(tradeId!, tradeInfoMap);
   }
 
-  cancelAppointment() {
-    SpringApi().cancelAppointment(tradeId!, myUserId!);
+  void cancelAppointment() {
+    TradeProviders().cancelAppointment(tradeId!, myUserId!);
     DatabaseMethods().setDefaultTradeInfo(sellerId!, tradeId!);
   }
 
@@ -1385,32 +1555,115 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     return GestureDetector(
       onTap: () {
         showDialog(
-          context:
-          context,
-          builder:
-              (context) {
+          context: context,
+          builder: (context) {
             return showMoreModal()
                 ? AlertDialog(
-              // title: Text("안내"),
-              content:
-              Text("약속을 취소할 수가 없어요."),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context); // Close the dialog
-                  },
-                  child: Text("확인"),
-                ),
-              ],
-            )
+                    // title: Text("안내"),
+                    content: Text("약속을 취소할 수가 없어요."),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context); // Close the dialog
+                        },
+                        child: Text("확인"),
+                      ),
+                    ],
+                  )
                 : AlertDialog(
-              shape:
-              RoundedRectangleBorder(
-                borderRadius:
-                BorderRadius.circular(15.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    content: Text("거래 약속을 취소하시겠어요?"),
+                    actions: [
+                      TextButton(
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                          ),
+                          minimumSize:
+                              MaterialStateProperty.all<Size>(Size(100, 50)),
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Colors.grey.shade200),
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.black),
+                        ),
+                        child: Text(
+                          "아니요",
+                          style: TextStyle(fontSize: 17),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      TextButton(
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          minimumSize:
+                              MaterialStateProperty.all<Size>(Size(100, 50)),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.red),
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.white),
+                        ),
+                        child: Text(
+                          "취소",
+                          style: TextStyle(fontSize: 17),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          // 약속 취소 메소드 실행
+                          cancelAppointment();
+                        },
+                      ),
+                    ],
+                  );
+          },
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(10, 17, 10, 17),
+        margin: EdgeInsets.fromLTRB(20, 25, 20, 0),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(20),
+          ),
+          border: Border.all(color: Colors.black26, width: 2.0),
+        ),
+        child: Center(
+            child: Text(
+          "약속 취소",
+          style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.blueAccent),
+          textAlign: TextAlign.center,
+        )),
+      ),
+    );
+  }
+
+  // 신고하기
+  Widget _declarationDialog() {
+    return InkWell(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
               ),
-              content:
-              Text("거래 약속을 취소하시겠어요?"),
+              content: Text("신고하시겠습니까?"),
               actions: [
                 TextButton(
                   style: ButtonStyle(
@@ -1420,8 +1673,10 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       ),
                     ),
                     minimumSize: MaterialStateProperty.all<Size>(Size(100, 50)),
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade200),
-                    foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.grey.shade200),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.black),
                   ),
                   child: Text(
                     "아니요",
@@ -1439,17 +1694,17 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       ),
                     ),
                     minimumSize: MaterialStateProperty.all<Size>(Size(100, 50)),
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red),
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white),
                   ),
                   child: Text(
-                    "취소",
+                    "신고하기",
                     style: TextStyle(fontSize: 17),
                   ),
                   onPressed: () {
                     Navigator.pop(context);
-                    // 약속 취소 메소드 실행
-                    cancelAppointment();
                   },
                 ),
               ],
@@ -1458,166 +1713,158 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
         );
       },
       child: Container(
-        padding:
-        const EdgeInsets
-            .fromLTRB(
-            10,
-            17,
-            10,
-            17),
-        margin: EdgeInsets
-            .fromLTRB(
-            20,
-            25,
-            20,
-            0),
-        width: double
-            .infinity,
-        decoration:
-        BoxDecoration(
-          borderRadius:
-          BorderRadius
-              .all(
-            Radius
-                .circular(
-                20),
+        padding: EdgeInsets.fromLTRB(10, 17, 10, 17),
+        margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(20),
           ),
-          border: Border.all(
-              color: Colors
-                  .black26,
-              width: 2.0),
+          border: Border.all(color: Colors.black26, width: 2.0),
         ),
         child: Center(
             child: Text(
-              "약속 취소",
-              style: const TextStyle(
-                  fontWeight:
-                  FontWeight
-                      .bold,
-                  fontSize:
-                  18,
-                  color: Colors
-                      .blueAccent),
-              textAlign:
-              TextAlign
-                  .center,
-            )),
+          "신고하기",
+          style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.redAccent),
+          textAlign: TextAlign.center,
+        )),
       ),
     );
   }
 
-  // 신고하기
-  Widget _declarationDialog() {
-    return GestureDetector(
-      onTap: () {
-        showDialog(
-          context:
-          context,
-          builder:
-              (context) {
-            return
-              AlertDialog(
-                shape:
-                RoundedRectangleBorder(
-                  borderRadius:
-                  BorderRadius.circular(15.0),
+  Widget _errorPage() {
+    // return Text("?");
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20, 2, 20, 10),
+      width: double.infinity,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: const Offset(0, 0),
+            ),
+          ]),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Shimmer.fromColors(
+                  child: Container(
+                    height: 70,
+                    width: 70,
+                    margin: const EdgeInsets.fromLTRB(20, 15, 10, 15),
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(240, 240, 240, 1),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Column(),
+                  ),
+                  baseColor: Color.fromRGBO(240, 240, 240, 1),
+                  highlightColor: Colors.white),
+              Flexible(
+                flex: 1,
+                child: SizedBox(
+                  height: 70,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Shimmer.fromColors(
+                              child: Container(
+                                height: 25,
+                                width: 150,
+                                decoration: BoxDecoration(
+                                  color: Color.fromRGBO(240, 240, 240, 1),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                              baseColor: Color.fromRGBO(240, 240, 240, 1),
+                              highlightColor: Colors.white)
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Shimmer.fromColors(
+                                      child: Container(
+                                        margin: EdgeInsets.fromLTRB(0, 3, 0, 3),
+                                        height: 20,
+                                        width: 100,
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Color.fromRGBO(240, 240, 240, 1),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                      ),
+                                      baseColor:
+                                          Color.fromRGBO(240, 240, 240, 1),
+                                      highlightColor: Colors.white)
+                                ],
+                              ),
+                              SizedBox(height: 15),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Shimmer.fromColors(
+                                      child: Container(
+                                        margin:
+                                            EdgeInsets.fromLTRB(0, 10, 20, 3),
+                                        height: 20,
+                                        width: 80,
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Color.fromRGBO(240, 240, 240, 1),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                      ),
+                                      baseColor:
+                                          Color.fromRGBO(240, 240, 240, 1),
+                                      highlightColor: Colors.white)
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                content:
-                Text("신고하시겠습니까?"),
-                actions: [
-                  TextButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                      ),
-                      minimumSize: MaterialStateProperty.all<Size>(Size(100, 50)),
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade200),
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-                    ),
-                    child: Text(
-                      "아니요",
-                      style: TextStyle(fontSize: 17),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  TextButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
-                      minimumSize: MaterialStateProperty.all<Size>(Size(100, 50)),
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                    ),
-                    child: Text(
-                      "신고하기",
-                      style: TextStyle(fontSize: 17),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              );
-          },
-        );
-      },
-      child: Container(
-        padding:
-        EdgeInsets
-            .fromLTRB(
-            10,
-            17,
-            10,
-            17),
-        margin: EdgeInsets
-            .fromLTRB(
-            20,
-            20,
-            20,
-            0),
-        width: double
-            .infinity,
-        decoration:
-        BoxDecoration(
-          borderRadius:
-          BorderRadius
-              .all(
-            Radius
-                .circular(
-                20),
+              )
+            ],
           ),
-          border: Border.all(
-              color: Colors
-                  .black26,
-              width: 2.0),
-        ),
-        child: Center(
-            child: Text(
-              "신고하기",
-              style: const TextStyle(
-                  fontWeight:
-                  FontWeight
-                      .bold,
-                  fontSize:
-                  18,
-                  color: Colors
-                      .redAccent),
-              textAlign:
-              TextAlign
-                  .center,
-            )),
+        ],
       ),
     );
+    // return Container(
+    //   color: Colors.white, // 배경색
+    //   child: Center(
+    //     child: Column(
+    //       mainAxisAlignment: MainAxisAlignment.center,
+    //       children: [
+    //         Image(image: AssetImage('assets/images/bad_don.png')),
+    //         Text("사용자 정보를 확인할 수 없습니다."),
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 }
-
-
-
-

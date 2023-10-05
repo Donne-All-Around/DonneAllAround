@@ -94,8 +94,8 @@ class DatabaseMethods {
   }
 
   // 채팅 메시지 추가
-  Future addMessage(String chatRoomId,
-      Map<String, dynamic> messageInfoMap) async {
+  Future addMessage(
+      String chatRoomId, Map<String, dynamic> messageInfoMap) async {
     return FirebaseFirestore.instance
         .collection("chatrooms")
         .doc(chatRoomId)
@@ -122,6 +122,8 @@ class DatabaseMethods {
         .orderBy("time", descending: true)
         .snapshots();
   }
+
+
 
   setRead(chatRoomId, userId) async {
     final documentReference = FirebaseFirestore.instance
@@ -216,7 +218,7 @@ class DatabaseMethods {
   // users에 chatlist 추가
   setUserChatList(String sellerId, String buyerId, String transactionId,
       Map<String, dynamic> chatRoomListInfoMap) async {
-    try{
+    try {
       await FirebaseFirestore.instance
           .collection("user")
           .doc(sellerId)
@@ -229,10 +231,9 @@ class DatabaseMethods {
           .collection("chatroomList")
           .doc(transactionId)
           .set(chatRoomListInfoMap);
-    }catch(e){
+    } catch (e) {
       print('users에 chatlist 추가 실패: $e');
     }
-    
   }
 
   // users에서 채팅목록 조회
@@ -257,7 +258,7 @@ class DatabaseMethods {
 
       return myList;
     } catch (e) {
-      print('Firestore 데이터 가져오기 오류: $e');
+      print('Firestore 채팅 데이터 가져오기 오류: $e');
     }
     return myList;
   }
@@ -275,14 +276,14 @@ class DatabaseMethods {
     };
     try {
       await documentReference.update(updatedField);
-      print('업데이트 성공');
+      print('채팅방 나가기 업데이트 성공');
     } catch (e) {
-      print('업데이트 실패: $e');
+      print('채팅방 나가기 업데이트 실패: $e');
     }
   }
 
   // 거래 약속 잡기 기본 정보 저장
-  setDefaultTradeInfo(String sellerId, String tradeId){
+  setDefaultTradeInfo(String sellerId, String tradeId) {
     Map<String, dynamic> tradeInfo = {
       "type": "DIRECT",
       "directTradeTime": null,
@@ -309,9 +310,8 @@ class DatabaseMethods {
           .doc(tradeId)
           .set(tradeInfo);
     } catch (e) {
-      print('FireStore 저장 실패: $e');
+      print('FireStore 거래 약속 잡기 기본 정보 저장 실패: $e');
     }
-
   }
 
   // 거래 약속잡기 정보 저장
@@ -322,10 +322,11 @@ class DatabaseMethods {
           .doc(tradeId)
           .set(tradeInfoMap);
     } catch (e) {
-      print('FireStore 저장 실패: $e');
+      print('FireStore 거래 약속 잡기 저장 실패: $e');
     }
   }
 
+  // 거래 약속잡기 정보 수정
   updateTradeInfo(String tradeId, Map<String, dynamic> tradeInfoMap) {
     try {
       FirebaseFirestore.instance
@@ -333,7 +334,7 @@ class DatabaseMethods {
           .doc(tradeId)
           .update(tradeInfoMap);
     } catch (e) {
-      print('FireStore 저장 실패: $e');
+      print('FireStore 거래 약속 수정 실패: $e');
     }
   }
 
@@ -351,6 +352,4 @@ class DatabaseMethods {
       }
     });
   }
-
-
 }
