@@ -169,7 +169,7 @@ class _CalculatePageState extends State<CalculatePage> {
                                   margin:const EdgeInsets.fromLTRB(0, 10, 10, 10),
                                   child: const CircleAvatar(
                                     backgroundImage: AssetImage(
-                                      'assets/images/flag/USD.png'
+                                      'assets/images/flag/USDKRW.png'
                                     ),
                                     radius: 20,
 
@@ -370,7 +370,7 @@ class _CalculatePageState extends State<CalculatePage> {
                                                                                                       SizedBox(width: 10),
                                                                                                       CircleAvatar(
                                                                                                         backgroundImage:
-                                                                                                        AssetImage('assets/images/flag/USD.png'),
+                                                                                                        AssetImage('assets/images/flag/USDKRW.png'),
                                                                                                         radius: 16,
                                                                                                       ),
                                                                                                     ]

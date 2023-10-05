@@ -200,18 +200,22 @@ class _DeliveryTransactionPageState extends State<DeliveryTransactionPage> {
                                   children: [
                                     Row(
                                       children: [
-                                        CircleAvatar(
-                                          backgroundImage: AssetImage(
-                                              'assets/images/flag/AUD.png'),
-                                          radius: 8,
-                                        ),
-                                        SizedBox(width: 5),
-                                        Text(
-                                          '${NumberFormat.decimalPattern().format(widget.tradeInfoMap?['foreignCurrencyAmount'].toInt())} ${widget.tradeInfoMap?['countryCode']}',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.blueAccent),
+                                        Row(
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundImage: AssetImage(
+                                                  'assets/images/flag/USDAUD.png'),
+                                              radius: 8,
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              '${NumberFormat.decimalPattern().format(widget.tradeInfoMap?['foreignCurrencyAmount'].toInt())} ${widget.tradeInfoMap?['countryCode']}',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.blueAccent),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),

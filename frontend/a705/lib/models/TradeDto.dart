@@ -1,6 +1,6 @@
 class TradeDto {
   final int id;
-  final int seller;
+  final int sellerId;
   final String title;
   final String description;
   final String thumbnailImageUrl;
@@ -8,72 +8,88 @@ class TradeDto {
   final String countryCode;
   final int foreignCurrencyAmount;
   final int koreanWonAmount;
-  final double locationLatitude;
-  final double locationLongitude;
-  final String preferredTradeCountry;
-  final String preferredTradeCity;
-  final String preferredTradeDistrict;
-  final String preferredTradeTown;
+  final double koreanWonPerForeignCurrency;
+  final double latitude;
+  final double longitude;
+  final String country;
+  final String? administrativeArea;
+  final String? subAdministrativeArea;
+  final String? locality;
+  final String? subLocality;
+  final String? thoroughfare;
   final String type;
-  final int isShow;
-  final String directTradeTime;
-  final String directTradeLocationDetail;
-  final int buyer;
-  final int isDeliveryReceived;
+  final List<dynamic> imageUrlList;
+  late int tradeLikeCount;
+  final String sellerNickname;
+  final String sellerImgUrl;
+  final int sellerRating;
+  late bool isLike;
+  final String createTime;
 
-  TradeDto(
-      {required this.id,
-      required this.seller,
-      required this.title,
-      required this.description,
-      required this.thumbnailImageUrl,
-      required this.status,
-      required this.countryCode,
-      required this.foreignCurrencyAmount,
-      required this.koreanWonAmount,
-      required this.locationLatitude,
-      required this.locationLongitude,
-      required this.preferredTradeCountry,
-      required this.preferredTradeCity,
-      required this.preferredTradeDistrict,
-      required this.preferredTradeTown,
-      required this.type,
-      required this.isShow,
-      required this.directTradeTime,
-      required this.directTradeLocationDetail,
-      required this.buyer,
-      required this.isDeliveryReceived});
+  TradeDto({
+    required this.id,
+    required this.sellerId,
+    required this.title,
+    required this.description,
+    required this.thumbnailImageUrl,
+    required this.status,
+    required this.countryCode,
+    required this.foreignCurrencyAmount,
+    required this.koreanWonAmount,
+    required this.koreanWonPerForeignCurrency,
+    required this.latitude,
+    required this.longitude,
+    required this.country,
+    required this.administrativeArea,
+    required this.subAdministrativeArea,
+    required this.locality,
+    required this.subLocality,
+    required this.thoroughfare,
+    required this.type,
+    required this.imageUrlList,
+    required this.tradeLikeCount,
+    required this.sellerNickname,
+    required this.sellerImgUrl,
+    required this.sellerRating,
+    required this.isLike,
+    required this.createTime,
+  });
 
   factory TradeDto.fromJson(Map<String, dynamic> json) {
     return TradeDto(
       id: json['id'],
-      seller: json['seller'],
-      title: json['title'],
-      description: json['description'],
-      thumbnailImageUrl: json['thumbnailImageUrl'],
-      status: json['status'],
-      countryCode: json['countryCode'],
+      sellerId: json['sellerId'] ?? 1,
+      title: json['title'].toString(),
+      description: json['description'].toString() ?? "hello",
+      thumbnailImageUrl: json['thumbnailImageUrl'].toString() ?? "4444.png",
+      status: json['status'].toString(),
+      countryCode: json['countryCode'].toString(),
       foreignCurrencyAmount: json['foreignCurrencyAmount'],
       koreanWonAmount: json['koreanWonAmount'],
-      locationLatitude: json['locationLatitude'],
-      locationLongitude: json['locationLongitude'],
-      preferredTradeCountry: json['preferredTradeCountry'],
-      preferredTradeCity: json['preferredTradeCity'],
-      preferredTradeDistrict: json['preferredTradeDistrict'],
-      preferredTradeTown: json['preferredTradeTown'],
-      type: json['type'],
-      isShow: json['isShow'],
-      directTradeTime: json['directTradeTime'],
-      directTradeLocationDetail: json['directTradeLocationDetail'],
-      buyer: json['buyer'],
-      isDeliveryReceived: json['isDeliveryReceived'],
+      koreanWonPerForeignCurrency: json['koreanWonPerForeignCurrency'],
+      latitude: json['latitude'] ?? 37,
+      longitude: json['longitude'] ?? 127,
+      country: json['country'].toString(),
+      administrativeArea: json['administrativeArea'].toString(),
+      subAdministrativeArea: json['subAdministrativeArea'].toString(),
+      locality: json['locality'].toString(),
+      subLocality: json['subLocality'].toString(),
+      thoroughfare: json['thoroughfare'].toString(),
+      type: json['type'].toString(),
+      imageUrlList: json['imageUrlList'] ?? [],
+      tradeLikeCount: json['tradeLikeCount'] ?? 0,
+      sellerNickname: json['sellerNickname'].toString() ?? "옹골찬",
+      sellerImgUrl: json['sellerImgUrl'].toString() ?? "4444.png",
+      sellerRating: json['sellerRating'] ?? 1,
+      isLike: json['isLike'] ?? false,
+      createTime: json['createTime'].toString(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'seller': seller,
+      'sellerId': sellerId,
       'title': title,
       'description': description,
       'thumbnailImageUrl': thumbnailImageUrl,
@@ -81,18 +97,23 @@ class TradeDto {
       'countryCode': countryCode,
       'foreignCurrencyAmount': foreignCurrencyAmount,
       'koreanWonAmount': koreanWonAmount,
-      'locationLatitude': locationLatitude,
-      'locationLongitude': locationLongitude,
-      'preferredTradeCountry': preferredTradeCountry,
-      'preferredTradeCity': preferredTradeCity,
-      'preferredTradeDistrict': preferredTradeDistrict,
-      'preferredTradeTown': preferredTradeTown,
+      'koreanWonPerForeignCurrency': koreanWonPerForeignCurrency,
+      'latitude': latitude,
+      'locationLongitude': longitude,
+      'country': country,
+      'administrativeArea': administrativeArea,
+      'subAdministrativeArea': subAdministrativeArea,
+      'locality': locality,
+      'subLocality': subLocality,
+      'thoroughfare': thoroughfare,
       'type': type,
-      'isShow' :isShow,
-      'directTradeTime': directTradeTime,
-      'directTradeLocationDetail': directTradeLocationDetail,
-      'buyer': buyer,
-      'isDeliveryReceived': isDeliveryReceived,
+      'imageUrlList': imageUrlList,
+      'tradeLikeCount': tradeLikeCount,
+      'sellerNickname': sellerNickname,
+      'sellerImgUrl': sellerImgUrl,
+      'sellerRating': sellerRating,
+      'isLike': isLike,
+      'createTime': createTime,
     };
   }
 }

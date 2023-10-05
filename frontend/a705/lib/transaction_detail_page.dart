@@ -2,28 +2,29 @@ import 'dart:typed_data';
 
 import 'package:a705/chatting_detail_page.dart';
 import 'package:a705/chatting_page.dart';
+import 'package:a705/models/TradeDto.dart';
+import 'package:a705/providers/trade_providers.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:ui' as ui;
 
 class TransactionDetailPage extends StatefulWidget {
-  const TransactionDetailPage({super.key});
+  final int id;
+
+  const TransactionDetailPage(this.id, {super.key});
 
   @override
   State<TransactionDetailPage> createState() => _TransactionDetailPageState();
 }
 
 class _TransactionDetailPageState extends State<TransactionDetailPage> {
-  bool isLiked = false;
-  Map<String, dynamic> boardInfoMap = {
-
-  };
-
   @override
   void initState() {
-    super.initState();
+    getTradeDetail();
     loadData();
+    super.initState();
   }
 
   final List<Marker> _marker = <Marker>[];
@@ -48,6 +49,43 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
       position: latlng,
       infoWindow: const InfoWindow(title: 'Location'),
     ));
+    setState(() {});
+  }
+
+  TradeProviders tradeProvider = TradeProviders();
+  TradeDto trade = TradeDto(
+    id: 0,
+    sellerId: 0,
+    title: "",
+    description: "",
+    status: "",
+    countryCode: "USD",
+    foreignCurrencyAmount: 0,
+    koreanWonAmount: 0,
+    latitude: 0,
+    longitude: 0,
+    country: "",
+    administrativeArea: "",
+    subAdministrativeArea: "",
+    locality: "",
+    subLocality: "",
+    thoroughfare: "",
+    type: "",
+    tradeLikeCount: 0,
+    sellerNickname: "",
+    sellerImgUrl: "",
+    sellerRating: 0,
+    isLike: false,
+    createTime: "",
+    koreanWonPerForeignCurrency: 0,
+    imageUrlList: [],
+    thumbnailImageUrl: "",
+  );
+
+  Future getTradeDetail() async {
+    trade = await tradeProvider.getTradeDetail(widget.id);
+    print("trade id: ${trade.id}");
+    setState(() {});
   }
 
   @override
@@ -73,10 +111,16 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const SizedBox(
-                    child: Image(
-                  image: AssetImage('assets/images/ausdollar.jpg'),
-                )),
+                SizedBox(
+                  height: 400,
+                  child: PageView.builder(
+                      itemCount: trade.imageUrlList.length,
+                      pageSnapping: true,
+                      itemBuilder: (context, index) {
+                        return Image(
+                            image: NetworkImage(trade.imageUrlList[index]));
+                      }),
+                ),
                 Container(height: 1, color: Colors.black26),
                 Container(
                   padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
@@ -84,17 +128,17 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Row(
+                      Row(
                         children: [
-                          CircleAvatar(
+                          const CircleAvatar(
                             backgroundImage:
                                 AssetImage('assets/images/profile.jpg'),
                             radius: 30,
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Text(
-                            '옹골찬',
-                            style: TextStyle(
+                            trade.sellerNickname,
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 17),
                           ),
                         ],
@@ -112,28 +156,37 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                     padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
                     child: Column(
                       children: [
-                        const Row(
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(
-                              '호주 달러 50달러 팔아요',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            Expanded(
+                              child: Text(
+                                trade.title,
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
                             ),
-                            SizedBox(width: 10),
-                            Text('1시간 전'),
+                            const SizedBox(width: 10),
+                            const Text('1시간 전'),
                           ],
                         ),
                         const SizedBox(height: 10),
-                        const Text(
-                          '7월에 호주 여행 다녀와서 남은 돈이에요 역삼역 근처에서 직거래 희망합니다',
-                          style: TextStyle(fontSize: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                trade.description,
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 10),
-                        const Row(
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
+                            const Row(
                               children: [
                                 Icon(
                                   Icons.location_on,
@@ -146,17 +199,17 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                               ],
                             ),
                             Text(
-                              '강남구 역삼동',
-                              style: TextStyle(fontSize: 15),
+                              '${trade.subLocality} ${trade.thoroughfare}',
+                              style: const TextStyle(fontSize: 15),
                             ),
                           ],
                         ),
                         Container(
                           margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          height: 400,
+                          height: 350,
                           child: GoogleMap(
-                            initialCameraPosition: const CameraPosition(
-                              target: LatLng(37.5013068, 127.0396597),
+                            initialCameraPosition: CameraPosition(
+                              target: LatLng(trade.latitude, trade.longitude),
                               zoom: 17,
                             ),
                             zoomControlsEnabled: false,
@@ -188,7 +241,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                     child: Row(
                       children: [
                         IconButton(
-                          icon: isLiked
+                          icon: trade.isLike
                               ? const Icon(
                                   Icons.favorite_rounded,
                                   color: Colors.red,
@@ -196,7 +249,13 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                               : const Icon(Icons.favorite_border_rounded),
                           onPressed: () {
                             setState(() {
-                              isLiked = !isLiked;
+                              if (trade.isLike) {
+                                tradeProvider.unlikeTrade(widget.id);
+                                trade.isLike = false;
+                              } else {
+                                tradeProvider.likeTrade(widget.id);
+                                trade.isLike = true;
+                              }
                             });
                           },
                         ),
@@ -207,21 +266,21 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Column(
+                              Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Row(
                                     children: [
-                                      SizedBox(width: 10),
+                                      const SizedBox(width: 10),
                                       CircleAvatar(
-                                        backgroundImage:
-                                            AssetImage('assets/images/flag/AUD.png'),
+                                        backgroundImage: AssetImage(
+                                            'assets/images/flag/${trade.countryCode == 'KRW' ? 'KRW' : trade.countryCode == 'USD' ? 'USDKRW' : 'USD${trade.countryCode}'}.png'),
                                         radius: 8,
                                       ),
-                                      SizedBox(width: 5),
+                                      const SizedBox(width: 5),
                                       Text(
-                                        '50 AUD',
-                                        style: TextStyle(
+                                        '${trade.foreignCurrencyAmount} ${trade.countryCode}',
+                                        style: const TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.blueAccent),
@@ -229,8 +288,8 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                     ],
                                   ),
                                   Text(
-                                    '42,000원',
-                                    style: TextStyle(
+                                    '${trade.koreanWonAmount}원',
+                                    style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -240,7 +299,6 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                 onTap: () {
                                   Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
-
                                       return  ChattingDetailPage(
                                           tradeInfoMap :{
                                             "tradeId" : "1",

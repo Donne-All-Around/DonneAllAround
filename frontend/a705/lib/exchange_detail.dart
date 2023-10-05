@@ -3,8 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 
+import 'models/BankDto.dart';
+
 class ExchangeDetailPage extends StatefulWidget {
-  const ExchangeDetailPage({super.key});
+  final int selectedIndex;
+  final String formattedRateText;
+  const ExchangeDetailPage({
+    required this.selectedIndex,
+    required this.formattedRateText,
+  });
 
   @override
   State<ExchangeDetailPage> createState() => _ExchangeDetailPageState();
@@ -23,40 +30,37 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
   final _valueList = [
     '미국(달러) USD',
     '일본(엔) JPY',
+    '중국(위안) CNY',
     '유럽(유로) EUR',
     '영국(파운드) GBP',
     '호주(달러) AUD',
-    '중국(위안) CNY',
-    '베트남(동) VND',
-    '한국(원) KRW',
-    '홍콩(달러) HKD',
     '캐나다(달러) CAD',
+    '홍콩(달러) HKD',
+    '필리핀(페소) PHP',
+    '베트남(동) VND',
+    '대만(달러) TWD',
+    '싱가폴(달러) SGD',
     '체코(코루나) CZK',
     '뉴질랜드(달러) NZD',
-    '필리핀(페소) PHP',
     '러시아(루블) RUB',
-    '싱가폴(달러) SGD',
-    '대만(달러) TWD',
   ];
-  var _selectedValue = '미국(달러) USD';
 
   List<String> currency = [
-    'USD',
-    'JPY',
-    'EUR',
-    'GBP',
-    'AUD',
-    'CNY',
-    'VND',
-    'KRW',
-    'HKD',
-    'CAD',
-    'CZK',
-    'NZD',
-    'PHP',
-    'RUB',
-    'SGD',
-    'TWD',
+    'USDKRW',
+    'USDJPY',
+    'USDCNY',
+    'USDEUR',
+    'USDGBP',
+    'USDAUD',
+    'USDCAD',
+    'USDHKD',
+    'USDPHP',
+    'USDVND',
+    'USDTWD',
+    'USDSGD',
+    'USDCZK',
+    'USDNZD',
+    'USDRUB',
   ];
 
   String selectedButton = ''; // 선택된 버튼
@@ -130,35 +134,17 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                     width: 190,
                                     height: 55,
                                     // color: Colors.red,
-                                    child: DropdownButtonHideUnderline(
-                                      child: DropdownButton(
-                                        value: _selectedValue,
-                                        items: _valueList.map(
-                                          (value) {
-                                            return DropdownMenuItem(
-                                              value: value,
-                                              child: Row(
-                                                children: [
-                                                  CircleAvatar(
-                                                    backgroundImage: AssetImage(
-                                                        'assets/images/flag/${currency[_valueList.indexOf(value)]}.png'),
-                                                    radius: 10,
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 7,
-                                                  ),
-                                            Text(value),
-                                            ],
-                                              ),
-                                            );
-                                          },
-                                        ).toList(),
-                                        onChanged: (value) {
-                                          setState(() {
-                                            _selectedValue = value!;
-                                          });
-                                        },
-                                      ),
+                                    child:Row(
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage:
+                                          AssetImage('assets/images/flag/${currency[widget.selectedIndex]}.png'),
+                                          radius: 10,
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Text(  _valueList[widget.selectedIndex],
+                                          style: const TextStyle(fontSize: 16),),
+                                      ],
                                     ),
                                   ),
                                   Container(
@@ -167,9 +153,9 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                     // color: Colors.red,
                                     margin:
                                         const EdgeInsets.fromLTRB(0, 15, 10, 10),
-                                    child: const Text(
-                                      ' 1,300.00원',
-                                      style: TextStyle(
+                                    child: Text(
+                                      ' ${widget.formattedRateText}원',
+                                      style: const TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.red),
@@ -271,7 +257,7 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Container(
+                                 Container(
                                     margin : const EdgeInsets.fromLTRB(0, 0, 10,0),
                                       child:  Row(
                                         mainAxisAlignment: MainAxisAlignment.end,
@@ -297,7 +283,10 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                const BankViewBuilder(),
+                 BankViewBuilder(
+                    selectedIndex : widget.selectedIndex,
+                   formattedRateText:  widget.formattedRateText,
+                 ),
 
               ],
             ),
@@ -308,9 +297,11 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
   }
 }
 
-// 계산기 눌렀을 때, 은행별 리스트 => 은행 목록과 사진으로 바꿔야 함!!
+
 class BankViewBuilder extends StatefulWidget {
-  const BankViewBuilder({super.key});
+  final int selectedIndex;
+  final String formattedRateText;
+  const BankViewBuilder( {required this.selectedIndex, required this.formattedRateText});
 
   @override
   State<BankViewBuilder> createState() => _BankViewBuilderState();
@@ -318,35 +309,72 @@ class BankViewBuilder extends StatefulWidget {
 
 class _BankViewBuilderState extends State<BankViewBuilder> {
   final _valueList1 = [
-   '하나은행',
-   '우리은행',
-   'KB국민은행',
-   '신한은행',
-   'NH농협은행',
-   '기업은행',
-   'SC제일은행',
-   '시티은행',
-   '수협은행',
-   '부산은행',
-   '대구은행',
-   '전북은행',
-   '경남은행',
-   '제주은행',
+    '하나은행',
+    '우리은행',
+    'KB국민은행',
+    '신한은행',
+    'NH농협은행',
+    'IBK기업은행',
+    'SC제일은행',
+    '시티은행',
+    'Sh수협은행',
+    '부산은행',
+    'DGB대구은행',
+
   ];
 
-  int idx1 = 0;
 
-  // List<String> currency1 = [
-  //   'USD',
-  //   'JPY',
-  //   'EUR',
-  //   'GBP',
-  //   'AUD',
-  //   'CNY',
-  //   'VND',
-  //   'KRW',
-  //   'HKD'
-  // ];
+  List<String> currency1 = [
+    'USDKRW',
+    'USDJPY',
+    'USDCNY',
+    'USDEUR',
+    'USDGBP',
+    'USDAUD',
+    'USDCAD',
+    'USDHKD',
+    'USDPHP',
+    'USDVND',
+    'USDTWD',
+    'USDSGD',
+    'USDCZK',
+    'USDNZD',
+    'USDRUB',
+
+  ];
+
+
+  Map<String, Map<String, String>> bankInfo = {
+    '하나은행': {'currencyName': '하나은행', 'bankCode': '081'},
+    '우리은행': {'currencyName': '우리은행', 'bankCode': '020'},
+    'KB국민은행': {'currencyName': 'KB국민은행', 'bankCode': '004'},
+    '신한은행': {'currencyName': '신한은행', 'bankCode': '088'},
+    'NH농협은행': {'currencyName': 'NH농협은행', 'bankCode': '011'},
+    'IBK기업은행': {'currencyName': 'IBK기업은행', 'bankCode': '003'},
+    'SC제일은행': {'currencyName': 'SC제일은행', 'bankCode': '023'},
+    '시티은행': {'currencyName': '시티은행', 'bankCode': '027'},
+    'Sh수협은행': {'currencyName': 'Sh수협은행', 'bankCode': '007'},
+    '부산은행': {'currencyName': '부산은행', 'bankCode': '032'},
+    'DGB대구은행': {'currencyName': 'DGB대구은행', 'bankCode': '031'},
+  };
+
+  double calculateCashBuyingPrice(double baseRate, String? buyingFee) {
+    if (buyingFee == null || buyingFee == "서비스 미제공") {
+      return baseRate; // 서비스 미제공일 경우 기본값 반환
+    } else {
+      double feePercentage = double.tryParse(buyingFee.replaceAll('%', '')) ?? 0.0;
+      return baseRate + (baseRate * feePercentage / 100);
+    }
+  }
+
+  double calculateCashPrice(double baseRate, String? sellginFee) {
+    if (sellginFee == null || sellginFee == "서비스 미제공") {
+      return baseRate; // 서비스 미제공일 경우 기본값 반환
+    } else {
+      double feePercentage = double.tryParse(sellginFee.replaceAll('%', '')) ?? 0.0;
+      return baseRate - (baseRate * feePercentage / 100);
+    }
+  }
 
 
   @override
@@ -355,8 +383,12 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
       primary: false,
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-      itemCount: _valueList1.length,
+      itemCount:  bankInfo.length,
       itemBuilder: (context, index) {
+        final bankName = bankInfo.keys.elementAt(index); // 은행 이름
+        final bankData = bankInfo[bankName]; // 은행 정보 맵
+        final bankCode = bankData?['bankCode'];
+        FeeInfo? feeInfo = bankInfoMap[bankName]?.fees[currency1[widget.selectedIndex]];
         return Row(
           children: [
             Expanded(
@@ -364,7 +396,10 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                 onTap: (){
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const BankDetailPage()),
+                    MaterialPageRoute(builder: (context) => BankDetailPage(
+                        selectedIndex : widget.selectedIndex,
+                        bankCode: bankCode!,
+                    )),
                   );
                 },
                 child: Container(
@@ -397,20 +432,23 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                               //   radius: 10,
                               // ),
                               const SizedBox(width: 5),
-                              Text(
-                                _valueList1[index],
-                                style: const TextStyle(fontSize: 16),
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(2,0,0,0),
+                                child: Image.asset(
+                                    'assets/images/banklogo/$bankCode.png'),
+                                width: 150, // 이미지 너비 조절
+                                height: 20,
                               ),
                             ],
                           ),
                         ],
                       ),
                       const SizedBox(height: 10,),
-                      const Row(
+                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Column(
+                          const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(height: 20),
@@ -445,21 +483,30 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
-                                        '1,354.29원',
+                                        '${calculateCashBuyingPrice(
+                                            double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0,
+                                            feeInfo?.buying.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
+                                        ).toStringAsFixed(2)}원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '1,354.29원',
+                                        '${calculateCashPrice(
+                                            double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0,
+                                            feeInfo?.selling.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
+                                        ).toStringAsFixed(2)}원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '1,354.29원',
+                                        '${calculateCashBuyingPrice(
+                                            double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0,
+                                            feeInfo?.sending.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
+                                        ).toStringAsFixed(2)}원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
@@ -469,11 +516,11 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                                   ),
                                 ],
                               ),
-                              SizedBox(width: 20),
+                              const SizedBox(width: 20),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(
+                                  const Text(
                                     '수수료',
                                     style: TextStyle(fontSize: 15),
                                   ),
@@ -481,22 +528,22 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
-                                        '1.75%',
-                                        style: TextStyle(
+                                        '${feeInfo?.buying ?? "서비스 미제공"}%',
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '1.75%',
-                                        style: TextStyle(
+                                        '${feeInfo?.selling ?? "서비스 미제공"}%',
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '1.75%',
-                                        style: TextStyle(
+                                        '${feeInfo?.sending ?? "서비스 미제공"}% ',
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
@@ -719,4 +766,120 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
   }
 
+}
+
+
+
+List<String> country = [
+  '미국(달러)',
+  '일본(엔)',
+  '유럽(유로)',
+  '영국(파운드)',
+  '호주(달러)',
+  '중국(위안)',
+  '베트남(동)',
+  '한국(원)',
+  '홍콩(달러)',
+  '캐나다(달러)',
+  '체코(코루나)',
+  '뉴질랜드(달러)',
+  '필리핀(페소)',
+  '러시아(루블)',
+  '싱가폴(달러)',
+  '대만(달러)',
+];
+List<String> currency = [
+  'USD',
+  'JPY',
+  'EUR',
+  'GBP',
+  'AUD',
+  'CNY',
+  'VND',
+  'KRW',
+  'HKD',
+  'CAD',
+  'CZK',
+  'NZD',
+  'PHP',
+  'RUB',
+  'SGD',
+  'TWD',
+];
+List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
+
+List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
+
+class CountryListViewBuilder extends StatefulWidget {
+  const CountryListViewBuilder({super.key});
+
+  @override
+  State<CountryListViewBuilder> createState() => _CountryListViewBuilderState();
+}
+
+class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
+  int idx = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: country.length,
+      itemBuilder: (BuildContext context, int index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              idx = index;
+            });
+            Navigator.pop(context, idx);
+          },
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+            height: 50,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+              color: Color(0xFFFFD954),
+            ),
+            child: Row(
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(width: 20),
+                    CircleAvatar(
+                      backgroundImage:
+                      AssetImage('assets/images/flag/${currency[index]}.png'),
+                      radius: 10,
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        country[index],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        currency[index],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 20),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }

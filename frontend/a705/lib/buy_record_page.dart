@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:a705/transaction_detail_page.dart';
+import 'dart:convert'; // JSON 파싱을 위해 추가
+import 'package:http/http.dart' as http;
 
 
 class BuyRecordPage extends StatefulWidget {
@@ -10,6 +12,45 @@ class BuyRecordPage extends StatefulWidget {
 }
 
 class BuyRecordPageState extends State<BuyRecordPage> {
+
+  // 서버에서 받아온 데이터를 저장할 리스트
+  List<Map<String, dynamic>> tradeList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // initState에서 서버로 GET 요청을 보냅니다.
+    fetchBuyHistory();
+  }
+
+  void fetchBuyHistory() async {
+    try {
+      const memberId = '1'; // 원하는 회원 ID를 여기에 넣어주세요.
+      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/buy?memberId=$memberId');
+
+      http.Response response = await http.get(url);
+      String responseBody = utf8.decode(response.bodyBytes);
+
+      if (response.statusCode == 200) {
+        // 서버 응답이 성공인 경우
+        final responseData = json.decode(responseBody);
+        final data = responseData['data'];
+        final tradeListData = data['tradeList'];
+
+        setState(() {
+          tradeList = List<Map<String, dynamic>>.from(tradeListData);
+        });
+        print('구매내역 잘 들어온다');
+      } else {
+        // 서버 응답이 실패인 경우
+        print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('서버 요청 중 오류 발생: $e');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -40,9 +81,9 @@ class BuyRecordPageState extends State<BuyRecordPage> {
               height: double.infinity,
               width: double.infinity,
               color: Colors.white,
-              child: const Column(
+              child: Column(
                 children: [
-                  Expanded(child: ListViewBuilder()),
+                  Expanded(child: ListViewBuilder(buyRecordPageState: this)),
                ]
               )
             )
@@ -52,10 +93,11 @@ class BuyRecordPageState extends State<BuyRecordPage> {
   }
 }
 
-List<String> transactions = ['별의 커비', '뽀로로'];
 
 class ListViewBuilder extends StatefulWidget {
-  const ListViewBuilder({super.key});
+  final BuyRecordPageState buyRecordPageState;
+
+  const ListViewBuilder({Key? key, required this.buyRecordPageState}) : super(key: key);
 
   @override
   State<ListViewBuilder> createState() => _ListViewBuilderState();
@@ -63,8 +105,13 @@ class ListViewBuilder extends StatefulWidget {
 
 class _ListViewBuilderState extends State<ListViewBuilder> {
 
-  void _handleDelete() {
-    // 삭제 작업 코드
+  String formatDate(String dateTimeString) {
+    final dateTime = DateTime.parse(dateTimeString);
+    final year = dateTime.year;
+    final month = dateTime.month;
+    final day = dateTime.day;
+
+    return '$year년 $month월 $day일';
   }
 
   @override
@@ -72,13 +119,15 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
     return ListView.builder(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        itemCount: transactions.length,
+        itemCount: widget.buyRecordPageState.tradeList.length,
         itemBuilder: (BuildContext context, int index) {
+          final trade = widget.buyRecordPageState.tradeList[index];
+
           return GestureDetector(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {
-                  return const TransactionDetailPage();
+                  return const TransactionDetailPage(1);
                 },
               ));
             },
@@ -99,6 +148,17 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                   ]),
               child: Column(
                 children: [
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                    child: Row(
+                      children: [
+                        Text(
+                          formatDate(trade['createTime']),
+                          style: const TextStyle(color: Colors.black54),
+                        ),
+                      ],
+                    ),
+                  ),
                   Row(
                     children: [
                       Container(
@@ -110,10 +170,10 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                         ),
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(15),
-                            child: const Image(
+                            child: Image(
                               height: 60,
                               image: AssetImage(
-                                'assets/images/ausdollar.jpg',
+                                'assets/images/trade${['thumbnailImageUrl']}',
                               ),
                               fit: BoxFit.cover,
                             )),
@@ -128,80 +188,51 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text(
-                                    '호주 달러 50달러 팔아요',
-                                    style: TextStyle(
+                                  Text(
+                                    trade['title'],
+                                    style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 30,
-                                    height: 30,
-                                    child : PopupMenuButton<String>(
-                                      icon: const Icon(
-                                        Icons.more_horiz,
-                                        color: Colors.black,
-                                      ),
-                                      itemBuilder: (context) {
-                                        return [
-                                          const PopupMenuItem<String>(
-                                            value: 'delete',
-                                            child: Text('삭제하기'),
-                                          )
-                                        ];
-                                      },
-                                      onSelected: (value) {
-                                        if (value == 'delete') {
-                                          _handleDelete();
-                                        }
-                                      }
-                                    )
-                                  )
                                 ]
                               ),
-                              const Row(
+                              Row(
                                 children: [
                                   Text(
-                                    '강남구 역삼동',
-                                    style: TextStyle(color: Colors.black54),
-                                  ),
-                                  Text(
-                                    ' · ',
-                                    style: TextStyle(color: Colors.black54),
-                                  ),
-                                  Text(
-                                    '1시간 전',
-                                    style: TextStyle(color: Colors.black54),
+                                    trade['type'] == 'DIRECT'
+                                      ? '${trade['preferredTradeCity']} ${trade['preferredTradeDistrict']} ${trade['preferredTradeTown']}'
+                                      : '택배거래',
+                                    style: const TextStyle(color: Colors.black54),
                                   ),
                                 ],
                               ),
-                              const Row(
+                              Row(
                                 children: [
                                   CircleAvatar(
                                     backgroundImage:
-                                    AssetImage('assets/images/AUD.png'),
+                                    AssetImage('assets/images/flag/${trade['countryCode']}.png'),
                                     radius: 8,
                                   ),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
-                                    '50 AUD',
-                                    style: TextStyle(
+                                    '${trade['foreignCurrencyAmount']} ${trade['countryCode']}',
+                                    style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.blueAccent),
                                   ),
                                 ],
                               ),
-                              const Row(
+                              Row(
                                 mainAxisAlignment:
                                 MainAxisAlignment.end,
                                 children: [
                                   Column(
                                     children: [
                                       Text(
-                                        '42,000원',
-                                        style: TextStyle(
+                                        '${trade['koreanWonAmount']}원',
+                                        style: const TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -219,7 +250,9 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                     width: 350,
                     height: 35,
                     margin: const EdgeInsets.fromLTRB(15, 0, 0, 10),
-                    child: ElevatedButton(
+                    child: trade['hasReview'] != false
+                        ? null // false 일 때는 아무것도 반환하지 않음
+                        : ElevatedButton(
                       onPressed: () {
                         // '후기 작성' 버튼을 눌렀을 때 수행할 동작 추가
                       },

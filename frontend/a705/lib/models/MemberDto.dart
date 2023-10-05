@@ -15,14 +15,15 @@ class MemberDto {
     required this.profileImg,
   });
 
-  factory MemberDto.formJson(Map<String, dynamic> json) {
+  factory MemberDto.fromJson(Map<String, dynamic> json) {
     return MemberDto(
-        id: json['id'],
-        tel: json['tel'],
-        nickname: json['nickname'],
-        point: json['point'],
-        rating: json['rating'],
-        profileImg: json['profileImg']);
+      id: json['id'],
+      tel: json['tel'],
+      nickname: json['nickname'],
+      point: json['point'],
+      rating: json['rating'],
+      profileImg: json['profileImg'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -32,7 +33,7 @@ class MemberDto {
       'nickname': nickname,
       'point': point,
       'rating': rating,
-      'progileImg': profileImg,
+      'profileImg': profileImg,
     };
   }
 }

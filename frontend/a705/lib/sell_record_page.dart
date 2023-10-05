@@ -133,10 +133,6 @@ class ListViewBuilder extends StatefulWidget {
 
 class _ListViewBuilderState extends State<ListViewBuilder> {
 
-  void _handleDelete() {
-    // 삭제 작업 코드
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -148,7 +144,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
             onTap: () {
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {
-                  return const TransactionDetailPage();
+                  return const TransactionDetailPage(1);
                 },
               ));
             },
@@ -169,12 +165,23 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                   ]),
               child: Column(
                 children: [
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                    child: Row(
+                      children: [
+                        Text(
+                          '2022년 2월 25일',
+                          style: TextStyle(color: Colors.black54),
+                        ),
+                      ],
+                    ),
+                  ),
                   Row(
                     children: [
                       Container(
                         height: 100,
                         width: 100,
-                        margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                        margin: const EdgeInsets.fromLTRB(15, 5, 15, 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                         ),
@@ -205,52 +212,23 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 30,
-                                      height: 30,
-                                      child : PopupMenuButton<String>(
-                                        icon: const Icon(
-                                          Icons.more_horiz,
-                                          color: Colors.black,
-                                        ),
-                                        itemBuilder: (context) {
-                                          return [
-                                            const PopupMenuItem<String>(
-                                              value: 'delete',
-                                              child: Text('삭제하기'),
-                                            )
-                                          ];
-                                        },
-                                        onSelected: (value) {
-                                          if (value == 'delete') {
-                                            _handleDelete();
-                                          }
-                                        }
-                                      )
-                                    )
                                   ]
                               ),
+                              const SizedBox(height:3),
                               const Row(
                                 children: [
                                   Text(
                                     '강남구 역삼동',
                                     style: TextStyle(color: Colors.black54),
                                   ),
-                                  Text(
-                                    ' · ',
-                                    style: TextStyle(color: Colors.black54),
-                                  ),
-                                  Text(
-                                    '1시간 전',
-                                    style: TextStyle(color: Colors.black54),
-                                  ),
                                 ],
                               ),
+                              const SizedBox(height:3),
                               const Row(
                                 children: [
                                   CircleAvatar(
                                     backgroundImage:
-                                    AssetImage('assets/images/AUD.png'),
+                                    AssetImage('assets/images/USDAUD.png'),
                                     radius: 8,
                                   ),
                                   SizedBox(width: 5),
@@ -263,6 +241,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                   ),
                                 ],
                               ),
+                              const SizedBox(height:3),
                               Row(
                                 mainAxisAlignment:
                                 MainAxisAlignment.spaceBetween,
