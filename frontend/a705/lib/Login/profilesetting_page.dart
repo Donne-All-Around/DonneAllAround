@@ -250,11 +250,11 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
 
                       try {
                         final responseBody = await _userProvider.signUp(uploadSign);
-
+                        print('프로필 설정 페이지에서 받는 jwt : $responseBody');
                         if (responseBody != null) {
-                          final id = responseBody['id'];
-                          final tel = responseBody['tel'];
-                          final token = responseBody['token'];
+                          int id = responseBody['id'];
+                          String tel = responseBody['tel'];
+                          String token = responseBody['token'];
 
                           // 데이터를 저장하기 위한 함수 호출
                           await saveUserInfo(id, tel, token);
@@ -369,7 +369,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
     final pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
       // uploadImageToFirebase(pickedFile.path);
-      String _path = "profile/image.jpg";
+      String _path = "profile/image${widget.phoneNumber}.jpg";
       File _file = File(pickedFile.path);
       await FirebaseStorage.instance.ref(_path).putFile(_file);
       final String _urlString =

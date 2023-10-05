@@ -275,22 +275,26 @@ class _CertificationPageState extends State<CertificationPage> {
       // Firebase 토큰을 백엔드 서버로 전송하여 JWT 토큰을 가져옴
       Map<String, dynamic>? signInResponse = await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!, uid, tel);
       if (signInResponse != null) {
-        String? id = signInResponse['id'];
+        int id = signInResponse['id'];
         String? tel = signInResponse['tel'];
         String? token = signInResponse['token'];
 
+        print('로그인 화면에서 id: ${id}');
+        print('로그인 화면에서  tel: ${tel}');
+        print('로그인 화면에서 token: ${token}');
+
         if (id != null && tel != null && token != null) {
-          String jwtToken = '$id|$tel|$token'; // 예제에서 사용하는 방식으로 JWT 토큰 구성
-          print("토큰 : $jwtToken");
 
           // 스토리지 저장 및 헤더에 토큰 값 할당 구현.!!!!!!!
-          saveUserInfo('$id','$tel','$token');
+          saveUserInfo(id,tel,token);
+          if (!mounted) return;
           Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
         }
       }
       if (signInResponse == null) {
         // null  인 경우,  uid 와 tel 갖고 프로필페이지로 이동.
-        Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfileSettingPage(phoneNumber: '$tel', uid: '$uid')));
+        if (!mounted) return;
+        Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfileSettingPage(phoneNumber: tel, uid: uid)));
       }
       // print("토큰 : $jwtToken");
       print("파베로그인 성공!");
@@ -299,6 +303,7 @@ class _CertificationPageState extends State<CertificationPage> {
     }
 
   }
+
 
 // // 백엔드에서 사용자가 존재하는지 확인하는 함수
 //   Future<void> checkUserExistenceAndNavigate() async {

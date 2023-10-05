@@ -266,7 +266,9 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                           const Text(' 기준', style: TextStyle(color: Colors.white),),
                                         ],
                                       )),
-                                  const LineChartSample2(),
+                                   const LineChartSample2(
+                                    // selectedIndex : widget.selectedIndex,
+                                  ),
 
                                 ],
                               ),
@@ -571,7 +573,10 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
 
 // 그래프 위젯
 class LineChartSample2 extends StatefulWidget {
-  const LineChartSample2({super.key});
+  // final int selectedIndex;
+  // final FirebaseFirestore firestore;
+  // const LineChartSample2({required this.selectedIndex,required this.firestore});
+const LineChartSample2({super.key});
 
   @override
   State<LineChartSample2> createState() => _LineChartSample2State();
@@ -602,6 +607,16 @@ class _LineChartSample2State extends State<LineChartSample2> {
     'NZD',
     'RUB',
   ];
+
+  final firestore = FirebaseFirestore.instance;
+  // final cities = firestore.collection("exchange_rate_${currency[selectedIndex]}");
+  
+  getData() async {
+    var result = await firestore.collection('exchange_rate_AUD').doc('0C4BBUcwdKA46iqpyJLS').get();
+    print(result);
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

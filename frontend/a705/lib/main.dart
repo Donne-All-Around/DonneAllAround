@@ -52,8 +52,8 @@ class MyApp extends StatelessWidget {
         Locale('ko', 'KR'),
       ],
       locale: const Locale('ko'),
-      // home: const StartPage(),
-      home: const MainPage(),
+      home: const StartPage(),
+      // home: const MainPage(),
       // home: ProfileSettingPage(phoneNumber: '01099999999', uid: 'akjg4464HLSH'),
     );
   }

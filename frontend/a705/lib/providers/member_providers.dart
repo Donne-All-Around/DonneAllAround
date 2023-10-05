@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import '../models/JoinDto.dart';
@@ -47,6 +48,7 @@ class UserProvider extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       final responseBody = jsonDecode(response.body);
+      print('회원가입 후 백엔드에서 받는 응답확인: $responseBody');
       return responseBody;
       // id/ tel / token 나누거나 사용하는 곳에서 나눠도 됨.
     } else {
@@ -58,9 +60,11 @@ class UserProvider extends ChangeNotifier {
 
 // 닉네임 체크 
   Future<String> checkNickname(String nickname) async {
+    final url = "$baseUrl/api/member/check/nickname";
+
     try {
       final response = await http.post(
-        Uri.parse(baseUrl),
+        Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -68,7 +72,7 @@ class UserProvider extends ChangeNotifier {
           'nickname': nickname,
         }),
       );
-
+      print('응답: $response');
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         final String checkedNickname = data['data']['checkedNickname'];
@@ -116,11 +120,13 @@ class UserProvider extends ChangeNotifier {
 
     // Prepare the request body with the firebaseToken, uid, and tel
     final requestBody = {
-      'firebaseToken': firebaseToken,
-      'uid': uid,
-      'tel': tel,
+      "idToken": firebaseToken,
+      "uid": uid,
+      "tel": tel,
     };
-
+        print('보내는 파베토큰 : ${requestBody['idToken']}');
+        print('보내는 uid : ${requestBody['uid']}');
+        print('보내는 tel : ${requestBody['tel']}');
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -129,33 +135,43 @@ class UserProvider extends ChangeNotifier {
         },
         body: jsonEncode(requestBody),
       );
+      print('파베보내고 jwt 받는 응답: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        if (responseData['member'] == true) {
-          final signInResponse = responseData['signInResponse'];
-          if (signInResponse is Map<String, dynamic>) {
-            final id = signInResponse['id'];
-            final tel = signInResponse['tel'];
-            final token = signInResponse['token'];
-            print('$id');
-            print('$tel');
-            print('$token');
-            return {
-              'id': id,
-              'tel': tel,
-              'token': token,
-            };
+
+        // 파이어베이스 토큰 인증 성공
+        if (responseData['firebaseAuthStatus'] = true) {
+          print("파이어베이스 토큰 인증 성공");
+
+          if (responseData["member"] == true) {
+            print("이미 가입한 회원");
+            final signInResponse = responseData['signInResponse'];
+            if (signInResponse is Map<String, dynamic>) {
+              final int id = signInResponse['id'];
+              final String tel = signInResponse['tel'];
+              final String token = signInResponse['token'];
+              print('너의 member id : $id');
+              print('너의 전번 : $tel');
+              print('너의 jwt 토큰 값: $token');
+              return {
+                "id": id,
+                "tel": tel,
+                "token": token,
+              };
+          } else {
+            print("비회원");
+            return null;
           }
         } else {
-          print('뉴멤버환영');
-          return null;
+          print("파이어베이스 토큰 인증 오류 - 토큰이 이상한 거야!");
+          // 스타트펭지ㅣ
         }
       }
-      throw Exception('Firebase 토큰으로부터 회원 정보를 가져오지 못했습니다');
+    }
     } catch (e) {
-      print('Firebase 토큰으로부터 회원 정보를 가져오는 중 오류 발생: $e');
-      return null;
+      print('백엔드서버에서 토큰 가져오는 중 오류 발생: $e');
+      // 스타트페이지
     }
   }
   //
