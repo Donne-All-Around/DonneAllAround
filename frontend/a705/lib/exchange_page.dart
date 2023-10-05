@@ -726,7 +726,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                             enabledBorder: const UnderlineInputBorder(
                                                 borderSide: BorderSide(color: Colors.transparent)
                                             ),
-                                            suffixText: '${sign2[idx2]}',
+                                            suffixText: sign2[idx2],
                                             // suffixText: rate != null ? ' 1 USD = ${rate.toStringAsFixed(2)} ${sign[idx2]}' : '',
                                           ),
                                           textAlign: TextAlign.end,
@@ -1227,7 +1227,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                   if (exchangeRate != null) {
                                     formattedRate = exchangeRate.toStringAsFixed(2);
                                   }
-                                } else if(currency1[index]== 'USDJPY' ) {
+                                } else if(currency1[index]== 'USDJPY' || currency1[index] == 'USDVND') {
                                   final rate = calculateRate('USDKRW', currency1[index])! * 100;
                                   if (rate != null) {
                                     formattedRate = rate.toStringAsFixed(2);

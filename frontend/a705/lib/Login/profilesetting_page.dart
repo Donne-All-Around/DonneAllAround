@@ -1,14 +1,18 @@
 import 'package:a705/main_page.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import '../models/JoinDto.dart';
 import '../providers/member_providers.dart';
+import '../storage.dart';
 
 class ProfileSettingPage extends StatefulWidget {
   final String phoneNumber; // 이전 페이지에서 전달된 전화번호
-  const ProfileSettingPage({Key? key, required this.phoneNumber}) : super(key: key);
+  final String uid;
+  ProfileSettingPage({required this.phoneNumber,  required this.uid});
 
   @override
   State<ProfileSettingPage> createState() => _ProfileSettingPageState();
@@ -16,18 +20,57 @@ class ProfileSettingPage extends StatefulWidget {
 
 class _ProfileSettingPageState extends State<ProfileSettingPage> {
   String? _errorText;
+  Color? _errorTextColor;
   final ImagePicker _picker = ImagePicker(); // ImagePicker 초기화
   File? _pickedFile; // 이미지 담을 변수 선언
+  String? profileImg;
   final ImageProvider<Object> _profileImage = const AssetImage('assets/images/wagon_don.png');
 
   final TextEditingController _nicknameController = TextEditingController(); // 닉네임 입력 필드 컨트롤러
 
   final UserProvider _userProvider = UserProvider();
 
+  SignUpDto  uploadSign = SignUpDto(
+      tel: '',
+    nickname: '',
+    imageUrl: '',
+    uid: '',
+  );
+
   bool isNicknameValid(String nickname) {
     // 정규표현식을 사용하여 닉네임 유효성 검사
     final RegExp regex = RegExp(r'^[a-zA-Z가-힣0-9]{1,8}$');
     return regex.hasMatch(nickname);
+  }
+
+
+  Future<void> _checkNicknameAvailability() async {
+    String nickname = _nicknameController.text;
+
+    if (!isNicknameValid(nickname)) {
+      setState(() {
+        _errorText = '영문자, 한글로 8글자 이내 가능';
+      });
+      return;
+    }
+
+    String result = await _userProvider.checkNickname(nickname);
+
+    setState(() {
+      if (result == 'SUCCESS') {
+        // 중복되지 않는 경우
+        _errorText = '사용 가능한 닉네임입니다.';
+        _errorTextColor = Colors.blue; // 파란색으로 변경
+      } else if (result == 'FAIL') {
+        // 중복된 경우
+        _errorText = '이미 등록된 닉네임입니다.';
+        _errorTextColor = Colors.red; // 빨간색으로 변경
+      } else {
+        // 서버 오류 또는 네트워크 오류
+        _errorText = '서버 오류 또는 네트워크 오류가 발생했습니다.';
+        _errorTextColor = Colors.red; // 빨간색으로 변경
+      }
+    });
   }
 
   @override
@@ -180,6 +223,7 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                             elevation: 0,
                           ),
                             onPressed: (){
+                            // 닉네임 중복 체크 함수 작성
                               _checkNicknameAvailability();
                             },
                             child: const Text('중복 체크',
@@ -194,10 +238,37 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
                 const SizedBox(height: 20,),
                 // 시작하기 버튼
                 GestureDetector(
-                  onTap: (){
+                  onTap: () async {
                     if (_errorText == '사용 가능한 닉네임입니다.') {
-                      _registerUser();
+                      // _registerUser();
+                      // 시작하기 버튼을 누를 때, uid, tel, img, nickname 으로 join 백엔드에 저장 보내고 응답으로 받은 값(id, tel, token)을 storage 에 저장.하고 홈페이지이동
+                      uploadSign = SignUpDto(
+                          tel: widget.phoneNumber,
+                          nickname: _nicknameController.text,
+                          imageUrl:  profileImg ?? 'assets/images/wagon_don.png',
+                          uid: widget.uid);
 
+                      try {
+                        final responseBody = await _userProvider.signUp(uploadSign);
+
+                        if (responseBody != null) {
+                          final id = responseBody['id'];
+                          final tel = responseBody['tel'];
+                          final token = responseBody['token'];
+
+                          // 데이터를 저장하기 위한 함수 호출
+                          await saveUserInfo(id, tel, token);
+
+
+                        } else {
+                          // 응답이 null인 경우에 대한 처리
+                          print('user 확인 응답이 안옴.');
+                        }
+                      } catch (e) {
+                        // signUp 함수에서 예외가 발생한 경우 처리
+                        print('프로필 설정 signUp 함수 예외');
+                      }
+                      // 이밑에 코드들은 지우지 마셈!!
                       //// 메인페이지에서 뒤로 가기 가능.
                       // Navigator.push(
                       //   context,
@@ -294,11 +365,18 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
 
 
   // 갤러리에서 가져오기
-  Future<void> _takePhoto(ImageSource source) async {
+  Future _takePhoto(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
+      // uploadImageToFirebase(pickedFile.path);
+      String _path = "profile/image.jpg";
+      File _file = File(pickedFile.path);
+      await FirebaseStorage.instance.ref(_path).putFile(_file);
+      final String _urlString =
+      await FirebaseStorage.instance.ref(_path).getDownloadURL();
       setState(() {
         _pickedFile = File(pickedFile.path);
+        profileImg = _urlString;
       });
     } else {
       if (kDebugMode) {
@@ -306,6 +384,27 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
       }
     }
   }
+
+  Future<String> uploadImageToFirebase(String imagePath) async {
+    final storage = FirebaseStorage.instance;
+    final Reference storageReference = storage.ref().child('profile');
+
+    final UploadTask uploadTask = storageReference.putFile(File(imagePath));
+
+    // uploadTask.then((TaskSnapshot snapshot) async {
+    //   // 업로드가 완료되면 이미지 URL을 얻어서 백엔드 서버로 전송하는 로직을 호출
+    //   final imageUrl = await snapshot.ref.getDownloadURL();
+    //   setState(() {
+    //     profileImg = imageUrl;
+    //   });
+    // });
+    final TaskSnapshot snapshot = await uploadTask;
+    final imageUrl = await snapshot.ref.getDownloadURL();
+
+    return imageUrl; // 이미지 URL 반환
+  }
+
+
 
   // 카메라에서 가져오기
   Future<void> takePhoto(ImageSource source) async {
@@ -321,56 +420,6 @@ class _ProfileSettingPageState extends State<ProfileSettingPage> {
     }
   }
 
-
-  void _registerUser() async {
-    // 사용자 입력 정보 가져오기
-    final phoneNumber = widget.phoneNumber;
-    final nickname = _nicknameController.text;
-    String? profileImg;
-
-    if (_pickedFile != null) {
-      // profileImgUrl = await uploadImage(_pickedFile!);
-      profileImg = await _userProvider.uploadImage(_pickedFile!.path as File);
-    }
-
-    // 사용자 등록 요청 보내기
-    await _userProvider.registerUser(
-      phoneNumber: phoneNumber,
-      nickname: nickname,
-      profileImg: profileImg,
-    );
-
-    // 사용자 등록 후 다음 화면으로 이동
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const MainPage()),
-          (Route<dynamic> route) => false,
-    );
-  }
-
-  // 닉네임 중복 체크
-// 닉네임 중복 체크
-  Future<void> _checkNicknameAvailability() async {
-    String nickname = _nicknameController.text;
-
-    if (!isNicknameValid(nickname)) {
-      setState(() {
-        _errorText = '영문자,한글로 8글자 이내 가능';
-      });
-      return;
-    }
-
-    bool isNicknameAvailable = await _userProvider.checkNicknameExists(nickname);
-
-    if (isNicknameAvailable) {
-      setState(() {
-        _errorText = '사용 가능한 닉네임입니다.';
-      });
-    } else {
-      setState(() {
-        _errorText = '이미 존재하는 닉네임입니다.';
-      });
-    }
-  }
 
 
 

@@ -1,3 +1,4 @@
+import 'package:a705/providers/exchange_providers.dart';
 import 'package:a705/providers/trade_providers.dart';
 import 'package:a705/transaction_detail_page.dart';
 import 'package:a705/transaction_page.dart';
@@ -28,28 +29,69 @@ class _HomePageState extends State<HomePage> {
 
   Future initTrade() async {
     trade = await tradeProvider.getLatestTrade(
-        currency[_idx], null, null, null, null, null, null, null);
+        currency[_idx], null, null, null, null, null, "강남구", "역삼동");
     size = trade.length;
     setState(() {});
   }
 
-
   @override
   void initState() {
     initTrade();
+    _fetchExchangeRates();
     super.initState();
   }
 
   String _addr = "강남구 역삼동";
   Address _address = Address(
-      country: null,
-      administrativeArea: null,
-      subAdministrativeArea: null,
-      locality: null,
-      subLocality: null,
-      thoroughfare: null,
-      latitude: 37.5013068,
-      longitude: 127.0396597,);
+    country: null,
+    administrativeArea: null,
+    subAdministrativeArea: null,
+    locality: null,
+    subLocality: null,
+    thoroughfare: null,
+    latitude: 37.5013068,
+    longitude: 127.0396597,
+  );
+
+  Map<String, double>? exchangeRates;
+
+  Future<void> _fetchExchangeRates() async {
+    try {
+      final exchangeProvider = ExchangeRateProvider();
+      final response = await exchangeProvider.fetchCurrencyData();
+      // API 응답 데이터 파싱
+      final exchangeResponse = response;
+      if (exchangeResponse.success) {
+        setState(() {
+          exchangeRates = {
+            'USDKRW': exchangeResponse.quotes.usdKrw,
+            'USDJPY': exchangeResponse.quotes.usdJpy,
+            'USDCNY': exchangeResponse.quotes.usdCny,
+            'USDEUR': exchangeResponse.quotes.usdEur,
+            'USDGBP': exchangeResponse.quotes.usdGbp,
+            'USDAUD': exchangeResponse.quotes.usdAud,
+            'USDCAD': exchangeResponse.quotes.usdCad,
+            'USDHKD': exchangeResponse.quotes.usdHkd,
+            'USDPHP': exchangeResponse.quotes.usdPhp,
+            'USDVND': exchangeResponse.quotes.usdVnd,
+            'USDTWD': exchangeResponse.quotes.usdTwd,
+            'USDSGD': exchangeResponse.quotes.usdSgd,
+            'USDCZK': exchangeResponse.quotes.usdCzk,
+            'USDNZD': exchangeResponse.quotes.usdNzd,
+            'USDRUB': exchangeResponse.quotes.usdRub,
+          };
+        });
+      } else {
+        // API 요청은 성공했지만, 응답이 실패한 경우에 대한 처리
+        print('API 요청 성공, 응답 실패: ${exchangeResponse.terms}');
+      }
+    } catch (e) {
+      // API 요청 중 오류 발생
+      print('Error fetching exchange rates: $e');
+    }
+  }
+
+  int idx = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +115,40 @@ class _HomePageState extends State<HomePage> {
                     _addr = "${address.subLocality} ${address.thoroughfare}";
                     _address = address;
                   });
+                  if (_selectedValue == "최신순") {
+                    trade = await tradeProvider.getLatestTrade(
+                        currency[_idx],
+                        null,
+                        _address.country,
+                        _address.administrativeArea,
+                        _address.subAdministrativeArea,
+                        _address.locality,
+                        _address.subLocality,
+                        _address.thoroughfare);
+                    setState(() {});
+                  } else if (_selectedValue == "낮은 가격순") {
+                    trade = await tradeProvider.getLowestTrade(
+                        currency[_idx],
+                        null,
+                        _address.country,
+                        _address.administrativeArea,
+                        _address.subAdministrativeArea,
+                        _address.locality,
+                        _address.subLocality,
+                        _address.thoroughfare);
+                    setState(() {});
+                  } else {
+                    trade = await tradeProvider.getLowestRateTrade(
+                        currency[_idx],
+                        null,
+                        _address.country,
+                        _address.administrativeArea,
+                        _address.subAdministrativeArea,
+                        _address.locality,
+                        _address.subLocality,
+                        _address.thoroughfare);
+                    setState(() {});
+                  }
                 },
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(0, 5, 5, 5),
@@ -109,19 +185,129 @@ class _HomePageState extends State<HomePage> {
                                   const EdgeInsets.fromLTRB(30, 20, 30, 20),
                               height:
                                   MediaQuery.of(context).size.height / 5 * 4,
-                              child: const Column(
+                              child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  SizedBox(height: 10),
-                                  Text(
+                                  const SizedBox(height: 10),
+                                  const Text(
                                     '통화 선택',
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20),
                                   ),
-                                  SizedBox(height: 10),
-                                  Expanded(child: CountryListViewBuilder()),
+                                  const SizedBox(height: 10),
+                                  Expanded(
+                                      child: ListView.builder(
+                                    itemCount: country.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return GestureDetector(
+                                        onTap: () async {
+                                          if (_selectedValue == "최신순") {
+                                            trade = await tradeProvider
+                                                .getLatestTrade(
+                                                    currency[index],
+                                                    null,
+                                                    _address.country,
+                                                    _address.administrativeArea,
+                                                    _address
+                                                        .subAdministrativeArea,
+                                                    _address.locality,
+                                                    _address.subLocality,
+                                                    _address.thoroughfare);
+                                            setState(() {});
+                                          } else if (_selectedValue ==
+                                              "낮은 가격순") {
+                                            trade = await tradeProvider
+                                                .getLowestTrade(
+                                                    currency[index],
+                                                    null,
+                                                    _address.country,
+                                                    _address.administrativeArea,
+                                                    _address
+                                                        .subAdministrativeArea,
+                                                    _address.locality,
+                                                    _address.subLocality,
+                                                    _address.thoroughfare);
+                                            setState(() {});
+                                          } else {
+                                            trade = await tradeProvider
+                                                .getLowestRateTrade(
+                                                    currency[index],
+                                                    null,
+                                                    _address.country,
+                                                    _address.administrativeArea,
+                                                    _address
+                                                        .subAdministrativeArea,
+                                                    _address.locality,
+                                                    _address.subLocality,
+                                                    _address.thoroughfare);
+                                            setState(() {});
+                                          }
+                                          setState(() {
+                                            _idx = index;
+                                          });
+                                          if (!mounted) return;
+                                          Navigator.pop(context, _idx);
+                                        },
+                                        child: Container(
+                                          margin: const EdgeInsets.fromLTRB(
+                                              0, 0, 0, 20),
+                                          height: 50,
+                                          width: double.infinity,
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(10),
+                                            ),
+                                            color: Color(0xFFFFD954),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  const SizedBox(width: 20),
+                                                  CircleAvatar(
+                                                    backgroundImage: AssetImage(
+                                                        'assets/images/flag/${currency[index] == 'KRW' ? 'KRW' : currency[index] == 'USD' ? 'USDKRW' : 'USD${currency[index]}'}.png'),
+                                                    radius: 10,
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                ],
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      country[index],
+                                                      style: const TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    Text(
+                                                      currency[index],
+                                                      style: const TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              const SizedBox(width: 20),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  )),
                                 ],
                               ),
                             ));
@@ -238,7 +424,8 @@ class _HomePageState extends State<HomePage> {
                                 child: Row(
                                   children: [
                                     CircleAvatar(
-                                      backgroundImage: AssetImage('assets/images/flag/${currency[_idx] == 'KRW' ? 'KRW' : currency[_idx] == 'USD' ? 'USDKRW' : 'USD${currency[_idx]}'}.png'),
+                                      backgroundImage: AssetImage(
+                                          'assets/images/flag/${currency[_idx] == 'KRW' ? 'KRW' : currency[_idx] == 'USD' ? 'USDKRW' : 'USD${currency[_idx]}'}.png'),
                                       radius: 15,
                                     ),
                                     const SizedBox(width: 5),
@@ -300,11 +487,14 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   color: Colors.white,
                                 ),
-                                child: const Row(
+                                child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Text('1300 ₩',
-                                        style: TextStyle(fontSize: 15)),
+                                    Text(
+                                        currency[_idx] == "USD"
+                                            ? '${exchangeRates?['USDKRW']?.toStringAsFixed(2)} ₩'
+                                            : '${(exchangeRates!['USDKRW']! / exchangeRates!['USD${currency[_idx]}']! * unit[_idx]).toStringAsFixed(2)} ₩',
+                                        style: const TextStyle(fontSize: 15)),
                                   ],
                                 ),
                               ),
@@ -349,8 +539,7 @@ class _HomePageState extends State<HomePage> {
                                 _address.subLocality,
                                 _address.thoroughfare);
                             setState(() {});
-                          }
-                          else if (value == "낮은 가격순") {
+                          } else if (value == "낮은 가격순") {
                             trade = await tradeProvider.getLowestTrade(
                                 currency[_idx],
                                 null,
@@ -361,8 +550,7 @@ class _HomePageState extends State<HomePage> {
                                 _address.subLocality,
                                 _address.thoroughfare);
                             setState(() {});
-                          }
-                          else {
+                          } else {
                             trade = await tradeProvider.getLowestRateTrade(
                                 currency[_idx],
                                 null,
@@ -427,8 +615,8 @@ class _HomePageState extends State<HomePage> {
                                                 BorderRadius.circular(15),
                                             child: Image(
                                               height: 60,
-                                              image: 
-                                                  NetworkImage(trade[index].thumbnailImageUrl),
+                                              image: NetworkImage(trade[index]
+                                                  .thumbnailImageUrl),
                                               // AssetImage(
                                               //   "assets/images/ausdollar.jpg",
                                               // ),
@@ -473,7 +661,7 @@ class _HomePageState extends State<HomePage> {
                                                 children: [
                                                   CircleAvatar(
                                                     backgroundImage: AssetImage(
-                                                        'assets/images/flag/${trade[index].countryCode}.png'),
+                                                        'assets/images/flag/${trade[index].countryCode == 'KRW' ? 'KRW' : trade[index].countryCode == 'USD' ? 'USDKRW' : 'USD${trade[index].countryCode}'}.png'),
                                                     radius: 8,
                                                   ),
                                                   const SizedBox(width: 5),
@@ -588,7 +776,6 @@ class _HomePageState extends State<HomePage> {
 
 List<String> country = [
   '미국(달러)',
-  '한국(원)',
   '일본(엔)',
   '중국(위안)',
   '유럽(유로) ',
@@ -606,7 +793,6 @@ List<String> country = [
 ];
 List<String> currency = [
   'USD',
-  'KRW',
   'JPY',
   'CNY',
   'EUR',
@@ -622,80 +808,22 @@ List<String> currency = [
   'NZD',
   'RUB',
 ];
-List<String> sign = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
+List<String> sign = [
+  '\$',
+  '¥',
+  '¥',
+  '€',
+  '£',
+  '\$',
+  '\$',
+  '\$',
+  '₱',
+  '₫',
+  '\$',
+  '\$',
+  'Kč',
+  '\$',
+  '₽'
+];
 
-List<int> unit = [1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
-
-
-class CountryListViewBuilder extends StatefulWidget {
-  const CountryListViewBuilder({super.key});
-
-  @override
-  State<CountryListViewBuilder> createState() => _CountryListViewBuilderState();
-}
-
-class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
-  int idx = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: country.length,
-      itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          onTap: () {
-            setState(() {
-              idx = index;
-            });
-            Navigator.pop(context, idx);
-          },
-          child: Container(
-            margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-            height: 50,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
-              color: Color(0xFFFFD954),
-            ),
-            child: Row(
-              children: [
-                Row(
-                  children: [
-                    const SizedBox(width: 20),
-                    CircleAvatar(
-                      backgroundImage: AssetImage('assets/images/flag/${currency[index] == 'KRW' ? 'KRW' : currency[index] == 'USD' ? 'USDKRW' : 'USD${currency[index]}'}.png'),
-                      radius: 10,
-                    ),
-                    const SizedBox(width: 10),
-                  ],
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        country[index],
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        currency[index],
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 20),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
+List<int> unit = [1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];

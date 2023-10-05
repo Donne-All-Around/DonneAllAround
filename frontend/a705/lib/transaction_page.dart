@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:a705/choose_location_page2.dart';
 import 'package:a705/main_page.dart';
 import 'package:a705/models/address.dart';
+import 'package:a705/providers/exchange_providers.dart';
 import 'package:a705/providers/trade_providers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -38,7 +39,6 @@ class _TransactionPageState extends State<TransactionPage> {
     '호주(달러) AUD',
     '중국(위안) CNY',
     '베트남(동) VND',
-    '한국(원) KRW',
     '홍콩(달러) HKD',
     '캐나다(달러) CAD',
     '체코(코루나) CZK',
@@ -60,7 +60,6 @@ class _TransactionPageState extends State<TransactionPage> {
     'AUD',
     'CNY',
     'VND',
-    'KRW',
     'HKD',
     'CAD',
     'CZK',
@@ -79,7 +78,6 @@ class _TransactionPageState extends State<TransactionPage> {
     '\$',
     '¥',
     '₫',
-    '₩',
     '\$',
     '\$',
     'Kč',
@@ -89,6 +87,8 @@ class _TransactionPageState extends State<TransactionPage> {
     '\$',
     '\$'
   ];
+
+  List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
 
   List<File> selectedImages = [];
   final picker = ImagePicker();
@@ -107,7 +107,7 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   void initState() {
     super.initState();
-    // checkPermission();
+    _fetchExchangeRates();
   }
 
   TradeProviders tradeProvider = TradeProviders();
@@ -145,6 +145,44 @@ class _TransactionPageState extends State<TransactionPage> {
   final _currencyEditController = TextEditingController();
   final _krwEditController = TextEditingController();
   final _contentEditController = TextEditingController();
+
+  Map<String, double>? exchangeRates;
+
+  Future<void> _fetchExchangeRates() async {
+    try {
+      final exchangeProvider = ExchangeRateProvider();
+      final response = await exchangeProvider.fetchCurrencyData();
+      // API 응답 데이터 파싱
+      final exchangeResponse = response;
+      if (exchangeResponse.success) {
+        setState(() {
+          exchangeRates = {
+            'USDKRW': exchangeResponse.quotes.usdKrw,
+            'USDJPY': exchangeResponse.quotes.usdJpy,
+            'USDCNY': exchangeResponse.quotes.usdCny,
+            'USDEUR': exchangeResponse.quotes.usdEur,
+            'USDGBP': exchangeResponse.quotes.usdGbp,
+            'USDAUD': exchangeResponse.quotes.usdAud,
+            'USDCAD': exchangeResponse.quotes.usdCad,
+            'USDHKD': exchangeResponse.quotes.usdHkd,
+            'USDPHP': exchangeResponse.quotes.usdPhp,
+            'USDVND': exchangeResponse.quotes.usdVnd,
+            'USDTWD': exchangeResponse.quotes.usdTwd,
+            'USDSGD': exchangeResponse.quotes.usdSgd,
+            'USDCZK': exchangeResponse.quotes.usdCzk,
+            'USDNZD': exchangeResponse.quotes.usdNzd,
+            'USDRUB': exchangeResponse.quotes.usdRub,
+          };
+        });
+      } else {
+        // API 요청은 성공했지만, 응답이 실패한 경우에 대한 처리
+        print('API 요청 성공, 응답 실패: ${exchangeResponse.terms}');
+      }
+    } catch (e) {
+      // API 요청 중 오류 발생
+      print('Error fetching exchange rates: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -326,7 +364,7 @@ class _TransactionPageState extends State<TransactionPage> {
                                   children: [
                                     CircleAvatar(
                                       backgroundImage: AssetImage(
-                                          'assets/images/flag/${currency[_valueList.indexOf(value)]}.png'),
+                                          'assets/images/flag/${currency[_valueList.indexOf(value)] == 'KRW' ? 'KRW' : currency[_valueList.indexOf(value)] == 'USD' ? 'USDKRW' : 'USD${currency[_valueList.indexOf(value)]}'}.png'),
                                       radius: 10,
                                     ),
                                     const SizedBox(width: 5),
@@ -464,7 +502,7 @@ class _TransactionPageState extends State<TransactionPage> {
                     children: [
                       Expanded(
                           child: Text(
-                        "적정 거래 가격 ${_currency * 90} ~ ${_currency * 100}원",
+                        "적정 거래 가격 ${currency[idx] == "USD" ? (exchangeRates!['USDKRW']! * _currency * 0.9)!.toStringAsFixed(2) : (exchangeRates!['USDKRW']! / exchangeRates!['USD${currency[idx]}']! * unit[idx] * _currency * 0.9).toStringAsFixed(2)} ~ ${currency[idx] == "USD" ? (exchangeRates!['USDKRW']! * _currency)!.toStringAsFixed(2) : (exchangeRates!['USDKRW']! / exchangeRates!['USD${currency[idx]}']! * _currency * unit[idx]).toStringAsFixed(2)}원",
                         textAlign: TextAlign.end,
                       )),
                     ],
