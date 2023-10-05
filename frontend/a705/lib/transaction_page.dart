@@ -5,7 +5,6 @@ import 'package:a705/main_page.dart';
 import 'package:a705/models/address.dart';
 import 'package:a705/providers/exchange_providers.dart';
 import 'package:a705/providers/trade_providers.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,15 +12,6 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:a705/models/TradeDto.dart';
 import 'package:intl/intl.dart';
-
-// final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-//
-// Future<void> signInWithAnonymous() async {
-//   UserCredential _credential = await _firebaseAuth.signInAnonymously();
-//   if (_credential.user != null) {
-//     print(_credential.user!.uid);
-//   }
-// }
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});
@@ -103,6 +93,8 @@ class _TransactionPageState extends State<TransactionPage> {
       thoroughfare: "",
       latitude: 0,
       longitude: 0);
+
+  final String _dateTime = DateFormat('yyMMdd-HHmmss').format(DateTime.now());
 
   @override
   void initState() {
@@ -201,7 +193,13 @@ class _TransactionPageState extends State<TransactionPage> {
                 Icons.arrow_back_ios_new_rounded,
                 color: Colors.black,
               ),
-              onPressed: () {
+              onPressed: () async {
+                for(int i = 0; i < uploadTrade.imageUrlList.length; i++) {
+                  String path = "trade/${uploadTrade.sellerId}/image_${_dateTime}_$i.jpg";
+                  final desertRef = FirebaseStorage.instance.ref().child(path);
+                  await desertRef.delete();
+                }
+                if(!mounted) return;
                 Navigator.pop(context);
               },
             ),
@@ -683,8 +681,7 @@ class _TransactionPageState extends State<TransactionPage> {
   Future getImages() async {
     final pickedFile = await picker.pickMultiImage();
     List<XFile> xfilePick = pickedFile;
-    DateTime now = DateTime.now();
-    final String _dateTime = DateFormat('yyMMdd-HHmmss').format(now);
+
     setState(() {
       if (xfilePick.isNotEmpty) {
         for (var i = 0; i < xfilePick.length; i++) {
