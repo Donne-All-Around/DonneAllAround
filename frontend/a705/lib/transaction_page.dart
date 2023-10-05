@@ -502,7 +502,7 @@ class _TransactionPageState extends State<TransactionPage> {
                     children: [
                       Expanded(
                           child: Text(
-                        "적정 거래 가격 ${currency[idx] == "USD" ? (exchangeRates!['USDKRW']! * _currency * 0.9)!.toStringAsFixed(2) : (exchangeRates!['USDKRW']! / exchangeRates!['USD${currency[idx]}']! * unit[idx] * 0.9).toStringAsFixed(2)} ~ ${currency[idx] == "USD" ? (exchangeRates!['USDKRW']! * _currency)!.toStringAsFixed(2) : (exchangeRates!['USDKRW']! / exchangeRates!['USD${currency[idx]}']! * unit[idx]).toStringAsFixed(2)}원",
+                        "적정 거래 가격 ${currency[idx] == "USD" ? (exchangeRates!['USDKRW']! * _currency * 0.9)!.toStringAsFixed(2) : (exchangeRates!['USDKRW']! / exchangeRates!['USD${currency[idx]}']! * unit[idx] * _currency * 0.9).toStringAsFixed(2)} ~ ${currency[idx] == "USD" ? (exchangeRates!['USDKRW']! * _currency)!.toStringAsFixed(2) : (exchangeRates!['USDKRW']! / exchangeRates!['USD${currency[idx]}']! * _currency * unit[idx]).toStringAsFixed(2)}원",
                         textAlign: TextAlign.end,
                       )),
                     ],
