@@ -1,3 +1,4 @@
+
 import 'package:a705/Login/profilesetting_page.dart';
 import 'package:a705/main_page.dart';
 import 'package:a705/storage.dart';
@@ -7,17 +8,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:a705/providers/member_providers.dart';
 import 'package:provider/provider.dart';
+import 'package:a705/Login/login_page.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // 바인딩
   await Firebase.initializeApp();
+  // interceptor ?
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => UserProvider(), // UserProvider 초기화
       child: const MyApp(),
     ),
   );
-  startTokenAutoRefresh(); // 앱 시작 시 자동 갱신 시작
+
 }
 
 class MyApp extends StatelessWidget {
@@ -28,6 +34,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
+      routes: {
+        '/login': (context) => LoginPage(),
+        // 다른 경로도 필요하면 추가하세요.
+      },
       title: 'Flutter Demo',
       theme: ThemeData(
         primaryColor: const Color(0xFFFFD954),

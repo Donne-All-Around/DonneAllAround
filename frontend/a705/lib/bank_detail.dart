@@ -859,21 +859,24 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
       itemCount: _valueList1.length,
       itemBuilder: (context, index) {
         final selectedBankCode = widget.bankCode;
-        final bankInfoData = bankInfoMap[selectedBankCode];
+        final bankName = bankInfo[selectedBankCode]?['currencyName'];
 
         final currencyCode = currency1[index];
-        final feeInfo = bankInfoData?.fees[currencyCode];
+        final bankInfoData = bankInfoMap[bankName];
 
         String buyingFee = '미제공';
         String sellingFee = '미제공';
         String sendingFee = '미제공';
 
-        if (feeInfo != null) {
-          buyingFee = feeInfo.buying?.toStringAsFixed(2) ?? '미제공';
-          sellingFee = feeInfo.selling?.toStringAsFixed(2) ?? '미제공';
-          sendingFee = feeInfo.sending?.toStringAsFixed(2) ?? '미제공';
-        }
+        if (bankInfoData != null) {
+          final feeInfo = bankInfoData.fees[currencyCode];
 
+          if (feeInfo != null) {
+            buyingFee = feeInfo.buying?.toStringAsFixed(2) ?? '미제공';
+            sellingFee = feeInfo.selling?.toStringAsFixed(2) ?? '미제공';
+            sendingFee = feeInfo.sending?.toStringAsFixed(2) ?? '미제공';
+          }
+        }
 //
 //         // 선택된 은행 코드와 일치하는 은행 정보 가져오기
 //         final bankInfoData = bankInfo[selectedBankCode];
