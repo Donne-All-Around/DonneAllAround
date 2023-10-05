@@ -2,7 +2,7 @@ import 'package:a705/bank_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'models/BankDto.dart';
 
 class ExchangeDetailPage extends StatefulWidget {
@@ -585,6 +585,23 @@ class _LineChartSample2State extends State<LineChartSample2> {
     // const Color(0xff02d39a),
   ];
 
+  List<String> currency = [
+    'USD',
+    'JPY',
+    'CNY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CAD',
+    'HKD',
+    'PHP',
+    'VND',
+    'TWD',
+    'SGD',
+    'CZK',
+    'NZD',
+    'RUB',
+  ];
 
   @override
   Widget build(BuildContext context) {
