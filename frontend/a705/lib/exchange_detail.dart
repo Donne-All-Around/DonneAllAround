@@ -1,14 +1,18 @@
 import 'package:a705/bank_detail.dart';
+import 'package:a705/models/ExchangeRateDto.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'models/BankDto.dart';
 
 class ExchangeDetailPage extends StatefulWidget {
   final int selectedIndex;
   final String formattedRateText;
+
   const ExchangeDetailPage({
+    super.key,
     required this.selectedIndex,
     required this.formattedRateText,
   });
@@ -18,14 +22,12 @@ class ExchangeDetailPage extends StatefulWidget {
 }
 
 class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
-
   String getToday() {
     DateTime now = DateTime.now();
     DateFormat formatter = DateFormat('yyyy.MM.dd HH:mm');
     var strToday = formatter.format(now);
     return strToday;
   }
-
 
   final _valueList = [
     '미국(달러) USD',
@@ -43,6 +45,24 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
     '체코(코루나) CZK',
     '뉴질랜드(달러) NZD',
     '러시아(루블) RUB',
+  ];
+
+  final country = [
+    'USD',
+    'JPY',
+    'CNY',
+    'EUR',
+    'GBP',
+    'AUD',
+    'CAD',
+    'HKD',
+    'PHP',
+    'VND',
+    'TWD',
+    'SGD',
+    'CZK',
+    'NZD',
+    'RUB',
   ];
 
   List<String> currency = [
@@ -64,7 +84,33 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
   ];
 
   String selectedButton = ''; // 선택된 버튼
-  
+
+  List<ExchangeRateDto> list = [];
+
+  Future<List<ExchangeRateDto>> loadData() async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    QuerySnapshot<Map<String, dynamic>> _snapshot = await _firestore
+        .collection("exchange_rate_${country[widget.selectedIndex]}")
+    .orderBy("date", descending: true)
+        .get();
+    List<ExchangeRateDto> result =
+        _snapshot.docs.map((e) => ExchangeRateDto.fromJson(e.data())).toList();
+    setState(() {
+      list = result;
+    });
+    return result;
+  }
+
+  Future<void> initData() async {
+    list = await loadData();
+  }
+
+  @override
+  void initState() {
+    initData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -98,7 +144,6 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                 Container(
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   width: double.infinity,
-                  height: 400,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.yellow[100],
@@ -126,33 +171,34 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                 color: const Color(0xFFFFD954),
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
-                                    margin:
-                                        const EdgeInsets.fromLTRB(10, 10, 0, 10),
+                                    margin: const EdgeInsets.fromLTRB(
+                                        10, 10, 0, 10),
                                     width: 190,
                                     height: 55,
-                                    // color: Colors.red,
-                                    child:Row(
+                                    child: Row(
                                       children: [
                                         CircleAvatar(
-                                          backgroundImage:
-                                          AssetImage('assets/images/flag/${currency[widget.selectedIndex]}.png'),
+                                          backgroundImage: AssetImage(
+                                              'assets/images/flag/${currency[widget.selectedIndex]}.png'),
                                           radius: 10,
                                         ),
                                         const SizedBox(width: 10),
-                                        Text(  _valueList[widget.selectedIndex],
-                                          style: const TextStyle(fontSize: 16),),
+                                        Text(
+                                          _valueList[widget.selectedIndex],
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
                                       ],
                                     ),
                                   ),
                                   Container(
                                     width: 110,
                                     height: 50,
-                                    // color: Colors.red,
-                                    margin:
-                                        const EdgeInsets.fromLTRB(0, 15, 10, 10),
+                                    margin: const EdgeInsets.fromLTRB(
+                                        0, 15, 10, 10),
                                     child: Text(
                                       ' ${widget.formattedRateText}원',
                                       style: const TextStyle(
@@ -169,8 +215,9 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                       ),
                       const SizedBox(height: 5),
                       Row(
-
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
+                          const SizedBox(width: 5),
                           TextButton(
                               onPressed: () {
                                 setState(() {
@@ -181,7 +228,9 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                 '1w',
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: selectedButton == '1w' ? Colors.black : Colors.grey,
+                                  color: selectedButton == '1w'
+                                      ? Colors.black
+                                      : Colors.grey,
                                 ),
                               )),
                           TextButton(
@@ -190,11 +239,13 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                   selectedButton = '1m';
                                 });
                               },
-                              child:  Text(
+                              child: Text(
                                 '1m',
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: selectedButton == '1m' ? Colors.black : Colors.grey,
+                                  color: selectedButton == '1m'
+                                      ? Colors.black
+                                      : Colors.grey,
                                 ),
                               )),
                           TextButton(
@@ -207,7 +258,9 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                 '3m',
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: selectedButton == '3m' ? Colors.black : Colors.grey,
+                                  color: selectedButton == '3m'
+                                      ? Colors.black
+                                      : Colors.grey,
                                 ),
                               )),
                           TextButton(
@@ -220,7 +273,9 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                 '6m',
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: selectedButton == '6m' ? Colors.black : Colors.grey,
+                                  color: selectedButton == '6m'
+                                      ? Colors.black
+                                      : Colors.grey,
                                 ),
                               )),
                           TextButton(
@@ -233,12 +288,14 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                                 '1y',
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: selectedButton == '1y' ? Colors.black : Colors.grey,
+                                  color: selectedButton == '1y'
+                                      ? Colors.black
+                                      : Colors.grey,
                                 ),
                               )),
+                          const SizedBox(width: 5),
                         ],
                       ),
-                      const SizedBox(height: 10,),
                       // 그래프 공간
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -248,7 +305,7 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                               margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                               width: double.infinity,
                               height: 240,
-                              decoration:BoxDecoration(
+                              decoration: BoxDecoration(
                                 color: Colors.black.withOpacity(0.81),
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(color: Colors.black38),
@@ -257,39 +314,43 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                 Container(
-                                    margin : const EdgeInsets.fromLTRB(0, 0, 10,0),
-                                      child:  Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
+                                  Container(
+                                      margin: const EdgeInsets.fromLTRB(
+                                          0, 0, 10, 0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
-                                          Text(getToday(),style: const TextStyle(color: Colors.white),),
-                                          const Text(' 기준', style: TextStyle(color: Colors.white),),
+                                          Text(
+                                            getToday(),
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          ),
+                                          const Text(
+                                            ' 기준',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
                                         ],
                                       )),
-                                   const LineChartSample2(
-                                    // selectedIndex : widget.selectedIndex,
-                                  ),
-
+                                  LineChartSample2(list: list,),
                                 ],
                               ),
                             ),
                           ),
                         ],
                       ),
-
                     ],
                   ),
                 ),
-
                 // 은행별 환율 정보
                 const SizedBox(
                   height: 20,
                 ),
-                 BankViewBuilder(
-                    selectedIndex : widget.selectedIndex,
-                   formattedRateText:  widget.formattedRateText,
-                 ),
-
+                BankViewBuilder(
+                  selectedIndex: widget.selectedIndex,
+                  formattedRateText: widget.formattedRateText,
+                ),
               ],
             ),
           ),
@@ -299,11 +360,12 @@ class _ExchangeDetailPageState extends State<ExchangeDetailPage> {
   }
 }
 
-
 class BankViewBuilder extends StatefulWidget {
   final int selectedIndex;
   final String formattedRateText;
-  const BankViewBuilder( {required this.selectedIndex, required this.formattedRateText});
+
+  const BankViewBuilder(
+      {required this.selectedIndex, required this.formattedRateText});
 
   @override
   State<BankViewBuilder> createState() => _BankViewBuilderState();
@@ -322,9 +384,7 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
     'Sh수협은행',
     '부산은행',
     'DGB대구은행',
-
   ];
-
 
   List<String> currency1 = [
     'USDKRW',
@@ -342,9 +402,7 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
     'USDCZK',
     'USDNZD',
     'USDRUB',
-
   ];
-
 
   Map<String, Map<String, String>> bankInfo = {
     '하나은행': {'currencyName': '하나은행', 'bankCode': '081'},
@@ -364,7 +422,8 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
     if (buyingFee == null || buyingFee == "서비스 미제공") {
       return baseRate; // 서비스 미제공일 경우 기본값 반환
     } else {
-      double feePercentage = double.tryParse(buyingFee.replaceAll('%', '')) ?? 0.0;
+      double feePercentage =
+          double.tryParse(buyingFee.replaceAll('%', '')) ?? 0.0;
       return baseRate + (baseRate * feePercentage / 100);
     }
   }
@@ -373,36 +432,39 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
     if (sellginFee == null || sellginFee == "서비스 미제공") {
       return baseRate; // 서비스 미제공일 경우 기본값 반환
     } else {
-      double feePercentage = double.tryParse(sellginFee.replaceAll('%', '')) ?? 0.0;
+      double feePercentage =
+          double.tryParse(sellginFee.replaceAll('%', '')) ?? 0.0;
       return baseRate - (baseRate * feePercentage / 100);
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return  ListView.builder(
+    return ListView.builder(
       primary: false,
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-      itemCount:  bankInfo.length,
+      itemCount: bankInfo.length,
       itemBuilder: (context, index) {
         final bankName = bankInfo.keys.elementAt(index); // 은행 이름
         final bankData = bankInfo[bankName]; // 은행 정보 맵
         final bankCode = bankData?['bankCode'];
         final currencyName = bankData?['currencyName'];
-        FeeInfo? feeInfo = bankInfoMap[bankName]?.fees[currency1[widget.selectedIndex]];
+        FeeInfo? feeInfo =
+            bankInfoMap[bankName]?.fees[currency1[widget.selectedIndex]];
         return Row(
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: (){
+                onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => BankDetailPage(
-                        selectedIndex : widget.selectedIndex,
-                        bankCode: bankCode!, currencyName: currencyName!,
-                    )),
+                    MaterialPageRoute(
+                        builder: (context) => BankDetailPage(
+                              selectedIndex: widget.selectedIndex,
+                              bankCode: bankCode!,
+                              currencyName: currencyName!,
+                            )),
                   );
                 },
                 child: Container(
@@ -436,7 +498,7 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                               // ),
                               const SizedBox(width: 5),
                               Container(
-                                margin: const EdgeInsets.fromLTRB(2,0,0,0),
+                                margin: const EdgeInsets.fromLTRB(2, 0, 0, 0),
                                 child: Image.asset(
                                     'assets/images/banklogo/$bankCode.png'),
                                 width: 150, // 이미지 너비 조절
@@ -446,8 +508,10 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10,),
-                       Row(
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -457,22 +521,18 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                               SizedBox(height: 20),
                               Text(
                                 '현찰 살 때',
-                                style: TextStyle(fontSize: 16,
-                                    height: 1.532),
+                                style: TextStyle(fontSize: 16, height: 1.532),
                               ),
                               Text(
                                 '현찰 팔 때',
-                                style: TextStyle(fontSize: 16,
-                                    height: 1.532),
+                                style: TextStyle(fontSize: 16, height: 1.532),
                               ),
                               Text(
                                 '송금 보낼 때',
-                                style: TextStyle(fontSize: 16,
-                                    height: 1.532),
+                                style: TextStyle(fontSize: 16, height: 1.532),
                               )
                             ],
                           ),
-
                           Row(
                             children: [
                               Column(
@@ -486,30 +546,24 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
-                                        '${calculateCashBuyingPrice(
-                                            double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0,
-                                            feeInfo?.buying.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
-                                        ).toStringAsFixed(2)}원',
+                                        '${calculateCashBuyingPrice(double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0, feeInfo?.buying.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
+                                            ).toStringAsFixed(2)}원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '${calculateCashPrice(
-                                            double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0,
-                                            feeInfo?.selling.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
-                                        ).toStringAsFixed(2)}원',
+                                        '${calculateCashPrice(double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0, feeInfo?.selling.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
+                                            ).toStringAsFixed(2)}원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '${calculateCashBuyingPrice(
-                                            double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0,
-                                            feeInfo?.sending.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
-                                        ).toStringAsFixed(2)}원',
+                                        '${calculateCashBuyingPrice(double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0, feeInfo?.sending.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
+                                            ).toStringAsFixed(2)}원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
@@ -571,13 +625,11 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
   }
 }
 
-
 // 그래프 위젯
 class LineChartSample2 extends StatefulWidget {
-  // final int selectedIndex;
-  // final FirebaseFirestore firestore;
-  // const LineChartSample2({required this.selectedIndex,required this.firestore});
-const LineChartSample2({super.key});
+
+  final List<ExchangeRateDto> list;
+  const LineChartSample2({required this.list, super.key});
 
   @override
   State<LineChartSample2> createState() => _LineChartSample2State();
@@ -590,34 +642,6 @@ class _LineChartSample2State extends State<LineChartSample2> {
     const Color(0xFFFFD954),
     // const Color(0xff02d39a),
   ];
-
-  List<String> currency = [
-    'USD',
-    'JPY',
-    'CNY',
-    'EUR',
-    'GBP',
-    'AUD',
-    'CAD',
-    'HKD',
-    'PHP',
-    'VND',
-    'TWD',
-    'SGD',
-    'CZK',
-    'NZD',
-    'RUB',
-  ];
-
-  final firestore = FirebaseFirestore.instance;
-  // final cities = firestore.collection("exchange_rate_${currency[selectedIndex]}");
-  
-  getData() async {
-    var result = await firestore.collection('exchange_rate_AUD').doc('0C4BBUcwdKA46iqpyJLS').get();
-    print(result);
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -633,7 +657,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
               bottom: 0,
             ),
             child: LineChart(
-             mainData(),
+              mainData(),
             ),
           ),
         ),
@@ -740,42 +764,76 @@ class _LineChartSample2State extends State<LineChartSample2> {
       ),
       minX: 0,
       maxX: 30,
-      minY: 1310,
-      maxY: 1350,
+      minY: widget.list[0].close * 0.99,
+      maxY: widget.list[0].close * 1.02,
       lineBarsData: [
         LineChartBarData(
-          spots: const [
-            FlSpot(0, 1324.61), // 2023년 8월 25일
-            FlSpot(1, 1324.61), // 2023년 8월 26일
-            FlSpot(2, 1324.61), // 2023년 8월 27일
-            FlSpot(3, 1320.88), // 2023년 8월 28일
-            FlSpot(4, 1320.90), // 2023년 8월 29일
-            FlSpot(5, 1324.03), // 2023년 8월 30일
-            FlSpot(6, 1325.64), // 2023년 8월 31일
-            FlSpot(7, 1318.45), // 2023년 9월 1일
-            FlSpot(8, 1318.45), // 2023년 9월 2일
-            FlSpot(9, 1318.46), // 2023년 9월 3일
-            FlSpot(10, 1318.95), // 2023년 9월 4일
-            FlSpot(11, 1332.08), // 2023년 9월 5일
-            FlSpot(12, 1334.47), // 2023년 9월 6일
-            FlSpot(13, 1337.91), // 2023년 9월 7일
-            FlSpot(14, 1336.31), // 2023년 9월 8일
-            FlSpot(15, 1336.31), // 2023년 9월 9일
-            FlSpot(16, 1336.32), // 2023년 9월 10일
-            FlSpot(17, 1322.84), // 2023년 9월 11일
-            FlSpot(18, 1326.45), // 2023년 9월 12일
-            FlSpot(19, 1330.77), // 2023년 9월 13일
-            FlSpot(20, 1328.06), // 2023년 9월 14일
-            FlSpot(21, 1329.41), // 2023년 9월 15일
-            FlSpot(22, 1329.41), // 2023년 9월 16일
-            FlSpot(23, 1329.42), // 2023년 9월 17일
-            FlSpot(24, 1331.12), // 2023년 9월 18일
-            FlSpot(25, 1328.90), // 2023년 9월 19일
-            FlSpot(26, 1333.34), // 2023년 9월 20일
-            FlSpot(27, 1341.74), // 2023년 9월 21일
-            FlSpot(28, 1335.66), // 2023년 9월 22일
-            FlSpot(29, 1335.66), // 2023년 9월 23일
-            FlSpot(30, 1335.66), // 2023년 9월 24일
+          spots: [
+            FlSpot(0, widget.list[0].close),
+            FlSpot(1, widget.list[1].close),
+            FlSpot(2, widget.list[2].close),
+            FlSpot(3, widget.list[3].close),
+            FlSpot(4, widget.list[4].close),
+            FlSpot(5, widget.list[5].close),
+            FlSpot(6, widget.list[6].close),
+            FlSpot(7, widget.list[7].close),
+            FlSpot(8, widget.list[8].close),
+            FlSpot(9, widget.list[9].close),
+            FlSpot(10, widget.list[10].close),
+            FlSpot(11, widget.list[11].close),
+            FlSpot(12, widget.list[12].close),
+            FlSpot(13, widget.list[13].close),
+            FlSpot(14, widget.list[14].close),
+            FlSpot(15, widget.list[15].close),
+            FlSpot(16, widget.list[16].close),
+            FlSpot(17, widget.list[17].close),
+            FlSpot(18, widget.list[18].close),
+            FlSpot(19, widget.list[19].close),
+            FlSpot(20, widget.list[20].close),
+            FlSpot(21, widget.list[21].close),
+            FlSpot(22, widget.list[22].close),
+            FlSpot(23, widget.list[23].close),
+            FlSpot(24, widget.list[24].close),
+            FlSpot(25, widget.list[25].close),
+            FlSpot(26, widget.list[26].close),
+            FlSpot(27, widget.list[27].close),
+            FlSpot(28, widget.list[28].close),
+            FlSpot(29, widget.list[29].close),
+            FlSpot(30, widget.list[30].close),
+
+
+
+            // FlSpot(12, 1324.61), // 2023년 8월 25일
+            // FlSpot(1, 1324.61), // 2023년 8월 26일
+            // FlSpot(2, 1324.61), // 2023년 8월 27일
+            // FlSpot(3, 1320.88), // 2023년 8월 28일
+            // FlSpot(4, 1320.90), // 2023년 8월 29일
+            // FlSpot(5, 1324.03), // 2023년 8월 30일
+            // FlSpot(6, 1325.64), // 2023년 8월 31일
+            // FlSpot(7, 1318.45), // 2023년 9월 1일
+            // FlSpot(8, 1318.45), // 2023년 9월 2일
+            // FlSpot(9, 1318.46), // 2023년 9월 3일
+            // FlSpot(10, 1318.95), // 2023년 9월 4일
+            // FlSpot(11, 1332.08), // 2023년 9월 5일
+            // FlSpot(12, 1334.47), // 2023년 9월 6일
+            // FlSpot(13, 1337.91), // 2023년 9월 7일
+            // FlSpot(14, 1336.31), // 2023년 9월 8일
+            // FlSpot(15, 1336.31), // 2023년 9월 9일
+            // FlSpot(16, 1336.32), // 2023년 9월 10일
+            // FlSpot(17, 1322.84), // 2023년 9월 11일
+            // FlSpot(18, 1326.45), // 2023년 9월 12일
+            // FlSpot(19, 1330.77), // 2023년 9월 13일
+            // FlSpot(20, 1328.06), // 2023년 9월 14일
+            // FlSpot(21, 1329.41), // 2023년 9월 15일
+            // FlSpot(22, 1329.41), // 2023년 9월 16일
+            // FlSpot(23, 1329.42), // 2023년 9월 17일
+            // FlSpot(24, 1331.12), // 2023년 9월 18일
+            // FlSpot(25, 1328.90), // 2023년 9월 19일
+            // FlSpot(26, 1333.34), // 2023년 9월 20일
+            // FlSpot(27, 1341.74), // 2023년 9월 21일
+            // FlSpot(28, 1335.66), // 2023년 9월 22일
+            // FlSpot(29, 1335.66), // 2023년 9월 23일
+            // FlSpot(30, 1335.66), // 2023년 9월 24일
           ],
           isCurved: true,
           gradient: LinearGradient(
@@ -798,10 +856,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
       ],
     );
   }
-
 }
-
-
 
 List<String> country = [
   '미국(달러)',
@@ -839,7 +894,24 @@ List<String> currency = [
   'SGD',
   'TWD',
 ];
-List<String> sign = ['\$', '¥', '€', '£', '\$', '¥', '₫','₩', '\$', '\$', 'Kč', '\$', '₱', '₽', '\$', '\$'];
+List<String> sign = [
+  '\$',
+  '¥',
+  '€',
+  '£',
+  '\$',
+  '¥',
+  '₫',
+  '₩',
+  '\$',
+  '\$',
+  'Kč',
+  '\$',
+  '₱',
+  '₽',
+  '\$',
+  '\$'
+];
 
 List<int> unit = [1, 100, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1];
 
@@ -881,8 +953,8 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
                   children: [
                     const SizedBox(width: 20),
                     CircleAvatar(
-                      backgroundImage:
-                      AssetImage('assets/images/flag/${currency[index]}.png'),
+                      backgroundImage: AssetImage(
+                          'assets/images/flag/${currency[index]}.png'),
                       radius: 10,
                     ),
                     const SizedBox(width: 10),
