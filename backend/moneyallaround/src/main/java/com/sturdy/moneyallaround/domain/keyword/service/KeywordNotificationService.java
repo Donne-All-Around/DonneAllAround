@@ -26,12 +26,8 @@ public class KeywordNotificationService {
         List<KeywordNotification> notificationList = keywordNotificationRepository.saveAll(keywordService.findByTrade(trade)
                 .stream().map(keyword -> new KeywordNotification(trade, keyword.getMember())).toList());
 
-//        StringBuilder body = new StringBuilder();
-//        body.append(trade.getPreferredTradeCountry()).append(" ")
-//                .append(trade.getPreferredTradeCity()).append(" ")
-//                .append(trade.getPreferredTradeDistrict()).append(" ")
-//                .append(trade.getPreferredTradeTown()).append(" [")
-//                .append(trade.getCountryCode()).append("]");
+        StringBuilder body = new StringBuilder();
+        body.append("키워드 거래 알림 테스트");
 
         /*
             수정 필요

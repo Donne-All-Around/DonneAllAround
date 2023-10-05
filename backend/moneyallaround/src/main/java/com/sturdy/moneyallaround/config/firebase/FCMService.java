@@ -26,10 +26,10 @@ import java.util.List;
 @Slf4j
 @Transactional
 public class FCMService {
-    @Value("${fcm.service-account-file}")
-    private String serviceAccountFilePath;
 
-    private String API_URL = "https://fcm.googleapis.com/v1/projects/donnearound/messages:send";
+    private String serviceAccountFilePath = "/firebase/donnearound-java-access-key.json";
+
+    private String API_URL = "https://fcm.googleapis.com/v1/projects/donnearroundfirebase/messages:send";
 
     private final ObjectMapper objectMapper;
 
@@ -102,12 +102,24 @@ public class FCMService {
         return objectMapper.writeValueAsString(fcmMessage);
     }
 
-    public void sendMessageTo(String targetToken, String title, String body) throws IOException {
-        String message = makeMessage(targetToken, title, body);
+    public void sendToToken(String targetToken) throws FirebaseMessagingException {
+        Message message = Message.builder()
+                .setNotification(Notification.builder()
+                        .setTitle("[테스트용]")
+                        .setBody("테스트 내용")
+                        .build())
+                .setToken(targetToken)
+                .build();
+
+        String response = FirebaseMessaging.getInstance().send(message);
+        log.info("FCM 테스트 = {}", response);
+    }
+
+    public void sendMessageTo(String token) throws IOException {
+        String message = makeMessage(token, "[테스트 알림]", "테스트 내용");
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
-
         Request request = new Request.Builder()
                 .url(API_URL)
                 .post(requestBody)
@@ -116,5 +128,7 @@ public class FCMService {
                 .build();
 
         Response response = client.newCall(request).execute();
+
+        log.info(response.body().string());
     }
 }

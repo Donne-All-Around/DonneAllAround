@@ -13,18 +13,20 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Configuration
 public class FirebaseConfig {
-    @Value("${fcm.service-account-file}")
-    private String serviceAccountFilePath;
+    private String serviceAccountFilePath = "src/main/resources/firebase/donnearound-java-access-key.json";
+
+    private String scope = "https://www.googleapis.com/auth/cloud-platform";
 
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
         FileInputStream token = new FileInputStream(serviceAccountFilePath);
         FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(token))
+                .setCredentials(GoogleCredentials.fromStream(token).createScoped(List.of(scope)))
                 .setDatabaseUrl("https://donnearroundfirebase.firebaseio.com")
                 .build();
 
