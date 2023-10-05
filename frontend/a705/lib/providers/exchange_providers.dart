@@ -16,7 +16,6 @@ class ExchangeRateProvider {
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
-        print(response.body);
         final data = json.decode(response.body);
         return ExchangeRateResponse.fromJson(data);
       } else {

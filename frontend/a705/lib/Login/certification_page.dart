@@ -6,7 +6,9 @@ import 'dart:async';
 import 'package:a705/providers/member_providers.dart';
 import 'package:a705/main_page.dart';
 
+import '../home_page.dart';
 import '../service/shared_pref.dart';
+import '../storage.dart';
 
 class CertificationPage extends StatefulWidget {
   const CertificationPage({super.key});
@@ -256,87 +258,83 @@ class _CertificationPageState extends State<CertificationPage> {
     );
   }
 
-  // OTP 값 확인하고 메인페이지 가는 기능
-//   void verifyCode() async {
-//
-//     PhoneAuthCredential credential = PhoneAuthProvider.credential(
-//         verificationId:verificationIDReceived, smsCode: optCodeController.text );
-//     await auth.signInWithCredential(credential).then((value){
-//       print("로그인 성공!");
-//       Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileSettingPage()));
-//     });
-//   }
-// }
   void verifyCode() async {
     try {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: verificationIDReceived, smsCode: optCodeController.text);
+          verificationId:verificationIDReceived, smsCode: optCodeController.text );
 
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-
       // Firebase 인증 토큰 얻기
       String? firebaseToken = await userCredential.user!.getIdToken();
       String? uid = userCredential.user!.uid;
       String? tel = phoneController.text;
-      // print(userCredential.user);
-      //print("Firebase 토큰: $firebaseToken");
+      print("Firebase 토큰: $firebaseToken");
+      print("uid : $uid");
+      print("tel : $tel");
 
       // Firebase 토큰을 백엔드 서버로 전송하여 JWT 토큰을 가져옴
-      String? jwtToken = await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!, uid, tel);
+      Map<String, dynamic>? signInResponse = await userProvider.getJwtTokenFromFirebaseToken(firebaseToken!, uid, tel);
+      if (signInResponse != null) {
+        String? id = signInResponse['id'];
+        String? tel = signInResponse['tel'];
+        String? token = signInResponse['token'];
 
-      print("로그인 성공!");
-      // jwtToken 응답에 기존 회원이 아니라서 jwt 값이 Null 값이면 닉네임/ 이미지 회원가입을 하고 시작하기를 눌러야지 jwt 값 받음.
-      // Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileSettingPage()));
-      if (jwtToken != null) {
-        // JWT 토큰을 사용하여 로그인 또는 기타 인증 및 권한 부여 작업 수행
-        // 이 부분에서 백엔드 서버로부터 받은 JWT 토큰을 사용하여 사용자 인증을 수행하세요.
-        await SharedPreferenceHelper().saveJwtToken(jwtToken);
-        // 백엔드로부터 JWT 토큰을 받았으므로 사용자를 인증하고 메인 페이지로 이동합니다.
-        // 여기서는 사용자 확인 함수를 호출하고, 해당 함수 내에서 사용자 인증 및 페이지 이동 작업을 수행하도록 했습니다.
-        checkUserExistenceAndNavigate();
+        if (id != null && tel != null && token != null) {
+          String jwtToken = '$id|$tel|$token'; // 예제에서 사용하는 방식으로 JWT 토큰 구성
+          print("토큰 : $jwtToken");
+
+          // 스토리지 저장 및 헤더에 토큰 값 할당 구현.!!!!!!!
+          saveUserInfo('$id','$tel','$token');
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
+        }
       }
-
-   } catch (e) {
-      print("로그인 실패: $e");
+      if (signInResponse == null) {
+        // null  인 경우,  uid 와 tel 갖고 프로필페이지로 이동.
+        Navigator.push(context, MaterialPageRoute(builder: (context) =>  ProfileSettingPage(phoneNumber: '$tel', uid: '$uid')));
+      }
+      // print("토큰 : $jwtToken");
+      print("파베로그인 성공!");
+    } catch (e) {
+      print("파베로그인 실패: $e");
     }
 
   }
 
-// 백엔드에서 사용자가 존재하는지 확인하는 함수
-  Future<void> checkUserExistenceAndNavigate() async {
-    final phoneNumber = phoneController.text; // 사용자가 입력한 전화번호
-    final userExists = await UserProvider().checkUserExists(phoneNumber);
-    // final userProvider = UserProvider();
-    if (userExists) {
-      // 이미 등록된 사용자인 경우
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('이미 등록된 회원입니다'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MainPage()));
-                  // 기존 사용자 처리 로직 추가
-                },
-                child: Text('메인페이지 이동'),
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      // await userProvider.registerUser(phoneNumber: phoneNumber, nickname: "", profileImg: "");
-      // 백엔드에 등록되지 않은 사용자인 경우
-      print('뉴멤버 환영');
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ProfileSettingPage(phoneNumber: phoneController.text)),
-      );
-    }
-  }
+// // 백엔드에서 사용자가 존재하는지 확인하는 함수
+//   Future<void> checkUserExistenceAndNavigate() async {
+//     final phoneNumber = phoneController.text; // 사용자가 입력한 전화번호
+//     final userExists = await UserProvider().checkUserExists(phoneNumber);
+//     // final userProvider = UserProvider();
+//     if (userExists) {
+//       // 이미 등록된 사용자인 경우
+//       showDialog(
+//         context: context,
+//         builder: (BuildContext context) {
+//           return AlertDialog(
+//             title: Text('이미 등록된 회원입니다'),
+//             actions: [
+//               TextButton(
+//                 onPressed: () {
+//                   Navigator.push(
+//                       context,
+//                       MaterialPageRoute(builder: (context) => const MainPage()));
+//                   // 기존 사용자 처리 로직 추가
+//                 },
+//                 child: Text('메인페이지 이동'),
+//               ),
+//             ],
+//           );
+//         },
+//       );
+//     } else {
+//       // await userProvider.registerUser(phoneNumber: phoneNumber, nickname: "", profileImg: "");
+//       // 백엔드에 등록되지 않은 사용자인 경우
+//       print('뉴멤버 환영');
+//       Navigator.push(
+//         context,
+//         MaterialPageRoute(builder: (context) => ProfileSettingPage(phoneNumber: phoneController.text)),
+//       );
+//     }
+//   }
 
 }

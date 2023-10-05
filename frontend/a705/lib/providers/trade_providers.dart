@@ -38,7 +38,6 @@ class TradeProviders {
       }),
     );
     if (response.statusCode == 200) {
-      // print(response.statusCode);
       // List<dynamic> body = json.decode(response.body)['data']['tradeList']; // 한글 깨짐
       List<dynamic> body =
           json.decode(utf8.decode(response.bodyBytes))['data']['tradeList'];

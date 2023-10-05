@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'keyword_page.dart';
+import 'package:a705/choose_location_page2.dart';
+import 'package:a705/models/address.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 
 
 class KeywordCreatePage extends StatefulWidget {
@@ -49,22 +54,23 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
     'RUB',
   ];
 
-  final _locationController = TextEditingController();
+  String _addr = "장소 선택";
+  Address _address = Address(
+      country: "",
+      administrativeArea: "",
+      subAdministrativeArea: "",
+      locality: "",
+      subLocality: "",
+      thoroughfare: "",
+      latitude: 0,
+      longitude: 0);
 
-  @override
-  void dispose() {
-    // 페이지가 dispose될 때 컨트롤러를 정리
-    _locationController.dispose();
-    super.dispose();
-  }
-
-  void _addNotification() {
+  Future<void> _addNotification() async {
     // 화폐종류와 지역정보 가져오기
     final currency = _selectedValue;
-    final location = _locationController.text;
 
     // 데이터 비어있는지 확인
-    if (currency.isEmpty || location.isEmpty) {
+    if (currency.isEmpty || _addr == "장소 선택") {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -73,7 +79,7 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
               alignment: Alignment.center,
               height: 50,
               child: const Text(
-                '화폐종류와 지역정보를 모두 입력하세요',
+                '화폐종류와 지역을 모두 입력하세요',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
@@ -83,7 +89,7 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.pop(context);
                 },
                 child: const Text('확인'),
               )
@@ -92,12 +98,50 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
         }
       );
     } else {
+
+      final countryCode = _selectedValue.split(' ')[1].toUpperCase();
+
       // 정보가 모두 입력되었을 떄 서버로 전송
-      // 서버로 데이터 전송코드 추가 해야함
-      // Api 연결 후 데이터 10개 넘었을때 실패하는 코드 추가 필요
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const KeywordPage()));
+      final memberId = '1'; // memberId 설정 (원하는 값으로 변경)
+      final url = 'https://j9a705.p.ssafy.io/api/keyword?memberId=$memberId';
+
+      final requestData = {
+        'countryCode': countryCode, // 여기에 나라 코드 설정
+        'country': _address.country,
+        'administrativeArea': _address.administrativeArea,
+        'subAdministrativeArea': _address.subAdministrativeArea,
+        'locality': _address.locality,
+        'subLocality': _address.subLocality,
+        'thoroughfare': _address.thoroughfare,
+      };
+
+      try {
+        final response = await http.post(
+          Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(requestData),
+        );
+
+        if (response.statusCode == 200) {
+          // 서버 응답이 성공적으로 왔을 때의 처리
+          print('알림 추가가 성공적으로 저장되었습니다.');
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const KeywordPage()),
+                (route) => false,
+          );
+        } else {
+          // 서버 응답이 실패했을 때의 처리
+          print('서버 오류: ${response.statusCode}');
+          // 오류 처리 로직 추가
+        }
+      } catch (e) {
+        // 오류 발생 시 처리
+        print('오류: $e');
+        // 오류 처리 로직 추가
+      }
     }
   }
 
@@ -152,6 +196,7 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
           ),
           body: SingleChildScrollView(
             child: Container(
+              color: Colors.white,
               margin: const EdgeInsets.fromLTRB(30, 20, 30, 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,7 +231,7 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
                                   children: [
                                     CircleAvatar(
                                       backgroundImage: AssetImage(
-                                          'assets/images/flag/${currency[_valueList.indexOf(value)]}.png'),
+                                          'assets/images/flag/${currency[_valueList.indexOf(value)] == 'KRW' ? 'KRW' : currency[_valueList.indexOf(value)] == 'USD' ? 'USDKRW' : 'USD${currency[_valueList.indexOf(value)]}'}.png'),
                                       radius: 10,
                                     ),
                                     const SizedBox(width: 5),
@@ -215,21 +260,43 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  TextField(
-                    controller: _locationController,
-                    style: const TextStyle(fontSize: 18),
-                    decoration: InputDecoration(
-                      hintText: '지역을 입력하세요',
-                      hintStyle: const TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: const Color(0xFFF6F6F6),
-                      contentPadding: const EdgeInsets.all(10),
-                      border: OutlineInputBorder(
+                  GestureDetector(
+                    onTap: () async {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      Address address = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ChooseLocationPage2(
+                                  37.5013068, 127.0396597)));
+                      setState(() {
+                        _addr =
+                        "${address.subLocality} ${address.thoroughfare}";
+                        _address = address;
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      height: _addr == "장소 선택" ? 50 : null,
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(width: 3, color: Color(0xFFF6F6F6))
+                        color: const Color(0xFFF2F2F2),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              _addr,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                color: Color(0xFF757575),
+                              ),
+                            ),
+                          ),
+                          const Icon(Icons.chevron_right_rounded),
+                        ],
                       ),
                     ),
-                    keyboardType: TextInputType.text,
                   ),
                   const SizedBox(height: 30),
                   Container(
