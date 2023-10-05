@@ -5,7 +5,6 @@ import 'package:a705/main_page.dart';
 import 'package:a705/models/address.dart';
 import 'package:a705/providers/exchange_providers.dart';
 import 'package:a705/providers/trade_providers.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,15 +12,6 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:a705/models/TradeDto.dart';
 import 'package:intl/intl.dart';
-
-// final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-//
-// Future<void> signInWithAnonymous() async {
-//   UserCredential _credential = await _firebaseAuth.signInAnonymously();
-//   if (_credential.user != null) {
-//     print(_credential.user!.uid);
-//   }
-// }
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});

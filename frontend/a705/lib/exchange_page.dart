@@ -16,7 +16,6 @@ class ExchangePage extends StatefulWidget {
 }
 
 class _ExchangePageState extends State<ExchangePage> {
-
   final _valueList1 = [
     '미국(달러) USD',
     '일본(엔) JPY',
@@ -33,8 +32,6 @@ class _ExchangePageState extends State<ExchangePage> {
     '체코(코루나) CZK',
     '뉴질랜드(달러) NZD',
     '러시아(루블) RUB',
-
-
   ];
 
   List<String> currency1 = [
@@ -53,7 +50,6 @@ class _ExchangePageState extends State<ExchangePage> {
     'USDCZK',
     'USDNZD',
     'USDRUB',
-
   ];
 
   Map<String, double>? exchangeRates; // 환율 데이터를 저장할 변수
@@ -63,7 +59,6 @@ class _ExchangePageState extends State<ExchangePage> {
     super.initState();
     _fetchExchangeRates();
   }
-
 
   Future<void> _fetchExchangeRates() async {
     try {
@@ -90,9 +85,9 @@ class _ExchangePageState extends State<ExchangePage> {
             'USDCZK': exchangeResponse.quotes.usdCzk,
             'USDNZD': exchangeResponse.quotes.usdNzd,
             'USDRUB': exchangeResponse.quotes.usdRub,
-
           };
-          _moneyController2.text = exchangeResponse.quotes.usdKrw.toStringAsFixed(2);
+          _moneyController2.text =
+              exchangeResponse.quotes.usdKrw.toStringAsFixed(2);
         });
       } else {
         // API 요청은 성공했지만, 응답이 실패한 경우에 대한 처리
@@ -112,11 +107,10 @@ class _ExchangePageState extends State<ExchangePage> {
       final targetRate = exchangeRates![targetCurrency];
 
       if (baseCurrency == 'USDKRW' && targetCurrency == 'USDJPY') {
-        return baseRate! / targetRate! ;
-      }  else {
+        return baseRate! / targetRate!;
+      } else {
         return baseRate! / targetRate!;
       }
-
     }
     return null;
   }
@@ -127,7 +121,6 @@ class _ExchangePageState extends State<ExchangePage> {
     }
     return null;
   }
-
 
   List<String> currency = [
     'USD',
@@ -146,11 +139,24 @@ class _ExchangePageState extends State<ExchangePage> {
     'NZD',
     'RUB',
   ];
-  List<String> sign = ['\$',  '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
+  List<String> sign = [
+    '\$',
+    '¥',
+    '¥',
+    '€',
+    '£',
+    '\$',
+    '\$',
+    '\$',
+    '₱',
+    '₫',
+    '\$',
+    '\$',
+    'Kč',
+    '\$' '₽'
+  ];
 
   List<int> unit = [1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
-
-
 
   List<String> country2 = [
     '미국(달러)',
@@ -188,17 +194,32 @@ class _ExchangePageState extends State<ExchangePage> {
     'NZD',
     'RUB',
   ];
-  List<String> sign2 = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
+  List<String> sign2 = [
+    '\$',
+    '₩',
+    '¥',
+    '¥',
+    '€',
+    '£',
+    '\$',
+    '\$',
+    '\$',
+    '₱',
+    '₫',
+    '\$',
+    '\$',
+    'Kč',
+    '\$' '₽'
+  ];
 
   List<int> unit2 = [1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
-
 
   int idx1 = 0;
   int idx2 = 1;
   int idx3 = 3;
   int idx4 = 4;
 
- void calculateExchangeRate(int baseIdx, int targetIdx) {
+  String calculateExchangeRate(int baseIdx, int targetIdx) {
     double? rate;
     String base;
     String target;
@@ -220,15 +241,14 @@ class _ExchangePageState extends State<ExchangePage> {
       rate = calculateRate(base, target);
     } else if (currency[baseIdx] == 'USD') {
       rate = calculateUsd(currency1[targetIdx - 1]);
-    } else if (currency[targetIdx] != 'USD'){
-      rate =  calculateUsd(currency1[targetIdx-1]);
+    } else if (currency[targetIdx] != 'USD') {
+      rate = calculateUsd(currency1[targetIdx - 1]);
     }
     // 미국이 타겟 일 때, 계산 값 추가.
 
-
     if (rate != null) {
-      double amountToConvert = double.parse(
-          _moneyController1.text.replaceAll(',', ''));
+      double amountToConvert =
+          double.parse(_moneyController1.text.replaceAll(',', ''));
       double convertedAmount = amountToConvert * rate;
       String formattedAmount = convertedAmount.toStringAsFixed(2);
       setState(() {
@@ -236,12 +256,12 @@ class _ExchangePageState extends State<ExchangePage> {
         // _moneyController2.text = '${_moneyController1.text.isNotEmpty
         //     ? (double.parse(_moneyController1.text.replaceAll(',', '')) * rate!).toStringAsFixed(2)
         //     : '0.00'} ${sign[idx2]}';
-        _moneyController2.text = '$formattedAmount';
+        // _moneyController2.text = formattedAmount;
       });
+      return formattedAmount;
     }
+    return "";
   }
-
-
 
   String getToday() {
     DateTime now = DateTime.now();
@@ -249,29 +269,30 @@ class _ExchangePageState extends State<ExchangePage> {
     var strToday = formatter.format(now);
     return strToday;
   }
-  
-  String selectedButton = '직접'; // 선택된 버튼
 
+  String selectedButton = '직접'; // 선택된 버튼
 
   final _bankList = ['신한은행', '하나은행'];
   var _selectedValue5 = '신한은행';
   Map<String, Map<String, String>> bankInfo = {
-    '신한은행': { 'currencyName': '신한은행'},
+    '신한은행': {'currencyName': '신한은행'},
     '하나은행': {'currencyName': '하나은행'},
   };
 
-
   // 텍스트 필드 컨트롤러
-  final TextEditingController _moneyController1 = TextEditingController(text: "1");
-  final TextEditingController _moneyController2 = TextEditingController(text: "");
-  final TextEditingController _moneyController3 = TextEditingController(text: "2 ");
-  final TextEditingController _moneyController4 = TextEditingController(text: "600.00 ");
-  final TextEditingController _percentController = TextEditingController(text: "30");
-   bool _isDouble = false;
-   bool _isdoublecalculate  = false;
-   bool _iscalculate = false;
-
-
+  final TextEditingController _moneyController1 =
+      TextEditingController(text: "1");
+  final TextEditingController _moneyController2 =
+      TextEditingController(text: "");
+  final TextEditingController _moneyController3 =
+      TextEditingController(text: "2 ");
+  final TextEditingController _moneyController4 =
+      TextEditingController(text: "600.00 ");
+  final TextEditingController _percentController =
+      TextEditingController(text: "30");
+  bool _isDouble = false;
+  bool _isdoublecalculate = false;
+  bool _iscalculate = false;
 
   @override
   Widget build(BuildContext context) {
@@ -282,735 +303,886 @@ class _ExchangePageState extends State<ExchangePage> {
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Column(
-                children: [
-                  // 상단 바 (환율 검색)
-                  Container(
-                    width: double.infinity,
-                    height: 80,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
-                      ),
-                      color: Color(0xFFFFD954),
+              children: [
+                // 상단 바 (환율 검색)
+                Container(
+                  width: double.infinity,
+                  height: 80,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
                     ),
-                    child:  Center(
-                      child: RichText(
-                        text: const TextSpan(
-                          children:  [
-                            TextSpan(
-                              text: "환율",
-                              style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white
-                              ),
-                            ),
-                            TextSpan(
-                              text: " 검색",
-                              style: TextStyle(
+                    color: Color(0xFFFFD954),
+                  ),
+                  child: Center(
+                    child: RichText(
+                      text: const TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "환율",
+                            style: TextStyle(
                                 fontSize: 25,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
+                                color: Colors.white),
+                          ),
+                          TextSpan(
+                            text: " 검색",
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
                             ),
-                          ],
+                          ),
+                        ],
                         // textAlign: TextAlign.center,
-                        ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10,),
-                  // body 페이지
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    width: double.infinity,
-                    height: _isDouble ? 470 : 310,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            spreadRadius: 1,
-                            blurRadius: 3,
-                            offset: const Offset(0, 0),
-                          ),
-                        ]),
-                    child:Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.fromLTRB(10, 20,10, 10),
-                              padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
-                              width: 230,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.1),
-                                      spreadRadius: 1,
-                                      blurRadius: 3,
-                                      offset: const Offset(0, 0),
-                                    ),
-                                  ]),
-                              child: Text(
-                                getToday(),
-                                style: const TextStyle(fontSize: 25),),
-                            ),
-                            const SizedBox(width: 10,),
-                            if (_isDouble == false)
-                            IconButton(
-                                onPressed: (){
-                                 setState(() {
-                                   _iscalculate = false;
-                                   _isDouble = false;
-                                   _isdoublecalculate = false;
-                                   _moneyController1.clear();
-                                   _moneyController2.clear();
-                                 });
-                                },
-                                icon: const Icon(Icons.cached_rounded),
-                                iconSize: 40,
-                                color: Colors.grey,),
-                            if (_isDouble)
-                              IconButton(
-                                onPressed: (){
-                                  setState(() {
-                                    _isDouble = true;
-                                    _isdoublecalculate = false;
-                                    _moneyController3.clear();
-                                    _moneyController4.clear();
-                                    _percentController.clear();
-                                  });
-                                },
-                                icon: const Icon(Icons.cached_rounded),
-                                iconSize: 40,
-                                color: Colors.grey,),
-                          ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                // body 페이지
+                Container(
+                  margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  width: double.infinity,
+                  height: _isDouble ? 470 : 310,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: const Offset(0, 0),
                         ),
-                        if (_isDouble)
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                  padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
-                                  width: double.infinity,
-                                  height: 60,
-                                  // color: Colors.red,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: Colors.grey[200],
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          spreadRadius: 5,
-                                          blurRadius: 3,
-                                          offset: const Offset(0, 0),
-                                        ),
-                                      ]),
-                                  child: const Text(
-                                    '+ 2,300 ₩',
-                                    textAlign: TextAlign.end,
-                                    style: TextStyle(
-                                      fontSize: 40,
-                                    ),
+                      ]),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(10, 20, 10, 10),
+                            padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
+                            width: 230,
+                            height: 40,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    spreadRadius: 1,
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 0),
                                   ),
-                                ),
-                              ),
-                            ],
+                                ]),
+                            child: Text(
+                              getToday(),
+                              style: const TextStyle(fontSize: 25),
+                            ),
                           ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          if (_isDouble == false)
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _iscalculate = false;
+                                  _isDouble = false;
+                                  _isdoublecalculate = false;
+                                  _moneyController1.clear();
+                                  _moneyController2.clear();
+                                });
+                              },
+                              icon: const Icon(Icons.cached_rounded),
+                              iconSize: 40,
+                              color: Colors.grey,
+                            ),
+                          if (_isDouble)
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _isDouble = true;
+                                  _isdoublecalculate = false;
+                                  _moneyController3.clear();
+                                  _moneyController4.clear();
+                                  _percentController.clear();
+                                });
+                              },
+                              icon: const Icon(Icons.cached_rounded),
+                              iconSize: 40,
+                              color: Colors.grey,
+                            ),
+                        ],
+                      ),
+                      if (_isDouble)
                         Row(
                           children: [
                             Expanded(
                               child: Container(
-                                margin: const EdgeInsets.fromLTRB(20, 0, 10, 10),
-                                width: 150,
-                                height: 20,
-                                child: Row(
-                                  children: [
-                                    ElevatedButton(
-                                        onPressed: (){
-                                          setState(() {
-                                            selectedButton = '직접';
-                                            _isDouble = false;
-                                            _iscalculate = false;
-                                            _isdoublecalculate = false;
-                                          });
-                                        },
+                                margin:
+                                    const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
+                                width: double.infinity,
+                                height: 60,
+                                // color: Colors.red,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.grey[200],
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 5,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ]),
+                                child: const Text(
+                                  '+ 2,300 ₩',
+                                  textAlign: TextAlign.end,
+                                  style: TextStyle(
+                                    fontSize: 40,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              margin: const EdgeInsets.fromLTRB(20, 0, 10, 10),
+                              width: 150,
+                              height: 20,
+                              child: Row(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedButton = '직접';
+                                        _isDouble = false;
+                                        _iscalculate = false;
+                                        _isdoublecalculate = false;
+                                      });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      elevation: 0,
+                                      backgroundColor: selectedButton == '직접'
+                                          ? Colors.green
+                                          : Colors.grey,
+                                    ),
+                                    child: const Text(
+                                      '직접',
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedButton = '이중';
+                                          _isDouble = true;
+                                          _iscalculate = false;
+                                          // Navigator.push(
+                                          //       context,
+                                          //       MaterialPageRoute(builder: (context) => const DoubleCurrencyPage()),
+                                          //     );
+                                        });
+                                      },
                                       style: ElevatedButton.styleFrom(
                                         elevation: 0,
-                                          backgroundColor: selectedButton == '직접' ? Colors.green : Colors.grey,
+                                        backgroundColor: selectedButton == '이중'
+                                            ? Colors.red
+                                            : Colors.grey,
                                       ),
-
-                                        child: const Text('직접',),),
-                                    const SizedBox(width: 5),
-                                    ElevatedButton(
-                                        onPressed:(){
+                                      child: const Text('이중')),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (_isDouble == false)
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                width: double.infinity,
+                                height: 60,
+                                // color: Colors.red,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ]),
+                                // 드롭다운
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () async {
+                                        int idx = await showModalBottomSheet(
+                                            context: context,
+                                            isScrollControlled: true,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            builder: (BuildContext context) {
+                                              return Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height /
+                                                      5 *
+                                                      4,
+                                                  color: Colors.transparent,
+                                                  child: Container(
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(
+                                                        30, 20, 30, 20),
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height /
+                                                            5 *
+                                                            4,
+                                                    child: const Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        SizedBox(height: 10),
+                                                        Text(
+                                                          '통화 선택',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 20),
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        Expanded(
+                                                            child:
+                                                                CountryListViewBuilder()),
+                                                      ],
+                                                    ),
+                                                  ));
+                                            });
+                                        setState(() {
+                                          idx1 = idx;
+                                          _moneyController1.text =
+                                              (1 * unit[idx1]).toString();
+                                          _moneyController2.text =
+                                              calculateExchangeRate(idx1, idx2);
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            5, 5, 5, 5),
+                                        color: const Color(0xFFF7F7F7),
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                    2 -
+                                                28,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundImage: AssetImage(
+                                                  'assets/images/flag/${currency[idx1] == 'KRW' ? 'KRW' : currency[idx1] == 'USD' ? 'USDKRW' : 'USD${currency[idx1]}'}.png'),
+                                              radius: 15,
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  country[idx1],
+                                                  style: const TextStyle(
+                                                      fontSize: 15),
+                                                ),
+                                                Text(
+                                                  currency[idx1],
+                                                  style: const TextStyle(
+                                                      fontSize: 15),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(width: 5),
+                                            const Icon(
+                                              Icons.keyboard_arrow_down_rounded,
+                                              color: Colors.black,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width /
+                                              2 -
+                                          72,
+                                      margin: const EdgeInsets.fromLTRB(
+                                          0, 0, 10, 0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(
+                                            topRight: Radius.circular(20),
+                                            bottomRight: Radius.circular(20)),
+                                        border: Border.all(
+                                            color: Colors.transparent),
+                                      ),
+                                      child: TextField(
+                                        keyboardType: TextInputType.number,
+                                        // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                        controller: _moneyController1,
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          border: InputBorder.none,
+                                          enabledBorder:
+                                              const UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color:
+                                                          Colors.transparent)),
+                                          suffixText: ' ${sign[idx1]}',
+                                        ),
+                                        textAlign: TextAlign.end,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        onChanged: (value) {
                                           setState(() {
-                                            selectedButton = '이중';
-                                            _isDouble = true;
-                                            _iscalculate = false;
-                                            // Navigator.push(
-                                            //       context,
-                                            //       MaterialPageRoute(builder: (context) => const DoubleCurrencyPage()),
-                                            //     );
+                                            _moneyController2.text =
+                                                calculateExchangeRate(
+                                                    idx1, idx2);
                                           });
                                         },
-                                        style: ElevatedButton.styleFrom(
-                                          elevation: 0,
-                                          backgroundColor: selectedButton == '이중' ? Colors.red : Colors.grey,
-                                        ),
-                                        child: const Text('이중') ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        if (_isDouble == false)
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                  width: double.infinity,
-                                  height: 60,
-                                  // color: Colors.red,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          spreadRadius: 1,
-                                          blurRadius: 3,
-                                          offset: const Offset(0, 0),
-                                        ),
-                                      ]),
-                                  // 드롭다운
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () async {
-                                          int idx = await showModalBottomSheet(
-                                              context: context,
-                                              isScrollControlled: true,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),
-                                              builder: (BuildContext context) {
-                                                return Container(
-                                                    height: MediaQuery.of(context).size.height / 5 * 4,
-                                                    color: Colors.transparent,
-                                                    child: Container(
-                                                      padding:
-                                                      const EdgeInsets.fromLTRB(30, 20, 30, 20),
-                                                      height:
-                                                      MediaQuery.of(context).size.height / 5 * 4,
-                                                      child: const Column(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                          SizedBox(height: 10),
-                                                          Text(
-                                                            '통화 선택',
-                                                            style: TextStyle(
-                                                                fontWeight: FontWeight.bold,
-                                                                fontSize: 20),
-                                                          ),
-                                                          SizedBox(height: 10),
-                                                          Expanded(child: CountryListViewBuilder()),
-                                                        ],
-                                                      ),
-                                                    ));
-                                              });
-                                          setState(() {
-                                            idx1 = idx;
-                                            _moneyController1.text = (1 * unit[idx1]).toString();
-                                          });
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                                          color: const Color(0xFFF7F7F7),
-                                          width:
-                                          MediaQuery.of(context).size.width / 2 - 28,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              CircleAvatar(
-                                                backgroundImage: AssetImage('assets/images/flag/${currency[idx1] == 'KRW' ? 'KRW' : currency[idx1] == 'USD' ? 'USDKRW' : 'USD${currency[idx1]}'}.png'),
-                                                radius: 15,
-                                              ),
-                                              const SizedBox(width: 5),
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    country[idx1],
-                                                    style:
-                                                    const TextStyle(fontSize: 15),
-                                                  ),
-                                                  Text(
-                                                    currency[idx1],
-                                                    style:
-                                                    const TextStyle(fontSize: 15),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(width: 5),
-                                              const Icon(
-                                                Icons.keyboard_arrow_down_rounded,
-                                                color: Colors.black,
-                                              )
-                                            ],
-                                          ),
-                                        ),
+                      if (_isDouble == false)
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin:
+                                    const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                width: double.infinity,
+                                height: 60,
+                                // color: Colors.red,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 0),
                                       ),
-                                      Container(
-                                        width:  MediaQuery.of(context).size.width / 2 - 72,
-                                        margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
-                                          border: Border.all(color: Colors.transparent),
-                                        ),
-                                        child: TextField(
-                                          keyboardType: TextInputType.number,
-                                          // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                          controller: _moneyController1,
-                                          decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                            border: InputBorder.none,
-                                            enabledBorder: const UnderlineInputBorder(
-                                              borderSide: BorderSide(color: Colors.transparent)
+                                    ]),
+                                // 드롭다운
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () async {
+                                        int idx = await showModalBottomSheet(
+                                            context: context,
+                                            isScrollControlled: true,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
-                                            suffixText: ' ${sign[idx1]}',
-                                          ),
-                                          textAlign: TextAlign.end,
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                            builder: (BuildContext context) {
+                                              return Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height /
+                                                      5 *
+                                                      4,
+                                                  color: Colors.transparent,
+                                                  child: Container(
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(
+                                                        30, 20, 30, 20),
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height /
+                                                            5 *
+                                                            4,
+                                                    child: const Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        SizedBox(height: 10),
+                                                        Text(
+                                                          '통화 선택',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 20),
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        Expanded(
+                                                            child:
+                                                                CountryListViewBuilder2()),
+                                                      ],
+                                                    ),
+                                                  ));
+                                            });
+                                        setState(() {
+                                          idx2 = idx;
+                                          // _moneyController2.text = (1 * unit[idx2]).toString();
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            5, 5, 5, 5),
+                                        color: const Color(0xFFF7F7F7),
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                    2 -
+                                                28,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundImage: AssetImage(
+                                                  'assets/images/flag/${currency2[idx2] == 'KRW' ? 'KRW' : currency2[idx2] == 'USD' ? 'USDKRW' : 'USD${currency2[idx2]}'}.png'),
+                                              radius: 15,
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  country2[idx2],
+                                                  style: const TextStyle(
+                                                      fontSize: 15),
+                                                ),
+                                                Text(
+                                                  currency2[idx2],
+                                                  style: const TextStyle(
+                                                      fontSize: 15),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(width: 5),
+                                            const Icon(
+                                              Icons.keyboard_arrow_down_rounded,
+                                              color: Colors.black,
+                                            )
+                                          ],
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width /
+                                              2 -
+                                          72,
+                                      margin: const EdgeInsets.fromLTRB(
+                                          0, 0, 10, 0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(
+                                            topRight: Radius.circular(20),
+                                            bottomRight: Radius.circular(20)),
+                                        border: Border.all(
+                                            color: Colors.transparent),
+                                      ),
+                                      child: TextField(
+                                        keyboardType: TextInputType.number,
+                                        // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                        controller: _moneyController2,
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          border: InputBorder.none,
+                                          enabledBorder:
+                                              const UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color:
+                                                          Colors.transparent)),
+                                          suffixText: sign2[idx2],
+                                          // suffixText: rate != null ? ' 1 USD = ${rate.toStringAsFixed(2)} ${sign[idx2]}' : '',
+                                        ),
+                                        textAlign: TextAlign.end,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        if (_isDouble == false)
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                                  width: double.infinity,
-                                  height: 60,
-                                  // color: Colors.red,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          spreadRadius: 1,
-                                          blurRadius: 3,
-                                          offset: const Offset(0, 0),
-                                        ),
-                                      ]),
-                                  // 드롭다운
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () async {
-                                          int idx = await showModalBottomSheet(
-                                              context: context,
-                                              isScrollControlled: true,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),
-                                              builder: (BuildContext context) {
-                                                return Container(
-                                                    height: MediaQuery.of(context).size.height / 5 * 4,
-                                                    color: Colors.transparent,
-                                                    child: Container(
-                                                      padding:
-                                                      const EdgeInsets.fromLTRB(30, 20, 30, 20),
-                                                      height:
-                                                      MediaQuery.of(context).size.height / 5 * 4,
-                                                      child: const Column(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                          SizedBox(height: 10),
-                                                          Text(
-                                                            '통화 선택',
-                                                            style: TextStyle(
-                                                                fontWeight: FontWeight.bold,
-                                                                fontSize: 20),
-                                                          ),
-                                                          SizedBox(height: 10),
-                                                          Expanded(child: CountryListViewBuilder2()),
-                                                        ],
-                                                      ),
-                                                    ));
-                                              });
-                                          setState(() {
-                                            idx2 = idx;
-                                            // _moneyController2.text = (1 * unit[idx2]).toString();
-                                          });
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                                          color: const Color(0xFFF7F7F7),
-                                          width:
-                                          MediaQuery.of(context).size.width / 2 - 28,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              CircleAvatar(
-                                                backgroundImage: AssetImage('assets/images/flag/${currency2[idx2] == 'KRW' ? 'KRW' : currency2[idx2] == 'USD' ? 'USDKRW' : 'USD${currency2[idx2]}'}.png'),
-                                                radius: 15,
-                                              ),
-                                              const SizedBox(width: 5),
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    country2[idx2],
-                                                    style:
-                                                    const TextStyle(fontSize: 15),
-                                                  ),
-                                                  Text(
-                                                    currency2[idx2],
-                                                    style:
-                                                    const TextStyle(fontSize: 15),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(width: 5),
-                                              const Icon(
-                                                Icons.keyboard_arrow_down_rounded,
-                                                color: Colors.black,
-                                              )
-                                            ],
-                                          ),
-                                        ),
+                            ),
+                          ],
+                        ),
+                      if (_isDouble)
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                width: double.infinity,
+                                height: 60,
+                                // color: Colors.red,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 0),
                                       ),
-                                      Container(
-                                        width:  MediaQuery.of(context).size.width / 2 - 72,
-                                        margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
-                                          border: Border.all(color: Colors.transparent),
-                                        ),
-                                        child: TextField(
-                                          keyboardType: TextInputType.number,
-                                          // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                          controller: _moneyController2,
-                                          decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                            border: InputBorder.none,
-                                            enabledBorder: const UnderlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.transparent)
+                                    ]),
+                                // 드롭다운
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () async {
+                                        int idx = await showModalBottomSheet(
+                                            context: context,
+                                            isScrollControlled: true,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
-                                            suffixText: sign2[idx2],
-                                            // suffixText: rate != null ? ' 1 USD = ${rate.toStringAsFixed(2)} ${sign[idx2]}' : '',
-                                          ),
-                                          textAlign: TextAlign.end,
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                            builder: (BuildContext context) {
+                                              return Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height /
+                                                      5 *
+                                                      4,
+                                                  color: Colors.transparent,
+                                                  child: Container(
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(
+                                                        30, 20, 30, 20),
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height /
+                                                            5 *
+                                                            4,
+                                                    child: const Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        SizedBox(height: 10),
+                                                        Text(
+                                                          '통화 선택',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 20),
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        Expanded(
+                                                            child:
+                                                                CountryListViewBuilder()),
+                                                      ],
+                                                    ),
+                                                  ));
+                                            });
+                                        setState(() {
+                                          idx3 = idx;
+                                          _moneyController3.text =
+                                              (1 * unit[idx3]).toString();
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            5, 5, 5, 5),
+                                        color: const Color(0xFFF7F7F7),
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                    2 -
+                                                28,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundImage: AssetImage(
+                                                  'assets/images/flag/${currency[idx3] == 'KRW' ? 'KRW' : currency[idx3] == 'USD' ? 'USDKRW' : 'USD${currency[idx3]}'}.png'),
+                                              radius: 15,
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  country[idx3],
+                                                  style: const TextStyle(
+                                                      fontSize: 15),
+                                                ),
+                                                Text(
+                                                  currency[idx3],
+                                                  style: const TextStyle(
+                                                      fontSize: 15),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(width: 5),
+                                            const Icon(
+                                              Icons.keyboard_arrow_down_rounded,
+                                              color: Colors.black,
+                                            )
+                                          ],
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width /
+                                              2 -
+                                          72,
+                                      margin: const EdgeInsets.fromLTRB(
+                                          0, 0, 10, 0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(
+                                            topRight: Radius.circular(20),
+                                            bottomRight: Radius.circular(20)),
+                                        border: Border.all(
+                                            color: Colors.transparent),
+                                      ),
+                                      child: TextField(
+                                        keyboardType: TextInputType.number,
+                                        // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                        controller: _moneyController3,
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          border: InputBorder.none,
+                                          enabledBorder:
+                                              const UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color:
+                                                          Colors.transparent)),
+                                          suffixText: ' ${sign[idx3]}',
+                                        ),
+                                        textAlign: TextAlign.end,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        if (_isDouble)
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                  width: double.infinity,
-                                  height: 60,
-                                  // color: Colors.red,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          spreadRadius: 1,
-                                          blurRadius: 3,
-                                          offset: const Offset(0, 0),
-                                        ),
-                                      ]),
-                                  // 드롭다운
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () async {
-                                          int idx = await showModalBottomSheet(
-                                              context: context,
-                                              isScrollControlled: true,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),
-                                              builder: (BuildContext context) {
-                                                return Container(
-                                                    height: MediaQuery.of(context).size.height / 5 * 4,
-                                                    color: Colors.transparent,
-                                                    child: Container(
-                                                      padding:
-                                                      const EdgeInsets.fromLTRB(30, 20, 30, 20),
-                                                      height:
-                                                      MediaQuery.of(context).size.height / 5 * 4,
-                                                      child: const Column(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                          SizedBox(height: 10),
-                                                          Text(
-                                                            '통화 선택',
-                                                            style: TextStyle(
-                                                                fontWeight: FontWeight.bold,
-                                                                fontSize: 20),
-                                                          ),
-                                                          SizedBox(height: 10),
-                                                          Expanded(child: CountryListViewBuilder()),
-                                                        ],
-                                                      ),
-                                                    ));
-                                              });
-                                          setState(() {
-                                            idx3 = idx;
-                                            _moneyController3.text = (1 * unit[idx3]).toString();
-                                          });
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                                          color: const Color(0xFFF7F7F7),
-                                          width:
-                                          MediaQuery.of(context).size.width / 2 - 28,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              CircleAvatar(
-                                                backgroundImage: AssetImage('assets/images/flag/${currency[idx3] == 'KRW' ? 'KRW' : currency[idx3] == 'USD' ? 'USDKRW' : 'USD${currency[idx3]}'}.png'),
-                                                radius: 15,
-                                              ),
-                                              const SizedBox(width: 5),
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    country[idx3],
-                                                    style:
-                                                    const TextStyle(fontSize: 15),
-                                                  ),
-                                                  Text(
-                                                    currency[idx3],
-                                                    style:
-                                                    const TextStyle(fontSize: 15),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(width: 5),
-                                              const Icon(
-                                                Icons.keyboard_arrow_down_rounded,
-                                                color: Colors.black,
-                                              )
-                                            ],
-                                          ),
-                                        ),
+                            ),
+                          ],
+                        ),
+                      if (_isDouble)
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin:
+                                    const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                width: double.infinity,
+                                height: 60,
+                                // color: Colors.red,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 0),
                                       ),
-                                      Container(
-                                        width:  MediaQuery.of(context).size.width / 2 - 72,
-                                        margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
-                                          border: Border.all(color: Colors.transparent),
-                                        ),
-                                        child: TextField(
-                                          keyboardType: TextInputType.number,
-                                          // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                          controller: _moneyController3,
-                                          decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                            border: InputBorder.none,
-                                            enabledBorder: const UnderlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.transparent)
+                                    ]),
+                                // 드롭다운
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () async {
+                                        int idx = await showModalBottomSheet(
+                                            context: context,
+                                            isScrollControlled: true,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
-                                            suffixText: ' ${sign[idx3]}',
-                                          ),
-                                          textAlign: TextAlign.end,
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                            builder: (BuildContext context) {
+                                              return Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height /
+                                                      5 *
+                                                      4,
+                                                  color: Colors.transparent,
+                                                  child: Container(
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(
+                                                        30, 20, 30, 20),
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height /
+                                                            5 *
+                                                            4,
+                                                    child: const Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        SizedBox(height: 10),
+                                                        Text(
+                                                          '통화 선택',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 20),
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        Expanded(
+                                                            child:
+                                                                CountryListViewBuilder2()),
+                                                      ],
+                                                    ),
+                                                  ));
+                                            });
+                                        setState(() {
+                                          idx4 = idx;
+                                          _moneyController4.text =
+                                              (1 * unit[idx4]).toString();
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            5, 5, 5, 5),
+                                        color: const Color(0xFFF7F7F7),
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                    2 -
+                                                28,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundImage: AssetImage(
+                                                  'assets/images/flag/${currency[idx4] == 'KRW' ? 'KRW' : currency[idx4] == 'USD' ? 'USDKRW' : 'USD${currency[idx4]}'}.png'),
+                                              radius: 15,
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  country[idx4],
+                                                  style: const TextStyle(
+                                                      fontSize: 15),
+                                                ),
+                                                Text(
+                                                  currency[idx4],
+                                                  style: const TextStyle(
+                                                      fontSize: 15),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(width: 5),
+                                            const Icon(
+                                              Icons.keyboard_arrow_down_rounded,
+                                              color: Colors.black,
+                                            )
+                                          ],
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width /
+                                              2 -
+                                          72,
+                                      margin: const EdgeInsets.fromLTRB(
+                                          0, 0, 10, 0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(
+                                            topRight: Radius.circular(20),
+                                            bottomRight: Radius.circular(20)),
+                                        border: Border.all(
+                                            color: Colors.transparent),
+                                      ),
+                                      child: TextField(
+                                        keyboardType: TextInputType.number,
+                                        // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                        controller: _moneyController4,
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          border: InputBorder.none,
+                                          enabledBorder:
+                                              const UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color:
+                                                          Colors.transparent)),
+                                          suffixText: ' ${sign[idx4]}',
+                                        ),
+                                        textAlign: TextAlign.end,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        if (_isDouble)
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                                  width: double.infinity,
-                                  height: 60,
-                                  // color: Colors.red,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          spreadRadius: 1,
-                                          blurRadius: 3,
-                                          offset: const Offset(0, 0),
-                                        ),
-                                      ]),
-                                  // 드롭다운
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () async {
-                                          int idx = await showModalBottomSheet(
-                                              context: context,
-                                              isScrollControlled: true,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),
-                                              builder: (BuildContext context) {
-                                                return Container(
-                                                    height: MediaQuery.of(context).size.height / 5 * 4,
-                                                    color: Colors.transparent,
-                                                    child: Container(
-                                                      padding:
-                                                      const EdgeInsets.fromLTRB(30, 20, 30, 20),
-                                                      height:
-                                                      MediaQuery.of(context).size.height / 5 * 4,
-                                                      child: const Column(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                          SizedBox(height: 10),
-                                                          Text(
-                                                            '통화 선택',
-                                                            style: TextStyle(
-                                                                fontWeight: FontWeight.bold,
-                                                                fontSize: 20),
-                                                          ),
-                                                          SizedBox(height: 10),
-                                                          Expanded(child: CountryListViewBuilder2()),
-                                                        ],
-                                                      ),
-                                                    ));
-                                              });
-                                          setState(() {
-                                            idx4 = idx;
-                                            _moneyController4.text = (1 * unit[idx4]).toString();
-                                          });
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                                          color: const Color(0xFFF7F7F7),
-                                          width:
-                                          MediaQuery.of(context).size.width / 2 - 28,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              CircleAvatar(
-                                                backgroundImage: AssetImage('assets/images/flag/${currency[idx4] == 'KRW' ? 'KRW' : currency[idx4] == 'USD' ? 'USDKRW' : 'USD${currency[idx4]}'}.png'),
-                                                radius: 15,
-                                              ),
-                                              const SizedBox(width: 5),
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    country[idx4],
-                                                    style:
-                                                    const TextStyle(fontSize: 15),
-                                                  ),
-                                                  Text(
-                                                    currency[idx4],
-                                                    style:
-                                                    const TextStyle(fontSize: 15),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(width: 5),
-                                              const Icon(
-                                                Icons.keyboard_arrow_down_rounded,
-                                                color: Colors.black,
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        width:  MediaQuery.of(context).size.width / 2 - 72,
-                                        margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.only(topRight: Radius.circular(20),bottomRight: Radius.circular(20)),
-                                          border: Border.all(color: Colors.transparent),
-                                        ),
-                                        child: TextField(
-                                          keyboardType: TextInputType.number,
-                                          // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                          controller: _moneyController4,
-                                          decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                            border: InputBorder.none,
-                                            enabledBorder: const UnderlineInputBorder(
-                                                borderSide: BorderSide(color: Colors.transparent)
-                                            ),
-                                            suffixText: ' ${sign[idx4]}',
-                                          ),
-                                          textAlign: TextAlign.end,
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        if (_isDouble)
+                            ),
+                          ],
+                        ),
+                      if (_isDouble)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -1033,21 +1205,22 @@ class _ExchangePageState extends State<ExchangePage> {
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton(
                                   value: _selectedValue5,
-                                  items: _bankList.map(
-                                          (value) {
-                                        return DropdownMenuItem(
-                                          value: value,
-                                          child:
-                                          Container(
-                                            margin: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                            child: Text(bankInfo[value]![
-                                            'currencyName']!,
-                                              style: const TextStyle(fontWeight: FontWeight.bold,),
-                                              textAlign: TextAlign.center,),
+                                  items: _bankList.map((value) {
+                                    return DropdownMenuItem(
+                                      value: value,
+                                      child: Container(
+                                        margin: const EdgeInsets.fromLTRB(
+                                            20, 0, 0, 0),
+                                        child: Text(
+                                          bankInfo[value]!['currencyName']!,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                        );
-                                      }
-                                  ).toList(),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
                                   onChanged: (value) {
                                     setState(() {
                                       _selectedValue5 = value!;
@@ -1073,96 +1246,99 @@ class _ExchangePageState extends State<ExchangePage> {
                                       offset: const Offset(0, 0),
                                     ),
                                   ]),
-                              child:  TextField(
+                              child: TextField(
                                 controller: _percentController,
                                 cursorColor: Colors.black38,
                                 keyboardType: TextInputType.number,
-                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                decoration:  InputDecoration(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                                decoration: InputDecoration(
                                   filled: true,
                                   fillColor: Colors.white,
                                   border: InputBorder.none,
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(20),
-                                    borderSide: const BorderSide(color: Colors.transparent),
+                                    borderSide: const BorderSide(
+                                        color: Colors.transparent),
                                   ),
                                   focusedBorder: const OutlineInputBorder(
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                                    borderSide: BorderSide(color: Colors.transparent),
+                                        BorderRadius.all(Radius.circular(20)),
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
                                   ),
                                   suffixText: '%',
                                 ),
                                 textAlign: TextAlign.end,
-                                style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 25),
                               ),
                             ),
                           ],
                         ),
-                        if (_isDouble == false)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(0, 10, 10, 0),
-                            width: 70,
-                            height: 50,
-                            // color: const Color(0xFFFFD954),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              // border: Border.all(color: Colors.black38),
-                              color:  const Color(0xFFFFD954),
-                            ),
-                            child:IconButton(
-                              padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
-                              onPressed: (){
-                                setState(() {
-                                  _iscalculate = true;
-                                  calculateExchangeRate(idx1, idx2);
-                                });
-                              },
-                              icon: const Icon(Icons.drag_handle_rounded),
-                              iconSize: 50,
-                              color: Colors.white,
-
-                            ),
-                          ),
-                        ],
-                      ),
-                        if (_isDouble)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.fromLTRB(0, 10, 10, 0),
-                                width: 70,
-                                height: 50,
-                                // color: const Color(0xFFFFD954),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  // border: Border.all(color: Colors.black38),
-                                  color:  const Color(0xFFFFD954),
-                                ),
-                                child:IconButton(
-                                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
-                                  onPressed: (){
-                                    setState(() {
-                                      _isdoublecalculate = true;
-                                    });
-                                  },
-                                  icon: const Icon(Icons.drag_handle_rounded),
-                                  iconSize: 50,
-                                  color: Colors.white,
-
-                                ),
+                      if (_isDouble == false)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                              width: 70,
+                              height: 50,
+                              // color: const Color(0xFFFFD954),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                // border: Border.all(color: Colors.black38),
+                                color: const Color(0xFFFFD954),
                               ),
-                            ],
-                          ),
-                      ],
-                    ),
+                              child: IconButton(
+                                padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
+                                onPressed: () {
+                                  setState(() {
+                                    _iscalculate = true;
+                                    calculateExchangeRate(idx1, idx2);
+                                  });
+                                },
+                                icon: const Icon(Icons.drag_handle_rounded),
+                                iconSize: 50,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (_isDouble)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                              width: 70,
+                              height: 50,
+                              // color: const Color(0xFFFFD954),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                // border: Border.all(color: Colors.black38),
+                                color: const Color(0xFFFFD954),
+                              ),
+                              child: IconButton(
+                                padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
+                                onPressed: () {
+                                  setState(() {
+                                    _isdoublecalculate = true;
+                                  });
+                                },
+                                icon: const Icon(Icons.drag_handle_rounded),
+                                iconSize: 50,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
                   ),
-                  // 말풍선
-                  if (_isDouble == false && _iscalculate == false)
+                ),
+                // 말풍선
+                if (_isDouble == false && _iscalculate == false)
                   Row(
                     children: [
                       Expanded(
@@ -1171,276 +1347,303 @@ class _ExchangePageState extends State<ExchangePage> {
                           width: double.infinity,
                           height: 60,
                           child: getSenderView(
-                              ChatBubbleClipper6(type: BubbleType.sendBubble), context),
+                              ChatBubbleClipper6(type: BubbleType.sendBubble),
+                              context),
                         ),
                       ),
                     ],
                   ),
-                 if(_iscalculate)
-                   Row(
-                     children: [
-                       Expanded(
-                         child: Container(
-                           margin: const EdgeInsets.fromLTRB(30, 10, 30, 0),
-                           width: double.infinity,
-                           height: 60,
-                           child:  getbankView(
-                               ChatBubbleClipper6(type: BubbleType.sendBubble), context),
-                         ),
-                       ),
-                     ],
-                   ),
-                 if (_isdoublecalculate)
-                   Row(
-                     children: [
-                       Expanded(
-                         child: Container(
-                           margin: const EdgeInsets.fromLTRB(30, 10, 30, 20),
-                           width: double.infinity,
-                           height: 120,
-                           child: getCalculateView(
-                               ChatBubbleClipper4(type: BubbleType.sendBubble),
-                               context),
-                         ),
-                       ),
-                     ],
-                   ),
-
-                 //국가별 실시간 환율
-                  if (_isDouble == false && _iscalculate == false)
-                    // const ListViewBuilder(),
+                if (_iscalculate)
                   Row(
                     children: [
                       Expanded(
-                          child: ListView.builder(
-                            primary: false,
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: _valueList1.length,
-                            itemBuilder: (context, index) {
-                              String formattedRate = 'N/A'; // 초기값 설정
-
-                              if (exchangeRates != null) {
-                                if (currency1[index] == 'USDKRW') {
-                                  // 미국 달러(USD)은 그대로 표시
-                                  final exchangeRate = exchangeRates![currency1[index]];
-                                  if (exchangeRate != null) {
-                                    formattedRate = exchangeRate.toStringAsFixed(2);
-                                  }
-                                } else if(currency1[index]== 'USDJPY' ) {
-                                  final rate = calculateRate('USDKRW', currency1[index])! * 100;
-                                  if (rate != null) {
-                                    formattedRate = rate.toStringAsFixed(2);
-                                  }
-                                }
-                                else {
-                                  // 다른 국가의 환율 계산
-                                  final rate = calculateRate('USDKRW', currency1[index]);
-                                  if (rate != null) {
-                                    formattedRate = rate.toStringAsFixed(2);
-                                  }
-                                }
-                              }
-
-
-                              return GestureDetector(
-                                onTap: (){
-                                  final selectedRate = formattedRate;
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => ExchangeDetailPage(
-                                      selectedIndex: index,
-                                      formattedRateText: selectedRate,
-                                    )),
-                                  );
-                                },
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(15),
-                                            color: Colors.white,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black.withOpacity(0.1),
-                                                spreadRadius: 1,
-                                                blurRadius: 3,
-                                                offset: const Offset(0, 0),
-                                              ),
-                                            ]),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    CircleAvatar(
-                                                      backgroundImage:
-                                                      AssetImage('assets/images/flag/${currency1[index]}.png'),
-                                                      radius: 10,
-                                                    ),
-                                                    const SizedBox(width: 10),
-                                                    Text( _valueList1[index],
-                                                      style: const TextStyle(fontSize: 16),),
-                                                  ],
-                                                ),
-                                                Text(
-                                                  '$formattedRate 원',
-                                                  textAlign: TextAlign.end,
-                                                  style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),)
-                                              ],
-                                            ),
-
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                          ),
+                        child: Container(
+                          margin: const EdgeInsets.fromLTRB(30, 10, 30, 0),
+                          width: double.infinity,
+                          height: 60,
+                          child: getbankView(
+                              ChatBubbleClipper6(type: BubbleType.sendBubble),
+                              context),
+                        ),
+                      ),
                     ],
                   ),
-                  if (_iscalculate)
-                    BankViewBuilder(
-                      key: UniqueKey(),
-                      idx1: idx1,
-                      // exchangeRates: exchangeRates,
-                      moneyController2: double.tryParse(_moneyController2.text) ?? 0.0,
-                    )
-                  ],
-              ),
+                if (_isdoublecalculate)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.fromLTRB(30, 10, 30, 20),
+                          width: double.infinity,
+                          height: 120,
+                          child: getCalculateView(
+                              ChatBubbleClipper4(type: BubbleType.sendBubble),
+                              context),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                //국가별 실시간 환율
+                if (_isDouble == false && _iscalculate == false)
+                  // const ListViewBuilder(),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          primary: false,
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: _valueList1.length,
+                          itemBuilder: (context, index) {
+                            String formattedRate = 'N/A'; // 초기값 설정
+
+                            if (exchangeRates != null) {
+                              if (currency1[index] == 'USDKRW') {
+                                // 미국 달러(USD)은 그대로 표시
+                                final exchangeRate =
+                                    exchangeRates![currency1[index]];
+                                if (exchangeRate != null) {
+                                  formattedRate =
+                                      exchangeRate.toStringAsFixed(2);
+                                }
+                              } else if (currency1[index] == 'USDJPY' || currency1[index] == 'USDVND') {
+                                final rate =
+                                    calculateRate('USDKRW', currency1[index])! *
+                                        100;
+                                if (rate != null) {
+                                  formattedRate = rate.toStringAsFixed(2);
+                                }
+                              } else {
+                                // 다른 국가의 환율 계산
+                                final rate =
+                                    calculateRate('USDKRW', currency1[index]);
+                                if (rate != null) {
+                                  formattedRate = rate.toStringAsFixed(2);
+                                }
+                              }
+                            }
+
+                            return GestureDetector(
+                              onTap: () {
+                                final selectedRate = formattedRate;
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ExchangeDetailPage(
+                                            selectedIndex: index,
+                                            formattedRateText: selectedRate,
+                                          )),
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      margin: const EdgeInsets.fromLTRB(
+                                          20, 0, 20, 20),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          10, 10, 10, 10),
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.black.withOpacity(0.1),
+                                              spreadRadius: 1,
+                                              blurRadius: 3,
+                                              offset: const Offset(0, 0),
+                                            ),
+                                          ]),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  CircleAvatar(
+                                                    backgroundImage: AssetImage(
+                                                        'assets/images/flag/${currency1[index]}.png'),
+                                                    radius: 10,
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                  Text(
+                                                    _valueList1[index],
+                                                    style: const TextStyle(
+                                                        fontSize: 16),
+                                                  ),
+                                                ],
+                                              ),
+                                              Text(
+                                                '$formattedRate 원',
+                                                textAlign: TextAlign.end,
+                                                style: const TextStyle(
+                                                    fontSize: 18,
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                if (_iscalculate)
+                  BankViewBuilder(
+                    key: UniqueKey(),
+                    idx1: idx1,
+                    // exchangeRates: exchangeRates,
+                    moneyController2:
+                        double.tryParse(_moneyController2.text) ?? 0.0,
+                  )
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-   // 기본말풍선
+  // 기본말풍선
   getSenderView(CustomClipper clipper, BuildContext context) => ChatBubble(
-    clipper: clipper,
-    elevation: 0,
-    alignment: Alignment.topLeft,
-    margin: const EdgeInsets.all(0),
-    backGroundColor:const Color(0xFFFFD954),
-    child: Container(
-      // constraints: const BoxConstraints(
-      //   // maxWidth: MediaQuery.of(context).size.width * 1,
-      // ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: const Row(
-        children: [
-          Text(
-            " 국가별 실시간 환율",
-            style: TextStyle(color: Colors.white, fontSize: 17),
+        clipper: clipper,
+        elevation: 0,
+        alignment: Alignment.topLeft,
+        margin: const EdgeInsets.all(0),
+        backGroundColor: const Color(0xFFFFD954),
+        child: Container(
+          // constraints: const BoxConstraints(
+          //   // maxWidth: MediaQuery.of(context).size.width * 1,
+          // ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
           ),
-          Text(
-            "을 확인 할 수 있어요! ",
-            style: TextStyle(color: Colors.black, fontSize: 17),
+          child: const Row(
+            children: [
+              Text(
+                " 국가별 실시간 환율",
+                style: TextStyle(color: Colors.white, fontSize: 17),
+              ),
+              Text(
+                "을 확인 할 수 있어요! ",
+                style: TextStyle(color: Colors.black, fontSize: 17),
+              ),
+            ],
           ),
-        ],
-      ),
-    ),
-  );
-  
+        ),
+      );
+
   // 계산기 누르면 은행별 말풍선
   getbankView(CustomClipper clipper, BuildContext context) => ChatBubble(
-    clipper: clipper,
-    elevation: 0,
-    alignment: Alignment.topLeft,
-    margin: const EdgeInsets.all(0),
-    backGroundColor:const Color(0xFFFFD954),
-    child: Container(
-      // constraints: const BoxConstraints(
-      //   // maxWidth: MediaQuery.of(context).size.width * 1,
-      // ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: const Row(
-        children: [
-          Text(
-            " 은행 별 예상 금액 ",
-            style: TextStyle(color: Colors.white, fontSize: 17),
+        clipper: clipper,
+        elevation: 0,
+        alignment: Alignment.topLeft,
+        margin: const EdgeInsets.all(0),
+        backGroundColor: const Color(0xFFFFD954),
+        child: Container(
+          // constraints: const BoxConstraints(
+          //   // maxWidth: MediaQuery.of(context).size.width * 1,
+          // ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
           ),
-          Text(
-            "을 확인 할 수 있어요! ",
-            style: TextStyle(color: Colors.black, fontSize: 17),
+          child: const Row(
+            children: [
+              Text(
+                " 은행 별 예상 금액 ",
+                style: TextStyle(color: Colors.white, fontSize: 17),
+              ),
+              Text(
+                "을 확인 할 수 있어요! ",
+                style: TextStyle(color: Colors.black, fontSize: 17),
+              ),
+            ],
           ),
-        ],
-      ),
-    ),
-  );
-  
+        ),
+      );
+
   // 이중환전 말풍선
- getCalculateView(CustomClipper clipper, BuildContext context) => ChatBubble(
-   clipper: clipper,
-   elevation: 0,
-   alignment: Alignment.topLeft,
-   margin: const EdgeInsets.all(0),
-   backGroundColor:const Color(0xFFFFD954),
-   child: Container(
-     // constraints: const BoxConstraints(
-     //   // maxWidth: MediaQuery.of(context).size.width * 1,
-     // ),
-     decoration: BoxDecoration(
-       borderRadius: BorderRadius.circular(30),
-     ),
-     child:  Column(
-       children: [
-         Row(
-           children: [
-             Container(
-               margin: const EdgeInsets.fromLTRB(20, 10, 0, 10),
-               child: const Text(
-                 " 직접 환전 대비",
-                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
-               ),
-             ),
-           ],
-         ),
-         Row(
-           mainAxisAlignment: MainAxisAlignment.end,
-           children: [
-             Container(
-               margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-               child: const Text(
-                 "2,300 원",
-                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
-               ),
-             ),
-             Container(
-               margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-               child: const Text(
-                 "절약 ",
-                 style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 25),
-               ),
-             )
-           ],
-         ),
-       ],
-     ),
-   ),
- );
-  
+  getCalculateView(CustomClipper clipper, BuildContext context) => ChatBubble(
+        clipper: clipper,
+        elevation: 0,
+        alignment: Alignment.topLeft,
+        margin: const EdgeInsets.all(0),
+        backGroundColor: const Color(0xFFFFD954),
+        child: Container(
+          // constraints: const BoxConstraints(
+          //   // maxWidth: MediaQuery.of(context).size.width * 1,
+          // ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(20, 10, 0, 10),
+                    child: const Text(
+                      " 직접 환전 대비",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                    child: const Text(
+                      "2,300 원",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                    child: const Text(
+                      "절약 ",
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
 }
-
-
 
 class BankViewBuilder extends StatefulWidget {
   final int idx1;
+
   // Map<String, double>? exchangeRates;
   // TextEditingController moneyController2 = TextEditingController();
   final double moneyController2;
+
   BankViewBuilder({
     Key? key,
     required this.idx1,
@@ -1449,18 +1652,18 @@ class BankViewBuilder extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<BankViewBuilder> createState() => _BankViewBuilderState(idx1: idx1, moneyController2: moneyController2);
+  State<BankViewBuilder> createState() =>
+      _BankViewBuilderState(idx1: idx1, moneyController2: moneyController2);
 }
-
 
 class _BankViewBuilderState extends State<BankViewBuilder> {
   final int idx1; // idx1 값을 저장할 변수 추가
   final double moneyController2;
+
   _BankViewBuilderState({
     required this.idx1,
     required this.moneyController2, // moneyController2 추가
   });
-
 
   final _valueList1 = [
     '하나은행',
@@ -1494,7 +1697,6 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
     'USDCZK',
     'USDNZD',
     'USDRUB',
-
   ];
 
   Map<String, Map<String, String>> bankInfo = {
@@ -1511,21 +1713,24 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
     'DGB대구은행': {'currencyName': 'DGB대구은행', 'bankCode': '031'},
   };
 
-
-  double calculateCashBuyingPrice(double baseRate, String? buyingFee) { // 송금 보낼 때, 현찰 살 때,
+  double calculateCashBuyingPrice(double baseRate, String? buyingFee) {
+    // 송금 보낼 때, 현찰 살 때,
     if (buyingFee == null || buyingFee == "서비스 미제공") {
       return baseRate; // 서비스 미제공일 경우 기본값 반환
     } else {
-      double feePercentage = double.tryParse(buyingFee.replaceAll('%', '')) ?? 0.0;
+      double feePercentage =
+          double.tryParse(buyingFee.replaceAll('%', '')) ?? 0.0;
       return baseRate + (baseRate * feePercentage / 100);
     }
   }
 
-  double calculateCashPrice(double baseRate, String? sellginFee) {  // 현찰 팔 때,
+  double calculateCashPrice(double baseRate, String? sellginFee) {
+    // 현찰 팔 때,
     if (sellginFee == null || sellginFee == "서비스 미제공") {
       return baseRate; // 서비스 미제공일 경우 기본값 반환
     } else {
-      double feePercentage = double.tryParse(sellginFee.replaceAll('%', '')) ?? 0.0;
+      double feePercentage =
+          double.tryParse(sellginFee.replaceAll('%', '')) ?? 0.0;
       return baseRate - (baseRate * feePercentage / 100);
     }
   }
@@ -1539,31 +1744,33 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
     } else if (idx1 == 1) {
       _selectedIdx = 1;
     }
-    return  ListView.builder(
+    return ListView.builder(
       primary: false,
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-      itemCount:  bankInfo.length,
+      itemCount: bankInfo.length,
       itemBuilder: (context, index) {
         final bankName = bankInfo.keys.elementAt(index); // 은행 이름
         final bankData = bankInfo[bankName]; // 은행 정보 맵
         final bankCode = bankData?['bankCode'];
+        final currencyName = bankData?['currencyName'];
         FeeInfo? feeInfo = bankInfoMap[bankName]?.fees[currency1[_selectedIdx]];
         return Row(
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: (){
+                onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => BankDetailPage(
-                        selectedIndex : idx1,
-                      bankCode: bankCode!,
-                    )),
+                    MaterialPageRoute(
+                        builder: (context) => BankDetailPage(
+                              selectedIndex: idx1,
+                              bankCode: bankCode!,
+                              currencyName: currencyName!,
+                            )),
                   );
                   setState(() {
                     _selectedIdx = idx1;
-
                   });
                 },
                 child: Container(
@@ -1597,19 +1804,20 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                               // ),
                               const SizedBox(width: 5),
                               Container(
-                                margin: const EdgeInsets.fromLTRB(2,0,0,0),
+                                margin: const EdgeInsets.fromLTRB(2, 0, 0, 0),
                                 child: Image.asset(
                                     'assets/images/banklogo/$bankCode.png'),
                                 width: 150, // 이미지 너비 조절
                                 height: 20,
                               ),
-
                             ],
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10,),
-                       Row(
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -1619,18 +1827,15 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                               SizedBox(height: 20),
                               Text(
                                 '현찰 살 때',
-                                style: TextStyle(fontSize: 16,
-                                    height: 1.532),
+                                style: TextStyle(fontSize: 16, height: 1.532),
                               ),
                               Text(
                                 '현찰 팔 때',
-                                style: TextStyle(fontSize: 16,
-                                    height: 1.532),
+                                style: TextStyle(fontSize: 16, height: 1.532),
                               ),
                               Text(
                                 '송금 보낼 때',
-                                style: TextStyle(fontSize: 16,
-                                    height: 1.532),
+                                style: TextStyle(fontSize: 16, height: 1.532),
                               )
                             ],
                           ),
@@ -1639,7 +1844,7 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                           ),
                           Row(
                             children: [
-                               Column(
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
@@ -1658,7 +1863,7 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                                       ),
                                       Text(
                                         '${calculateCashPrice(widget.moneyController2 as double, feeInfo?.selling.toString() ?? "서비스 미제공").toStringAsFixed(2)}원',
-                                        style:TextStyle(
+                                        style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
@@ -1760,7 +1965,22 @@ List<String> currency = [
   'NZD',
   'RUB',
 ];
-List<String> sign = ['\$', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
+List<String> sign = [
+  '\$',
+  '¥',
+  '¥',
+  '€',
+  '£',
+  '\$',
+  '\$',
+  '\$',
+  '₱',
+  '₫',
+  '\$',
+  '\$',
+  'Kč',
+  '\$' '₽'
+];
 
 List<int> unit = [1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
 
@@ -1772,7 +1992,8 @@ class CountryListViewBuilder extends StatefulWidget {
 }
 
 class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
- int idx = 0;
+  int idx = 0;
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -1781,9 +2002,9 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
         return GestureDetector(
           onTap: () {
             setState(() {
-           idx = index;
+              idx = index;
             });
-            Navigator.pop(context,idx);
+            Navigator.pop(context, idx);
           },
           child: Container(
             margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
@@ -1801,7 +2022,8 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
                   children: [
                     const SizedBox(width: 20),
                     CircleAvatar(
-                      backgroundImage: AssetImage('assets/images/flag/${currency[index] == 'KRW' ? 'KRW' : currency[index] == 'USD' ? 'USDKRW' : 'USD${currency[index]}'}.png'),
+                      backgroundImage: AssetImage(
+                          'assets/images/flag/${currency[index] == 'KRW' ? 'KRW' : currency[index] == 'USD' ? 'USDKRW' : 'USD${currency[index]}'}.png'),
                       radius: 10,
                     ),
                     const SizedBox(width: 10),
@@ -1835,7 +2057,6 @@ class _CountryListViewBuilderState extends State<CountryListViewBuilder> {
     );
   }
 }
-
 
 List<String> country2 = [
   '미국(달러)',
@@ -1873,7 +2094,23 @@ List<String> currency2 = [
   'NZD',
   'RUB',
 ];
-List<String> sign2 = ['\$', '₩', '¥', '¥','€', '£', '\$', '\$', '\$', '₱', '₫', '\$', '\$','Kč', '\$' '₽' ];
+List<String> sign2 = [
+  '\$',
+  '₩',
+  '¥',
+  '¥',
+  '€',
+  '£',
+  '\$',
+  '\$',
+  '\$',
+  '₱',
+  '₫',
+  '\$',
+  '\$',
+  'Kč',
+  '\$' '₽'
+];
 
 List<int> unit2 = [1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1];
 
@@ -1881,11 +2118,13 @@ class CountryListViewBuilder2 extends StatefulWidget {
   const CountryListViewBuilder2({super.key});
 
   @override
-  State<CountryListViewBuilder2> createState() => _CountryListViewBuilder2State();
+  State<CountryListViewBuilder2> createState() =>
+      _CountryListViewBuilder2State();
 }
 
 class _CountryListViewBuilder2State extends State<CountryListViewBuilder2> {
   int idx = 0;
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -1896,7 +2135,7 @@ class _CountryListViewBuilder2State extends State<CountryListViewBuilder2> {
             setState(() {
               idx = index;
             });
-            Navigator.pop(context,idx);
+            Navigator.pop(context, idx);
           },
           child: Container(
             margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
@@ -1914,7 +2153,8 @@ class _CountryListViewBuilder2State extends State<CountryListViewBuilder2> {
                   children: [
                     const SizedBox(width: 20),
                     CircleAvatar(
-                      backgroundImage: AssetImage('assets/images/flag/${currency2[index] == 'KRW' ? 'KRW' : currency2[index] == 'USD' ? 'USDKRW' : 'USD${currency2[index]}'}.png'),
+                      backgroundImage: AssetImage(
+                          'assets/images/flag/${currency2[index] == 'KRW' ? 'KRW' : currency2[index] == 'USD' ? 'USDKRW' : 'USD${currency2[index]}'}.png'),
                       radius: 10,
                     ),
                     const SizedBox(width: 10),
@@ -1948,4 +2188,3 @@ class _CountryListViewBuilder2State extends State<CountryListViewBuilder2> {
     );
   }
 }
-
