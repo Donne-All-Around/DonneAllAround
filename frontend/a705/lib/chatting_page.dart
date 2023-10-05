@@ -1,7 +1,8 @@
-import 'package:a705/service/database.dart';
+import 'package:a705/providers/database.dart';
 import 'package:flutter/material.dart';
 
 import 'package:a705/chatting_detail_page.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ChattingPage extends StatefulWidget {
   const ChattingPage({super.key});
@@ -107,7 +108,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
   }
 
   // getAndSetChatrooms() 메서드는 이 클래스 내에서 정의합니다.
-  getAndSetChatrooms() async {
+  Future<List> getAndSetChatrooms() async {
     print('myUserId : ${myUserId}');
     List<String> myList = await DatabaseMethods().getUserChatList(myUserId!);
     // print('myList : ${myList}');
@@ -115,11 +116,12 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
     if (chatroom.isEmpty) {
       print("채팅창이 없습니다.");
       isChatroomExits = true;
-    }else{
+      return myList;
+    } else {
       print("채팅창이 존재합니다.");
       isChatroomExits = false;
+      return myList;
     }
-    setState(() {}); // 데이터를 가져온 후 화면을 업데이트합니다.
   }
 
   @override
@@ -139,7 +141,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                   "아직 거래를 시작하지 않았어요.",
                   style: TextStyle(fontSize: 20, color: Colors.black54),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -162,264 +164,409 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
               ],
             ),
           )
-        : ListView.builder(
-            itemCount: chatroom.length,
-            itemBuilder: (BuildContext context, int index) {
-              final key = chatroom.keys.elementAt(index);
-              print("Key: $key");
-              final item = chatroom[key];
-              // print("item: $item");
+        : FutureBuilder<List<dynamic>>(
+            future: getAndSetChatrooms(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return _skeletonShimmer();
+              } else if (snapshot.hasError) {
+                return _errorPage();
+              } else {
+                return ListView.builder(
+                  itemCount: chatroom.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final key = chatroom.keys.elementAt(index);
+                    print("Key: $key");
+                    final item = chatroom[key];
+                    // print("item: $item");
 
-              // 상대방 이름 판별
-              myRole =
-                  myUserId == item['seller']['sellerId'] ? 'seller' : 'buyer';
-              otherRole = myRole == 'seller' ? 'buyer' : 'seller';
-              // 나가기 여부
-              isExit = item[myRole]['isExit'];
-              // 읽음 여부
-              isRead = item[myRole]['unRead'] == 0 ? true : false;
-              lastMessage = item!['list']['lastMessage']!;
+                    // 상대방 이름 판별
+                    myRole = myUserId == item['seller']['sellerId']
+                        ? 'seller'
+                        : 'buyer';
+                    otherRole = myRole == 'seller' ? 'buyer' : 'seller';
+                    // 나가기 여부
+                    isExit = item[myRole]['isExit'];
+                    // 읽음 여부
+                    isRead = item[myRole]['unRead'] == 0 ? true : false;
+                    lastMessage = item!['list']['lastMessage']!;
 
-              return Container(
-                margin: const EdgeInsets.fromLTRB(20, 7, 20, 7),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(25.0),
-                ),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context) {
-                        return ChattingDetailPage(chatRoomListInfoMap: {
-                          "chatroomId": key,
-                          "otherUserName": item![otherRole]['userName']!,
-                          "otherUserId": item![otherRole]['${otherRole}Id']!,
-                          "otherRole": otherRole,
-                          "myRole": myRole
-                        });
-                      },
-                    )).then((result) {
-                      // 다음 화면에서 반환한 데이터(result)를 처리
-                      if (result == "data_changed") {
-                        // 데이터가 변경되었을 때 처리
-                        getAndSetChatrooms();
-                      }
-                    });
-                  },
-                  child: isExit
-                      ? Row()
-                      : Dismissible(
-                          key: Key(key),
-                          confirmDismiss: (direction) async {
-                            if (direction == DismissDirection.endToStart) {
-                              bool? confirmExit = await showDialog<bool>(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          15.0), // 원하는 Radius 값으로 설정
-                                    ),
-                                    title: Text("확인"),
-                                    content: Text("채팅방을 나가시겠어요?"),
-                                    actions: [
-                                      TextButton(
-                                        style: ButtonStyle(
-                                          shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
-                                            ),
-                                          ),
-                                          minimumSize:
-                                              MaterialStateProperty.all<Size>(
-                                                  Size(100, 50)),
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  Colors.grey.shade200),
-                                          foregroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  Colors.black),
-                                        ),
-                                        child: Text(
-                                          "취소",
-                                          style: TextStyle(fontSize: 17),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.of(context).pop(false);
-                                        },
-                                      ),
-                                      TextButton(
-                                        style: ButtonStyle(
-                                          shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                            RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
-                                            ),
-                                          ),
-                                          minimumSize:
-                                              MaterialStateProperty.all<Size>(
-                                                  Size(100, 50)),
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  Colors.red),
-                                          foregroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  Colors.white),
-                                        ),
-                                        child: Text(
-                                          "나가기",
-                                          style: TextStyle(fontSize: 17),
-                                        ),
-                                        onPressed: () {
-                                          DatabaseMethods()
-                                              .setExit(key, myRole!);
-                                          Navigator.of(context).pop(true);
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-
-                              return confirmExit == true;
+                    return Container(
+                      margin: const EdgeInsets.fromLTRB(20, 7, 20, 7),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return ChattingDetailPage(chatRoomListInfoMap: {
+                                "chatroomId": key,
+                                "otherUserName": item![otherRole]['userName']!,
+                                "otherUserId": item![otherRole]
+                                    ['${otherRole}Id']!,
+                                "otherRole": otherRole,
+                                "myRole": myRole
+                              });
+                            },
+                          )).then((result) {
+                            // 다음 화면에서 반환한 데이터(result)를 처리
+                            if (result == "data_changed") {
+                              // 데이터가 변경되었을 때 처리
+                              getAndSetChatrooms();
                             }
-                            return false;
-                          },
-                          direction: DismissDirection.endToStart,
-                          background: Container(
-                            margin: const EdgeInsets.fromLTRB(20, 7, 20, 7),
-                            alignment: Alignment.centerRight,
-                            color: Colors.red,
-                            child: Icon(Icons.delete, color: Colors.white),
-                          ),
-                          child: Container(
-                              // margin: const EdgeInsets.fromLTRB(20, 7, 20, 7),
-                              width: double.infinity,
-                              height: 90,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.1),
-                                      spreadRadius: 1,
-                                      blurRadius: 3,
-                                      offset: const Offset(0, 0),
-                                    ),
-                                  ]),
-                              child: Row(
-                                children: [
-                                  const SizedBox(width: 15),
-                                  Stack(children: [
-                                    const Row(
-                                      children: [
-                                        CircleAvatar(
-                                          backgroundImage: AssetImage(
-                                              'assets/images/profile.jpg'),
-                                          radius: 32,
-                                        ),
-                                        SizedBox(width: 16),
-                                      ],
-                                    ),
-                                    isRead
-                                        ? Row()
-                                        : Positioned(
-                                            bottom: 3,
-                                            right: 10,
-                                            child: Container(
-                                              width: 22, // 동그라미의 지름을 원하는 크기로 조정
-                                              height: 22,
-                                              decoration: const BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Color(0xFFFFD954),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  item![myRole]['unRead']!
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                    fontSize: 11,
-                                                    color: Colors.black87,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
+                          });
+                        },
+                        child: isExit
+                            ? Row()
+                            : Dismissible(
+                                key: Key(key),
+                                confirmDismiss: (direction) async {
+                                  if (direction ==
+                                      DismissDirection.endToStart) {
+                                    bool? confirmExit = await showDialog<bool>(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                15.0), // 원하는 Radius 값으로 설정
                                           ),
-                                  ]),
-                                  Flexible(
-                                    flex: 1,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  item![otherRole]['userName']!,
-                                                  style: const TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
+                                          title: Text("확인"),
+                                          content: Text("채팅방을 나가시겠어요?"),
+                                          actions: [
+                                            TextButton(
+                                              style: ButtonStyle(
+                                                shape:
+                                                    MaterialStateProperty.all<
+                                                        RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15.0),
                                                   ),
                                                 ),
-                                                const SizedBox(width: 9),
-                                                Text(
-                                                  item!['list']
-                                                      ['lastMessageSendTs']!,
-                                                  style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 11,
-                                                  ),
-                                                )
-                                              ],
+                                                minimumSize:
+                                                    MaterialStateProperty.all<
+                                                        Size>(Size(100, 50)),
+                                                backgroundColor:
+                                                    MaterialStateProperty.all<
+                                                            Color>(
+                                                        Colors.grey.shade200),
+                                                foregroundColor:
+                                                    MaterialStateProperty.all<
+                                                        Color>(Colors.black),
+                                              ),
+                                              child: Text(
+                                                "취소",
+                                                style: TextStyle(fontSize: 17),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .pop(false);
+                                              },
                                             ),
-                                            const SizedBox(height: 5),
-                                            Text(
-                                              lastMessage.length > 10
-                                                  ? '${lastMessage.substring(0, 10)}...'
-                                                  : lastMessage,
-                                              style: TextStyle(fontSize: 17),
+                                            TextButton(
+                                              style: ButtonStyle(
+                                                shape:
+                                                    MaterialStateProperty.all<
+                                                        RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0),
+                                                  ),
+                                                ),
+                                                minimumSize:
+                                                    MaterialStateProperty.all<
+                                                        Size>(Size(100, 50)),
+                                                backgroundColor:
+                                                    MaterialStateProperty.all<
+                                                        Color>(Colors.red),
+                                                foregroundColor:
+                                                    MaterialStateProperty.all<
+                                                        Color>(Colors.white),
+                                              ),
+                                              child: Text(
+                                                "나가기",
+                                                style: TextStyle(fontSize: 17),
+                                              ),
+                                              onPressed: () {
+                                                DatabaseMethods()
+                                                    .setExit(key, myRole!);
+                                                Navigator.of(context).pop(true);
+                                              },
                                             ),
                                           ],
-                                        ),
-                                        Container(
-                                          margin: const EdgeInsets.fromLTRB(
-                                              10, 10, 15, 10),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            border:
-                                                Border.all(color: Colors.grey),
+                                        );
+                                      },
+                                    );
+
+                                    return confirmExit == true;
+                                  }
+                                  return false;
+                                },
+                                direction: DismissDirection.endToStart,
+                                background: Container(
+                                  margin:
+                                      const EdgeInsets.fromLTRB(20, 7, 20, 7),
+                                  alignment: Alignment.centerRight,
+                                  color: Colors.red,
+                                  child:
+                                      Icon(Icons.delete, color: Colors.white),
+                                ),
+                                child: Container(
+                                    // margin: const EdgeInsets.fromLTRB(20, 7, 20, 7),
+                                    width: double.infinity,
+                                    height: 90,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.1),
+                                            spreadRadius: 1,
+                                            blurRadius: 3,
+                                            offset: const Offset(0, 0),
                                           ),
-                                          child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              child: Image(
-                                                  height: 58,
-                                                  width: 58,
-                                                  fit: BoxFit.cover,
-                                                  image: AssetImage(
-                                                    transactionUrl,
-                                                  ))),
-                                        )
+                                        ]),
+                                    child: Row(
+                                      children: [
+                                        const SizedBox(width: 15),
+                                        Stack(children: [
+                                          const Row(
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundImage: AssetImage(
+                                                    'assets/images/profile.jpg'),
+                                                radius: 32,
+                                              ),
+                                              SizedBox(width: 16),
+                                            ],
+                                          ),
+                                          isRead
+                                              ? Row()
+                                              : Positioned(
+                                                  bottom: 3,
+                                                  right: 10,
+                                                  child: Container(
+                                                    width:
+                                                        22, // 동그라미의 지름을 원하는 크기로 조정
+                                                    height: 22,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Color(0xFFFFD954),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        item![myRole]['unRead']!
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                          fontSize: 11,
+                                                          color: Colors.black87,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                        ]),
+                                        Flexible(
+                                          flex: 1,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        item![otherRole]
+                                                            ['userName']!,
+                                                        style: const TextStyle(
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 9),
+                                                      Text(
+                                                        item!['list'][
+                                                            'lastMessageSendTs']!,
+                                                        style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 11,
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 5),
+                                                  Text(
+                                                    lastMessage.length > 10
+                                                        ? '${lastMessage.substring(0, 10)}...'
+                                                        : lastMessage,
+                                                    style:
+                                                        TextStyle(fontSize: 17),
+                                                  ),
+                                                ],
+                                              ),
+                                              Container(
+                                                margin:
+                                                    const EdgeInsets.fromLTRB(
+                                                        10, 10, 15, 10),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                  border: Border.all(
+                                                      color: Colors.grey),
+                                                ),
+                                                child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                    child: Image(
+                                                        height: 58,
+                                                        width: 58,
+                                                        fit: BoxFit.cover,
+                                                        image: AssetImage(
+                                                          transactionUrl,
+                                                        ))),
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                       ],
+                                    )),
+                              ),
+                      ),
+                    );
+                  },
+                );
+              }
+            });
+  }
+
+  Widget _errorPage() {
+    return Center(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Image(image: AssetImage('assets/images/bad_don.png')),
+        Text("사용자 정보를 확인할 수 없습니다.",
+            style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500)),
+      ]),
+    );
+  }
+
+
+  Widget _skeletonShimmer() {
+    return Column(
+      children: [
+        Container(
+            margin: const EdgeInsets.fromLTRB(20, 7, 20, 7),
+            width: double.infinity,
+            height: 90,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                    offset: const Offset(0, 0),
+                  ),
+                ]),
+            child: Row(
+              children: [
+                const SizedBox(width: 15),
+                Stack(children: [
+                  Row(
+                    children: [
+                      Shimmer.fromColors(
+                          child: Container(
+                            width: 64, // 지름의 2배로 설정
+                            height: 64,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle, // 원 모양
+                              color: Colors.grey, // 원의 색상 (회색)
+                            ),
+                            child: Column(),
+                          ),
+                          baseColor: Color.fromRGBO(240, 240, 240, 1),
+                          highlightColor: Colors.white),
+                      SizedBox(width: 16),
+                    ],
+                  ),
+                ]),
+                Flexible(
+                  flex: 1,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Shimmer.fromColors(
+                                  child: Container(
+                                    height: 23,
+                                    width: 80,
+                                    margin: EdgeInsets.fromLTRB(0, 0, 0, 2),
+                                    decoration: BoxDecoration(
+                                      color: Color.fromRGBO(240, 240, 240, 1),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
+                                    child: Column(),
                                   ),
-                                ],
-                              )),
-                        ),
+                                  baseColor: Color.fromRGBO(240, 240, 240, 1),
+                                  highlightColor: Colors.white),
+                            ],
+                          ),
+                          const SizedBox(height: 5),
+                          Shimmer.fromColors(
+                              child: Container(
+                                height: 23,
+                                width: 150,
+                                margin: EdgeInsets.fromLTRB(0, 2, 0, 0),
+                                decoration: BoxDecoration(
+                                  color: Color.fromRGBO(240, 240, 240, 1),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(),
+                              ),
+                              baseColor: Color.fromRGBO(240, 240, 240, 1),
+                              highlightColor: Colors.white)
+                        ],
+                      ),
+                      Shimmer.fromColors(
+                          child: Container(
+                            height: 60,
+                            width: 60,
+                            margin: const EdgeInsets.fromLTRB(10, 10, 15, 10),
+                            decoration: BoxDecoration(
+                              color: Color.fromRGBO(240, 240, 240, 1),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Column(),
+                          ),
+                          baseColor: Color.fromRGBO(240, 240, 240, 1),
+                          highlightColor: Colors.white),
+                    ],
+                  ),
                 ),
-              );
-            },
-          );
+              ],
+            ))
+      ],
+    );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:a705/delivery_transaction_page.dart';
-import 'package:a705/service/database.dart';
-import 'package:a705/service/spring_api.dart';
+import 'package:a705/providers/database.dart';
+import 'package:a705/providers/trade_providers.dart';
 import 'package:flutter/material.dart';
 
 import 'package:a705/direct_transaction_page.dart';
@@ -325,7 +325,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
     // 백엔드에 type 전달 method 구현 필요
     Map<String, dynamic> setDeliveryAppointmentMap = {"buyerId":2};
-    SpringApi().setDeliveryAppointment(setDeliveryAppointmentMap, widget.tradeInfoMap?['tradeId'], myUserId!);
+    TradeProviders().setDeliveryAppointment(setDeliveryAppointmentMap, widget.tradeInfoMap?['tradeId'], myUserId!);
     DatabaseMethods().setTradeInfo(widget.tradeInfoMap?['tradeId'], tradeInfo);
     print("택배 거래 업데이트 완료");
   }

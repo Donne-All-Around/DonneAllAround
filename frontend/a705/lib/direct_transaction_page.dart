@@ -1,6 +1,6 @@
 import 'package:a705/chatting_page.dart';
-import 'package:a705/service/database.dart';
-import 'package:a705/service/spring_api.dart';
+import 'package:a705/providers/trade_providers.dart';
+import 'package:a705/providers/database.dart';
 import 'package:bottom_picker/bottom_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -336,7 +336,7 @@ class _DirectTransactionPageState extends State<DirectTransactionPage> {
      * buyerId 수정 필요
      */
     Map<String, dynamic> setDirectAppointmentMap = { "buyerId" : 2};
-    SpringApi().setDirectAppointment(setDirectAppointmentMap, widget.tradeInfoMap?['tradeId'], myUserId!);
+    TradeProviders().setDirectAppointment(setDirectAppointmentMap, widget.tradeInfoMap?['tradeId'], myUserId!);
 
     DatabaseMethods().setTradeInfo(widget.tradeInfoMap?['tradeId'], tradeInfo);
     print(tradeInfo.toString());
