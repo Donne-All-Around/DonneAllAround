@@ -2,12 +2,13 @@ import 'dart:convert';
 
 import 'package:a705/models/TradeDto.dart';
 import 'package:a705/providers/database.dart';
+import 'package:a705/storage.dart';
 import 'package:http/http.dart' as http;
 
 class TradeProviders {
   String url = "https://j9a705.p.ssafy.io";
 
-  String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtNzk3OS03OTc5IiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4ODk5M30.6tfXpAfYuARNQUcMBC7nVY-vgoX-8gDHI8zUx_1GQs0";
+  // String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtNzk3OS03OTc5IiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4ODk5M30.6tfXpAfYuARNQUcMBC7nVY-vgoX-8gDHI8zUx_1GQs0";
 
 
   // 거래 목록 조회(최신순)
@@ -20,6 +21,7 @@ class TradeProviders {
       String? locality,
       String? subLocality,
       String? thoroughfare) async {
+    final accessToken = await getJwtAccessToken();
     List<TradeDto> trade = [];
     final response = await http.post(
       lastTradeId == null
@@ -63,7 +65,7 @@ class TradeProviders {
       String? subLocality,
       String? thoroughfare) async {
     List<TradeDto> trade = [];
-
+    final accessToken = await getJwtAccessToken();
     final response = await http.post(
       lastTradeId == null
           ? Uri.parse('$url/api/trade/list?lastTradeId=&sort=koreanWonAmount')
@@ -105,7 +107,7 @@ class TradeProviders {
       String? subLocality,
       String? thoroughfare) async {
     List<TradeDto> trade = [];
-
+    final accessToken = await getJwtAccessToken();
     final response = await http.post(
       lastTradeId == null
           ? Uri.parse(
@@ -139,6 +141,7 @@ class TradeProviders {
   // 거래 내역 조회(거래 완료)
   Future<List<TradeDto>> getTradeHistory(int lastTradeId) async {
     List<TradeDto> trade = [];
+    final accessToken = await getJwtAccessToken();
     var response = await http.get(
       Uri.parse(
           '$url/api/trade/history/sell/complete?lastTradeId=$lastTradeId'),
@@ -158,6 +161,7 @@ class TradeProviders {
 
   // 거래 상세 조회
   Future<TradeDto> getTradeDetail(int tradeId) async {
+    final accessToken = await getJwtAccessToken();
     var response = await http.get(
       Uri.parse('$url/api/trade/detail/$tradeId'),
       headers: <String, String>{
@@ -177,6 +181,7 @@ class TradeProviders {
 
   // 거래 글 생성
   Future<void> postTrade(TradeDto tradeDto) async {
+    final accessToken = await getJwtAccessToken();
     String jsonData = jsonEncode({
       "title": tradeDto.title,
       "description": tradeDto.description,
@@ -219,6 +224,7 @@ class TradeProviders {
 
   // 거래 글 수정
   Future<void> modifyTrade(TradeDto tradeDto) async {
+    final accessToken = await getJwtAccessToken();
     String jsonData = jsonEncode({
       "title": tradeDto.title,
       "description": tradeDto.description,
@@ -241,7 +247,7 @@ class TradeProviders {
           headers: {
             "Accept": "application/json",
             "Content-Type":"application/json",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
+            "Authorization": "Bearer ${accessToken}"
           },
           body: jsonData);
       if(response.statusCode == 200) {
@@ -254,21 +260,28 @@ class TradeProviders {
 
   // 거래 글 삭제
   Future<void> deleteTrade(int tradeId) async {
+    final accessToken = await getJwtAccessToken();
     final response = await http.put(
       Uri.parse('$url/api/trade/delete/$tradeId'),
       headers: {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg"
+        "Authorization": "Bearer ${accessToken}"
       },
     );
   }
 
   Future<void> likeTrade(int tradeId) async {
+    final accessToken = await getJwtAccessToken();
+
     final response = await http.post(
       Uri.parse('$url/api/trade/$tradeId/like'),
+      headers: {
+        "Authorization": "Bearer ${accessToken}"
+      }
     );
   }
 
   Future<void> unlikeTrade(int tradeId) async {
+    final accessToken = await getJwtAccessToken();
     final response = await http.delete(
       Uri.parse('$url/api/trade/$tradeId/unlike?memberId=1'),
       headers: {
@@ -281,6 +294,7 @@ class TradeProviders {
   // 채팅방 내 거래글 정보 가져오기
   Future<Map<String, dynamic>> getChatTransactionInfo(
       String? sellerId, String? tradeId) async {
+    final accessToken = await getJwtAccessToken();
     print('sellerId: $sellerId, tradeId: $tradeId');
     try {
       http.Response _response = await http.get(Uri.parse(
@@ -308,6 +322,7 @@ class TradeProviders {
   // 직거래 약속 잡기
   Future<void> setDirectAppointment(
       Map<String, dynamic> apptInfoMap, String tradeId, String memberId) async {
+    final accessToken = await getJwtAccessToken();
     print('tradeId: $tradeId');
     final String jsonData = json.encode(apptInfoMap);
     try {
@@ -337,6 +352,7 @@ class TradeProviders {
   // 택배거래 약속 잡기
   Future<void>  setDeliveryAppointment(
       Map<String, dynamic> apptInfoMap, String tradeId, String memberId) async {
+    final accessToken = await getJwtAccessToken();
     print('tradeId: $tradeId');
     final String jsonData = json.encode(apptInfoMap);
     try {
@@ -366,6 +382,7 @@ class TradeProviders {
 
   // 거래 완료
   Future<void> setCompleteAppointment(String tradeId, String memberId) async {
+    final accessToken = await getJwtAccessToken();
     print('tradeId: $tradeId');
     try {
       http.Response _response = await http.put(
@@ -394,6 +411,7 @@ class TradeProviders {
 
   // 약속 취소
   Future<void> cancelAppointment(String tradeId, String memberId) async {
+    final accessToken = await getJwtAccessToken();
     print('tradeId: $tradeId');
     try {
       http.Response _response = await http.put(
