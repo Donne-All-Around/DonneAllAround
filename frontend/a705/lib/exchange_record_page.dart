@@ -1,4 +1,5 @@
 import 'package:a705/models/ExchangeRecordDto.dart';
+import 'package:a705/storage.dart';
 import 'package:flutter/material.dart';
 import 'exchange_record_create_page.dart';
 import 'exchange_record_edit_page.dart';
@@ -19,14 +20,11 @@ class ExchangeRecordPage extends StatefulWidget {
   State<ExchangeRecordPage> createState() => ExchangeRecordPageState();
 }
 
-
-
-String accessToken =
-    "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtNzk3OS03OTc5IiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4ODk5M30.6tfXpAfYuARNQUcMBC7nVY-vgoX-8gDHI8zUx_1GQs0";
-
 class ExchangeRecordPageState extends State<ExchangeRecordPage> {
   // 서버에서 받아온 데이터를 저장할 리스트 일단 주석처리 나중에 백 연결되면 주석해제
   List<Map<String, dynamic>> exchangeDataList = [];
+
+  String? accessToken = getJwtAccessToken().toString();
 
   // 삭제 API 호출 메서드
   Future<void> deleteExchangeRecord(int exchangeRecordId) async {
@@ -39,7 +37,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
         headers: {
           "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
           'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
+              'Bearer $accessToken',
           'Content-Type': 'application/json', // 필요에 따라 다른 헤더를 추가할 수 있습니다.
         },
       );
@@ -61,8 +59,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
   // 서버로부터 데이터를 가져오는 메서드
   Future<void> fetchExchangeData() async {
     const apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list';
-    const accessToken =
-        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+    final accessToken = await getJwtAccessToken();
 
     try {
       http.Response response = await http.get(
@@ -148,8 +145,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
   void fetchMoreLoadExchangeData(int lastListIdx) async {
 
     final apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list?lastExchangeRecordId=${lastListIdx}';
-    const accessToken =
-        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+    final accessToken = await getJwtAccessToken();
 
     try {
       http.Response response = await http.get(

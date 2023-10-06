@@ -1,3 +1,4 @@
+import 'package:a705/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:a705/Login/start_page.dart';
 import 'package:http/http.dart' as http;
@@ -14,8 +15,8 @@ class _WithdrawalPageState extends State<WithdrawalPage> {
 
   Future<void> withdraw() async {
     final url = Uri.parse('https://j9a705.p.ssafy.io/api/member/delete');
-    const accessToken =
-        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+    final accessToken =  await getJwtAccessToken();
+    String? refreshToken =  await getJwtRefreshToken();
 
     try {
       final response = await http.post(
@@ -25,7 +26,7 @@ class _WithdrawalPageState extends State<WithdrawalPage> {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTc2NDYyNTF9.SHw9gvdoSj4i9wmYYcKxaY4B5xEpOGv9Onq6TLpNJMo"
+          "refreshToken": '$refreshToken'
         }),
       );
 

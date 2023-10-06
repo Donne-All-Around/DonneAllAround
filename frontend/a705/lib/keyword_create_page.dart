@@ -1,3 +1,4 @@
+import 'package:a705/storage.dart';
 import 'package:flutter/material.dart';
 import 'keyword_page.dart';
 import 'package:a705/choose_location_page2.dart';
@@ -104,8 +105,7 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
       // 정보가 모두 입력되었을 떄 서버로 전송
        // memberId 설정 (원하는 값으로 변경)
       final url = 'https://j9a705.p.ssafy.io/api/keyword';
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+      final accessToken =  await getJwtAccessToken();
 
       final requestData = {
         'countryCode': countryCode, // 여기에 나라 코드 설정

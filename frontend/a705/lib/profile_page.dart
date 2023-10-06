@@ -28,8 +28,8 @@ class _ProfilePageState extends State<ProfilePage> {
   // 서버에 GET 요청을 보내는 함수
   Future<void> fetchData() async {
     final url = Uri.parse('https://j9a705.p.ssafy.io/api/member/info');
-    const accessToken =
-        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+    final accessToken =
+        await getJwtAccessToken();
 
     try {
       final response = await http.get(
@@ -73,12 +73,9 @@ class _ProfilePageState extends State<ProfilePage> {
     final refreshToken =  await getJwtRefreshToken(); // 리프레시 토큰 가져오기
     final accessToken =  await getJwtAccessToken(); // 액세스 토큰 가져오기
 
-    // const accessToken =
-    //     'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
-
-    // final refreshToken = 'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTc2NDYyNTF9.SHw9gvdoSj4i9wmYYcKxaY4B5xEpOGv9Onq6TLpNJMo';
     print('로그아웃을 위한 refreshToken 값; $refreshToken');
     print('로그아웃을 위한 refreshToken 값; $accessToken');
+
     try {
       final response = await http.post(
         url,

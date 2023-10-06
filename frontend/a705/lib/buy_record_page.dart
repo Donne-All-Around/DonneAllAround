@@ -1,3 +1,4 @@
+import 'package:a705/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:a705/transaction_detail_page.dart';
 import 'package:intl/intl.dart';
@@ -48,9 +49,10 @@ class BuyRecordPageState extends State<BuyRecordPage> {
   Future fetchMoreLoadBuyHistory(int lastListIdx) async {
     try {
       final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/buy?lastTradeId=$lastListIdx');
+      final accessToken =  await getJwtAccessToken();
 
       final headers = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json', // 필요에 따라 다른 헤더를 추가할 수 있습니다.
       };
 
@@ -79,9 +81,10 @@ class BuyRecordPageState extends State<BuyRecordPage> {
   Future fetchBuyHistory() async {
     try {
       final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/buy');
+      final accessToken =  await getJwtAccessToken();
 
       final headers = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json', // 필요에 따라 다른 헤더를 추가할 수 있습니다.
       };
 

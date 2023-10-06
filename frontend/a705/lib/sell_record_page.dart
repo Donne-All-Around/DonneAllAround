@@ -1,3 +1,4 @@
+import 'package:a705/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:a705/transaction_detail_page.dart';
 import 'package:intl/intl.dart';
@@ -66,9 +67,7 @@ class SellRecordPageState extends State<SellRecordPage> {
     try {
       final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/sale?lastTradeId=$lastListIdx');
 
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
-
+      final accessToken =  await getJwtAccessToken();
       http.Response response = await http.get(
         url,
         headers: {'Authorization': 'Bearer $accessToken',
@@ -168,8 +167,7 @@ class SellRecordPageState extends State<SellRecordPage> {
     try {
        // 원하는 회원 ID를 여기에 넣어주세요.
       final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/complete?lastTradeId=$lastListIdx');
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+      final accessToken =  await getJwtAccessToken();
 
       http.Response response = await http.get(
         url,

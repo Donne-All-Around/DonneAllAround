@@ -1,3 +1,4 @@
+import 'package:a705/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'exchange_record_page.dart';
@@ -28,8 +29,7 @@ class ExchangeRecordEditPageState extends State<ExchangeRecordEditPage> {
     try {
 
       const apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list';
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+      final accessToken =  await getJwtAccessToken();
 
       http.Response response = await http.get(
         Uri.parse(apiUrl),
@@ -83,8 +83,7 @@ class ExchangeRecordEditPageState extends State<ExchangeRecordEditPage> {
   Future<void> sendExchangeRecord(String tradingBaseRate, String countryCode, String bankCode) async {
 
     final apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/${widget.exchangeRecordId}';
-    const accessToken =
-        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+    final accessToken =  await getJwtAccessToken();
 
     final Map<String, dynamic> requestData = {
       "countryCode": currency[idx],
