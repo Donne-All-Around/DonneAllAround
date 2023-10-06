@@ -1,3 +1,32 @@
 server:
   port:
     5000
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://ssafy-db:3306/donnearound?useUnicode=true
+    username: ssafy
+    password: ssafy
+
+  data:
+    redis:
+      host: docker-redis
+      port: 6379
+
+fcm:
+  service-account-file: /app/donnearound-java-access-key.json #비밀 키 경로
+
+jwt:
+  secret: o79wfnSC9mNCkN6xKfAinMH4Zh9WZCnby/zNpPa9Yi2FiXy+cbqZUho6/gWNWVWj
+
+exchange:
+  key: 801421925fd59c4a9b9fb2fa00a51d2c

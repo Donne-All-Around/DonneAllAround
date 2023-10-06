@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Secret Key File ###
+**/src/main/resources/firebase/donnearound-java-access-key.json
