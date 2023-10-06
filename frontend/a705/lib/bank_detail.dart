@@ -993,9 +993,9 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
             : double.parse(formattedRate) *
             (1 + feeInfo!.sending! / 100 * (1 - widget.percent / 100));
 
-        String buyCurrency = buy == 0 ? '미제공' : buy.toStringAsFixed(2);
-        String sellCurrency = sell == 0 ? '미제공' : sell.toStringAsFixed(2);
-        String sendCurrency = send == 0 ? '미제공' : send.toStringAsFixed(2);
+        String buyCurrency = buy == 0 ? '미제공' : NumberFormat("#,##0.00").format(buy);
+        String sellCurrency = sell == 0 ? '미제공' : NumberFormat("#,##0.00").format(sell);
+        String sendCurrency = send == 0 ? '미제공' : NumberFormat("#,##0.00").format(send);
 
         return Row(
           children: [

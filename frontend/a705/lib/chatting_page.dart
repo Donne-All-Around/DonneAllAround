@@ -101,9 +101,10 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
   }
 
   getUserInfo() async {
+    // myUserName = getUserNickname();
+    // myUserId = getUserId();
     myUserName = "신짱구";
     myUserId = "3";
-    // 예시 끝
     setState(() {});
   }
 
