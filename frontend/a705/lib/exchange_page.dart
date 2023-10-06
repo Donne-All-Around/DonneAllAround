@@ -280,7 +280,7 @@ class _ExchangePageState extends State<ExchangePage> {
   String selectedButton = '직접'; // 선택된 버튼
 
   final _bankList = [
-    '하나은행', 
+    '하나은행',
     '우리은행',
     'KB국민은행',
     '신한은행',
