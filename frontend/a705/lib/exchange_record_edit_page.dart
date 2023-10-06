@@ -223,7 +223,7 @@ class ExchangeRecordEditPageState extends State<ExchangeRecordEditPage> {
   }
 
   // 작성 완료 버튼을 눌렀을 때 호출되는 함수
-  void _onSubmit() {
+   _onSubmit() {
     // 입력값 확인
     if (_selectedValue.isEmpty || _priceController.text.isEmpty ||
         _discountController.text.isEmpty) {
@@ -270,10 +270,15 @@ class ExchangeRecordEditPageState extends State<ExchangeRecordEditPage> {
       'preferentialRate': _discountController.text,
       'tradingBaseRate': tradingBaseRateString,
     };
+
+
+
+
     Navigator.of(context).pop();
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-      builder: (BuildContext context) => const ExchangeRecordPage(), // RecordPage로 돌아가도록 수정
-    ));
+    // Navigator.of(context).pop();
+    // Navigator.of(context).pushReplacement(MaterialPageRoute(
+    //   builder: (BuildContext context) => const ExchangeRecordPage(), // RecordPage로 돌아가도록 수정
+    // ));
   }
 
   @override

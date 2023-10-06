@@ -507,8 +507,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             offset: const Offset(0, 0),
                           ),
                         ]),
-                  margin: EdgeInsets.all(10.0),
-                  padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
+                  margin: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
                   height: 105,
                   width: 360,
                   child: Column(
@@ -529,6 +529,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       const SizedBox(height: 10.0),
                       InkWell(
                         onTap: () {
+
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => ExchangeRecordPage()));
@@ -568,6 +570,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             offset: const Offset(0, 0),
                           ),
                         ]),
+
                   margin: const EdgeInsets.all(10.0),
                   padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
                   height: 105,

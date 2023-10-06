@@ -25,6 +25,10 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     loadData();
     super.initState();
   }
+  
+  // 내 user id 받아오기
+  String myUserId = "32";
+  bool isMine = false;
 
   final List<Marker> _marker = <Marker>[];
   String image = 'assets/images/marker.png';
@@ -98,6 +102,9 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
   Future getTradeDetail() async {
     trade = await tradeProvider.getTradeDetail(widget.id);
     print("trade id: ${trade.id}");
+    if(trade.sellerId.toString() == myUserId){
+      isMine = true;
+    }
     setState(() {
       latlng = LatLng(trade.latitude, trade.longitude);
     });
@@ -373,6 +380,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                   ),
                                 ],
                               ),
+                              isMine?Column():
                               GestureDetector(
                                 onTap: () {
                                   Navigator.push(context, MaterialPageRoute(

@@ -7,6 +7,7 @@ import 'package:a705/providers/trade_providers.dart';
 import 'package:a705/providers/database.dart';
 import 'package:a705/appointment_page.dart';
 import 'package:a705/review_create_page.dart';
+import 'package:a705/storage.dart';
 import 'package:async/async.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:a705/transaction_info_page.dart';
@@ -104,6 +105,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
 
   // 채팅방 정보 가져오기
   getUserInfo() async {
+    // myUserName = getUserNickname();
+    // myUserId = getUserId();
     myUserName = "신짱구";
     myUserId = "3";
     setState(() {});
