@@ -3,7 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
-
+import 'package:a705/providers/exchange_providers.dart';
 import 'exchange_record_page.dart';
 
 class CalculatePage extends StatefulWidget {
@@ -37,6 +37,41 @@ class _CalculatePageState extends State<CalculatePage> {
     '경남은행',
     '제주은행',
   ];
+
+  List<String> currency1 = [
+    'USDKRW',
+    'USDJPY',
+    'USDCNY',
+    'USDEUR',
+    'USDGBP',
+    'USDAUD',
+    'USDCAD',
+    'USDHKD',
+    'USDPHP',
+    'USDVND',
+    'USDTWD',
+    'USDSGD',
+    'USDCZK',
+    'USDNZD',
+    'USDRUB',
+  ];
+
+
+  // void DateRate() async {
+  //   const date = '2023-10-05'; // 원하는 날짜로 변경하세요
+  //   final exchangeRates = await fetchDateData(date);
+  //   if (exchangeRates.isNotEmpty) {
+  //     print('Exchange Rates:');
+  //     print('USDKRW: ${exchangeRates[0]}');
+  //     print('USDJPY: ${exchangeRates[1]}');
+  //     print('USDCNY: ${exchangeRates[2]}');
+  //     // 필요한 다른 환율도 동일한 방식으로 사용할 수 있습니다.
+  //   } else {
+  //     print('Failed to fetch exchange rates.');
+  //   }
+  //
+  // }
+
   var _selectedBank = '신한은행';
 
   int idx1 = 0;
@@ -54,8 +89,6 @@ class _CalculatePageState extends State<CalculatePage> {
     "preferentialRate": 0,
     "tradingBaseRate": 0
   };
-
-
 
 
 

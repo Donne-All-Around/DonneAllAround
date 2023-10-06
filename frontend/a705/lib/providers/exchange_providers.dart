@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:a705/models/ExchangeDto.dart';
 
+import '../models/DateRateDto.dart';
+
 class ExchangeRateProvider {
   final String baseUrl = 'http://api.currencylayer.com/live';
   // final String accessKey = '801421925fd59c4a9b9fb2fa00a51d2c';
@@ -27,7 +29,7 @@ class ExchangeRateProvider {
     }
   }
 
-  Future<ExchangeRateResponse> fetchDateData(String date) async {
+  Future<List<double>> fetchDateData(String date) async {
     final String url = '$baseUrl?access_key=$accessKey&date=$date&currencies=$currencies&format=1';
 
     try {
@@ -35,8 +37,27 @@ class ExchangeRateProvider {
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
-        final data = json.decode(jsonResponse);
-        return ExchangeRateResponse.fromJson(data);
+        final Map<String, dynamic> quotesMap = jsonResponse['quotes'];
+
+        final List<double> exchangeRates = [
+          quotesMap['USDKRW'].toDouble(),
+          quotesMap['USDJPY'].toDouble(),
+          quotesMap['USDCNY'].toDouble(),
+          quotesMap['USDEUR'].toDouble(),
+          quotesMap['USDGBP'].toDouble(),
+          quotesMap['USDAUD'].toDouble(),
+          quotesMap['USDCAD'].toDouble(),
+          quotesMap['USDHKD'].toDouble(),
+          quotesMap['USDPHP'].toDouble(),
+          quotesMap['USDCNY'].toDouble(),
+          quotesMap['USDCNY'].toDouble(),
+          quotesMap['USDCNY'].toDouble(),
+          quotesMap['USDCNY'].toDouble(),
+          quotesMap['USDCNY'].toDouble(),
+          quotesMap['USDCNY'].toDouble(),
+        ];
+
+        return exchangeRates;
       } else {
         throw Exception('Failed to fetch data');
       }
