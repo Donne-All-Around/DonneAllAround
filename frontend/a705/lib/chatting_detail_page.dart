@@ -277,10 +277,10 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                           Text("과의 거래는 어떠셨나요?", style: TextStyle(fontSize: 16)),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 3,
                       ),
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text("거래 후기",
@@ -300,7 +300,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                               MaterialPageRoute(builder: (context) => ReviewCreatePage(tradeID: tradeID)));
                         },
                         child: Container(
-                          padding: EdgeInsets.fromLTRB(10, 7, 10, 7),
+                          padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
                           margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
                           height: 40,
                           width: double.infinity,
@@ -1027,7 +1027,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return Text("error");
+                    return const Text("error");
                   } else {
                     return Container(
                       margin: const EdgeInsets.fromLTRB(20, 2, 20, 10),
@@ -1051,16 +1051,16 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                 height: 70,
                                 width: 70,
                                 margin:
-                                    const EdgeInsets.fromLTRB(20, 15, 10, 15),
+                                    const EdgeInsets.fromLTRB(10, 10, 10, 10),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.circular(15),
-                                    child: const Image(
+                                    child: Image(
                                       height: 60,
-                                      image: AssetImage(
-                                        'assets/images/ausdollar.jpg',
+                                      image: NetworkImage(
+                                        thumbnailImageUrl!,
                                       ),
                                       fit: BoxFit.cover,
                                     )),
@@ -1068,74 +1068,70 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                               Flexible(
                                 flex: 1,
                                 child: SizedBox(
-                                  height: 70,
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              // "",
-                                              tradeTitle ?? "",
-                                              style: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            tradeTitle ?? "",
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
                                             ),
-                                            Spacer(),
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.more_horiz,
-                                                color: Colors.black87,
-                                                size: 30,
-                                              ),
-                                              onPressed: () {
-                                                showModalBottomSheet(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return Container(
-                                                        height: 220,
-                                                        decoration:
-                                                            const BoxDecoration(
-                                                          color: Colors.white,
-                                                          // 모달 배경색
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                            topLeft:
-                                                                Radius.circular(
-                                                                    25),
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    25),
-                                                          ),
+                                          ),
+                                          const Spacer(),
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.more_horiz,
+                                              color: Colors.black87,
+                                              size: 30,
+                                            ),
+                                            onPressed: () {
+                                              showModalBottomSheet(
+                                                context: context,
+                                                builder: (context) {
+                                                  return Container(
+                                                      height: 220,
+                                                      decoration:
+                                                          const BoxDecoration(
+                                                        color: Colors.white,
+                                                        // 모달 배경색
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  25),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  25),
                                                         ),
-                                                        child: Center(
-                                                          child: Column(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                _cancelDialog(),
-                                                                _declarationDialog(),
-                                                              ]),
-                                                        ));
-                                                  },
-                                                  backgroundColor: Colors
-                                                      .transparent, // 앱 <=> 모달의 여백 부분을 투명하게 처리
-                                                );
-                                                setState(() {});
-                                              },
-                                              padding: EdgeInsets.zero,
-                                              constraints:
-                                                  const BoxConstraints(),
-                                            ),
-                                            const SizedBox(
-                                              width: 20,
-                                            )
-                                          ],
-                                        ),
+                                                      ),
+                                                      child: Center(
+                                                        child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              _cancelDialog(),
+                                                              _declarationDialog(),
+                                                            ]),
+                                                      ));
+                                                },
+                                                backgroundColor: Colors
+                                                    .transparent, // 앱 <=> 모달의 여백 부분을 투명하게 처리
+                                              );
+                                              setState(() {});
+                                            },
+                                            padding: EdgeInsets.zero,
+                                            constraints:
+                                                const BoxConstraints(),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          )
+                                        ],
                                       ),
                                       Row(
                                         mainAxisAlignment:
@@ -1150,7 +1146,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                                         'assets/images/flag/${countryCode == 'KRW' ? 'KRW' : countryCode == 'USD' ? 'USDKRW' : 'USD${countryCode}'}.png'),
                                                     radius: 8,
                                                   ),
-                                                  SizedBox(width: 5),
+                                                  const SizedBox(width: 5),
                                                   Text(
                                                     '${NumberFormat.decimalPattern().format(foreignCurrencyAmount.toInt())} ${countryCode}' ??
                                                         "",
@@ -1163,12 +1159,12 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                                   ),
                                                 ],
                                               ),
-                                              SizedBox(height: 15),
+                                              const SizedBox(height: 15),
                                             ],
                                           ),
                                           Column(
                                             children: [
-                                              SizedBox(height: 15),
+                                              const SizedBox(height: 10),
                                               Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.end,
@@ -1176,12 +1172,12 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                                   Text(
                                                     '${NumberFormat.decimalPattern().format(koreanWonAmount.toInt())}원' ??
                                                         "",
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         fontSize: 17,
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
-                                                  SizedBox(width: 20),
+                                                  const SizedBox(width: 20),
                                                 ],
                                               ),
                                             ],
