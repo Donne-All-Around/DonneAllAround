@@ -1,7 +1,9 @@
 import 'package:a705/providers/database.dart';
+import 'package:a705/storage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:a705/chatting_detail_page.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ChattingPage extends StatefulWidget {
@@ -101,10 +103,12 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
   }
 
   getUserInfo() async {
-    // myUserName = getUserNickname();
-    // myUserId = getUserId();
-    myUserName = "신짱구";
-    myUserId = "3";
+    myUserName = await getUserNickname();
+    myUserId = await getUserId().toString();
+    // myUserName = "룰루랄라";
+    // myUserId = "31";
+    // myUserName = "전정국";
+    // myUserId = "32";
     setState(() {});
   }
 

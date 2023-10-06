@@ -74,7 +74,6 @@ class ReviewCreatePageState extends State<ReviewCreatePage> {
         final responseData = utf8.decode(response.bodyBytes); // 한글 디코딩
         final parsedData = json.decode(responseData);
         final data = parsedData['data'];
-
         setState(() {
           tradeData = data;
         });

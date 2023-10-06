@@ -105,10 +105,12 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
 
   // 채팅방 정보 가져오기
   getUserInfo() async {
-    // myUserName = getUserNickname();
-    // myUserId = getUserId();
-    myUserName = "신짱구";
-    myUserId = "3";
+    myUserName = await getUserNickname();
+    myUserId = await getUserId().toString();
+    // myUserName = "룰루랄라";
+    // myUserId = "31";
+    // myUserName = "전정국";
+    // myUserId = "32";
     setState(() {});
   }
 
@@ -151,6 +153,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
     status = trade.status;
     thumbnailImageUrl = trade.thumbnailImage;
     koreanWonAmount = trade.koreanWonAmount;
+    foreignCurrencyAmount = trade.foreignCurrencyAmount;
     // await Future.delayed(Duration(milliseconds: 500));
     return data;
   }
@@ -1151,7 +1154,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                                   ),
                                                   const SizedBox(width: 5),
                                                   Text(
-                                                    '${NumberFormat.decimalPattern().format(foreignCurrencyAmount.toInt())} ${countryCode}' ??
+                                                    '${NumberFormat.decimalPattern().format(foreignCurrencyAmount)} ${countryCode}' ??
                                                         "",
                                                     style: const TextStyle(
                                                         fontSize: 16,
