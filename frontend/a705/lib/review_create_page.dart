@@ -387,7 +387,7 @@ class ReviewCreatePageState extends State<ReviewCreatePage> {
                       ),
                     ]
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -401,18 +401,22 @@ class ReviewCreatePageState extends State<ReviewCreatePage> {
                     ]
                   ),
                   const SizedBox(height: 20), // 텍스트 아래에 여백 추가
-                  TextField(
-                    controller: commentController,
-                    maxLines: null, // 자동 줄 바꿈 활성화
-                    keyboardType: TextInputType.multiline, // 여러 줄 입력 활성화
-                    textInputAction: TextInputAction.newline,
-                    decoration: const InputDecoration(
-                      hintText: '후기를 작성해주세요...', // 힌트 텍스트
-                      border: OutlineInputBorder(), // 텍스트 필드의 외곽선 스타일
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: TextField(
+                      controller: commentController,
+                      maxLines: null, // 자동 줄 바꿈 활성화
+                      keyboardType: TextInputType.multiline, // 여러 줄 입력 활성화
+                      textInputAction: TextInputAction.newline,
+                      decoration: const InputDecoration(
+                        hintText: '후기를 작성해주세요...', // 힌트 텍스트
+                        border: OutlineInputBorder(), // 텍스트 필드의 외곽선 스타일
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
                   Container(
+                    margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                     height: 50,
                     width: double.infinity,
                     decoration: const BoxDecoration(
