@@ -1,10 +1,12 @@
 import 'package:a705/chatting_detail_page.dart';
 import 'package:a705/models/TradeDto.dart';
 import 'package:a705/providers/trade_providers.dart';
+import 'package:a705/storage.dart';
 import 'package:a705/transaction_modify_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
 
 import 'home_page.dart';
@@ -24,10 +26,11 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     getTradeDetail();
     loadData();
     super.initState();
+
   }
 
   // 내 user id 받아오기
-  String myUserId = "32";
+  String myUserId = "";
   bool isMine = false;
 
   final List<Marker> _marker = <Marker>[];
@@ -100,6 +103,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
   );
 
   Future getTradeDetail() async {
+    myUserId = getUserId().toString();
     trade = await tradeProvider.getTradeDetail(widget.id);
     print("trade id: ${trade.id}");
     if (trade.sellerId.toString() == myUserId) {
@@ -370,7 +374,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                       ),
                                       const SizedBox(width: 5),
                                       Text(
-                                        '${trade.foreignCurrencyAmount} ${trade.countryCode}',
+                                        '${NumberFormat("#,##0").format(trade.foreignCurrencyAmount)} ${trade.countryCode}',
                                         style: const TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold,
@@ -379,7 +383,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                     ],
                                   ),
                                   Text(
-                                    '${trade.koreanWonAmount}원',
+                                    '${NumberFormat("#,##0").format(trade.koreanWonAmount)}원',
                                     style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold),

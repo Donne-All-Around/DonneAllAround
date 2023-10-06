@@ -70,8 +70,8 @@ class _BottomNavigationBarState extends State<BottomNavigationBar> {
             items: items,
             backgroundColor: Colors.white,
             color: Colors.black87,
-            colorSelected: Colors.purple,
-            backgroundSelected: Colors.black12,
+            colorSelected: Color(0xFFFFD954),
+            backgroundSelected: Colors.white,
             indexSelected: visit,
             onTap: (int index) => setState(() {
               visit = index;

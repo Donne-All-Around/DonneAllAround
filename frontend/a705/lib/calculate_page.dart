@@ -103,9 +103,6 @@ class _CalculatePageState extends State<CalculatePage> {
                           ],
                         ),
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
                       IconButton(
                         icon: const Icon(Icons.info_outline_rounded),
                         color: Colors.white,
@@ -247,59 +244,48 @@ class _CalculatePageState extends State<CalculatePage> {
                                   width: 110,
                                   height: 30,
                                   // color: Colors.red,
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      Map<String, dynamic> _exchangeRecord =
-                                      await showModalBottomSheet(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20.0), // Adjust the value as needed
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        Map<String, dynamic> _exchangeRecord = await showModalBottomSheet(
                                           backgroundColor: Colors.white,
                                           context: context,
                                           isScrollControlled: true,
                                           builder: (BuildContext context) {
                                             return Container(
-                                              height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                                  5 *
-                                                  4,
-                                              decoration: const BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                  BorderRadius.only(
-                                                      topRight: Radius
-                                                          .circular(10),
-                                                      topLeft: Radius
-                                                          .circular(
-                                                          10))),
+                                              height: MediaQuery.of(context).size.height / 5 * 4,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.only(
+                                                  topRight: Radius.circular(10),
+                                                  topLeft: Radius.circular(10),
+                                                ),
+                                              ),
                                               child: Container(
-                                                padding: const EdgeInsets
-                                                    .fromLTRB(
-                                                    10, 20, 10, 20),
-                                                height:
-                                                MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                    5 *
-                                                    4,
-                                                child:
-                                                const ExchangeRecordPage(type: "calculate",),
+                                                padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
+                                                height: MediaQuery.of(context).size.height / 5 * 4,
+                                                child: const ExchangeRecordPage(type: "calculate"),
                                               ),
                                             );
-                                          });
-                                      setState(() {
-                                        exchangeRecord = _exchangeRecord;
-                                        _percentController.text = exchangeRecord['preferentialRate'].toString();
-                                      });
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      backgroundColor: Colors.green,
+                                          },
+                                        );
+                                        setState(() {
+                                          exchangeRecord = _exchangeRecord;
+                                          _percentController.text = exchangeRecord['preferentialRate'].toString();
+                                        });
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        elevation: 0,
+                                        backgroundColor: Color(0xFF5BCF75),
+                                      ),
+                                      child: const Text(
+                                        '환전기록',
+                                        style: TextStyle(fontSize: 16, color: Colors.white),
+                                      ),
                                     ),
-                                    child: const Text(
-                                      '환전기록',
-                                      style: TextStyle(
-                                          fontSize: 16, color: Colors.black),
-                                    ),
-                                  ),
+                                  )
+
                                 ),
                               ],
                             ),
