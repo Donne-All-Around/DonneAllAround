@@ -19,124 +19,7 @@ class ExchangeRecordPage extends StatefulWidget {
   State<ExchangeRecordPage> createState() => ExchangeRecordPageState();
 }
 
-ScrollController _scrollController = ScrollController();
 
-// 수정, 삭제 모달
-// class CustomModalWidget extends StatelessWidget {
-//   final int exchangeRecordId;
-//
-//   const CustomModalWidget({Key? key, required this.exchangeRecordId})
-//       : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return AlertDialog(
-//         backgroundColor: Colors.transparent,
-//         shape: RoundedRectangleBorder(
-//           borderRadius: BorderRadius.circular(20.0),
-//         ),
-//         content: Container(
-//             width: 330,
-//             height: 170,
-//             color: Colors.white,
-//             child: Column(children: [
-//               Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-//                 IconButton(
-//                     icon: const Icon(
-//                       Icons.close,
-//                       size: 40,
-//                       color: Colors.black,
-//                     ),
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     })
-//               ]),
-//               const SizedBox(height: 5),
-//               InkWell(
-//                   onTap: () {
-//                     Navigator.of(context).pop(); // 모달 닫기
-//                     Navigator.of(context).push(
-//                       MaterialPageRoute(
-//                         builder: (context) => ExchangeRecordEditPage(
-//                           exchangeRecordId:
-//                               exchangeRecordId, // exchangeRecordId를 전달
-//                         ),
-//                       ),
-//                     );
-//                   },
-//                   child: Container(
-//                       width: 270,
-//                       height: 40,
-//                       decoration: BoxDecoration(
-//                         border: Border.all(
-//                             width: 1, color: const Color(0xFF1D77E8)),
-//                         borderRadius: BorderRadius.circular(10),
-//                       ),
-//                       child: const Center(
-//                         child: Text("수정하기",
-//                             style: TextStyle(
-//                                 color: Color(0xFF1D77E8),
-//                                 fontWeight: FontWeight.bold)),
-//                       ))),
-//               const SizedBox(height: 15),
-//               GestureDetector(
-//                   onTap: () async {
-//                     await deleteExchangeRecord(exchangeRecordId);
-//
-//                     // Navigator.of(context).pop();
-//                     // Navigator.of(context).push(
-//                     //   MaterialPageRoute(
-//                     //     builder: (context) => const ExchangeRecordPage(), // RecordPage로 돌아가도록 수정
-//                     //   ),
-//                     // );
-//                   },
-//                   child: Container(
-//                       width: 270,
-//                       height: 40,
-//                       decoration: BoxDecoration(
-//                         border: Border.all(
-//                             width: 1, color: const Color(0xFFF53C3C)),
-//                         borderRadius: BorderRadius.circular(10),
-//                       ),
-//                       child: const Center(
-//                         child: Text("삭제하기",
-//                             style: TextStyle(
-//                                 color: Color(0xFFF53C3C),
-//                                 fontWeight: FontWeight.bold)),
-//                       )))
-//             ])));
-//   }
-//
-//   // 삭제 API 호출 메서드
-//   Future<void> deleteExchangeRecord(int exchangeRecordId) async {
-//     final apiUrl =
-//         'https://j9a705.p.ssafy.io/api/exchange/record/$exchangeRecordId';
-//
-//     try {
-//       final response = await http.delete(
-//         Uri.parse(apiUrl),
-//         headers: {
-//           "Accept-Charset": "utf-8", // 문자 인코딩을 UTF-8로 설정
-//           'Authorization':
-//               'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
-//           'Content-Type': 'application/json', // 필요에 따라 다른 헤더를 추가할 수 있습니다.
-//         },
-//       );
-//
-//       if (response.statusCode == 200) {
-//         // 삭제 성공
-//         print('삭제 성공');
-//         // TODO: 필요한 처리를 추가할 수 있음
-//       } else {
-//         print('서버 오류: ${response.statusCode}');
-//         // TODO: 실패 시 처리를 추가할 수 있음
-//       }
-//     } catch (e) {
-//       print('오류: $e');
-//       // TODO: 오류 처리를 추가할 수 있음
-//     }
-//   }
-// }
 
 String accessToken =
     "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtNzk3OS03OTc5IiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4ODk5M30.6tfXpAfYuARNQUcMBC7nVY-vgoX-8gDHI8zUx_1GQs0";
@@ -232,7 +115,13 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
     }
   }
 
+
+
+
+  ScrollController _scrollController = ScrollController();
+
   bool isCalculate = false;
+
   @override
   void initState() {
 
@@ -242,6 +131,80 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
     if(widget.type == "calculate"){
       isCalculate = true;
     }
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        // Reached the bottom, load more data
+        loadMoreData();
+      }
+    });
+  }
+
+  void loadMoreData(){
+    int lastListIdx = exchangeDataList[exchangeDataList.length - 1]['id'];
+    fetchMoreLoadExchangeData(lastListIdx);
+  }
+  // 서버로부터 추가로 데이터를 가져오는 메서드
+  void fetchMoreLoadExchangeData(int lastListIdx) async {
+
+    final apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list?lastExchangeRecordId=${lastListIdx}';
+    const accessToken =
+        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+
+    try {
+      http.Response response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',
+        },
+      );
+
+      // String responseBody = utf8.decode(response.bodyBytes);
+      // final jsonString = response.body;
+      // final decodedString = utf8.decode(jsonString.codeUnits);
+      // final jsonResponse = json.decode(decodedString);
+
+      if (response.statusCode == 200) {
+        print("SUCCESS!");
+
+        String responseBody = utf8.decode(response.bodyBytes); // utf-8로 변환
+        Map<String, dynamic> _jsonData = json.decode(responseBody);
+        // "data" 객체 추출
+        Map<String, dynamic> data = _jsonData['data'];
+        print(responseBody);
+
+        // 서버 응답이 성공인 경우 JSON 데이터 파싱
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        final List<dynamic> jsonData = jsonResponse['data']
+        ['exchangeRecordList']; // 주의: 'exchangeRecordList'의 오타 수정
+
+        if (jsonData != null) {
+          setState(() {
+            exchangeDataList =
+            List<Map<String, dynamic>>.from(jsonData.map((data) {
+              // 은행 코드를 currencyName으로 변환하여 추가
+              final bankCode = data['bankCode'] as String;
+              final currencyName = getCurrencyName(bankCode);
+              data['currencyName'] = currencyName;
+              return data;
+            }));
+          });
+        } else {
+          print('서버 응답 데이터가 없습니다.');
+        }
+      } else {
+        print('서버 오류: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('오류: $e');
+    }
+  }
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   String? previousDate2;
@@ -285,6 +248,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
               centerTitle: true,
             ),
             body: ListView.builder(
+              controller: _scrollController,
                 itemCount: exchangeDataList.length,
                 itemBuilder: (BuildContext context, int index) {
                   final exchangeData = exchangeDataList[index];
@@ -471,9 +435,8 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                               .start,
                                                       children: [
                                                         Text(
-                                                            exchangeData[
-                                                                    'tradingBaseRate']
-                                                                .toString(),
+                                                          NumberFormat("#,##0.00").format(exchangeData[
+                                                          'tradingBaseRate']),
                                                             style:
                                                                 const TextStyle(
                                                               fontWeight:
@@ -520,9 +483,8 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                                     .end,
                                                             children: [
                                                               Text(
-                                                                  exchangeData[
-                                                                          'foreignCurrencyAmount']
-                                                                      .toString(),
+                                                                  NumberFormat("#,##0").format(exchangeData[
+                                                                  'foreignCurrencyAmount']),
                                                                   style:
                                                                       const TextStyle(
                                                                     fontSize:
@@ -561,7 +523,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                                     .end,
                                                             children: [
                                                               Text(
-                                                                  '${exchangeData['koreanWonAmount']} KRW',
+                                                                  '${NumberFormat("#,##0").format(exchangeData['koreanWonAmount'])} KRW',
                                                                   style:
                                                                       const TextStyle(
                                                                     fontSize:
