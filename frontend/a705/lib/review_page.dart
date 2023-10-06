@@ -11,6 +11,8 @@ class ReviewPage extends StatefulWidget {
 }
 
 class ReviewPageState extends State<ReviewPage> {
+  ScrollController _scrollController = ScrollController();
+
   // 서버에서 임티후기 count 받아오기
   int badCount = 0;
   int goodCount = 0;
@@ -30,9 +32,66 @@ class ReviewPageState extends State<ReviewPage> {
     fetchReviewCounts();
     fetchBuyReviews();
     fetchSellReviews();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        // Reached the bottom, load more data
+        loadMoreData();
+      }
+    });
   }
 
-  void fetchBuyReviews() async {
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void loadMoreData() async{
+    List<Map<String, dynamic>> newItems;
+    if(selectedButton == "판매"){
+      int lastListIdx = sellReviews[sellReviews.length - 1]['id'];
+      fetchMoreLoadSellReviews(lastListIdx);
+    }else{
+      int lastListIdx = buyReviews[buyReviews.length - 1]['id'];
+      fetchMoreLoadBuyReviews(lastListIdx);
+    }
+
+  }
+
+  void fetchMoreLoadBuyReviews(int lastListIdx) async {
+    try {
+      final url = Uri.parse(
+          'https://j9a705.p.ssafy.io/api/trade/review/list/buy?lastTradeId=$lastListIdx');
+      const accessToken =
+          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+
+      http.Response response = await http.get(
+          url,
+        headers: {'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',},
+      );
+
+      String responseBody = utf8.decode(response.bodyBytes);
+
+      if (response.statusCode == 200) {
+        // 서버 응답이 성공인 경우
+        final responseData = json.decode(response.body);
+        final data = responseData['data']['tradeReviewList'];
+        setState(() {
+          buyReviews += List<Map<String, dynamic>>.from(data);
+        });
+        print('리뷰 요청 성공');
+      } else {
+        // 서버 응답이 실패인 경우
+        print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('서버 요청 중 오류 발생: $e');
+    }
+
+  } void fetchBuyReviews() async {
     try {
       final url = Uri.parse(
           'https://j9a705.p.ssafy.io/api/trade/review/list/buy');
@@ -65,6 +124,37 @@ class ReviewPageState extends State<ReviewPage> {
     }
   }
 
+  void fetchMoreLoadSellReviews(int lastListIdx) async {
+    try {
+      final url = Uri.parse(
+          'https://j9a705.p.ssafy.io/api/trade/review/list/sell?lastTradeId=$lastListIdx');
+      const accessToken =
+          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+
+      http.Response response = await http.get(
+          url,
+        headers: {'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',},
+      );
+      String responseBody = utf8.decode(response.bodyBytes);
+
+      if (response.statusCode == 200) {
+        // 서버 응답이 성공인 경우
+        final responseData = json.decode(response.body);
+        final data = responseData['data']['tradeReviewList'];
+        setState(() {
+          sellReviews += List<Map<String, dynamic>>.from(data);
+        });
+        print('판매 서버 요청 성공');
+      } else {
+        // 서버 응답이 실패인 경우
+        print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('서버 요청 중 오류 발생: $e');
+    }
+  }
   void fetchSellReviews() async {
     try {
       final url = Uri.parse(
