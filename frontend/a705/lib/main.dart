@@ -51,8 +51,8 @@ class MyApp extends StatelessWidget {
       ],
       locale: const Locale('ko'),
       // home: ProfileSettingPage(phoneNumber: '01063139114', uid: 'jtBaAfz6KEPOXzZoB97VS4FRWap2'),
-      // home: const StartPage(),
-      home: const MainPage(),
+      home: const StartPage(),
+      // home: const MainPage(),
       // home: ProfileSettingPage(phoneNumber: '01099999999', uid: 'akjg4464HLSH'),
     );
   }
