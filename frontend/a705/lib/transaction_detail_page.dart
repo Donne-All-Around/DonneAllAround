@@ -161,7 +161,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                   });
             },
             icon: const Icon(Icons.menu_rounded, size: 30, color: Colors.black,)),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
           ],
         ),
         body: Stack(children: [
@@ -177,16 +177,15 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                       itemBuilder: (context, index) {
                         return Image(
                           image:
-                              // NetworkImage(trade.imageUrlList[index])
-                              AssetImage('assets/images/profile.jpg'),
+                              NetworkImage(trade.imageUrlList[index])
                         );
                       }),
                 ),
                 // Container(height: 1, color: Colors.black26),
                 Container(
-                  padding: EdgeInsets.fromLTRB(30, 18, 30, 13),
+                  padding: const EdgeInsets.fromLTRB(30, 18, 30, 13),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(25.0),
                       topRight: Radius.circular(25.0),
                     ),
