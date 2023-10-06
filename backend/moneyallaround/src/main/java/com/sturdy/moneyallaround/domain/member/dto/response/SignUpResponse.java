@@ -8,5 +8,6 @@ public record SignUpResponse(
         Long id,
         String tel,
         String nickname,
+        String imageUrl,
         TokenInfo token) {
 }

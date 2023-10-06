@@ -16,6 +16,7 @@ public class FirebaseAuthResponse {
         Long id;
         String tel;
         String nickname;
+        String imageUrl;
         TokenInfo token;
     }
 

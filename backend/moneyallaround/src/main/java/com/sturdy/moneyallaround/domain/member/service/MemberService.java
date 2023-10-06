@@ -72,6 +72,7 @@ public class MemberService implements UserDetailsService {
                         .id(member.get().getId())
                         .tel(member.get().getTel())
                         .nickname(member.get().getNickname())
+                        .imageUrl(member.get().getImageUrl())
                         .token(tokenInfo)
                         .build());
     }
@@ -100,6 +101,7 @@ public class MemberService implements UserDetailsService {
                 .id(member.getId())
                 .tel(member.getTel())
                 .nickname(member.getNickname())
+                .imageUrl(member.getImageUrl())
                 .token(tokenInfo)
                 .build();
     }
