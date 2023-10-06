@@ -56,8 +56,8 @@ class ExchangeRecordEditPageState extends State<ExchangeRecordEditPage> {
           _selectedValue = _valueList[defaultCurrencyIndex];
           idx = defaultCurrencyIndex;
           selectedDate = DateTime.parse(exchangeRecord['exchangeDate']);
-          _currencyController.text = exchangeRecord['foreignCurrencyAmount'].toString();
-          _priceController.text = exchangeRecord['koreanWonAmount'].toString();
+          _currencyController.text = NumberFormat("#,##0").format(exchangeRecord['foreignCurrencyAmount']);
+          _priceController.text = NumberFormat("#,##0").format(exchangeRecord['koreanWonAmount']);
           _discountController.text = exchangeRecord['preferentialRate'].toString();
           _selectedBank = getBankNameFromCode(exchangeRecord['bankCode']);
         });

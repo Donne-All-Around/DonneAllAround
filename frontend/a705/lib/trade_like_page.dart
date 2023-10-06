@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:a705/transaction_detail_page.dart';
 import 'dart:convert'; // JSON 파싱을 위해 추가
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class TradeLikePage extends StatefulWidget {
   const TradeLikePage({super.key});
@@ -257,7 +258,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                   ),
                                   const SizedBox(width: 5),
                                   Text(
-                                    '${trade['foreignCurrencyAmount']} ${trade['countryCode']}',
+                                    '${NumberFormat("#,##0").format(trade['foreignCurrencyAmount'])} ${trade['countryCode']}',
                                     style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -284,7 +285,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                   Column(
                                     children: [
                                       Text(
-                                        '${trade['koreanWonAmount']}원',
+                                        '${NumberFormat("#,##0").format(trade['koreanWonAmount'])}원',
                                         style: const TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold),

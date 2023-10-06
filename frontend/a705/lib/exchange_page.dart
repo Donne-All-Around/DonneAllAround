@@ -698,8 +698,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                         onChanged: (value) {
                                           setState(() {
                                             _moneyController2.text =
-                                                calculateExchangeRate(
-                                                    idx1, idx2);
+                                                NumberFormat("#,##0.00").format(calculateExchangeRate(idx1, idx2));
                                           });
                                         },
                                       ),
@@ -1435,21 +1434,21 @@ class _ExchangePageState extends State<ExchangePage> {
                                 exchangeRates![currency1[index]];
                                 if (exchangeRate != null) {
                                   formattedRate =
-                                      exchangeRate.toStringAsFixed(2);
+                                      NumberFormat("#,##0.00").format(exchangeRate);
                                 }
                               } else if (currency1[index] == 'USDJPY' || currency1[index] == 'USDVND') {
                                 final rate =
                                     calculateRate('USDKRW', currency1[index])! *
                                         100;
                                 if (rate != null) {
-                                  formattedRate = rate.toStringAsFixed(2);
+                                  formattedRate = NumberFormat("#,##0.00").format(rate);
                                 }
                               } else {
                                 // 다른 국가의 환율 계산
                                 final rate =
                                 calculateRate('USDKRW', currency1[index]);
                                 if (rate != null) {
-                                  formattedRate = rate.toStringAsFixed(2);
+                                  formattedRate = NumberFormat("#,##0.00").format(rate);
                                 }
                               }
                             }
@@ -1510,6 +1509,7 @@ class _ExchangePageState extends State<ExchangePage> {
                                                 ],
                                               ),
                                               Text(
+
                                                 '$formattedRate 원',
                                                 textAlign: TextAlign.end,
                                                 style: const TextStyle(

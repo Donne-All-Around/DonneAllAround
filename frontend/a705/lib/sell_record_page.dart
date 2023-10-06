@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:a705/transaction_detail_page.dart';
+import 'package:intl/intl.dart';
 import 'review_create_page.dart';
 import 'dart:convert'; // JSON 파싱을 위해 추가
 import 'package:http/http.dart' as http;
@@ -303,7 +304,7 @@ class SellRecordPageState extends State<SellRecordPage> {
                                     ),
                                     const SizedBox(width: 5),
                                     Text(
-                                      '${wait['foreignCurrencyAmount']} ${wait['countryCode']}',
+                                      '${NumberFormat("#,##0").format(wait['foreignCurrencyAmount'])} ${wait['countryCode']}',
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
@@ -330,7 +331,7 @@ class SellRecordPageState extends State<SellRecordPage> {
                                     Column(
                                       children: [
                                         Text(
-                                          '${wait['koreanWonAmount']}원',
+                                          '${NumberFormat("#,##0").format(wait['koreanWonAmount'])} 원',
                                           style: const TextStyle(
                                               fontSize: 17,
                                               fontWeight: FontWeight.bold),
@@ -457,7 +458,7 @@ class SellRecordPageState extends State<SellRecordPage> {
                                     ),
                                     const SizedBox(width: 5),
                                     Text(
-                                      '${complete['foreignCurrencyAmount']} ${complete['countryCode']}',
+                                      '${NumberFormat("#,##0").format(complete['foreignCurrencyAmount'])} ${complete['countryCode']}',
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
@@ -482,7 +483,7 @@ class SellRecordPageState extends State<SellRecordPage> {
                                     Column(
                                       children: [
                                         Text(
-                                          '${complete['koreanWonAmount']}원',
+                                          '${NumberFormat("#,##0").format(complete['koreanWonAmount'])}원',
                                           style: const TextStyle(
                                               fontSize: 17,
                                               fontWeight: FontWeight.bold),

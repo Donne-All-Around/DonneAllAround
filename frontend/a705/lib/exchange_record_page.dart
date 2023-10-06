@@ -471,9 +471,8 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                               .start,
                                                       children: [
                                                         Text(
-                                                            exchangeData[
-                                                                    'tradingBaseRate']
-                                                                .toString(),
+                                                          NumberFormat("#,##0.00").format(exchangeData[
+                                                          'tradingBaseRate']),
                                                             style:
                                                                 const TextStyle(
                                                               fontWeight:
@@ -520,9 +519,8 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                                     .end,
                                                             children: [
                                                               Text(
-                                                                  exchangeData[
-                                                                          'foreignCurrencyAmount']
-                                                                      .toString(),
+                                                                  NumberFormat("#,##0").format(exchangeData[
+                                                                  'foreignCurrencyAmount']),
                                                                   style:
                                                                       const TextStyle(
                                                                     fontSize:
@@ -561,7 +559,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
                                                                     .end,
                                                             children: [
                                                               Text(
-                                                                  '${exchangeData['koreanWonAmount']} KRW',
+                                                                  '${NumberFormat("#,##0").format(exchangeData['koreanWonAmount'])} KRW',
                                                                   style:
                                                                       const TextStyle(
                                                                     fontSize:
