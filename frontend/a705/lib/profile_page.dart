@@ -355,8 +355,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
                     borderRadius: BorderRadius.circular(15.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: const Offset(0, 0),
+                        ),
+                      ],
+                      color: Colors.white
                   ),
                   margin: const EdgeInsets.all(10.0),
                   padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
@@ -490,8 +498,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(15.0),
+                      borderRadius: BorderRadius.circular(15.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: const Offset(0, 0),
+                        ),
+                      ],
+                      color: Colors.white
                   ),
                   margin: EdgeInsets.all(10.0),
                   padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
@@ -515,6 +531,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       const SizedBox(height: 10.0),
                       InkWell(
                         onTap: () {
+
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => ExchangeRecordPage()));
@@ -544,8 +562,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(15.0),
+                      borderRadius: BorderRadius.circular(15.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: const Offset(0, 0),
+                        ),
+                      ],
+                      color: Colors.white
                   ),
                   margin: const EdgeInsets.all(10.0),
                   padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
@@ -598,8 +624,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(15.0),
+                      borderRadius: BorderRadius.circular(15.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: const Offset(0, 0),
+                        ),
+                      ],
+                      color: Colors.white
                   ),
                   margin: const EdgeInsets.all(10.0),
                   padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),

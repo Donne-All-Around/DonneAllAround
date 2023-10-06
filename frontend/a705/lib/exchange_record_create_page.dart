@@ -200,11 +200,13 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
       'preferentialRate': _discountController.text,
       'tradingBaseRate': tradingBaseRateString,
     };
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const ExchangeRecordPage()),
-          (route) => false,
-    );
+    // Navigator.push(context, MaterialPageRoute(
+    //     builder: (context) => ExchangeRecordPage()))
+    //     .then((value) => setState(() {}));
+    Navigator.pop(context);
+   // setState(() {
+   //
+   // });
   }
 
 
@@ -224,7 +226,7 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
                 color: Colors.black
               ),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context);
               }
             ),
             elevation: 0,
