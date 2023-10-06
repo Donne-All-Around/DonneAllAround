@@ -1,3 +1,4 @@
+import 'package:a705/providers/exchange_providers.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,6 +54,10 @@ class _CalculatePageState extends State<CalculatePage> {
     "preferentialRate": 0,
     "tradingBaseRate": 0
   };
+
+
+
+
 
   @override
   Widget build(BuildContext context) {

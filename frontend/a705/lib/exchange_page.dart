@@ -52,7 +52,8 @@ class _ExchangePageState extends State<ExchangePage> {
     'USDRUB',
   ];
 
-  Map<String, double>? exchangeRates; // 환율 데이터를 저장할 변수
+  Map<String, double>? exchangeRates;
+
 
   @override
   void initState() {
@@ -123,10 +124,41 @@ class _ExchangePageState extends State<ExchangePage> {
   }
 
   // 이중환전
-  double calculateDoubleExchange() {
+  String calculateDoubleExchange(
+      String _selectedValue5,
+      int idx3,
+      String _moneyText,
+      String _percentText,
+      Map<String, dynamic>? exchangeRates,
+      Map<String, BankInfo> bankInfoMap,
+      ) {
+    double KruTarget = 0.0;
+    double TargetUsd = 0.0;
+    double ResultTarget = 0.0;
+    double ResultUsd = 0.0;
 
+    String BankName = _selectedValue5;
+    BankInfo? bankInfo = bankInfoMap[BankName];
+    FeeInfo? usdKrwFees = bankInfo?.fees['USDKRW'];
+    FeeInfo? targetKrwFees = bankInfo?.fees['currency[idx3]'];
+    double? UsdRate = exchangeRates?['USDKRW'];
+    double? TargetRate = exchangeRates?['currency[idx3]'];
 
-    return 1.2;
+    KruTarget = UsdRate! / TargetRate!;
+    TargetUsd = double.parse(_moneyText) / UsdRate;
+    int Percentage = int.parse(_percentText);
+    double? feeUSD = usdKrwFees?.buying;
+    double? feeTarget = targetKrwFees?.buying;
+
+    ResultTarget =
+        double.parse(_moneyText) * KruTarget * (1 + feeUSD! * (1 - Percentage / 100));
+    ResultUsd = TargetUsd * UsdRate * (1 + feeTarget! * (1 - Percentage / 100));
+
+    double answer = ResultTarget - ResultUsd;
+    String doubleresult = answer.toStringAsFixed(2);
+
+    return doubleresult;
+    print(doubleresult);
   }
 
   List<String> currency = [
@@ -292,7 +324,7 @@ class _ExchangePageState extends State<ExchangePage> {
     '부산은행',
     'DGB대구은행',];
 
-  var _selectedValue5 = '신한은행';
+  String _selectedValue5 = '신한은행';
   Map<String, Map<String, String>> bankInfo = {
     '하나은행': {'currencyName': '하나은행', 'bankCode': '081'},
     '우리은행': {'currencyName': '우리은행', 'bankCode': '020'},
@@ -470,11 +502,11 @@ class _ExchangePageState extends State<ExchangePage> {
                                         offset: const Offset(0, 0),
                                       ),
                                     ]),
-                                child: const Text(
-                                  '+ 2,300 ₩',
+                                child: Text(
+                                  '$this.doubleresult',
                                   textAlign: TextAlign.end,
-                                  style: TextStyle(
-                                    fontSize: 40,
+                                  style: const TextStyle(
+                                    fontSize: 15,
                                   ),
                                 ),
                               ),
@@ -1120,8 +1152,11 @@ class _ExchangePageState extends State<ExchangePage> {
                                             });
                                         setState(() {
                                           idx4 = idx;
+                                          // _moneyController4.text =
+                                          //     (1 * unit[idx4]).toString();
                                           _moneyController4.text =
-                                              (1 * unit[idx4]).toString();
+                                              calculateExchangeRate(
+                                                  idx3, idx4);
                                         });
                                       },
                                       child: Container(
@@ -1326,7 +1361,8 @@ class _ExchangePageState extends State<ExchangePage> {
                                 onPressed: () {
                                   setState(() {
                                     _iscalculate = true;
-                                    calculateExchangeRate(idx1, idx2);
+                                    calculateExchangeRate(idx3, idx4);
+                                    calculateDoubleExchange(_selectedValue5,idx3, _moneyController3.text, _percentController.text, exchangeRates, bankInfoMap);
                                   });
                                 },
                                 icon: const Icon(Icons.drag_handle_rounded),
