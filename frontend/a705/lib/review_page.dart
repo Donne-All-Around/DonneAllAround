@@ -1,3 +1,4 @@
+import 'package:a705/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // JSON 디코딩을 위해 추가
@@ -63,8 +64,7 @@ class ReviewPageState extends State<ReviewPage> {
     try {
       final url = Uri.parse(
           'https://j9a705.p.ssafy.io/api/trade/review/list/buy?lastTradeId=$lastListIdx');
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+      final accessToken = getJwtAccessToken();
 
       http.Response response = await http.get(
           url,
@@ -95,8 +95,7 @@ class ReviewPageState extends State<ReviewPage> {
     try {
       final url = Uri.parse(
           'https://j9a705.p.ssafy.io/api/trade/review/list/buy');
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+      final accessToken = getJwtAccessToken();
 
       http.Response response = await http.get(
           url,
@@ -128,8 +127,7 @@ class ReviewPageState extends State<ReviewPage> {
     try {
       final url = Uri.parse(
           'https://j9a705.p.ssafy.io/api/trade/review/list/sell?lastTradeId=$lastListIdx');
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+      final accessToken = getJwtAccessToken();
 
       http.Response response = await http.get(
           url,
@@ -159,8 +157,7 @@ class ReviewPageState extends State<ReviewPage> {
     try {
       final url = Uri.parse(
           'https://j9a705.p.ssafy.io/api/trade/review/list/sell');
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+      final accessToken = getJwtAccessToken();
 
       http.Response response = await http.get(
           url,
@@ -190,8 +187,7 @@ class ReviewPageState extends State<ReviewPage> {
   void fetchReviewCounts() async {
     try {
       final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/review/score');
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+      final accessToken = await getJwtAccessToken();
 
       http.Response response = await http.get(
           url,

@@ -1,7 +1,9 @@
+import 'package:a705/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:a705/transaction_detail_page.dart';
 import 'dart:convert'; // JSON 파싱을 위해 추가
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class TradeLikePage extends StatefulWidget {
   const TradeLikePage({super.key});
@@ -41,9 +43,10 @@ class TradeLikePageState extends State<TradeLikePage> {
   void fetchMoreLoadTradeLikeHistory(int lastListIdx) async {
     try {
       final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/like?lastTradeId=$lastListIdx');
+      final accessToken =  await getJwtAccessToken();
 
       final headers = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json', // 필요에 따라 다른 헤더를 추가할 수 있습니다.
       };
 
@@ -70,9 +73,10 @@ class TradeLikePageState extends State<TradeLikePage> {
   }void fetchTradeLikeHistory() async {
     try {
       final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/like');
+      final accessToken =  await getJwtAccessToken();
 
       final headers = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
+        'Authorization': 'Bearer $accessToken',
         'Content-Type': 'application/json', // 필요에 따라 다른 헤더를 추가할 수 있습니다.
       };
 
@@ -251,14 +255,14 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
 
                                         // DELETE 요청 보내기
                                         final deleteUrl = 'https://j9a705.p.ssafy.io/api/trade/$tradeId/unlike';
-
+                                        final accessToken =  await getJwtAccessToken();
 
                                         try {
                                           final response = await http.delete(
                                             Uri.parse(deleteUrl),
                                             headers: {
                                               "Accept-Charset": "utf-8",
-                                              'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
+                                              'Authorization': 'Bearer $accessToken',
                                               'Content-Type': 'application/json',// 문자 인코딩을 UTF-8로 설정
                                             },
                                           );
@@ -303,7 +307,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                   ),
                                   const SizedBox(width: 5),
                                   Text(
-                                    '${trade['foreignCurrencyAmount']} ${trade['countryCode']}',
+                                    '${NumberFormat("#,##0").format(trade['foreignCurrencyAmount'])} ${trade['countryCode']}',
                                     style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -330,7 +334,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                   Column(
                                     children: [
                                       Text(
-                                        '${trade['koreanWonAmount']}원',
+                                        '${NumberFormat("#,##0").format(trade['koreanWonAmount'])}원',
                                         style: const TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold),

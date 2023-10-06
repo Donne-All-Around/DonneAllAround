@@ -1,3 +1,4 @@
+import 'package:a705/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
@@ -57,8 +58,7 @@ class ReviewCreatePageState extends State<ReviewCreatePage> {
 
   Future<void> fetchTradeData() async {
     final url = 'https://j9a705.p.ssafy.io/api/trade/detail/${widget.tradeID}';
-    const accessToken =
-        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+    final accessToken =  await getJwtAccessToken();
 
     try {
       final response = await http.get(
@@ -124,8 +124,7 @@ class ReviewCreatePageState extends State<ReviewCreatePage> {
 
       // 정보가 모두 입력되었을 떄 서버로 전송
       final url = 'https://j9a705.p.ssafy.io/api/trade/review/${widget.tradeID}';
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+      final accessToken =  await getJwtAccessToken();
 
       final requestData = {
         'revieweeId' : revieweeId,

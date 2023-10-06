@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'models/BankDto.dart';
 
 class ExchangeDetailPage extends StatefulWidget {
@@ -546,24 +546,24 @@ class _BankViewBuilderState extends State<BankViewBuilder> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(
-                                        '${calculateCashBuyingPrice(double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0, feeInfo?.buying.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
-                                            ).toStringAsFixed(2)}원',
+                                        '${NumberFormat("#,##0.00").format(calculateCashBuyingPrice(double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0, feeInfo?.buying.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
+                                        ))}원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '${calculateCashPrice(double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0, feeInfo?.selling.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
-                                            ).toStringAsFixed(2)}원',
+                                        '${NumberFormat("#,##0.00").format(calculateCashPrice(double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0, feeInfo?.selling.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
+                                        ))}원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
                                             height: 1.532),
                                       ),
                                       Text(
-                                        '${calculateCashBuyingPrice(double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0, feeInfo?.sending.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
-                                            ).toStringAsFixed(2)}원',
+                                        '${NumberFormat("#,##0.00").format(calculateCashBuyingPrice(double.tryParse(widget.formattedRateText.replaceAll(',', '').replaceAll('원', '')) ?? 0.0, feeInfo?.sending.toString() ?? "서비스 미제공" // feeInfo?.buying를 문자열로 변환
+                                        ))}원',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,

@@ -1,3 +1,4 @@
+import 'package:a705/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'exchange_record_page.dart';
@@ -29,8 +30,7 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
         'preferentialRate': int.parse(_discountController.text),
         'tradingBaseRate': tradingBaseRate,
       };
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+      final accessToken =  await getJwtAccessToken();
 
       // POST 요청 보내기
       final response = await http.post(

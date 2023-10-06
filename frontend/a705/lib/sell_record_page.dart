@@ -1,5 +1,7 @@
+import 'package:a705/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:a705/transaction_detail_page.dart';
+import 'package:intl/intl.dart';
 import 'review_create_page.dart';
 import 'dart:convert'; // JSON 파싱을 위해 추가
 import 'package:http/http.dart' as http;
@@ -65,9 +67,7 @@ class SellRecordPageState extends State<SellRecordPage> {
     try {
       final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/sale?lastTradeId=$lastListIdx');
 
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
-
+      final accessToken =  await getJwtAccessToken();
       http.Response response = await http.get(
         url,
         headers: {'Authorization': 'Bearer $accessToken',
@@ -167,8 +167,7 @@ class SellRecordPageState extends State<SellRecordPage> {
     try {
        // 원하는 회원 ID를 여기에 넣어주세요.
       final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/complete?lastTradeId=$lastListIdx');
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+      final accessToken =  await getJwtAccessToken();
 
       http.Response response = await http.get(
         url,
@@ -396,7 +395,7 @@ class SellRecordPageState extends State<SellRecordPage> {
                                     ),
                                     const SizedBox(width: 5),
                                     Text(
-                                      '${wait['foreignCurrencyAmount']} ${wait['countryCode']}',
+                                      '${NumberFormat("#,##0").format(wait['foreignCurrencyAmount'])} ${wait['countryCode']}',
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
@@ -423,7 +422,7 @@ class SellRecordPageState extends State<SellRecordPage> {
                                     Column(
                                       children: [
                                         Text(
-                                          '${wait['koreanWonAmount']}원',
+                                          '${NumberFormat("#,##0").format(wait['koreanWonAmount'])} 원',
                                           style: const TextStyle(
                                               fontSize: 17,
                                               fontWeight: FontWeight.bold),
@@ -551,7 +550,7 @@ class SellRecordPageState extends State<SellRecordPage> {
                                     ),
                                     const SizedBox(width: 5),
                                     Text(
-                                      '${complete['foreignCurrencyAmount']} ${complete['countryCode']}',
+                                      '${NumberFormat("#,##0").format(complete['foreignCurrencyAmount'])} ${complete['countryCode']}',
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
@@ -576,7 +575,7 @@ class SellRecordPageState extends State<SellRecordPage> {
                                     Column(
                                       children: [
                                         Text(
-                                          '${complete['koreanWonAmount']}원',
+                                          '${NumberFormat("#,##0").format(complete['koreanWonAmount'])}원',
                                           style: const TextStyle(
                                               fontSize: 17,
                                               fontWeight: FontWeight.bold),
