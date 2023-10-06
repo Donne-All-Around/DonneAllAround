@@ -26,6 +26,10 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     super.initState();
   }
 
+  // 내 user id 받아오기
+  String myUserId = "32";
+  bool isMine = false;
+
   final List<Marker> _marker = <Marker>[];
   String image = 'assets/images/marker.png';
   late LatLng latlng;
@@ -98,6 +102,9 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
   Future getTradeDetail() async {
     trade = await tradeProvider.getTradeDetail(widget.id);
     print("trade id: ${trade.id}");
+    if (trade.sellerId.toString() == myUserId) {
+      isMine = true;
+    }
     setState(() {
       latlng = LatLng(trade.latitude, trade.longitude);
     });
@@ -121,40 +128,63 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
             },
           ),
           actions: [
-            IconButton(onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return ConstrainedBox(
-                      constraints: const BoxConstraints(maxHeight: 200.0),
-                      child: AlertDialog(
-                        content: Container(
-                            padding: const EdgeInsets.fromLTRB(
-                                20, 20, 20, 0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextButton(onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return TransactionModifyPage(id: trade.id);
-                                    },
-                                  ));
-                                }, child: const Text('수정하기', style: TextStyle(fontSize: 18, color: Colors.blue),)),
-                                TextButton(onPressed: () {
-                                  tradeProvider.deleteTrade(trade.id);
-                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          const HomePage()), (route) => false);
-                                }, child: const Text('삭제하기', style: TextStyle(fontSize: 18, color: Colors.red),)),
-                              ],
-                            )),
-                      ),
-                    );
-                  });
-            },
-            icon: const Icon(Icons.menu_rounded, size: 30, color: Colors.black,)),
-            SizedBox(width: 20),
+            IconButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return ConstrainedBox(
+                          constraints: const BoxConstraints(maxHeight: 200.0),
+                          child: AlertDialog(
+                            content: Container(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                            builder: (context) {
+                                              return TransactionModifyPage(
+                                                  id: trade.id);
+                                            },
+                                          ));
+                                        },
+                                        child: const Text(
+                                          '수정하기',
+                                          style: TextStyle(
+                                              fontSize: 18, color: Colors.blue),
+                                        )),
+                                    TextButton(
+                                        onPressed: () {
+                                          tradeProvider.deleteTrade(trade.id);
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          const HomePage()),
+                                              (route) => false);
+                                        },
+                                        child: const Text(
+                                          '삭제하기',
+                                          style: TextStyle(
+                                              fontSize: 18, color: Colors.red),
+                                        )),
+                                  ],
+                                )),
+                          ),
+                        );
+                      });
+                },
+                icon: const Icon(
+                  Icons.menu_rounded,
+                  size: 30,
+                  color: Colors.black,
+                )),
+            const SizedBox(width: 20),
           ],
         ),
         body: Stack(children: [
@@ -169,30 +199,12 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                       pageSnapping: true,
                       itemBuilder: (context, index) {
                         return Image(
-                          image:
-                              // NetworkImage(trade.imageUrlList[index])
-                              AssetImage('assets/images/profile.jpg'),
-                        );
+                            image: NetworkImage(trade.imageUrlList[index]));
                       }),
                 ),
-                // Container(height: 1, color: Colors.black26),
+                Container(height: 1, color: Colors.black26),
                 Container(
-                  padding: EdgeInsets.fromLTRB(30, 18, 30, 13),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(25.0),
-                      topRight: Radius.circular(25.0),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        spreadRadius: 1,
-                        blurRadius: 1,
-                        offset: const Offset(0, 0),
-                      ),
-                    ],
-                    color: Colors.white,
-                  ),
+                  padding: const EdgeInsets.fromLTRB(30, 18, 30, 13),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -214,11 +226,13 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                       SizedBox(
                         height: 50,
                         width: 50,
-                        child: Image.asset('assets/images/level/${trade.sellerRating}.png'),
+                        child: Image.asset(
+                            'assets/images/level/${trade.sellerRating}.png'),
                       )
                     ],
                   ),
                 ),
+                Container(height: 1, color: Colors.black26),
                 Container(
                     padding: const EdgeInsets.fromLTRB(30, 15, 30, 10),
                     child: Column(
@@ -300,13 +314,12 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
             bottom: 0,
             child: Column(
               children: [
-
                 Container(
-
                     padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                     height: 75,
                     width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(color: Colors.white,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.1),
@@ -373,37 +386,45 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                                   ),
                                 ],
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) {
-                                      return ChattingDetailPage(tradeInfoMap: {
-                                        "tradeId": trade.id.toString(),
-                                        "seller": trade.sellerNickname,
-                                        "sellerId": trade.sellerId.toString(),
-                                      });
-                                    },
-                                  ));
-                                },
-                                child: Container(
-                                  margin:
-                                      const EdgeInsets.fromLTRB(0, 5, 20, 5),
-                                  padding:
-                                      const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFFFD954),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: const Center(
-                                    child: Text(
-                                      '채팅하기',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
+                              isMine
+                                  ? Column()
+                                  : GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                          builder: (context) {
+                                            return ChattingDetailPage(
+                                                tradeInfoMap: {
+                                                  "tradeId":
+                                                      trade.id.toString(),
+                                                  "seller":
+                                                      trade.sellerNickname,
+                                                  "sellerId":
+                                                      trade.sellerId.toString(),
+                                                });
+                                          },
+                                        ));
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.fromLTRB(
+                                            0, 5, 20, 5),
+                                        padding: const EdgeInsets.fromLTRB(
+                                            20, 0, 20, 0),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFFFD954),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        child: const Center(
+                                          child: Text(
+                                            '채팅하기',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16),
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              ),
                             ],
                           ),
                         ),

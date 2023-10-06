@@ -21,7 +21,6 @@ class TradeProviders {
       String? subLocality,
       String? thoroughfare) async {
     List<TradeDto> trade = [];
-    print("거래 조회 시작");
     final response = await http.post(
       lastTradeId == null
           ? Uri.parse('$url/api/trade/list?lastTradeId=&sort=createTime')
@@ -46,7 +45,6 @@ class TradeProviders {
       List<dynamic> body =
           json.decode(utf8.decode(response.bodyBytes))['data']['tradeList'];
       trade = body.map((trades) => TradeDto.fromJson(trades)).toList();
-      print(trade);
     } else {
       print(response.statusCode);
       print(response.body);

@@ -281,7 +281,7 @@ class _CalculatePageState extends State<CalculatePage> {
                                                     5 *
                                                     4,
                                                 child:
-                                                const ExchangeRecordPage(),
+                                                const ExchangeRecordPage(type: "calculate",),
                                               ),
                                             );
                                           });

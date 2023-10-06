@@ -6,6 +6,8 @@ import 'package:a705/providers/member_providers.dart';
 import 'package:provider/provider.dart';
 import 'package:a705/Login/login_page.dart';
 
+import 'Login/start_page.dart';
+
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {

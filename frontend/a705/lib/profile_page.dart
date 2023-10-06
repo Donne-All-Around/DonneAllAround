@@ -354,10 +354,17 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: const Offset(0, 0),
+                          ),
+                        ]),
                   margin: const EdgeInsets.all(10.0),
                   padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
                   height: 210,
@@ -489,12 +496,19 @@ class _ProfilePageState extends State<ProfilePage> {
                   )
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  margin: EdgeInsets.all(10.0),
-                  padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: const Offset(0, 0),
+                          ),
+                        ]),
+                  margin: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
                   height: 105,
                   width: 360,
                   child: Column(
@@ -515,6 +529,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       const SizedBox(height: 10.0),
                       InkWell(
                         onTap: () {
+
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => ExchangeRecordPage()));
@@ -543,10 +559,18 @@ class _ProfilePageState extends State<ProfilePage> {
                   )
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: const Offset(0, 0),
+                          ),
+                        ]),
+
                   margin: const EdgeInsets.all(10.0),
                   padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
                   height: 105,
@@ -597,10 +621,17 @@ class _ProfilePageState extends State<ProfilePage> {
                   )
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: const Offset(0, 0),
+                          ),
+                        ]),
                   margin: const EdgeInsets.all(10.0),
                   padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
                   height: 140,

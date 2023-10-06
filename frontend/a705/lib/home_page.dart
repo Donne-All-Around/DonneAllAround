@@ -34,7 +34,6 @@ class _HomePageState extends State<HomePage> {
     trade = await tradeProvider.getLatestTrade(
         currency[_idx], null, null, null, null, null, "강남구", "역삼동");
     size = trade.length;
-    print(trade);
     setState(() {});
   }
 
@@ -84,13 +83,14 @@ class _HomePageState extends State<HomePage> {
     longitude: 127.0396597,
   );
 
-  Map<String, double>? exchangeRates;
+  late Map<String, double> exchangeRates;
 
   Future<void> _fetchExchangeRates() async {
     exchangeRates = {'USDKRW': 0};
     try {
       final exchangeProvider = ExchangeRateProvider();
       final response = await exchangeProvider.fetchCurrencyData();
+      print(response);
       // API 응답 데이터 파싱
       final exchangeResponse = response;
       if (exchangeResponse.success) {

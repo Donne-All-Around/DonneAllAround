@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:a705/transaction_detail_page.dart';
+import 'package:intl/intl.dart';
 import 'review_create_page.dart';
 import 'dart:convert'; // JSON 파싱을 위해 추가
 import 'package:http/http.dart' as http;
@@ -13,6 +14,7 @@ class BuyRecordPage extends StatefulWidget {
 }
 
 class BuyRecordPageState extends State<BuyRecordPage> {
+  ScrollController _scrollController = ScrollController();
 
   // 서버에서 받아온 데이터를 저장할 리스트
   List<Map<String, dynamic>> tradeList = [];
@@ -22,9 +24,59 @@ class BuyRecordPageState extends State<BuyRecordPage> {
     super.initState();
     // initState에서 서버로 GET 요청을 보냅니다.
     fetchBuyHistory();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        // Reached the bottom, load more data
+        loadMoreData();
+      }
+    });
   }
 
-  void fetchBuyHistory() async {
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void loadMoreData() async {
+    int lastListIdx = tradeList[tradeList.length - 1]['id'];
+    print(lastListIdx);
+    fetchMoreLoadBuyHistory(lastListIdx);
+    print("$lastListIdx");
+  }
+  Future fetchMoreLoadBuyHistory(int lastListIdx) async {
+    try {
+      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/buy?lastTradeId=$lastListIdx');
+
+      final headers = {
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg',
+        'Content-Type': 'application/json', // 필요에 따라 다른 헤더를 추가할 수 있습니다.
+      };
+
+      http.Response response = await http.get(url, headers: headers);
+      String responseBody = utf8.decode(response.bodyBytes);
+
+      if (response.statusCode == 200) {
+        // 서버 응답이 성공인 경우
+        final responseData = json.decode(responseBody);
+        final data = responseData['data'];
+        final tradeListData = data['tradeList'];
+
+        setState(() {
+          tradeList += List<Map<String, dynamic>>.from(tradeListData);
+        });
+        print('구매내역 잘 들어온다');
+      } else {
+        // 서버 응답이 실패인 경우
+        print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('서버 요청 중 오류 발생: $e');
+    }
+  }
+
+  Future fetchBuyHistory() async {
     try {
       final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/buy');
 
@@ -122,6 +174,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      controller: widget.buyRecordPageState._scrollController,
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         itemCount: widget.buyRecordPageState.tradeList.length,
@@ -220,7 +273,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                   ),
                                   const SizedBox(width: 5),
                                   Text(
-                                    '${trade['foreignCurrencyAmount']} ${trade['countryCode']}',
+                                    '${NumberFormat("#,##0").format(trade['foreignCurrencyAmount'])} ${trade['countryCode']}',
                                     style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -235,7 +288,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                   Column(
                                     children: [
                                       Text(
-                                        '${trade['koreanWonAmount']}원',
+                                        '${NumberFormat("#,##0").format(trade['koreanWonAmount'])} 원',
                                         style: const TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold),
