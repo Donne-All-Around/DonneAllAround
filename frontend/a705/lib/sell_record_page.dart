@@ -99,8 +99,8 @@ class SellRecordPageState extends State<SellRecordPage> {
     try {
       final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/sale');
 
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+      final accessToken =
+      await getJwtAccessToken();
 
       http.Response response = await http.get(
         url,
