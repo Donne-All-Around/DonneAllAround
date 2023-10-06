@@ -952,8 +952,8 @@ class _ExchangePageState extends State<ExchangePage> {
                                             });
                                         setState(() {
                                           idx3 = idx;
-                                          _moneyController3.text =
-                                              (1 * unit[idx3]).toString();
+                                          _moneyController3.text = unit[idx3].toString();
+                                          _moneyController4.text = calculateExchangeRate(idx3, idx4);
                                         });
                                       },
                                       child: Container(
@@ -1034,6 +1034,11 @@ class _ExchangePageState extends State<ExchangePage> {
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         ),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _moneyController4.text = (double.parse(value) * double.parse(calculateExchangeRate(idx3, idx4))).toString();
+                                          });
+                                        },
                                       ),
                                     ),
                                   ],

@@ -17,6 +17,9 @@ class SellRecordPageState extends State<SellRecordPage> {
   // 현재 선택된 버튼 (디폴트 : 판매)
   String selectedButton = '판매 중';
 
+  ScrollController _scrollController = ScrollController();
+
+
   List<Map<String, dynamic>> waitList = [];
   List<Map<String, dynamic>> completeList = [];
 
@@ -35,8 +38,64 @@ class SellRecordPageState extends State<SellRecordPage> {
     // initState에서 서버로 GET 요청을 보냅니다.
     fetchWaitHistory();
     fetchCompleteHistory();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        // Reached the bottom, load more data
+        loadMoreData();
+      }
+    });
+  }
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+  void loadMoreData() async{
+    List<Map<String, dynamic>> newItems;
+    if(selectedButton == "판매 중"){
+      int lastListIdx = waitList[waitList.length - 1]['id'];
+      fetchMoreLoadWaitHistory(lastListIdx);
+    }else{
+      int lastListIdx = completeList[completeList.length - 1]['id'];
+      fetchMoreLoadCompleteHistory(lastListIdx);
+    }
   }
 
+  void fetchMoreLoadWaitHistory(int lastListIdx ) async {
+    try {
+      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/sale?lastTradeId=$lastListIdx');
+
+      const accessToken =
+          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+
+      http.Response response = await http.get(
+        url,
+        headers: {'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',
+        },
+      );
+      String responseBody = utf8.decode(response.bodyBytes);
+
+      if (response.statusCode == 200) {
+        // 서버 응답이 성공인 경우
+        final responseData = json.decode(responseBody);
+        final data = responseData['data'];
+        final tradeListData = data['tradeList'];
+
+        setState(() {
+          waitList += List<Map<String, dynamic>>.from(tradeListData);
+        });
+        print('판매중내역 잘 들어온다');
+      } else {
+        // 서버 응답이 실패인 경우
+        print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('서버 요청 중 오류 발생: $e');
+    }
+  }
   void fetchWaitHistory() async {
     try {
       final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/sale');
@@ -96,6 +155,39 @@ class SellRecordPageState extends State<SellRecordPage> {
 
         setState(() {
           completeList = List<Map<String, dynamic>>.from(tradeListData);
+        });
+        print('판완내역 잘 들어온다');
+      } else {
+        // 서버 응답이 실패인 경우
+        print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('서버 요청 중 오류 발생: $e');
+    }
+  }void fetchMoreLoadCompleteHistory(int lastListIdx) async {
+    try {
+       // 원하는 회원 ID를 여기에 넣어주세요.
+      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/complete?lastTradeId=$lastListIdx');
+      const accessToken =
+          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+
+      http.Response response = await http.get(
+        url,
+        headers: {'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept-Charset': 'UTF-8',
+        },
+      );
+      String responseBody = utf8.decode(response.bodyBytes);
+
+      if (response.statusCode == 200) {
+        // 서버 응답이 성공인 경우
+        final responseData = json.decode(responseBody);
+        final data = responseData['data'];
+        final tradeListData = data['tradeList'];
+
+        setState(() {
+          completeList += List<Map<String, dynamic>>.from(tradeListData);
         });
         print('판완내역 잘 들어온다');
       } else {
@@ -204,6 +296,7 @@ class SellRecordPageState extends State<SellRecordPage> {
   Widget _buildSellWaitListView() {
     return Expanded(
       child: ListView.builder(
+        controller: _scrollController,
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
           itemCount: waitList.length,
@@ -359,6 +452,7 @@ class SellRecordPageState extends State<SellRecordPage> {
   Widget _buildSellCompleteListView() {
     return Expanded(
       child: ListView.builder(
+          controller: _scrollController,
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
           itemCount: completeList.length,
