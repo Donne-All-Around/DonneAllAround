@@ -5,7 +5,7 @@ import 'exchange_record_page.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ExchangeRecordCreatePage extends StatefulWidget {
   const ExchangeRecordCreatePage({super.key});
@@ -15,7 +15,7 @@ class ExchangeRecordCreatePage extends StatefulWidget {
 }
 
 class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
-
+  String? baseUrl = dotenv.env['BASE_URL'];
   // POST 요청을 보낼 함수
   Future<void> sendExchangeRecord(String tradingBaseRate, countryCode, bankCode) async {
     try {
@@ -34,7 +34,7 @@ class ExchangeRecordCreatePageState extends State<ExchangeRecordCreatePage> {
 
       // POST 요청 보내기
       final response = await http.post(
-        Uri.parse('https://j9a705.p.ssafy.io/api/exchange/record/create'),
+        Uri.parse('$baseUrl/exchange/record/create'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $accessToken',

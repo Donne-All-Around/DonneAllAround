@@ -11,6 +11,7 @@ import 'exchange_record_page.dart';
 import 'review_page.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -20,14 +21,14 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
+  String? baseUrl = dotenv.env['BASE_URL'];
   int selectedScreen = 1; // 1은 '내 주머니', 2는 '내 계좌'
 
   Map<String, dynamic> userData = {};
 
   // 서버에 GET 요청을 보내는 함수
   Future<void> fetchData() async {
-    final url = Uri.parse('https://j9a705.p.ssafy.io/api/member/info');
+    final url = Uri.parse('$baseUrl/member/info');
     final accessToken =
         await getJwtAccessToken();
 
@@ -68,7 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> logout() async {
-    final url = Uri.parse('https://j9a705.p.ssafy.io/api/member/logout');
+    final url = Uri.parse('$baseUrl/member/logout');
     final storage = FlutterSecureStorage();
     final refreshToken =  await getJwtRefreshToken(); // 리프레시 토큰 가져오기
     final accessToken =  await getJwtAccessToken(); // 액세스 토큰 가져오기

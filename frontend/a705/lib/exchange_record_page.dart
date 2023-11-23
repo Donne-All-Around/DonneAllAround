@@ -6,7 +6,7 @@ import 'exchange_record_edit_page.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert'; // JSON 파싱을 위해 추가
 import 'package:http/http.dart' as http;
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ExchangeRecordPage extends StatefulWidget {
   final String? type;
@@ -23,13 +23,13 @@ class ExchangeRecordPage extends StatefulWidget {
 class ExchangeRecordPageState extends State<ExchangeRecordPage> {
   // 서버에서 받아온 데이터를 저장할 리스트 일단 주석처리 나중에 백 연결되면 주석해제
   List<Map<String, dynamic>> exchangeDataList = [];
-
+  String? baseUrl = dotenv.env['BASE_URL'];
   String? accessToken = getJwtAccessToken().toString();
 
   // 삭제 API 호출 메서드
   Future<void> deleteExchangeRecord(int exchangeRecordId) async {
     final apiUrl =
-        'https://j9a705.p.ssafy.io/api/exchange/record/$exchangeRecordId';
+        '$baseUrl/exchange/record/$exchangeRecordId';
 
     try {
       final response = await http.delete(
@@ -58,12 +58,11 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
 
   // 서버로부터 데이터를 가져오는 메서드
   Future<void> fetchExchangeData() async {
-    const apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list';
     final accessToken = await getJwtAccessToken();
 
     try {
       http.Response response = await http.get(
-        Uri.parse(apiUrl),
+        Uri.parse('$baseUrl/exchange/record/list'),
         headers: {
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -144,7 +143,7 @@ class ExchangeRecordPageState extends State<ExchangeRecordPage> {
   // 서버로부터 추가로 데이터를 가져오는 메서드
   void fetchMoreLoadExchangeData(int lastListIdx) async {
 
-    final apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list?lastExchangeRecordId=${lastListIdx}';
+    final apiUrl = '$baseUrl/exchange/record/list?lastExchangeRecordId=${lastListIdx}';
     final accessToken = await getJwtAccessToken();
 
     try {

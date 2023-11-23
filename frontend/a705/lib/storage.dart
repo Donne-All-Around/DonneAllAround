@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'main.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 const storage = FlutterSecureStorage();
 
@@ -42,7 +43,6 @@ Future<String?> getUserTel() async {
   return await storage.read(key: 'userTel');
 }
 
-
 Future<String?> getUserNickname() async {
   return await storage.read(key: 'userNickname');
 }
@@ -56,11 +56,11 @@ Future<String?> getJwtRefreshToken() async {
 }
 
 
-const baseUrl = 'https://j9a705.p.ssafy.io'; // 기본 URL을 사용자의 백엔드 URL로 대체
+String? baseUrl = dotenv.env['BASE_URL'];
 
 Future<String?> refreshTokenAndRetrieveAccessToken(String refreshToken) async {
   try {
-    final url = '$baseUrl/api/member/reissue';
+    final url = '$baseUrl/member/reissue';
 
     // 리프레시 토큰을 요청 바디에 담아서 POST 요청을 보냅니다.
     final response = await http.post(
@@ -75,8 +75,6 @@ Future<String?> refreshTokenAndRetrieveAccessToken(String refreshToken) async {
 
       // 갱신된 어세스 토큰을 스토리지에 저장합니다.
       await storage.write(key: 'jwtAccessToken', value: newAccessToken);
-
-      print('AccessToken 이 갱신되었습니다: $newAccessToken');
       return newAccessToken;
     } else {
       print('AccessToken 갱신 실패 정보 삭제 및 로그인 이동');

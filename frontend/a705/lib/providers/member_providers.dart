@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../storage.dart';
 
 class UserProvider extends ChangeNotifier {
@@ -17,12 +17,11 @@ class UserProvider extends ChangeNotifier {
 
   MemberDto? get user => _user;
 
-
-  final String baseUrl = "https://j9a705.p.ssafy.io";
+  String? baseUrl = dotenv.env['BASE_URL'];
 
   // 백엔드에서 사용자가 존재하는지 확인하는 함수 (전화 번호 체크 - 사실상 필요 없긴함)
   Future<bool> checkUserExists(String phoneNumber) async {
-    final url = "$baseUrl/api/member/check/tel?tel=$phoneNumber";
+    final url = "$baseUrl/member/check/tel?tel=$phoneNumber";
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -42,7 +41,7 @@ class UserProvider extends ChangeNotifier {
   // 백엔드에 새 사용자를 등록하는 함수(회원가입)
   Future<Map<String, dynamic>?> signUp(SignUpDto signUpDto) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/api/member/join'),
+      Uri.parse('$baseUrl/member/join'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -64,7 +63,7 @@ class UserProvider extends ChangeNotifier {
 
 // 닉네임 체크 
   Future<String> checkNickname(String nickname) async {
-    final url = "$baseUrl/api/member/check/nickname";
+    final url = "$baseUrl/member/check/nickname";
 
     try {
       final response = await http.post(
@@ -122,7 +121,7 @@ class UserProvider extends ChangeNotifier {
 
   Future<String?> getJwtTokenFromFirebaseToken(String firebaseToken, String uid,
       String tel) async {
-    final url = "$baseUrl/api/member/sign-in";
+    final url = "$baseUrl/member/sign-in";
 
     // Prepare the request body with the firebaseToken, uid, and tel
     final requestBody = {
@@ -130,9 +129,9 @@ class UserProvider extends ChangeNotifier {
       "uid": uid,
       "tel": tel,
     };
-    print('보내는 파베토큰 : ${requestBody['idToken']}');
-    print('보내는 uid : ${requestBody['uid']}');
-    print('보내는 tel : ${requestBody['tel']}');
+    // print('보내는 파베토큰 : ${requestBody['idToken']}');
+    // print('보내는 uid : ${requestBody['uid']}');
+    // print('보내는 tel : ${requestBody['tel']}');
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -141,14 +140,12 @@ class UserProvider extends ChangeNotifier {
         },
         body: jsonEncode(requestBody),
       );
-      print('파베보내고 jwt 받는 응답: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
 
         // 파이어베이스 토큰 인증 성공
         if (responseData['firebaseAuthStatus'] == true) {
-          print("파이어베이스 토큰 인증 성공");
 
           final signInResponseJson = responseData['signInResponse'];
 
@@ -160,11 +157,11 @@ class UserProvider extends ChangeNotifier {
             String refreshToken = signInResponse.signInResponse.token.refreshToken;
             String nickname = signInResponse.signInResponse.nickname;
 
-            print('너의 member id : $id');
-            print('너의 전번 : $tel');
-            print('너의 accessToken 토큰 값: $accessToken');
-            print('너의 refreshToken 토큰 값: $refreshToken');
-            print('너의 닉네임 : $nickname');
+            // print('너의 member id : $id');
+            // print('너의 전번 : $tel');
+            // print('너의 accessToken 토큰 값: $accessToken');
+            // print('너의 refreshToken 토큰 값: $refreshToken');
+            // print('너의 닉네임 : $nickname');
 
             // 스토리지에 저장.
             await saveUserInfo(id, tel, nickname, accessToken, refreshToken);

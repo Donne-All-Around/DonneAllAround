@@ -4,6 +4,7 @@ import 'package:a705/transaction_detail_page.dart';
 import 'dart:convert'; // JSON 파싱을 위해 추가
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class TradeLikePage extends StatefulWidget {
   const TradeLikePage({super.key});
@@ -16,6 +17,9 @@ class TradeLikePageState extends State<TradeLikePage> {
 
   List<Map<String, dynamic>> tradeList = [];
   ScrollController _scrollController = ScrollController();
+
+  String? baseUrl = dotenv.env['BASE_URL'];
+
   @override
   void initState() {
     super.initState();
@@ -42,7 +46,7 @@ class TradeLikePageState extends State<TradeLikePage> {
 
   void fetchMoreLoadTradeLikeHistory(int lastListIdx) async {
     try {
-      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/like?lastTradeId=$lastListIdx');
+      final url = Uri.parse('$baseUrl/trade/like?lastTradeId=$lastListIdx');
       final accessToken =  await getJwtAccessToken();
 
       final headers = {
@@ -72,7 +76,7 @@ class TradeLikePageState extends State<TradeLikePage> {
     }
   }void fetchTradeLikeHistory() async {
     try {
-      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/like');
+      final url = Uri.parse('$baseUrl/trade/like');
       final accessToken =  await getJwtAccessToken();
 
       final headers = {
@@ -254,7 +258,7 @@ class _ListViewBuilderState extends State<ListViewBuilder> {
                                         final tradeId = trade['id']; // trade['id'] 또는 다른 필드에 해당하는 값으로 변경
 
                                         // DELETE 요청 보내기
-                                        final deleteUrl = 'https://j9a705.p.ssafy.io/api/trade/$tradeId/unlike';
+                                        final deleteUrl = '$baseUrl/trade/$tradeId/unlike';
                                         final accessToken =  await getJwtAccessToken();
 
                                         try {

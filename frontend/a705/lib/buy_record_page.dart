@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'review_create_page.dart';
 import 'dart:convert'; // JSON 파싱을 위해 추가
 import 'package:http/http.dart' as http;
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class BuyRecordPage extends StatefulWidget {
   const BuyRecordPage({super.key});
@@ -15,6 +15,7 @@ class BuyRecordPage extends StatefulWidget {
 }
 
 class BuyRecordPageState extends State<BuyRecordPage> {
+  String? baseUrl = dotenv.env['BASE_URL'];
   ScrollController _scrollController = ScrollController();
 
   // 서버에서 받아온 데이터를 저장할 리스트
@@ -48,7 +49,7 @@ class BuyRecordPageState extends State<BuyRecordPage> {
   }
   Future fetchMoreLoadBuyHistory(int lastListIdx) async {
     try {
-      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/buy?lastTradeId=$lastListIdx');
+      final url = Uri.parse('$baseUrl/trade/history/buy?lastTradeId=$lastListIdx');
       final accessToken =  await getJwtAccessToken();
 
       final headers = {
@@ -80,7 +81,7 @@ class BuyRecordPageState extends State<BuyRecordPage> {
 
   Future fetchBuyHistory() async {
     try {
-      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/buy');
+      final url = Uri.parse('$baseUrl/trade/history/buy');
       final accessToken =  await getJwtAccessToken();
 
       final headers = {

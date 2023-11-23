@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'keyword_create_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Keyword {
   final String keywordId;
@@ -25,6 +26,8 @@ class Keyword {
   });
 }
 
+String? baseUrl = dotenv.env['BASE_URL'];
+
 class KeywordPage extends StatefulWidget {
   const KeywordPage({super.key});
 
@@ -38,14 +41,12 @@ class KeywordPageState extends State<KeywordPage> {
   List<Keyword> keywords = [];
 
   Future<void> fetchKeywords() async {
-
-    const url = 'https://j9a705.p.ssafy.io/api/keyword';
     const accessToken =
         'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 
     try {
       final response = await http.get(
-        Uri.parse(url),
+        Uri.parse('$baseUrl/keyword'),
         headers: {
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -196,7 +197,7 @@ class KeywordPageState extends State<KeywordPage> {
                               onPressed: () async {
                                 // 서버에 삭제 요청을 보내는 코드
                                 final keywordId = keyword.keywordId;
-                                final deleteUrl = 'https://j9a705.p.ssafy.io/api/keyword/$keywordId';
+                                final deleteUrl = '$baseUrl/keyword/$keywordId';
                                 const accessToken =
                                     'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
 

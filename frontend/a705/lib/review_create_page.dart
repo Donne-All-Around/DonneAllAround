@@ -5,6 +5,7 @@ import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_6.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // JSON 디코딩을 위해 추가
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ReviewCreatePage extends StatefulWidget {
   final int tradeID; // tradeID를 받아오기 위한 생성자 파라미터 추가
@@ -56,8 +57,10 @@ class ReviewCreatePageState extends State<ReviewCreatePage> {
     fetchTradeData();
   }
 
+  String? baseUrl = dotenv.env['BASE_URL'];
+
   Future<void> fetchTradeData() async {
-    final url = 'https://j9a705.p.ssafy.io/api/trade/detail/${widget.tradeID}';
+    final url = '$baseUrl/trade/detail/${widget.tradeID}';
     final accessToken =  await getJwtAccessToken();
 
     try {
@@ -79,7 +82,6 @@ class ReviewCreatePageState extends State<ReviewCreatePage> {
           tradeData = data;
         });
 
-        print('거래데이터 잘 받아옴');
 
       } else {
         // 오류 처리 로직 추가
@@ -123,7 +125,7 @@ class ReviewCreatePageState extends State<ReviewCreatePage> {
     } else {
 
       // 정보가 모두 입력되었을 떄 서버로 전송
-      final url = 'https://j9a705.p.ssafy.io/api/trade/review/${widget.tradeID}';
+      final url = '$baseUrl/trade/review/${widget.tradeID}';
       final accessToken =  await getJwtAccessToken();
 
       final requestData = {
@@ -144,7 +146,6 @@ class ReviewCreatePageState extends State<ReviewCreatePage> {
 
         if (response.statusCode == 200) {
           // 서버 응답이 성공적으로 왔을 때의 처리
-          print('리뷰가 성공적으로 저장되었습니다.');
           Navigator.pop(context);
 
         } else {

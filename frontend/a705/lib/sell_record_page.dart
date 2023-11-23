@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'review_create_page.dart';
 import 'dart:convert'; // JSON 파싱을 위해 추가
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SellRecordPage extends StatefulWidget {
   const SellRecordPage({super.key});
@@ -14,11 +15,12 @@ class SellRecordPage extends StatefulWidget {
 }
 
 class SellRecordPageState extends State<SellRecordPage> {
-
+  String? baseUrl = dotenv.env['BASE_URL'];
+  String? accessToken = getJwtAccessToken().toString();
   // 현재 선택된 버튼 (디폴트 : 판매)
   String selectedButton = '판매 중';
 
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
 
   List<Map<String, dynamic>> waitList = [];
@@ -65,7 +67,7 @@ class SellRecordPageState extends State<SellRecordPage> {
 
   void fetchMoreLoadWaitHistory(int lastListIdx ) async {
     try {
-      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/sale?lastTradeId=$lastListIdx');
+      final url = Uri.parse('$baseUrl/trade/history/sell/sale?lastTradeId=$lastListIdx');
 
       final accessToken =  await getJwtAccessToken();
       http.Response response = await http.get(
@@ -97,10 +99,7 @@ class SellRecordPageState extends State<SellRecordPage> {
   }
   void fetchWaitHistory() async {
     try {
-      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/sale');
-
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
+      final url = Uri.parse('$baseUrl/trade/history/sell/sale');
 
       http.Response response = await http.get(
         url,
@@ -133,10 +132,7 @@ class SellRecordPageState extends State<SellRecordPage> {
   void fetchCompleteHistory() async {
     try {
        // 원하는 회원 ID를 여기에 넣어주세요.
-      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/complete');
-      const accessToken =
-          'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMTAtODkyMy04OTIzIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTY5NjU4NDg2OX0.ezbsG-Tn7r5xmqjSbPu5YU6r0-igo3lmRIFbLsyMyEg';
-
+      final url = Uri.parse('$baseUrl/trade/history/sell/complete');
       http.Response response = await http.get(
         url,
         headers: {'Authorization': 'Bearer $accessToken',
@@ -155,7 +151,6 @@ class SellRecordPageState extends State<SellRecordPage> {
         setState(() {
           completeList = List<Map<String, dynamic>>.from(tradeListData);
         });
-        print('판완내역 잘 들어온다');
       } else {
         // 서버 응답이 실패인 경우
         print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
@@ -166,7 +161,7 @@ class SellRecordPageState extends State<SellRecordPage> {
   }void fetchMoreLoadCompleteHistory(int lastListIdx) async {
     try {
        // 원하는 회원 ID를 여기에 넣어주세요.
-      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/history/sell/complete?lastTradeId=$lastListIdx');
+      final url = Uri.parse('$baseUrl/trade/history/sell/complete?lastTradeId=$lastListIdx');
       final accessToken =  await getJwtAccessToken();
 
       http.Response response = await http.get(
@@ -187,7 +182,6 @@ class SellRecordPageState extends State<SellRecordPage> {
         setState(() {
           completeList += List<Map<String, dynamic>>.from(tradeListData);
         });
-        print('판완내역 잘 들어온다');
       } else {
         // 서버 응답이 실패인 경우
         print('서버 요청 실패 - 상태 코드: ${response.statusCode}');

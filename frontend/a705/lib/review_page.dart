@@ -2,7 +2,7 @@ import 'package:a705/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // JSON 디코딩을 위해 추가
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ReviewPage extends StatefulWidget {
   const ReviewPage({super.key});
@@ -13,7 +13,7 @@ class ReviewPage extends StatefulWidget {
 
 class ReviewPageState extends State<ReviewPage> {
   ScrollController _scrollController = ScrollController();
-
+  String? baseUrl = dotenv.env['BASE_URL'];
   // 서버에서 임티후기 count 받아오기
   int badCount = 0;
   int goodCount = 0;
@@ -63,7 +63,7 @@ class ReviewPageState extends State<ReviewPage> {
   void fetchMoreLoadBuyReviews(int lastListIdx) async {
     try {
       final url = Uri.parse(
-          'https://j9a705.p.ssafy.io/api/trade/review/list/buy?lastTradeId=$lastListIdx');
+          '$baseUrl/trade/review/list/buy?lastTradeId=$lastListIdx');
       final accessToken = getJwtAccessToken();
 
       http.Response response = await http.get(
@@ -94,7 +94,7 @@ class ReviewPageState extends State<ReviewPage> {
   } void fetchBuyReviews() async {
     try {
       final url = Uri.parse(
-          'https://j9a705.p.ssafy.io/api/trade/review/list/buy');
+          '$baseUrl/trade/review/list/buy');
       final accessToken = getJwtAccessToken();
 
       http.Response response = await http.get(
@@ -126,7 +126,7 @@ class ReviewPageState extends State<ReviewPage> {
   void fetchMoreLoadSellReviews(int lastListIdx) async {
     try {
       final url = Uri.parse(
-          'https://j9a705.p.ssafy.io/api/trade/review/list/sell?lastTradeId=$lastListIdx');
+          '$baseUrl/trade/review/list/sell?lastTradeId=$lastListIdx');
       final accessToken = getJwtAccessToken();
 
       http.Response response = await http.get(
@@ -156,7 +156,7 @@ class ReviewPageState extends State<ReviewPage> {
   void fetchSellReviews() async {
     try {
       final url = Uri.parse(
-          'https://j9a705.p.ssafy.io/api/trade/review/list/sell');
+          '$baseUrl/trade/review/list/sell');
       final accessToken = getJwtAccessToken();
 
       http.Response response = await http.get(
@@ -174,7 +174,6 @@ class ReviewPageState extends State<ReviewPage> {
         setState(() {
           sellReviews = List<Map<String, dynamic>>.from(data);
         });
-        print('판매 서버 요청 성공');
       } else {
         // 서버 응답이 실패인 경우
         print('서버 요청 실패 - 상태 코드: ${response.statusCode}');
@@ -186,7 +185,7 @@ class ReviewPageState extends State<ReviewPage> {
 
   void fetchReviewCounts() async {
     try {
-      final url = Uri.parse('https://j9a705.p.ssafy.io/api/trade/review/score');
+      final url = Uri.parse('$baseUrl/trade/review/score');
       final accessToken = await getJwtAccessToken();
 
       http.Response response = await http.get(
@@ -267,7 +266,7 @@ class ReviewPageState extends State<ReviewPage> {
                         children: [
                           Text(
                               sellformattedDate,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               )
                           ),
@@ -289,7 +288,7 @@ class ReviewPageState extends State<ReviewPage> {
                             margin: const EdgeInsets.only(left: 16),
                             child: Text(
                                 sellreviewerNickname,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 )
@@ -302,7 +301,7 @@ class ReviewPageState extends State<ReviewPage> {
                           horizontal: 16, vertical: 10),
                       child: Text(
                           sellcomment,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                           )
                       )
@@ -344,7 +343,7 @@ class ReviewPageState extends State<ReviewPage> {
                         children: [
                           Text(
                               buyformattedDate,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               )
                           ),
@@ -366,7 +365,7 @@ class ReviewPageState extends State<ReviewPage> {
                             margin: const EdgeInsets.only(left: 16),
                             child: Text(
                                 buyreviewerNickname,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 )
@@ -379,7 +378,7 @@ class ReviewPageState extends State<ReviewPage> {
                           horizontal: 16, vertical: 10),
                       child: Text(
                           buycomment,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                           )
                       )

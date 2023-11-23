@@ -5,6 +5,7 @@ import 'exchange_record_page.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ExchangeRecordEditPage extends StatefulWidget {
   final int exchangeRecordId; // 수정할 환전 기록의 ID
@@ -17,7 +18,7 @@ class ExchangeRecordEditPage extends StatefulWidget {
 }
 
 class ExchangeRecordEditPageState extends State<ExchangeRecordEditPage> {
-
+  String? baseUrl = dotenv.env['BASE_URL'];
   @override
   void initState() {
     super.initState();
@@ -28,11 +29,10 @@ class ExchangeRecordEditPageState extends State<ExchangeRecordEditPage> {
   Future<void> fetchExchangeRecord() async {
     try {
 
-      const apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/list';
       final accessToken =  await getJwtAccessToken();
 
       http.Response response = await http.get(
-        Uri.parse(apiUrl),
+        Uri.parse('$baseUrl/exchange/record/list'),
         headers: {
           'Authorization': 'Bearer $accessToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -82,7 +82,7 @@ class ExchangeRecordEditPageState extends State<ExchangeRecordEditPage> {
 
   Future<void> sendExchangeRecord(String tradingBaseRate, String countryCode, String bankCode) async {
 
-    final apiUrl = 'https://j9a705.p.ssafy.io/api/exchange/record/${widget.exchangeRecordId}';
+    final apiUrl = '$baseUrl/exchange/record/${widget.exchangeRecordId}';
     final accessToken =  await getJwtAccessToken();
 
     final Map<String, dynamic> requestData = {

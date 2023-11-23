@@ -5,7 +5,7 @@ import 'package:a705/choose_location_page2.dart';
 import 'package:a705/models/address.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 class KeywordCreatePage extends StatefulWidget {
@@ -16,6 +16,7 @@ class KeywordCreatePage extends StatefulWidget {
 }
 
 class KeywordCreatePageState extends State<KeywordCreatePage> {
+  String? baseUrl = dotenv.env['BASE_URL'];
 
   final _valueList = [
     '미국(달러) USD',
@@ -104,7 +105,7 @@ class KeywordCreatePageState extends State<KeywordCreatePage> {
 
       // 정보가 모두 입력되었을 떄 서버로 전송
        // memberId 설정 (원하는 값으로 변경)
-      final url = 'https://j9a705.p.ssafy.io/api/keyword';
+      final url = '$baseUrl/keyword';
       final accessToken =  await getJwtAccessToken();
 
       final requestData = {

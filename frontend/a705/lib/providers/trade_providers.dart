@@ -1,12 +1,13 @@
 import 'dart:convert';
-
 import 'package:a705/models/TradeDto.dart';
 import 'package:a705/providers/database.dart';
 import 'package:a705/storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 class TradeProviders {
-  String url = "https://j9a705.p.ssafy.io";
+  String? url = dotenv.env['BASE_URL'];
 
   // 거래 목록 조회(최신순)
   Future<List<TradeDto>> getLatestTrade(
@@ -22,9 +23,9 @@ class TradeProviders {
     final accessToken = await getJwtAccessToken();
     final response = await http.post(
       lastTradeId == null
-          ? Uri.parse('$url/api/trade/list?lastTradeId=&sort=createTime')
+          ? Uri.parse('$url/trade/list?lastTradeId=&sort=createTime')
           : Uri.parse(
-              '$url/api/trade/list?lastTradeId=$lastTradeId&sort=createTime'),
+              '$url/trade/list?lastTradeId=$lastTradeId&sort=createTime'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization' : 'Bearer ${accessToken}',
@@ -65,9 +66,9 @@ class TradeProviders {
     final accessToken =  await getJwtAccessToken();
     final response = await http.post(
       lastTradeId == null
-          ? Uri.parse('$url/api/trade/list?lastTradeId=&sort=koreanWonAmount')
+          ? Uri.parse('$url/trade/list?lastTradeId=&sort=koreanWonAmount')
           : Uri.parse(
-              '$url/api/trade/list?lastTradeId=$lastTradeId&sort=koreanWonAmount'),
+              '$url/trade/list?lastTradeId=$lastTradeId&sort=koreanWonAmount'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization' : 'Bearer ${accessToken}',
@@ -108,9 +109,9 @@ class TradeProviders {
     final response = await http.post(
       lastTradeId == null
           ? Uri.parse(
-              '$url/api/trade/list?lastTradeId=&sort=koreanWonPerForeignCurrency')
+              '$url/trade/list?lastTradeId=&sort=koreanWonPerForeignCurrency')
           : Uri.parse(
-              '$url/api/trade/list?lastTradeId=$lastTradeId&sort=koreanWonPerForeignCurrency'),
+              '$url/trade/list?lastTradeId=$lastTradeId&sort=koreanWonPerForeignCurrency'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization' : 'Bearer ${accessToken}',
@@ -141,7 +142,7 @@ class TradeProviders {
     final accessToken =  await getJwtAccessToken();
     var response = await http.get(
       Uri.parse(
-          '$url/api/trade/history/sell/complete?lastTradeId=$lastTradeId'),
+          '$url/trade/history/sell/complete?lastTradeId=$lastTradeId'),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization' : 'Bearer ${accessToken}',
@@ -160,7 +161,7 @@ class TradeProviders {
   Future<TradeDto> getTradeDetail(int tradeId) async {
     final accessToken =  await getJwtAccessToken();
     var response = await http.get(
-      Uri.parse('$url/api/trade/detail/$tradeId'),
+      Uri.parse('$url/trade/detail/$tradeId'),
       headers: <String, String>{
         'Content-Type': 'application/json',
         'Authorization' : 'Bearer ${accessToken}',
@@ -197,7 +198,7 @@ class TradeProviders {
     });
     final accessToken =  await getJwtAccessToken();
     try {
-      http.Response response = await http.post(Uri.parse('$url/api/trade/create'),
+      http.Response response = await http.post(Uri.parse('$url/trade/create'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization' : 'Bearer ${accessToken}',
@@ -241,7 +242,7 @@ class TradeProviders {
     final accessToken =  await getJwtAccessToken();
 
     try {
-      http.Response response = await http.put(Uri.parse('$url/api/trade/edit/${tradeDto.id}'),
+      http.Response response = await http.put(Uri.parse('$url/trade/edit/${tradeDto.id}'),
           headers: {
             "Accept": "application/json",
             "Content-Type":"application/json",
@@ -261,7 +262,7 @@ class TradeProviders {
     final accessToken =  await getJwtAccessToken();
 
     final response = await http.put(
-      Uri.parse('$url/api/trade/delete/$tradeId'),
+      Uri.parse('$url/trade/delete/$tradeId'),
       headers: {
         "Authorization": "Bearer $accessToken"
       },
@@ -270,7 +271,7 @@ class TradeProviders {
 
   Future<void> likeTrade(int tradeId) async {
     final response = await http.post(
-      Uri.parse('$url/api/trade/$tradeId/like'),
+      Uri.parse('$url/trade/$tradeId/like'),
     );
   }
 
@@ -278,7 +279,7 @@ class TradeProviders {
     final accessToken =  await getJwtAccessToken();
 
     final response = await http.delete(
-      Uri.parse('$url/api/trade/$tradeId/unlike?memberId=1'),
+      Uri.parse('$url/trade/$tradeId/unlike?memberId=1'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization' : 'Bearer $accessToken',
@@ -294,7 +295,7 @@ class TradeProviders {
     final accessToken =  await getJwtAccessToken();
     try {
       http.Response _response = await http.get(Uri.parse(
-          "https://j9a705.p.ssafy.io/api/trade/chat/${tradeId}"),headers: {
+          "$url/trade/chat/${tradeId}"),headers: {
         'Content-Type': 'application/json',
         'Authorization' : 'Bearer $accessToken',
       },);
@@ -324,7 +325,7 @@ class TradeProviders {
     try {
       http.Response _response = await http.put(
         Uri.parse(
-            "https://j9a705.p.ssafy.io/api/trade/promise/direct/${tradeId}"),
+            "$url/trade/promise/direct/${tradeId}"),
         body: jsonData,
         headers: {
           'Content-Type': 'application/json',
@@ -354,7 +355,7 @@ class TradeProviders {
     try {
       http.Response _response = await http.put(
         Uri.parse(
-            "https://j9a705.p.ssafy.io/api/trade/promise/delivery/${tradeId}"),
+            "$url/trade/promise/delivery/${tradeId}"),
         body: jsonData,
         headers: {
           'Content-Type': 'application/json',
@@ -378,12 +379,11 @@ class TradeProviders {
 
   // 거래 완료
   Future<void> setCompleteAppointment(String tradeId, String memberId) async {
-    print('tradeId: $tradeId');
     final accessToken =  await getJwtAccessToken();
     try {
       http.Response _response = await http.put(
         Uri.parse(
-            "https://j9a705.p.ssafy.io/api/trade/promise/complete/${tradeId}"),
+            "$url/trade/promise/complete/${tradeId}"),
         headers: {
           'Content-Type': 'application/json',
           'Authorization' : 'Bearer ${accessToken}',
@@ -394,7 +394,6 @@ class TradeProviders {
         Map<String, dynamic> jsonData = json.decode(responseBody);
         // "data" 객체 추출
         Map<String, dynamic> data = jsonData['data'];
-        print(responseBody);
 
       } else {
         print('상태 코드 오류: ${_response.statusCode}');
@@ -407,12 +406,11 @@ class TradeProviders {
 
   // 약속 취소
   Future<void> cancelAppointment(String tradeId, String memberId) async {
-    print('tradeId: $tradeId');
     final accessToken =  await getJwtAccessToken();
     try {
       http.Response _response = await http.put(
         Uri.parse(
-            "https://j9a705.p.ssafy.io/api/trade/promise/cancel/${tradeId}"),
+            "$url/trade/promise/cancel/${tradeId}"),
         headers: {
           'Content-Type': 'application/json',
           'Authorization' : 'Bearer ${accessToken}',
@@ -423,7 +421,6 @@ class TradeProviders {
         Map<String, dynamic> jsonData = json.decode(responseBody);
         // "data" 객체 추출
         Map<String, dynamic> data = jsonData['data'];
-        print(responseBody);
 
       } else {
         print('상태 코드 오류: ${_response.statusCode}');

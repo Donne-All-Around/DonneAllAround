@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:a705/Login/start_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class WithdrawalPage extends StatefulWidget {
   const WithdrawalPage({super.key});
@@ -10,11 +11,11 @@ class WithdrawalPage extends StatefulWidget {
   @override
   State<WithdrawalPage> createState() => _WithdrawalPageState();
 }
-
+String? baseUrl = dotenv.env['BASE_URL'];
 class _WithdrawalPageState extends State<WithdrawalPage> {
 
   Future<void> withdraw() async {
-    final url = Uri.parse('https://j9a705.p.ssafy.io/api/member/delete');
+    final url = Uri.parse('$baseUrl/member/delete');
     final accessToken =  await getJwtAccessToken();
     String? refreshToken =  await getJwtRefreshToken();
 

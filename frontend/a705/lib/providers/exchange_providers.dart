@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:a705/models/ExchangeDto.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ExchangeRateProvider {
-  final String baseUrl = 'http://api.currencylayer.com/live';
-  final String accessKey = '801421925fd59c4a9b9fb2fa00a51d2c';
-  // final String accessKey = '528ac9fb6c6fa1c649da1db532cf09e7';
-  // final String accessKey = '';
+  final String? baseUrl = dotenv.env['bank_api'];
+  final String? accessKey = dotenv.env['accessKey'];
   final String currencies = 'KRW,JPY,AUD,CAD,CNY,CZK,EUR,GBP,HKD,NZD,PHP,RUB,SGD,TWD,VND';
   final String date = '2023-10-05';
 
