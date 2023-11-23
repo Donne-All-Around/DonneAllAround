@@ -82,12 +82,12 @@
 |분야|사용 기술 스택|
 |:---|:---|
 |Backend|Spring Boot, JPA, JWT, Spring Security|
-|Frontend|Flutter|
+|Frontend|Flutter, Dart|
 |CI/CD|Jenkins|
 |Server|Nginx, Docker|
 |DB|Firebase, Redis, MariaDB|
-|API|Google Map|
-|Cloud|AWS S3|
+|API|Google Map, currencylayer API|
+|Cloud|AWS S3, Firebase Storage|
 |기타|Git, Jira, Notion, MatterMost, Figma|
 
 <br>
