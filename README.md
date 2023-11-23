@@ -45,7 +45,7 @@
 <br>
 
 ### 피그마
-[![figma]](/uploads/021c3c4baf09ab55a9051006c7920f3a/image.png)](https://www.figma.com/file/mOK3HCg1Ux9OTorwEqosdo/%EB%8F%88%EB%84%A4%ED%95%9C%EB%B0%94%ED%80%B4?type=design&node-id=0-1&mode=design)
+[![figma](/uploads/021c3c4baf09ab55a9051006c7920f3a/image.png)](https://www.figma.com/file/mOK3HCg1Ux9OTorwEqosdo/%EB%8F%88%EB%84%A4%ED%95%9C%EB%B0%94%ED%80%B4?type=design&node-id=0-1&mode=design)
 
 ## 기술 스택
 |분야|사용 기술 스택|
