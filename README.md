@@ -62,8 +62,8 @@
 
 ### 환율 정보 기능
 실시간 환율 검색  
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/0e159dbc-e77e-49bc-a8c4-aa7e14729c85" width="200">
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/6fd0cce8-7125-43c0-a785-372de251432d" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/813935f2-6b65-42bc-8a18-ae810bad69ae" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/1f95080e-fb57-45bc-897f-d1b483427e83" width="200">
 
 은행별 환율 검색  
 <img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/27c251d7-6f86-4682-bb02-7ceeea35ef74" width="200">
