@@ -38,27 +38,27 @@
 ## 3️⃣ 화면
 
 ### 피그마
-[![figma](https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/93dbae8f-fcd2-4690-aad7-9d6f35d2e58e)](https://www.figma.com/file/mOK3HCg1Ux9OTorwEqosdo/%EB%8F%88%EB%84%A4%ED%95%9C%EB%B0%94%ED%80%B4?type=design&node-id=0-1&mode=design)
+[![figma](https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/48c0ef44-5eb5-4356-a1c0-53e507884210)](https://www.figma.com/file/mOK3HCg1Ux9OTorwEqosdo/%EB%8F%88%EB%84%A4%ED%95%9C%EB%B0%94%ED%80%B4?type=design&node-id=0-1&mode=design)
 
 ### 회원가입/로그인
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/68723cb0-a777-4bc6-8596-d00d01714d90" width="200">
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/6add72de-cc0a-4bf4-a004-e3237c9e6deb" width="200">
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/67baa309-b3cf-4de1-894c-208e112762e7" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/e0c3ffba-6761-4663-a180-e1641a7bc5ee" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/c621eb86-8076-4e14-8a89-77c304a57bba" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/5fe521e1-7079-45e5-ae26-133cef4d611b" width="200">
 
 ### 거래 기능
 거래글 목록 조회/거래글 등록  
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/45ddb826-97f5-4f05-be02-01581a46bd5c" width="200">
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/5974af11-8ea8-4981-8818-33782dec1746" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/1381887c-a253-4ca9-b956-863eaa3686b4" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/bebec04e-4610-40c2-8f66-9783d3799a83" width="200">
 
 거래글 조회  
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/7d5c85eb-4fe1-48f0-a425-337fa22afa4a" width="200">
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/bccc3483-935f-4731-9443-f2de344f9cff" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/28801223-18ae-4d49-98c9-f7e986f8a55c" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/624b4aed-3fa7-43f8-9e6a-22c9aafcad6c" width="200">
 
 ### 채팅 기능
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/700892d9-6797-48d6-ac95-fd84f109bd7c" width="200">
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/d866c1f9-50f4-4958-9627-e79637e2c698" width="200">
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/be49467c-406a-4242-9156-938b736565d2" width="200">
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/10db1c46-8ae8-4d25-9dd6-47ee6a396316" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/19c5c032-533e-4b4b-b354-7e927970fa9d" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/8e39046a-b3b2-4e1e-a4b1-e497e8c9bafd" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/d6f03d0e-4a83-4a1e-a61e-2907f953c39f" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/87d1cca9-b8dc-47cc-827e-c4ac8d69bfc3" width="200">
 
 ### 환율 정보 기능
 실시간 환율 검색  
@@ -66,17 +66,17 @@
 <img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/6fd0cce8-7125-43c0-a785-372de251432d" width="200">
 
 은행별 환율 검색  
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/943db234-2e3e-4053-824a-898a1a0e24bb" width="200">
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/41688550-a81c-4900-a9cf-de1f244945fb" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/27c251d7-6f86-4682-bb02-7ceeea35ef74" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/c640e256-140b-4ecb-b116-95b6df5700e3" width="200">
 
-### 환율 계산 기능
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/19ea9f4f-053d-45e4-9db0-e0423d4ddbf4" width="200">
+### 환율 계산 기능!
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/76c107fd-adcc-4d80-bb53-794162039ef1" width="200">
 
 ### 마이페이지
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/fbe9d3b6-6952-41c9-856b-df1c512193dd" width="200">
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/4b86de7a-6b62-4ea5-a849-376e70db48f8" width="200">
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/e1b3b841-1000-4b76-9386-17148ecd928c" width="200">
-<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/789d057d-9505-4985-aa20-47fb628a43aa" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/ed70cebd-1b08-4e5f-bfaa-011039986492" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/08d39394-561e-42c3-8ac4-d908f65bebaa" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/0bbd78d8-91ca-4335-bb21-acaec38bc1e5" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/94ab110d-1c57-4069-9778-b08fddf71396" width="200">
 
 <br>
 
