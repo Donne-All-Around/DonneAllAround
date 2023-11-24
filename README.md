@@ -96,6 +96,6 @@
 |분야|인원|
 |:---|:---|
 |Backend|김령은, 한라연, 함소연|
-|Frontend|문요환, 이정민, 정현아, 함소연|
+|Frontend|문요환, [이정민](https://github.com/JisforJelly), [정현아](https://github.com/hhyeona), 함소연|
 |CI/CD|김령은|
 
