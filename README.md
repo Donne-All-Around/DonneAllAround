@@ -7,7 +7,7 @@
 ## **목차**
 
 ### 1️⃣ [프로젝트 기획 의도](#프로젝트-기획-의도)
-### 2️⃣ [주요 기능](#주요 기능)
+### 2️⃣ [주요 기능](#주요-기능)
 ### 3️⃣ [화면](#화면)
 ### 4️⃣ [기술 스택](#기술-스택)
 ### 5️⃣ [참여 인원 및 역할](#참여-인원-및-역할)
@@ -36,45 +36,45 @@
 ## 3️⃣ 화면
 
 ### 피그마
-[![figma](/uploads/021c3c4baf09ab55a9051006c7920f3a/image.png)](https://www.figma.com/file/mOK3HCg1Ux9OTorwEqosdo/%EB%8F%88%EB%84%A4%ED%95%9C%EB%B0%94%ED%80%B4?type=design&node-id=0-1&mode=design)
+[![figma](https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/93dbae8f-fcd2-4690-aad7-9d6f35d2e58e)](https://www.figma.com/file/mOK3HCg1Ux9OTorwEqosdo/%EB%8F%88%EB%84%A4%ED%95%9C%EB%B0%94%ED%80%B4?type=design&node-id=0-1&mode=design)
 
 ### 회원가입/로그인
-![Screenshot_20231123_160232](/uploads/df1289c22b0180ca3a126eaece789f28/Screenshot_20231123_160232.png){: width="200"}
-![Screenshot_20231123_160301](/uploads/81ae40ad161296e7353aaa28145385e2/Screenshot_20231123_160301.png){: width="200"}
-![Screenshot_20231123_160702](/uploads/40169329c3c7f5513e660b3271b71453/Screenshot_20231123_160702.png){: width="200"}
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/68723cb0-a777-4bc6-8596-d00d01714d90" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/6add72de-cc0a-4bf4-a004-e3237c9e6deb" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/67baa309-b3cf-4de1-894c-208e112762e7" width="200">
 
 ### 거래 기능
 거래글 목록 조회/거래글 등록  
-![거래메인-1](/uploads/98966e0c43fcbe23e255df2e8a05cd1e/거래메인-1.png){: width="200"}
-![거래등록-1](/uploads/fc03e712430c302612067cb3250cdc88/거래등록-1.png){: width="200"}
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/45ddb826-97f5-4f05-be02-01581a46bd5c" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/5974af11-8ea8-4981-8818-33782dec1746" width="200">
 
 거래글 조회  
-![거래글조회-1](/uploads/0b40ee7206e2096f9353b1a0bdacb8e1/거래글조회-1.png){: width="200"}
-![거래글조회-2](/uploads/522eb42f8b20f0d2efd7cb9665b88b45/거래글조회-2.png){: width="200"}
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/7d5c85eb-4fe1-48f0-a425-337fa22afa4a" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/bccc3483-935f-4731-9443-f2de344f9cff" width="200">
 
 ### 채팅 기능
-![채팅-1](/uploads/86d1558993bc2ce5248a20b7e18afdc1/채팅-1.png){: width="200"}
-![채팅-약속잡기-2](/uploads/fadd8bb0474c8387dc47c2b53db110b6/채팅-약속잡기-2.png){: width="200"}
-![채팅-약속잡기-3](/uploads/1e65fea895965ccb39c514b5116de058/채팅-약속잡기-3.png){: width="200"}
-![채팅-약속잡기-1](/uploads/762978c6012f59f22a06118e976a0700/채팅-약속잡기-1.png){: width="200"}
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/700892d9-6797-48d6-ac95-fd84f109bd7c" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/d866c1f9-50f4-4958-9627-e79637e2c698" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/be49467c-406a-4242-9156-938b736565d2" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/10db1c46-8ae8-4d25-9dd6-47ee6a396316" width="200">
 
 ### 환율 정보 기능
 실시간 환율 검색  
-![환율정보-1](/uploads/9f12db34ef10bcd5761c1e40ef655ef2/환율정보-1.png){: width="200"}
-![환율정보-2](/uploads/152c6913cb6935698c2cd38ec2e96bc8/환율정보-2.png){: width="200"}
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/0e159dbc-e77e-49bc-a8c4-aa7e14729c85" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/6fd0cce8-7125-43c0-a785-372de251432d" width="200">
 
 은행별 환율 검색  
-![환율검색-은행별](/uploads/e38a090743b25c3598169c81fca6ef73/환율검색-은행별.png){: width="200"}
-![환율검색-직접](/uploads/0bd421fcbd7f27ca8c3f6616b4c01721/환율검색-직접.png){: width="200"}
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/943db234-2e3e-4053-824a-898a1a0e24bb" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/41688550-a81c-4900-a9cf-de1f244945fb" width="200">
 
 ### 환율 계산 기능
-![환율계산-이익손실](/uploads/b2f0f004166a3aef19bac25ca698bd7a/환율계산-이익손실.png){: width="200"}
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/19ea9f4f-053d-45e4-9db0-e0423d4ddbf4" width="200">
 
 ### 마이페이지
-![마이페이지-1](/uploads/81dfa7fe7f6a4326e261285ece130781/마이페이지-1.png){: width="200"}
-![마이페이지-2](/uploads/ac05a52575ab8e74b07fec81b4d3592e/마이페이지-2.png){: width="200"}
-![마이페이지-로그아웃](/uploads/cdb863285dd6f896bd0fe4c657ae51f7/마이페이지-로그아웃.png){: width="200"}
-![마이페이지-탈퇴하기](/uploads/e04dbdb6cccb185c0485dfe0990ece75/마이페이지-탈퇴하기.png){: width="200"}
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/fbe9d3b6-6952-41c9-856b-df1c512193dd" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/4b86de7a-6b62-4ea5-a849-376e70db48f8" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/e1b3b841-1000-4b76-9386-17148ecd928c" width="200">
+<img src = "https://github.com/Donne-All-Around/DonneAllAround/assets/90131462/789d057d-9505-4985-aa20-47fb628a43aa" width="200">
 
 <br>
 
